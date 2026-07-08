@@ -2,7 +2,7 @@ import { TicketDiscount } from "iconsax-react";
 import { glassCard } from "../../utils/styles";
 import PromotionRow from "./PromotionRow.jsx";
 import { Skeleton } from "../ui/Skeleton.jsx";
-import { SkeletonPromotion, SkeletonPromotionTable } from "../ui/SKeletonPromotion.jsx";
+import { SkeletonPromotion, SkeletonPromotionTable } from "../ui/SkeletonPromotion.jsx";
 
 export default function PromotionTable({
   promotions,
