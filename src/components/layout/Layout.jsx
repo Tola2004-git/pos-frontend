@@ -1,0 +1,99 @@
+import { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { useTranslations } from "../../hooks/useTranslations";
+import { useBackgroundChanger } from "../../hooks/useBackgroundChanger";
+import { SidebarContext } from "../../App";
+import Sidebar from "./Sidebar";
+import Navbar from "./Navbar";
+import BackgroundChanger from "../BackgroundChanger";
+
+function Layout({ children }) {
+  const navigate = useNavigate();
+  const { t, lang, setLang } = useTranslations();
+  const { sidebarOpen, toggleSidebar: handleToggle } = useContext(SidebarContext);
+  const {
+    bgStyle,
+    showBgChanger,
+    openBgChanger,
+    closeBgChanger,
+    applyBg,
+    selected,
+    customUrl,
+    previewUpload,
+    bgPresets,
+    handleSelectPreset,
+    handleImageUpload,
+    handleCustomUrlChange,
+  } = useBackgroundChanger(
+    () => { },
+    () => { },
+  );
+
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchMe = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await fetch("http://127.0.0.1:8000/api/me", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        setUser(data);
+      } catch (err) {
+        console.error("Failed to fetch user:", err);
+      }
+    };
+    fetchMe();
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
+  return (
+    <div
+      style={bgStyle}
+      className="min-h-screen bg-cover bg-center bg-no-repeat transition-all duration-500"
+    >
+      <div className="fixed inset-0 bg-black/50 pointer-events-none z-0" />
+      {showBgChanger && (
+        <BackgroundChanger
+          onClose={closeBgChanger}
+          onApply={applyBg}
+          selected={selected}
+          customUrl={customUrl}
+          previewUpload={previewUpload}
+          bgPresets={bgPresets}
+          handleSelectPreset={handleSelectPreset}
+          handleImageUpload={handleImageUpload}
+          handleCustomUrlChange={handleCustomUrlChange}
+        />
+      )}
+      <div className="relative z-10 flex min-h-screen">
+        <Sidebar
+          open={sidebarOpen}
+          onToggle={handleToggle}
+          onLogout={handleLogout}
+          t={t}
+        />
+        <div
+          className={`flex-1 p-[30px] min-h-screen transition-all duration-400 ease-[cubic-bezier(0.175,0.885,0.32,1)] ${sidebarOpen ? "ml-[230px]" : "ml-[60px]"
+            }`}
+        >
+          <Navbar
+            t={t}
+            lang={lang}
+            setLang={setLang}
+            user={user}
+            onOpenBgChanger={openBgChanger}
+          />
+          <main className="mt-4">{children}</main>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default Layout;

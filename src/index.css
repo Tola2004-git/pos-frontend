@@ -1,0 +1,147 @@
+@import "tailwindcss";
+
+* {
+  font-family: 'Outfit', sans-serif;
+  box-sizing: border-box;
+}
+
+@keyframes shine {
+  0% { background-position: -200px; }
+  100% { background-position: 200px; }
+}
+
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, #c0392b, #e74c3c, #c0392b);
+  background-size: 200px;
+  animation: shine 3s infinite linear;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-shine:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(192, 57, 43, 0.5);
+}
+
+.btn-shine:active {
+  transform: scale(0.97);
+}
+
+.btn-shine-blue {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, #1e3a8a, #3b82f6, #1e3a8a);
+  background-size: 200px;
+  animation: shine 3s infinite linear;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-shine-blue:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5);
+}
+
+.btn-shine-blue:active {
+  transform: scale(0.97);
+}
+
+.btn-cancel-glass {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.08);
+  color: #d1d5db;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 12px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.25s ease;
+}
+
+.btn-cancel-glass:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.btn-cancel-glass:active {
+  transform: scale(0.96);
+}
+
+.btn-shine-gold {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, #f39c12, #f1c40f, #f39c12);
+  background-size: 200px;
+  animation: shine 3s infinite linear;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-shine-gold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(241, 196, 15, 0.5);
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.role-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 0.88rem;
+  transition: background 0.2s ease, padding-left 0.2s ease, color 0.2s ease;
+  border-left: 3px solid transparent;
+}
+
+.role-option:hover {
+  background: rgba(255,255,255,0.07);
+  padding-left: 22px;
+}
+
+.role-option.active {
+  background: rgba(255,255,255,0.1);
+  border-left: 3px solid whitesmoke;
+  color: whitesmoke;
+  font-weight: 700;
+}
+
+@keyframes float {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-6px); }
+  100% { transform: translateY(0px); }
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  /* display: none; */
+  width: 0;
+  height: 0;
+}
