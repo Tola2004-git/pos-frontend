@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import apiClient from "../apiClient";
 import { useNavigate } from "react-router-dom";
 import { getGradientBg, glassCard } from "../utils/styles";
 import logo from "../assets/logo.png";
@@ -168,7 +168,7 @@ function Login() {
     setLoading(true);
     setError("");
     try {
-      const res = await axios.post("http://127.0.0.1:8000/api/login", {
+      const res = await apiClient.post("/login", {
         email,
         password,
       });
