@@ -7,7 +7,7 @@ import { useCategories } from "../../hooks/useCategories";
 import {
   SkeletonProductPickerList,
   SkeletonCategoryChips,
-} from "../ui/SKeletonPromotion";
+} from "../ui/SkeletonPromotion";
 
 export default function ProductPickerModal({
   open,
