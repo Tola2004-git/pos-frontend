@@ -1,5 +1,5 @@
 import { useState } from "react";
-import apiClient from "../apiClient";
+import apiClient from "../api/apiClient";
 import { useNavigate } from "react-router-dom";
 import { getGradientBg, glassCard } from "../utils/styles";
 import logo from "../assets/logo.png";
