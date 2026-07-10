@@ -17,6 +17,9 @@ export const createOrderApi = (payload) =>
 export const updateOrderApi = (id, payload) =>
   apiClient.put(`/orders/${id}`, payload);
 
+export const changeTableApi = (id, tableId) =>
+  apiClient.post(`/orders/${id}/change-table`, { table_id: tableId });
+
 export const cancelOrderApi = (id) =>
   apiClient.put(`/orders/${id}/cancel`);
 

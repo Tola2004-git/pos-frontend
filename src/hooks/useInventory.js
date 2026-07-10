@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { alertSuccess, alertError } from "../utils/alert.jsx";
+import { useLowStock } from "../context/LowStockContext";
 
 const api = axios.create({ baseURL: "http://127.0.0.1:8000/api" });
 api.interceptors.request.use((config) => {
@@ -17,9 +18,7 @@ export function useInventory() {
   const [page, setPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [total, setTotal] = useState(0);
-  const [threshold, setThreshold] = useState(
-    Number(localStorage.getItem("low_stock_threshold")) || 10
-  );
+  const { threshold, setThreshold, refreshLowStockProducts } = useLowStock();
   const [showThreshold, setShowThreshold] = useState(false);
   const [tempThreshold, setTempThreshold] = useState(threshold);
 
@@ -130,6 +129,7 @@ export function useInventory() {
       setLoading(true);
       await fetchInventory();
       await fetchAllProducts();
+      await refreshLowStockProducts();
       alertSuccess(
         "Restocked!",
         restockForm.action === "add" ? "Stock has been added successfully." : "Stock has been removed successfully."
@@ -142,8 +142,7 @@ export function useInventory() {
   };
 
   const saveThreshold = () => {
-    setThreshold(Number(tempThreshold));
-    localStorage.setItem("low_stock_threshold", tempThreshold);
+    setThreshold(tempThreshold);
     setShowThreshold(false);
     alertSuccess("Saved!", `Low stock threshold set to ${tempThreshold}.`);
   };

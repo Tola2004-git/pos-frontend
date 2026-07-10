@@ -1,6 +1,7 @@
 import { jwtDecode } from "jwt-decode";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Login from "../pages/Login";
+import LowStockToastStack from "../components/notifications/LowStockToastStack";
 import Dashboard from "../pages/Dashboard";
 import Users from "../pages/Users";
 import Products from "../pages/Products";
@@ -30,9 +31,16 @@ function PrivateRoute({ children }) {
   return children;
 }
 
+function GlobalLowStockAlerts() {
+  const location = useLocation();
+  if (location.pathname === "/login") return null;
+  return <LowStockToastStack />;
+}
+
 function AppRouter() {
   return (
     <BrowserRouter>
+      <GlobalLowStockAlerts />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route

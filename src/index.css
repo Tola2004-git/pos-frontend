@@ -145,3 +145,18 @@ input::placeholder {
   width: 0;
   height: 0;
 }
+
+.thin-dark-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #334155 transparent;
+}
+.thin-dark-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.thin-dark-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.thin-dark-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #334155;
+  border-radius: 999px;
+}

@@ -116,7 +116,7 @@ function TableCard({ table, onEdit, onDelete, onClear, onOpenMove, statusStyle }
       )}
 
       <div style={{ display: "flex", gap: "12px", justifyContent: "end", flexWrap: "wrap" }}>
-        {table.status === "occupied" && (
+        {["occupied", "reserved"].includes(table.status) && (
           <>
             <div
               style={{ position: "relative", display: "inline-block" }}

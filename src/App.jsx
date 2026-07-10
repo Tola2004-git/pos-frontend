@@ -1,5 +1,6 @@
 import { createContext, useState } from 'react';
 import AppRouter from './routes/AppRouter'
+import { LowStockProvider } from './context/LowStockContext';
 
 export const SidebarContext = createContext({
   sidebarOpen: true,
@@ -22,7 +23,9 @@ function App() {
 
   return (
     <SidebarContext.Provider value={{ sidebarOpen, toggleSidebar: handleToggle }}>
-      <AppRouter />
+      <LowStockProvider>
+        <AppRouter />
+      </LowStockProvider>
     </SidebarContext.Provider>
   )
 }

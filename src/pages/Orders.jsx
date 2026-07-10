@@ -1,8 +1,9 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { RiAddLine } from "react-icons/ri";
 import { ClipboardText, ReceiptAdd, ReceiptItem, ShoppingCart } from "iconsax-react";
 import { glassCard, colors } from "../utils/styles";
 import { useOrders, useProducts, usePaymentMethods } from "../hooks/useOrders";
+import { useCategories } from "../hooks/useCategories";
 import { usePOS } from "../hooks/usePOS";
 import { usePromotions } from "../hooks/usePromotions";
 import { usePromotionLogic } from "../hooks/usePromotionLogic";
@@ -12,7 +13,7 @@ import OrdersTable from "../components/orders/OrdersTable";
 import POSModal from "../components/orders/POSModal";
 import OrderDetailModal from "../components/orders/OrderDetailModal";
 import Layout from "../components/layout/Layout";
-import { updateOrderApi, fetchOrderApi } from "../api/ordersApi";
+import { updateOrderApi, fetchOrderApi, changeTableApi } from "../api/ordersApi";
 
 
 const handlePrint = (order) => {
@@ -74,6 +75,7 @@ function Orders() {
   } = useOrders();
 
   const { products, refetchProducts } = useProducts();
+  const { categories } = useCategories();
   const { paymentMethods } = usePaymentMethods();
   const { promotions } = usePromotions();
 
@@ -103,6 +105,16 @@ function Orders() {
   const [editAmountPaid, setEditAmountPaid] = useState("");
   const [editPagerNumber, setEditPagerNumber] = useState("");
   const [editPosError, setEditPosError] = useState("");
+
+  useEffect(() => {
+    const handleRefreshOrders = () => {
+      fetchOrders();
+      refetchProducts();
+    };
+
+    window.addEventListener("orders:refresh", handleRefreshOrders);
+    return () => window.removeEventListener("orders:refresh", handleRefreshOrders);
+  }, [fetchOrders, refetchProducts]);
 
   const editCartItems = useMemo(() => {
     return editCart.map((item) => {
@@ -289,11 +301,22 @@ function Orders() {
     setEditPosError("");
 
     try {
+      const currentTableId = editOrder?.table_id ?? null;
+      const nextTableId = editOrderType === "dine-in" ? table_id || null : null;
+
+      if (editOrder?.status === "pending" && editOrderType === "dine-in" && nextTableId && String(nextTableId) !== String(currentTableId)) {
+        await changeTableApi(editOrder.id, nextTableId);
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("orders:refresh"));
+          window.dispatchEvent(new CustomEvent("tables:refresh"));
+        }
+      }
+
       const payload = {
         customer_name: editCustomerName,
         customer_phone: editCustomerPhone,
         order_type: editOrderType,
-        table_id: editOrderType === "dine-in" ? table_id || null : null,
+        table_id: nextTableId,
         items: editCart.map((item) => ({
           product_id: item.product_id,
           quantity: item.quantity,
@@ -428,6 +451,7 @@ function Orders() {
       {pos.showPOS && (
         <POSModal
           products={products}
+          categories={categories}
           paymentMethods={paymentMethods}
           promotions={promotions}
           {...pos}
@@ -441,6 +465,7 @@ function Orders() {
           editingOrder={editOrder}
           onSaveEdit={handleSaveEdit}
           products={products}
+          categories={categories}
           paymentMethods={paymentMethods}
           promotions={promotions}
           cart={editCart}

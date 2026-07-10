@@ -6,6 +6,7 @@ import {
   clearTable,
   deleteTable,
 } from "../api/tableApi.js";
+import { changeTableApi } from "../api/ordersApi.js";
 import {
   alertSuccess,
   alertError,
@@ -37,6 +38,20 @@ export function useTables() {
 
   useEffect(() => {
     loadTables();
+  }, [loadTables]);
+
+  useEffect(() => {
+    const handleRefreshTables = () => {
+      loadTables();
+    };
+
+    window.addEventListener("tables:refresh", handleRefreshTables);
+    window.addEventListener("orders:refresh", handleRefreshTables);
+
+    return () => {
+      window.removeEventListener("tables:refresh", handleRefreshTables);
+      window.removeEventListener("orders:refresh", handleRefreshTables);
+    };
   }, [loadTables]);
 
   const openAdd = () => {
@@ -89,7 +104,7 @@ export function useTables() {
   };
 
   const handleClear = async (table) => {
-    if (!table || table.status !== "occupied") return;
+    if (!table || !["occupied", "reserved"].includes(table.status)) return;
 
     try {
       await clearTable(table);
@@ -104,7 +119,7 @@ export function useTables() {
   };
 
   const handleMove = async (fromTable, targetTableId) => {
-    if (!fromTable || fromTable.status !== "occupied") return;
+    if (!fromTable || !["occupied", "reserved"].includes(fromTable.status)) return;
 
     const targetTable = tables.find((table) => table.id === targetTableId);
     if (!targetTable || targetTable.status !== "available") {
@@ -112,24 +127,38 @@ export function useTables() {
       return;
     }
 
-    try {
-      await Promise.all([
-        updateTable(fromTable.id, {
-          name: fromTable.name || "",
-          capacity: fromTable.capacity ?? null,
-          note: fromTable.note || "",
-          status: "available",
-        }),
-        updateTable(targetTable.id, {
-          name: targetTable.name || "",
-          capacity: targetTable.capacity ?? null,
-          note: targetTable.note || "",
-          status: "occupied",
-        }),
-      ]);
+    const orderId = fromTable.current_order?.id;
 
-      alertSuccess("Moved!", `${fromTable.name} is now available and ${targetTable.name} is occupied.`);
+    try {
+      if (orderId) {
+        // Table has a live order (dine-in occupied, or a pending order holding a reserved
+        // table) - route through the order's change-table endpoint so table_id/table_name
+        // and both table statuses stay consistent.
+        await changeTableApi(orderId, targetTable.id);
+      } else {
+        // Reserved with no order yet (e.g. a manual reservation set from the table modal) -
+        // there's nothing to transfer, just move the reservation between the two tables.
+        await Promise.all([
+          updateTable(fromTable.id, {
+            name: fromTable.name || "",
+            capacity: fromTable.capacity ?? null,
+            note: fromTable.note || "",
+            status: "available",
+          }),
+          updateTable(targetTable.id, {
+            name: targetTable.name || "",
+            capacity: targetTable.capacity ?? null,
+            note: targetTable.note || "",
+            status: fromTable.status,
+          }),
+        ]);
+      }
+
+      alertSuccess("Moved!", `${fromTable.name} is now available and ${targetTable.name} is ${fromTable.status}.`);
       loadTables();
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("orders:refresh"));
+      }
     } catch (err) {
       alertError(
         "Move Failed",

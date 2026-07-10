@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { createOrderApi } from "../api/ordersApi";
+import { alertWarning } from "../utils/alert.jsx";
 
 const CASH_PAYMENT_METHOD_ID = 1;
 
@@ -17,42 +18,87 @@ export function usePOS({ onOrderCreated, addToast, lastOrderId, promotions = [] 
   const [posError, setPosError] = useState("");
   const [posStep, setPosStep] = useState(1);
 
-  const addToCart = (product) => {
-    setCart((prev) => {
-      const existing = prev.find((i) => i.product_id === product.id);
-      if (existing) {
-        return prev.map((i) =>
+  // Stock checks below read `cart` directly and call setCart with a plain
+  // value (never the functional updater form). The alertWarning side effect
+  // must run exactly once per click - React 18 StrictMode double-invokes
+  // functional setState updaters in dev, which was firing the toast twice.
+  const addToCart = useCallback((product) => {
+    const availableStock = Number(product.qty) || 0;
+
+    if (availableStock <= 0) {
+      alertWarning("Out of Stock", `${product.name} is currently out of stock.`);
+      return;
+    }
+
+    const existing = cart.find((i) => i.product_id === product.id);
+
+    if (existing) {
+      if (existing.quantity >= availableStock) {
+        alertWarning(
+          "Stock Limit Reached",
+          `Only ${availableStock} unit(s) of ${product.name} available.`,
+        );
+        return;
+      }
+      setCart(
+        cart.map((i) =>
           i.product_id === product.id
             ? {
                 ...i,
                 quantity: i.quantity + 1,
                 subtotal: (i.quantity + 1) * i.price,
+                stock: availableStock,
               }
             : i,
-        );
-      }
-      return [
-        ...prev,
-        {
-          product_id: product.id,
-          product_name: product.name,
-          price: Number(product.price),
-          quantity: 1,
-          subtotal: Number(product.price),
-          image: product.image,
-          category_id: product.category_id ?? null,
-        },
-      ];
-    });
-  };
+        ),
+      );
+      return;
+    }
+
+    setCart([
+      ...cart,
+      {
+        product_id: product.id,
+        product_name: product.name,
+        price: Number(product.price),
+        quantity: 1,
+        subtotal: Number(product.price),
+        image: product.image,
+        category_id: product.category_id ?? null,
+        stock: availableStock,
+      },
+    ]);
+  }, [cart]);
 
   const updateQty = (product_id, qty) => {
     if (qty <= 0) {
       removeFromCart(product_id);
       return;
     }
-    setCart((prev) =>
-      prev.map((i) =>
+
+    const item = cart.find((i) => i.product_id === product_id);
+    if (!item) return;
+
+    const maxStock = item.stock ?? Infinity;
+
+    if (qty > maxStock) {
+      alertWarning(
+        "Stock Limit Reached",
+        `Only ${maxStock} unit(s) of ${item.product_name} available.`,
+      );
+      if (item.quantity === maxStock) return;
+      setCart(
+        cart.map((i) =>
+          i.product_id === product_id
+            ? { ...i, quantity: maxStock, subtotal: maxStock * i.price }
+            : i,
+        ),
+      );
+      return;
+    }
+
+    setCart(
+      cart.map((i) =>
         i.product_id === product_id
           ? { ...i, quantity: qty, subtotal: qty * i.price }
           : i,

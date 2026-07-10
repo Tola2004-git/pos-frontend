@@ -41,6 +41,9 @@ function Tables() {
   const [moveTable, setMoveTable] = useState(null);
   const [selectedTargetId, setSelectedTargetId] = useState("");
   const [moveLoading, setMoveLoading] = useState(false);
+  const [clearModalOpen, setClearModalOpen] = useState(false);
+  const [clearTable, setClearTable] = useState(null);
+  const [clearLoading, setClearLoading] = useState(false);
 
   const availableCount = tables.filter((t) => t.status === "available").length;
   const occupiedCount = tables.filter((t) => t.status === "occupied").length;
@@ -96,6 +99,29 @@ function Tables() {
       closeMoveModal();
     } finally {
       setMoveLoading(false);
+    }
+  };
+
+  const openClearModal = (table) => {
+    setClearTable(table);
+    setClearModalOpen(true);
+  };
+
+  const closeClearModal = () => {
+    setClearModalOpen(false);
+    setClearTable(null);
+    setClearLoading(false);
+  };
+
+  const confirmClear = async () => {
+    if (!clearTable) return;
+
+    setClearLoading(true);
+    try {
+      await handleClear(clearTable);
+      closeClearModal();
+    } finally {
+      setClearLoading(false);
     }
   };
 
@@ -303,7 +329,7 @@ function Tables() {
                 TABLE_STATUS_STYLES.available
               }
               onEdit={openEdit}
-              onClear={handleClear}
+              onClear={openClearModal}
               onOpenMove={openMoveModal}
               onDelete={handleDelete}
             />
@@ -508,6 +534,127 @@ function Tables() {
                   <>
                     <TickCircle size="22" color="#fff" variant="Outline" />
                     Confirm Move
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {clearModalOpen && (
+        <div
+          style={{
+            ...glassCard,
+            position: "fixed",
+            inset: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+            padding: "24px",
+          }}
+          onClick={closeClearModal}
+        >
+          <div
+            style={{
+              ...glassCard,
+              width: "100%",
+              maxWidth: "460px",
+              borderRadius: "24px",
+              padding: "28px",
+              color: "white",
+              border: "1px solid rgba(255,255,255,0.16)",
+              boxShadow: "0 24px 60px rgba(0, 0, 0, 0.35)",
+            }}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div style={{ marginBottom: "16px" }}>
+              <div
+                style={{
+                  color: "#f59e0b",
+                  fontSize: "0.74rem",
+                  fontWeight: 700,
+                  letterSpacing: "1.6px",
+                  textTransform: "uppercase",
+                  marginBottom: "6px",
+                }}
+              >
+                Check out table
+              </div>
+              <h3 style={{ margin: 0, fontSize: "1.3rem", fontWeight: 700 }}>
+                Clear {clearTable?.name}?
+              </h3>
+            </div>
+
+            <p style={{ margin: "0 0 20px", color: "rgba(255,255,255,0.72)", lineHeight: 1.6 }}>
+              This will release the table session and return it to available status.
+              Please confirm only when the customer has finished and left the table.
+            </p>
+
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}>
+              <button
+                onClick={closeClearModal}
+                className="btn-cancel-glass"
+                style={{
+                  padding: "12px",
+                  borderRadius: "12px",
+                  color: "white",
+                  cursor: clearLoading ? "not-allowed" : "pointer",
+                  fontWeight: 500,
+                  opacity: clearLoading ? 0.6 : 1,
+                }}
+                disabled={clearLoading}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmClear}
+                disabled={clearLoading}
+                className="btn-shine-blue"
+                style={{
+                  padding: "12px",
+                  borderRadius: "12px",
+                  border: "none",
+                  cursor: clearLoading ? "not-allowed" : "pointer",
+                  fontWeight: 600,
+                  opacity: clearLoading ? 0.8 : 1,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "8px",
+                }}
+              >
+                {clearLoading ? (
+                  <>
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 18 18"
+                      style={{ animation: "spin 0.8s linear infinite" }}
+                    >
+                      <circle
+                        cx="9"
+                        cy="9"
+                        r="7"
+                        fill="none"
+                        stroke="rgba(255,255,255,0.3)"
+                        strokeWidth="2"
+                      />
+                      <path
+                        d="M9 2 A7 7 0 0 1 16 9"
+                        fill="none"
+                        stroke="white"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    Clearing...
+                  </>
+                ) : (
+                  <>
+                    <TickCircle size="22" color="#fff" variant="Outline" />
+                    Confirm Clear
                   </>
                 )}
               </button>

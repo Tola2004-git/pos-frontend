@@ -2,6 +2,7 @@ import { RiEyeLine, RiPrinterLine, RiCloseLine } from "react-icons/ri";
 import { glassCard, colors } from "../../utils/styles";
 import { CloseCircle, Eye, Printer, Edit } from "iconsax-react";
 import { SkeletonOrdersTable } from "../ui/SkeletonOrder";
+import ItemsPopover from "./ItemsPopover";
 
 const getStatusStyle = (status) => {
   switch (status) {
@@ -171,8 +172,8 @@ export default function OrdersTable({
                         fontSize: "0.85rem",
                       }}
                     >
-                      {order.table?.name ? (
-                        order.table.name
+                      {order.table?.name || order.table_name || "Takeaway" ? (
+                        order.table?.name || order.table_name || "Takeaway"
                       ) : order.order_type === "takeaway" ? (
                         <span
                           style={{
@@ -193,13 +194,8 @@ export default function OrdersTable({
                         "—"
                       )}
                     </td>
-                    <td
-                      style={{
-                        padding: "12px 14px",
-                        color: "rgba(255,255,255,0.7)",
-                      }}
-                    >
-                      {order.items?.length || 0} items
+                    <td style={{ padding: "12px 14px" }}>
+                      <ItemsPopover order={order} />
                     </td>
                     <td
                       style={{

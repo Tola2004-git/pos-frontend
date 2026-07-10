@@ -2,10 +2,14 @@ import { useState, useEffect } from "react";
 import {
   ArrowLeft2,
   ArrowRight2,
+  Edit2,
   ShoppingBag,
   TickCircle,
 } from "iconsax-react";
 import { glassCard } from "../../utils/styles";
+import apiClient from "../../api/apiClient";
+import { changeTableApi } from "../../api/ordersApi";
+import { alertConfirmWarning } from "../../utils/alert.jsx";
 
 // Import custom hooks
 import { usePromotionLogic } from "../../hooks/usePromotionLogic";
@@ -27,6 +31,7 @@ export default function POSModal({
   editingOrder = null,
   onSaveEdit,
   products,
+  categories,
   paymentMethods,
   cart,
   posSearch,
@@ -69,12 +74,28 @@ export default function POSModal({
   const [selectedCurrency, setSelectedCurrency] = useState("USD");
   const [isMounted, setIsMounted] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [isChangingTable, setIsChangingTable] = useState(false);
+  const [tableActionMessage, setTableActionMessage] = useState("");
+  const [activeEditingOrder, setActiveEditingOrder] = useState(editingOrder);
+  const [showTablePicker, setShowTablePicker] = useState(false);
+
+  useEffect(() => {
+    setActiveEditingOrder(editingOrder);
+    setShowTablePicker(false);
+  }, [editingOrder]);
+
+  const getTableLabel = (table) =>
+    table?.name ||
+    table?.table_name ||
+    table?.tableNumber ||
+    `Table ${table?.id}`;
 
   // Custom hooks for business logic
   const promotionLogic = usePromotionLogic(promotions, cart);
   const currency = useCurrencyConversion(exchangeRate);
   const tableSelection = useTableSelection(
-    isEditMode ? (editingOrder?.table_id ?? null) : null,
+    isEditMode ? (activeEditingOrder?.table_id ?? null) : null,
+    { allowOccupiedTables: isEditMode },
   );
   const paymentMethodsValidation = usePaymentMethodValidation(paymentMethods);
 
@@ -117,14 +138,22 @@ export default function POSModal({
           ? `Enter ${currency.displayAmount(totalDue, selectedCurrency)} or more to confirm this order.`
           : "";
 
+  const availableTables = tableSelection.getAvailableTables();
+  const blockedTables = tableSelection.getBlockedTables();
+  const currentSessionTable =
+    isEditMode &&
+    activeEditingOrder?.status === "pending" &&
+    tableSelection.getSelectedTable() &&
+    tableSelection.getSelectedTable().status !== "available"
+      ? tableSelection.getSelectedTable()
+      : null;
+
   // Fetch exchange rate on mount
   useEffect(() => {
     const fetchExchangeRate = async () => {
       try {
-        const response = await fetch("/api/exchange-rates");
-        if (!response.ok) throw new Error("API not available");
-        const data = await response.json();
-        setExchangeRate(Number(data.usd_to_khr) || 4100);
+        const response = await apiClient.get("/exchange-rates");
+        setExchangeRate(Number(response.data.usd_to_khr) || 4100);
       } catch (error) {
         console.error("Failed to fetch exchange rate", error);
         setExchangeRate(4100);
@@ -144,6 +173,17 @@ export default function POSModal({
       timeout = setTimeout(() => setIsMounted(false), 300);
     }
     return () => clearTimeout(timeout);
+  }, [showPOS]);
+
+  // Lock background page scroll while the modal is open
+  useEffect(() => {
+    if (!showPOS) return;
+
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [showPOS]);
 
   // Set default payment method
@@ -191,6 +231,44 @@ export default function POSModal({
     }
   };
 
+  const handleChangeTable = async (nextTableId) => {
+    if (
+      !isEditMode ||
+      activeEditingOrder?.status !== "pending" ||
+      !nextTableId
+    ) {
+      return;
+    }
+
+    setIsChangingTable(true);
+    setTableActionMessage("");
+
+    try {
+      const response = await changeTableApi(activeEditingOrder.id, nextTableId);
+      const freshOrder = response?.data?.order;
+
+      if (freshOrder) {
+        setActiveEditingOrder(freshOrder);
+      }
+
+      tableSelection.setSelectedTableId(nextTableId);
+      await tableSelection.refreshTables();
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("orders:refresh"));
+        window.dispatchEvent(new CustomEvent("tables:refresh"));
+      }
+      setTableActionMessage("Table updated successfully.");
+      setShowTablePicker(false);
+    } catch (error) {
+      setTableActionMessage(
+        error.response?.data?.message ||
+          "Unable to change the table right now.",
+      );
+    } finally {
+      setIsChangingTable(false);
+    }
+  };
+
   // Handle confirm order
   const handleConfirmOrder = async ({
     status = isEditMode ? "pending" : "completed",
@@ -211,6 +289,7 @@ export default function POSModal({
           paidAmount: safeAmountPaid,
           payment_method_id: selectedPayment?.id ?? null,
         });
+        await tableSelection.refreshTables();
         return;
       }
 
@@ -220,6 +299,7 @@ export default function POSModal({
         totalDue,
         paidAmount: safeAmountPaid,
       });
+      await tableSelection.refreshTables();
     } finally {
       if (status === "hold") {
         setIsHolding(false);
@@ -289,6 +369,7 @@ export default function POSModal({
           to { opacity: 1; transform: scale(1) translateY(0); }
         }
       `}</style>
+
       <div
         style={{
           ...glassCard,
@@ -340,6 +421,7 @@ export default function POSModal({
             {/* Product Grid */}
             <ProductGrid
               products={products}
+              categories={categories}
               search={posSearch}
               onSearchChange={setPosSearch}
               onAddToCart={addToCart}
@@ -411,7 +493,20 @@ export default function POSModal({
               </div>
             )}
             <div className="p-6 flex-1 flex flex-col overflow-hidden min-h-0">
-              <div className="overflow-y-auto flex-1 pr-1 space-y-3">
+              <div
+                style={{
+                  overflowY: "auto",
+                  margin: 0,
+                  padding: "12px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "8px",
+                  listStyle: "none",
+                  scrollbarWidth: "thin",
+                  scrollbarColor: "rgba(255, 255, 255, 0.2) transparent",
+                }}
+                className="overflow-y-auto flex-1 pr-1 pb-3 space-y-3 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-white/15 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent"
+              >
                 <div className="grid grid-cols-12 gap-2 lg:gap-3">
                   {/* Payment Method Selection */}
                   <div className="col-span-12 lg:col-span-4 xl:col-span-4 lg:pr-1">
@@ -432,66 +527,228 @@ export default function POSModal({
                   <div className="col-span-12 lg:col-span-8 xl:col-span-8 flex flex-col lg:pl-1">
                     {requiresTableSelection && (
                       <div className="mb-4 rounded-[14px] border border-white/10 bg-white/5 p-3">
-                        <div className="mb-2 flex items-center justify-between">
-                          <h5 className="text-white font-medium">
-                            Select Table
-                          </h5>
-                          <span className="text-[0.8rem] text-white/60">
-                            {tableSelection.selectedTableId
-                              ? "Selected"
-                              : "Required"}
-                          </span>
-                        </div>
-
-                        {tableSelection.tableLoading ? (
-                          <div className="text-sm text-white/60">
-                            Loading tables...
-                          </div>
-                        ) : (
-                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                            {tableSelection.getAvailableTables().length > 0 ? (
-                              tableSelection
-                                .getAvailableTables()
-                                .map((table) => {
-                                  const tableLabel =
-                                    table.name ||
-                                    table.table_name ||
-                                    table.tableNumber ||
-                                    `Table ${table.id}`;
-                                  const isSelected =
-                                    tableSelection.selectedTableId === table.id;
-                                  const currentBadge =
-                                    table.id === tableSelection.selectedTableId &&
-                                    table.status !== "available"
-                                      ? " (Current Table)"
-                                      : "";
-
-                                  return (
-                                    <button
-                                      key={table.id}
-                                      type="button"
-                                      onClick={() =>
-                                        tableSelection.setSelectedTableId(
-                                          table.id,
-                                        )
-                                      }
-                                      className={`rounded-[10px] border px-3 py-2 text-sm font-medium transition-all ${
-                                        isSelected
-                                          ? "border-white bg-white text-[#1a1a2e]"
-                                          : "border-white/10 bg-white/10 text-white hover:bg-white/20"
-                                      }`}
-                                    >
-                                      {tableLabel}
-                                      {currentBadge}
-                                    </button>
-                                  );
-                                })
-                            ) : (
-                              <div className="col-span-full text-sm text-white/60">
-                                No available tables.
-                              </div>
+                        {isEditMode &&
+                        currentSessionTable &&
+                        !showTablePicker ? (
+                          // Compact view: current table badge + a small icon to open the switcher.
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex min-w-0 items-center gap-2">
+                              <span className="text-[0.72rem] uppercase tracking-[0.2em] text-white/45">
+                                Table
+                              </span>
+                              <span className="truncate rounded-[10px] border border-white/10 bg-white/10 px-3 py-1.5 text-sm font-medium text-white">
+                                {getTableLabel(currentSessionTable)}
+                              </span>
+                            </div>
+                            {activeEditingOrder?.status === "pending" && (
+                              <button
+                                type="button"
+                                onClick={() => setShowTablePicker(true)}
+                                title="Switch table"
+                                aria-label="Switch table"
+                                className="flex-shrink-0 rounded-full border border-white/10 bg-white/10 p-2 text-white transition-all hover:bg-white/20"
+                              >
+                                <Edit2
+                                  size={16}
+                                  color="white"
+                                  variant="Outline"
+                                />
+                              </button>
                             )}
                           </div>
+                        ) : (
+                          <>
+                            <div className="mb-2 flex items-center justify-between">
+                              <h5 className="text-white font-medium">
+                                Select Table
+                              </h5>
+                              {isEditMode && currentSessionTable ? (
+                                <button
+                                  type="button"
+                                  onClick={() => setShowTablePicker(false)}
+                                  className="text-[0.8rem] text-white/60 transition-all hover:text-white"
+                                >
+                                  Cancel
+                                </button>
+                              ) : (
+                                <span className="text-[0.8rem] text-white/60">
+                                  {tableSelection.selectedTableId
+                                    ? "Selected"
+                                    : "Required"}
+                                </span>
+                              )}
+                            </div>
+
+                            {tableSelection.tableLoading ? (
+                              <div className="text-sm text-white/60">
+                                Loading tables...
+                              </div>
+                            ) : isEditMode && currentSessionTable ? (
+                              // Switching an already-seated order: a compact dropdown beats a
+                              // full grid + separate confirm button for this quick action.
+                              <div className="space-y-2">
+                                <select
+                                  value={
+                                    tableSelection.selectedTableId ??
+                                    currentSessionTable.id
+                                  }
+                                  disabled={isChangingTable}
+                                  onChange={(e) => {
+                                    const nextTableId = Number(e.target.value);
+                                    if (nextTableId === currentSessionTable.id)
+                                      return;
+                                    handleChangeTable(nextTableId);
+                                  }}
+                                  className="w-full rounded-[10px] border border-white/10 bg-white/10 px-3 py-2 text-sm font-medium text-white transition-all focus:border-white/40 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
+                                >
+                                  <option
+                                    value={currentSessionTable.id}
+                                    className="bg-[#1a1a2e]"
+                                  >
+                                    {getTableLabel(currentSessionTable)}{" "}
+                                    (current)
+                                  </option>
+                                  {availableTables.map((table) => (
+                                    <option
+                                      key={table.id}
+                                      value={table.id}
+                                      className="bg-[#1a1a2e]"
+                                    >
+                                      {getTableLabel(table)}
+                                    </option>
+                                  ))}
+                                </select>
+                                {isChangingTable && (
+                                  <div className="text-sm text-white/60">
+                                    Switching table...
+                                  </div>
+                                )}
+                              </div>
+                            ) : (
+                              <div className="space-y-2">
+                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                  {availableTables.length > 0 ? (
+                                    availableTables.map((table) => {
+                                      const isSelected =
+                                        tableSelection.selectedTableId ===
+                                        table.id;
+
+                                      return (
+                                        <button
+                                          key={table.id}
+                                          type="button"
+                                          onClick={() =>
+                                            tableSelection.setSelectedTableId(
+                                              table.id,
+                                            )
+                                          }
+                                          className={`rounded-[10px] border px-3 py-2 text-sm font-medium transition-all ${
+                                            isSelected
+                                              ? "border-white bg-white text-[#1a1a2e]"
+                                              : "border-white/10 bg-white/10 text-white hover:bg-white/20"
+                                          }`}
+                                        >
+                                          {getTableLabel(table)}
+                                        </button>
+                                      );
+                                    })
+                                  ) : (
+                                    <div className="col-span-full text-sm text-white/60">
+                                      No available tables.
+                                    </div>
+                                  )}
+                                </div>
+
+                                {!isEditMode && (
+                                  <div className="rounded-[10px] border border-amber-400/20 bg-amber-500/10 px-3 py-2 text-sm text-amber-100">
+                                    Only available tables are shown for new
+                                    dine-in orders to prevent table overlap.
+                                  </div>
+                                )}
+
+                                {blockedTables.length > 0 && (
+                                  <div className="space-y-2">
+                                    <div className="text-[0.72rem] uppercase tracking-[0.2em] text-white/45">
+                                      In-use tables
+                                    </div>
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                      {blockedTables.map((table) => {
+                                        const statusLabel =
+                                          table.status === "reserved"
+                                            ? "Reserved"
+                                            : "Occupied";
+
+                                        if (isEditMode) {
+                                          return (
+                                            <button
+                                              key={table.id}
+                                              type="button"
+                                              disabled
+                                              className="cursor-not-allowed rounded-[10px] border border-white/10 bg-white/5 px-3 py-2 text-left text-sm font-medium text-white/60"
+                                            >
+                                              <div>{getTableLabel(table)}</div>
+                                              <div className="text-[0.7rem] uppercase tracking-[0.2em] text-white/45">
+                                                {statusLabel}
+                                              </div>
+                                            </button>
+                                          );
+                                        }
+
+                                        const isSelected =
+                                          tableSelection.selectedTableId ===
+                                          table.id;
+
+                                        const handleOccupiedTableClick =
+                                          async () => {
+                                            const result =
+                                              await alertConfirmWarning(
+                                                "Table already occupied?",
+                                                "This table is currently occupied. Are you sure you want to add a new concurrent order to this table (e.g., for a friend joining later)?",
+                                                "Yes, Add Order",
+                                              );
+                                            if (!result.isConfirmed) return;
+                                            tableSelection.setSelectedTableId(
+                                              table.id,
+                                              true,
+                                            );
+                                          };
+
+                                        return (
+                                          <button
+                                            key={table.id}
+                                            type="button"
+                                            onClick={handleOccupiedTableClick}
+                                            className={`rounded-[10px] border px-3 py-2 text-left text-sm font-medium transition-all ${
+                                              isSelected
+                                                ? "border-white bg-white text-[#1a1a2e]"
+                                                : "border-white/10 bg-white/5 text-white/60 hover:bg-white/10"
+                                            }`}
+                                          >
+                                            <div>{getTableLabel(table)}</div>
+                                            <div
+                                              className={`text-[0.7rem] uppercase tracking-[0.2em] ${
+                                                isSelected
+                                                  ? "text-[#1a1a2e]/60"
+                                                  : "text-white/45"
+                                              }`}
+                                            >
+                                              {statusLabel}
+                                            </div>
+                                          </button>
+                                        );
+                                      })}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+
+                            {tableActionMessage && (
+                              <div className="mt-2 rounded-[10px] border border-emerald-400/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-200">
+                                {tableActionMessage}
+                              </div>
+                            )}
+                          </>
                         )}
                       </div>
                     )}

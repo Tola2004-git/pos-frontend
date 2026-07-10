@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 /**
  * Custom hook for promotion discount calculations and matching logic
@@ -59,11 +59,14 @@ export function usePromotionLogic(promotions = [], cart = []) {
   /**
    * Find all applicable promotions for a product
    */
-  const findProductPromotions = (product) =>
-    promotions.filter(
-      (promotion) =>
-        matchesPromotion(product, promotion) && isPromotionValid(promotion)
-    );
+  const findProductPromotions = useCallback(
+    (product) =>
+      promotions.filter(
+        (promotion) =>
+          matchesPromotion(product, promotion) && isPromotionValid(promotion)
+      ),
+    [promotions]
+  );
 
   /**
    * Calculate discount amount for a cart item
@@ -84,21 +87,24 @@ export function usePromotionLogic(promotions = [], cart = []) {
   /**
    * Format promotion label for display
    */
-  const formatPromotionLabel = (promotion) => {
+  const formatPromotionLabel = useCallback((promotion) => {
     if (!promotion) return "";
     if (promotion.type === "percentage") {
       return `${promotion.value}% off`;
     }
     return `$${Number(promotion.value).toFixed(2)} off`;
-  };
+  }, []);
 
   /**
    * Truncate promotion name for display
    */
-  const truncatePromoName = (name) =>
-    typeof name === "string" && name.length > 5
-      ? `${name.slice(0, 5)}...`
-      : name;
+  const truncatePromoName = useCallback(
+    (name) =>
+      typeof name === "string" && name.length > 5
+        ? `${name.slice(0, 5)}...`
+        : name,
+    []
+  );
 
   /**
    * Calculate total discount across all cart items
