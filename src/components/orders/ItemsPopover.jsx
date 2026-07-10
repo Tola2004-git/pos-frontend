@@ -54,7 +54,7 @@ export default function ItemsPopover({ order }) {
         gap: "6px",
       }}
     >
-      <span style={{ color: "rgba(255,255,255,0.7)", fontSize: "0.85rem" }}>
+      <span style={{ color: "rgba(255,255,255,0.7)", fontSize: "0.85rem", whiteSpace: "nowrap" }}>
         {items.length} item{items.length === 1 ? "" : "s"}
       </span>
       <button

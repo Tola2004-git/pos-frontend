@@ -14,6 +14,7 @@ import POSModal from "../components/orders/POSModal";
 import OrderDetailModal from "../components/orders/OrderDetailModal";
 import Layout from "../components/layout/Layout";
 import { updateOrderApi, fetchOrderApi, changeTableApi } from "../api/ordersApi";
+import { alertWarning, alertError } from "../utils/alert.jsx";
 
 
 const handlePrint = (order) => {
@@ -69,6 +70,7 @@ function Orders() {
     setPage,
     toasts,
     addToast,
+    removeToast,
     lastOrderId,
     fetchOrders,
     handleCancel,
@@ -104,7 +106,6 @@ function Orders() {
   const [editSelectedPayment, setEditSelectedPayment] = useState(null);
   const [editAmountPaid, setEditAmountPaid] = useState("");
   const [editPagerNumber, setEditPagerNumber] = useState("");
-  const [editPosError, setEditPosError] = useState("");
 
   useEffect(() => {
     const handleRefreshOrders = () => {
@@ -230,7 +231,6 @@ function Orders() {
     setEditSelectedPayment(null);
     setEditAmountPaid("");
     setEditPagerNumber("");
-    setEditPosError("");
   };
 
   const openEditModal = async (order) => {
@@ -277,7 +277,6 @@ function Orders() {
     setEditSelectedPayment(null);
     setEditAmountPaid(order.amount_paid || "");
     setEditPagerNumber(order.pager_number || "");
-    setEditPosError("");
     setShowEditModal(true);
   };
 
@@ -294,11 +293,9 @@ function Orders() {
   const handleSaveEdit = async ({ status = "pending", table_id = null, payment_method_id = null } = {}) => {
     if (!editOrder) return;
     if (editCart.length === 0) {
-      setEditPosError("Please add products to cart.");
+      alertWarning("Cart is empty", "Please add products to cart.");
       return;
     }
-
-    setEditPosError("");
 
     try {
       const currentTableId = editOrder?.table_id ?? null;
@@ -335,19 +332,19 @@ function Orders() {
         status,
       };
 
-      await updateOrderApi(editOrder.id, payload);
+      const res = await updateOrderApi(editOrder.id, payload);
       closeEditModal();
       fetchOrders();
       refetchProducts();
-      addToast(editOrder);
+      addToast(res.data.order, status === "completed" ? "payment" : "update");
     } catch (err) {
-      setEditPosError(err.response?.data?.message || "Unable to update the order.");
+      alertError("Update failed", err.response?.data?.message || "Unable to update the order.");
     }
   };
 
   return (
     <Layout>
-      <ToastNotification toasts={toasts} />
+      <ToastNotification toasts={toasts} onClose={removeToast} />
       <style>{`
         @keyframes float {
           0%   { transform: translateY(0px); }
@@ -362,8 +359,10 @@ function Orders() {
       <div
         style={{
           display: "flex",
+          flexWrap: "wrap",
           justifyContent: "space-between",
           alignItems: "center",
+          gap: "12px",
           marginBottom: "24px",
         }}
       >
@@ -397,6 +396,7 @@ function Orders() {
             padding: "10px 20px",
             borderRadius: "12px",
             fontWeight: 600,
+            fontSize: "0.9rem",
             display: "flex",
             alignItems: "center",
             gap: "8px",
@@ -485,7 +485,6 @@ function Orders() {
           setOrderType={setEditOrderType}
           note={editNote}
           setPosNote={setEditNote}
-          posError={editPosError}
           posStep={editPosStep}
           setPosStep={setEditPosStep}
           subtotal={subtotalBeforeDiscount}

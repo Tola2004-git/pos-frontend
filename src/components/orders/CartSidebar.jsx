@@ -135,14 +135,14 @@ export function CartSidebar({
       <div className="p-3 rounded-[10px] bg-white/5 mb-[10px]">
         <div className="flex justify-between mb-1">
           <span className="text-white/60 text-[0.85rem]">Subtotal</span>
-          <span className="text-white">
+          <span className="text-white text-[0.85rem]">
             ${subtotalBeforeDiscount.toFixed(2)}
           </span>
         </div>
         {discountAmount > 0 && (
           <div className="flex justify-between text-[#ff9f43] mb-1">
             <span className="text-white/60 text-[0.85rem]">Discount</span>
-            <span className="text-white">-${discountAmount.toFixed(2)}</span>
+            <span className="text-white text-[0.85rem]">-${discountAmount.toFixed(2)}</span>
           </div>
         )}
         <div className="flex justify-between border-t border-white/10 pt-2 mt-1">
@@ -157,7 +157,7 @@ export function CartSidebar({
       <button
         onClick={onProceedToPayment}
         disabled={!canProceed}
-        className={`btn-shine-blue w-full p-3 rounded-[12px] font-bold flex items-center justify-center gap-2 transition-opacity duration-200 ${
+        className={`btn-shine-blue w-full p-3 rounded-[12px] font-bold text-sm flex items-center justify-center gap-2 transition-opacity duration-200 ${
           !canProceed ? "opacity-50 cursor-not-allowed" : "opacity-100"
         }`}
       >

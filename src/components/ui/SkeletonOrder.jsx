@@ -21,6 +21,7 @@ export function SkeletonOrdersRow({ index = 0 }) {
       <td style={{ padding: "12px 14px" }}>{s(60)}</td>
       <td style={{ padding: "12px 14px" }}>{s(90)}</td>
       <td style={{ padding: "12px 14px" }}>{s(90)}</td>
+      <td style={{ padding: "12px 14px" }}>{s(80)}</td>
       <td style={{ padding: "12px 14px" }}>
         <Skeleton
           width={58}

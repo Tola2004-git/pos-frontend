@@ -74,7 +74,7 @@ export default function OrdersTable({
   return (
     <>
       <div
-        className="hide-scrollbar"
+        className="table-scroll-x"
         style={{
           ...glassCard,
           borderRadius: "20px",
@@ -82,6 +82,7 @@ export default function OrdersTable({
           overflowY: "hidden",
           marginBottom: "16px",
           width: "100%",
+          maxWidth: "100%",
         }}
       >
         <table
@@ -101,7 +102,8 @@ export default function OrdersTable({
                     textAlign: "left",
                     color: colors.whiteFull,
                     fontWeight: 600,
-                    fontSize: "1.1rem",
+                    fontSize: "0.85rem",
+                    letterSpacing: "0.02em",
                     whiteSpace: "nowrap",
                   }}
                 >
@@ -148,28 +150,51 @@ export default function OrdersTable({
                       style={{
                         padding: "12px 14px",
                         color: "rgba(255,255,255,0.5)",
+                        fontSize: "0.85rem",
+                        whiteSpace: "nowrap",
                       }}
                     >
                       {(page - 1) * 15 + index + 1}
                     </td>
                     <td
+                      title={order.order_number}
                       style={{
                         padding: "12px 14px",
                         color: colors.white,
                         fontWeight: 600,
-                        fontSize: "0.82rem",
+                        fontSize: "0.85rem",
+                        maxWidth: "150px",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
                       }}
                     >
                       {order.order_number}
                     </td>
-                    <td style={{ padding: "12px 14px", color: "white" }}>
+                    <td
+                      title={order.customer_name || "Walk-in"}
+                      style={{
+                        padding: "12px 14px",
+                        color: "white",
+                        fontSize: "0.85rem",
+                        maxWidth: "140px",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       {order.customer_name || "Walk-in"}
                     </td>
                     <td
+                      title={order.table?.name || order.table_name || ""}
                       style={{
                         padding: "12px 14px",
                         color: "rgba(255,255,255,0.7)",
                         fontSize: "0.85rem",
+                        maxWidth: "110px",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
                       }}
                     >
                       {order.table?.name || order.table_name || "Takeaway" ? (
@@ -194,7 +219,7 @@ export default function OrdersTable({
                         "—"
                       )}
                     </td>
-                    <td style={{ padding: "12px 14px" }}>
+                    <td style={{ padding: "12px 14px", whiteSpace: "nowrap" }}>
                       <ItemsPopover order={order} />
                     </td>
                     <td
@@ -202,24 +227,36 @@ export default function OrdersTable({
                         padding: "12px 14px",
                         color: colors.white,
                         fontWeight: 700,
+                        fontSize: "0.85rem",
+                        whiteSpace: "nowrap",
                       }}
                     >
                       ${Number(order.total).toFixed(2)}
                     </td>
                     <td
+                      title={getPaymentMethodName(order)}
                       style={{
                         padding: "12px 14px",
                         color: "rgba(255,255,255,0.7)",
-                        fontSize: "0.82rem",
+                        fontSize: "0.85rem",
+                        maxWidth: "100px",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
                       }}
                     >
                       {getPaymentMethodName(order)}
                     </td>
                     <td
+                      title={order.user?.name || "N/A"}
                       style={{
                         padding: "12px 14px",
                         color: "rgba(255,255,255,0.6)",
-                        fontSize: "0.82rem",
+                        fontSize: "0.85rem",
+                        maxWidth: "100px",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
                       }}
                     >
                       {order.user?.name || "N/A"}
@@ -229,8 +266,9 @@ export default function OrdersTable({
                         style={{
                           padding: "4px 10px",
                           borderRadius: "20px",
-                          fontSize: "0.78rem",
+                          fontSize: "0.8rem",
                           fontWeight: 600,
+                          whiteSpace: "nowrap",
                           color: st.color,
                           border: `2px solid ${st.border}`,
                         }}
@@ -242,14 +280,21 @@ export default function OrdersTable({
                       style={{
                         padding: "12px 14px",
                         color: "rgba(255,255,255,0.5)",
-                        fontSize: "0.8rem",
+                        fontSize: "0.85rem",
                       }}
                     >
-                      {new Date(order.created_at).toLocaleDateString()}
-                      <br />
-                      <span style={{ fontSize: "0.75rem" }}>
+                      <div style={{ whiteSpace: "nowrap" }}>
+                        {new Date(order.created_at).toLocaleDateString()}
+                      </div>
+                      <div
+                        style={{
+                          whiteSpace: "nowrap",
+                          color: "rgba(255,255,255,0.4)",
+                          fontSize: "0.78rem",
+                        }}
+                      >
                         {new Date(order.created_at).toLocaleTimeString()}
-                      </span>
+                      </div>
                     </td>
                     <td style={{ padding: "12px 14px" }}>
                       <div style={{ display: "flex", gap: "6px" }}>
@@ -499,8 +544,10 @@ export default function OrdersTable({
       <div
         style={{
           display: "flex",
+          flexWrap: "wrap",
           justifyContent: "space-between",
           alignItems: "center",
+          gap: "10px",
         }}
       >
         <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.85rem" }}>
@@ -519,11 +566,12 @@ export default function OrdersTable({
                 page === 1 ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.1)",
               color: page === 1 ? "rgba(255,255,255,0.3)" : "white",
               fontWeight: 600,
+              fontSize: "0.85rem",
             }}
           >
             Back
           </button>
-          <span style={{ color: "white", fontWeight: 600, padding: "0 8px" }}>
+          <span style={{ color: "white", fontWeight: 600, fontSize: "0.85rem", padding: "0 8px" }}>
             {page} / {lastPage}
           </span>
           <button
@@ -540,6 +588,7 @@ export default function OrdersTable({
                   : "rgba(255,255,255,0.1)",
               color: page === lastPage ? "rgba(255,255,255,0.3)" : "white",
               fontWeight: 600,
+              fontSize: "0.85rem",
             }}
           >
             Next

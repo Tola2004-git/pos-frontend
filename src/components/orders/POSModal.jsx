@@ -50,7 +50,6 @@ export default function POSModal({
   setOrderType,
   note,
   setPosNote,
-  posError,
   posStep,
   setPosStep,
   subtotal,
@@ -487,11 +486,6 @@ export default function POSModal({
           </div>
         ) : (
           <>
-            {posError && (
-              <div className="mx-6 mt-4 flex-shrink-0 bg-[#c0392b]/30 border border-[#c0392b]/50 text-[#ff6b6b] px-[14px] py-[10px] rounded-[10px] text-[0.85rem]">
-                {posError}
-              </div>
-            )}
             <div className="p-6 flex-1 flex flex-col overflow-hidden min-h-0">
               <div
                 style={{
@@ -505,7 +499,7 @@ export default function POSModal({
                   scrollbarWidth: "thin",
                   scrollbarColor: "rgba(255, 255, 255, 0.2) transparent",
                 }}
-                className="overflow-y-auto flex-1 pr-1 pb-3 space-y-3 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-white/15 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent"
+                className="overflow-y-auto flex-1 pr-1 pb-8 space-y-3 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-white/15 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent"
               >
                 <div className="grid grid-cols-12 gap-2 lg:gap-3">
                   {/* Payment Method Selection */}
@@ -794,7 +788,7 @@ export default function POSModal({
                     <div className="mt-2 grid grid-cols-3 gap-3 pb-2">
                       <button
                         onClick={() => setPosStep(1)}
-                        className="btn-cancel-glass flex items-center justify-center gap-2 transition-all active:scale-95"
+                        className="btn-cancel-glass flex-1 flex items-center justify-center gap-2 whitespace-nowrap text-sm transition-all active:scale-95"
                         style={{
                           borderRadius: "12px",
                           color: "white",
@@ -802,7 +796,7 @@ export default function POSModal({
                           fontWeight: 500,
                         }}
                       >
-                        <ArrowLeft2 size={20} color="white" variant="Linear" />
+                        <ArrowLeft2 size={18} color="white" variant="Linear" />
                         Back
                       </button>
 
@@ -829,7 +823,7 @@ export default function POSModal({
                                 (!tableSelection.selectedTableId ||
                                   tableSelection.tableLoading))
                             }
-                            className="btn-shine-blue p-3 flex items-center justify-center gap-2 transition-transform active:scale-95"
+                            className="btn-shine-blue p-3 flex-1 flex items-center justify-center gap-2 whitespace-nowrap text-sm transition-transform active:scale-95"
                             style={{
                               borderRadius: "12px",
                               fontWeight: 500,
@@ -879,12 +873,12 @@ export default function POSModal({
                               </>
                             ) : (
                               <>
-                                <TickCircle
-                                  size={20}
+                                <Edit2
+                                  size={18}
                                   color="white"
-                                  variant="Linear"
+                                  variant="Outline"
                                 />
-                                Update Order
+                                Update
                               </>
                             )}
                           </button>
@@ -899,7 +893,7 @@ export default function POSModal({
                               !selectedPayment ||
                               safeAmountPaid < totalAmountWithDiscount
                             }
-                            className="btn-shine-blue p-3 flex items-center justify-center gap-2 transition-transform active:scale-95"
+                            className="btn-shine-blue p-3 flex-1 flex items-center justify-center gap-2 whitespace-nowrap text-sm transition-transform active:scale-95"
                             style={{
                               borderRadius: "12px",
                               fontWeight: 500,
@@ -954,11 +948,11 @@ export default function POSModal({
                             ) : (
                               <>
                                 <TickCircle
-                                  size={20}
+                                  size={18}
                                   color="white"
-                                  variant="Linear"
+                                  variant="Outline"
                                 />
-                                Complete Payment
+                                Pay Now
                               </>
                             )}
                           </button>
@@ -978,7 +972,7 @@ export default function POSModal({
                             })
                           }
                           disabled={confirmDisabled}
-                          className="btn-shine-blue p-3 flex items-center justify-center gap-2 transition-transform active:scale-95"
+                          className="btn-shine-blue p-3 flex-1 flex items-center justify-center gap-2 whitespace-nowrap text-sm transition-transform active:scale-95"
                           style={{
                             borderRadius: "12px",
                             fontWeight: 500,
@@ -1017,11 +1011,11 @@ export default function POSModal({
                           ) : (
                             <>
                               <TickCircle
-                                size={20}
+                                size={18}
                                 color="white"
-                                variant="Linear"
+                                variant="Outline"
                               />
-                              Confirm Order
+                              Confirm
                             </>
                           )}
                         </button>

@@ -11,7 +11,7 @@ export function HoldOrderAction({ onHold, disabled, loading }) {
       type="button"
       onClick={handleHold}
       disabled={disabled || loading}
-      className="btn-shine-blue w-full disabled:cursor-not-allowed disabled:opacity-50 flex items-center justify-center gap-2"
+      className="btn-shine-blue w-full disabled:cursor-not-allowed disabled:opacity-50 flex items-center justify-center gap-2 whitespace-nowrap text-sm"
       style={{
         borderRadius: "12px",
         color: "white",
@@ -20,7 +20,7 @@ export function HoldOrderAction({ onHold, disabled, loading }) {
       }}
     >
       <Archive size={18} color="white" variant="Outline"/>
-      {loading ? "Holding Order..." : "Hold Order"}
+      {loading ? "Holding..." : "Hold"}
     </button>
   );
 }

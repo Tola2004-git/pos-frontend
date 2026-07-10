@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { createOrderApi } from "../api/ordersApi";
-import { alertWarning } from "../utils/alert.jsx";
+import { alertWarning, alertError } from "../utils/alert.jsx";
 
 const CASH_PAYMENT_METHOD_ID = 1;
 
@@ -15,7 +15,6 @@ export function usePOS({ onOrderCreated, addToast, lastOrderId, promotions = [] 
   const [pagerNumber, setPagerNumber] = useState("");
   const [orderType, setOrderType] = useState("dine-in");
   const [note, setPosNote] = useState("");
-  const [posError, setPosError] = useState("");
   const [posStep, setPosStep] = useState(1);
 
   // Stock checks below read `cart` directly and call setCart with a plain
@@ -220,7 +219,6 @@ export function usePOS({ onOrderCreated, addToast, lastOrderId, promotions = [] 
     setPagerNumber("");
     setOrderType("takeaway");
     setPosNote("");
-    setPosError("");
     setPosStep(1);
   };
 
@@ -249,15 +247,19 @@ export function usePOS({ onOrderCreated, addToast, lastOrderId, promotions = [] 
     totalDue = totalAmount,
     paidAmount = amountPaid,
   } = {}) => {
-    setPosError("");
-    if (cart.length === 0) return setPosError("Please add products to cart!");
+    if (cart.length === 0) {
+      alertWarning("Cart is empty", "Please add products to cart!");
+      return;
+    }
 
     if (status === "completed" && !selectedPayment) {
-      return setPosError("Please select payment method!");
+      alertWarning("Payment method required", "Please select a payment method!");
+      return;
     }
 
     if (orderType === "dine-in" && !table_id) {
-      return setPosError("Please select a table before saving this order.");
+      alertWarning("Table required", "Please select a table before saving this order.");
+      return;
     }
 
     const normalizedStatus = status === "hold" ? "pending" : status;
@@ -286,12 +288,12 @@ export function usePOS({ onOrderCreated, addToast, lastOrderId, promotions = [] 
         status: normalizedStatus,
         table_id,
       });
-      addToast(res.data.order);
+      addToast(res.data.order, status === "hold" ? "hold" : "payment");
       lastOrderId.current = res.data.order.id;
       closePOS();
       onOrderCreated();
     } catch (err) {
-      setPosError(err.response?.data?.message || "Something went wrong!");
+      alertError("Order failed", err.response?.data?.message || "Something went wrong!");
     }
   };
 
@@ -313,7 +315,6 @@ export function usePOS({ onOrderCreated, addToast, lastOrderId, promotions = [] 
     setOrderType,
     note,
     setPosNote,
-    posError,
     posStep,
     setPosStep,
     subtotal,

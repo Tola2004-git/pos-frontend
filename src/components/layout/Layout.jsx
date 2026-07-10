@@ -76,7 +76,7 @@ function Layout({ children }) {
           t={t}
         />
         <div
-          className={`flex-1 p-[30px] min-h-screen transition-all duration-400 ease-[cubic-bezier(0.175,0.885,0.32,1)] ${sidebarOpen ? "ml-[230px]" : "ml-[60px]"
+          className={`flex-1 min-w-0 overflow-x-hidden p-[30px] min-h-screen transition-all duration-400 ease-[cubic-bezier(0.175,0.885,0.32,1)] ${sidebarOpen ? "ml-[230px]" : "ml-[60px]"
             }`}
         >
           <Navbar

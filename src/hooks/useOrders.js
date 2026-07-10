@@ -7,6 +7,8 @@ import {
   cancelOrderApi,
 } from "../api/ordersApi";
 
+const TOAST_DURATION = 3000;
+
 export function useOrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -40,11 +42,15 @@ export function useOrders() {
     fetchOrders();
   }, [fetchOrders]);
 
-  const addToast = useCallback((order) => {
-    const id = Date.now();
-    setToasts((prev) => [...prev, { id, order }]);
-    setTimeout(() => setToasts((prev) => prev.filter((t) => t.id !== id)), 3000);
+  const removeToast = useCallback((id) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
+
+  const addToast = useCallback((order, type = "payment") => {
+    const id = Date.now();
+    setToasts((prev) => [...prev, { id, order, type }]);
+    setTimeout(() => removeToast(id), TOAST_DURATION);
+  }, [removeToast]);
 
   useEffect(() => {
     const interval = setInterval(async () => {
@@ -73,6 +79,7 @@ export function useOrders() {
     setPage,
     toasts,
     addToast,
+    removeToast,
     lastOrderId,
     fetchOrders,
     handleCancel,
