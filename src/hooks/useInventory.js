@@ -1,14 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import axios from "axios";
 import { alertSuccess, alertError } from "../utils/alert.jsx";
 import { useLowStock } from "../context/LowStockContext";
-
-const api = axios.create({ baseURL: "http://127.0.0.1:8000/api" });
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) config.headers.Authorization = `Bearer ${token}`;
-  return config;
-});
+import api from "../api/apiClient";
 
 export function useInventory() {
   const [products, setProducts] = useState([]);

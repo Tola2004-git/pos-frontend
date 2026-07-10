@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslations } from "../../hooks/useTranslations";
 import { useBackgroundChanger } from "../../hooks/useBackgroundChanger";
+import apiClient from "../../api/apiClient";
 import { SidebarContext } from "../../App";
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
@@ -34,12 +35,8 @@ function Layout({ children }) {
   useEffect(() => {
     const fetchMe = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const res = await fetch("http://127.0.0.1:8000/api/me", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = await res.json();
-        setUser(data);
+        const res = await apiClient.get("/me");
+        setUser(res.data);
       } catch (err) {
         console.error("Failed to fetch user:", err);
       }
