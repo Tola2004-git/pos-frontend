@@ -230,7 +230,10 @@ export const ProductGrid = memo(function ProductGrid({
                 )}
 
                 {/* Product Name */}
-                <div className="text-white text-[0.82rem] font-semibold mb-1 overflow-hidden text-ellipsis whitespace-nowrap">
+                <div
+                  className="text-white text-[0.82rem] font-semibold mb-1 overflow-hidden text-ellipsis whitespace-nowrap"
+                  title={p.name}
+                >
                   {p.name}
                 </div>
 

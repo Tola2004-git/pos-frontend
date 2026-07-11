@@ -42,8 +42,11 @@ export function CartItem({
       </div>
 
       {/* Item Details */}
-      <div className="flex-1 flex flex-col justify-between">
-        <span className="text-white text-[0.9rem] font-semibold">
+      <div className="flex-1 min-w-0 flex flex-col justify-between">
+        <span
+          className="text-white text-[0.9rem] font-semibold block overflow-hidden text-ellipsis whitespace-nowrap"
+          title={item.product_name}
+        >
           {item.product_name}
         </span>
 
