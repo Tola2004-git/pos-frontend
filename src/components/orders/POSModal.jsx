@@ -54,7 +54,6 @@ export default function POSModal({
   setPosStep,
   subtotal,
   totalAmount,
-  change,
   addToCart,
   updateQty,
   removeFromCart,
@@ -286,6 +285,8 @@ export default function POSModal({
           table_id: tableId ?? tableSelection.selectedTableId ?? null,
           totalDue,
           paidAmount: safeAmountPaid,
+          selectedCurrency,
+          exchangeRateUsed: exchangeRate,
           payment_method_id: selectedPayment?.id ?? null,
         });
         await tableSelection.refreshTables();
@@ -297,6 +298,8 @@ export default function POSModal({
         table_id: tableId,
         totalDue,
         paidAmount: safeAmountPaid,
+        selectedCurrency,
+        exchangeRateUsed: exchangeRate,
       });
       await tableSelection.refreshTables();
     } finally {

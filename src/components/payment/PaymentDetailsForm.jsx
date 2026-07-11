@@ -1,4 +1,4 @@
-import { Card, NoteText, ReceiptItem } from "iconsax-react";
+import { Card, ReceiptItem } from "iconsax-react";
 
 export function PaymentDetailsForm({
   selectedCurrency,
@@ -37,49 +37,6 @@ export function PaymentDetailsForm({
     display: "block",
     marginBottom: "6px",
   };
-
-  const iconStyle = (field) => ({
-    position: "absolute",
-    left: "12px",
-    top: "50%",
-    transform: "translateY(-50%)",
-    width: "18px",
-    height: "18px",
-    filter: "brightness(0) invert(1)",
-    opacity: focusedField === field ? 1 : 0.4,
-    transition: "opacity 0.2s",
-    pointerEvents: "none",
-  });
-
-  const EXCHANGE_RATE = 4100;
-
-  const formatUsd = (value) => `$${Number(value || 0).toFixed(2)}`;
-  const formatKhr = (value) =>
-    `${Math.round(Number(value || 0)).toLocaleString()} ៛`;
-
-  const formatMainAmount = (usdValue) =>
-    selectedCurrency === "USD"
-      ? formatUsd(usdValue)
-      : formatKhr(usdValue * EXCHANGE_RATE);
-
-  // Map incoming prop names to the local variables used in the currency logic
-  const activeCurrency = selectedCurrency;
-  const subtotal = subtotalUSD || 0;
-  const totalAmount = totalDueUSD || 0; // passed as totalAmountWithDiscount from parent
-  const totalDue = totalDueUSD || 0;
-
-  // Treat the provided amountPaidActive as the current amount entered in the active currency
-  const currentAmountPaid = Number(amountPaidActive) || 0;
-
-  // Compute totals in the active currency (exact formula requested)
-  const totalDueInActiveCurrency =
-    activeCurrency === "KHR" ? totalDue * EXCHANGE_RATE : totalDue;
-
-  const rawChange = currentAmountPaid - totalDueInActiveCurrency;
-
-  const availableTables = tableOptions.filter(
-    (t) => t.status === "available" || t.id === selectedTableId,
-  );
 
   return (
     <div className="">

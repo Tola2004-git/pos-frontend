@@ -21,7 +21,7 @@ export function CartItem({
       className="p-3 rounded-xl mb-[10px] flex gap-3 relative"
     >
       {/* Item Image */}
-      <div className="w-[60px] h-[60px] rounded-[8px] overflow-hidden flex items-center justify-center bg-transparent">
+      <div className="w-[60px] h-[60px] rounded-[8px] overflow-hidden flex items-center justify-center bg-white/5 shrink-0">
         {item.product?.image ||
         item.product?.image_url ||
         item.image_url ||
@@ -34,7 +34,7 @@ export function CartItem({
               item.image
             }
             alt={item.product_name}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain"
           />
         ) : (
           <Gallery size={40} color="white" variant="Linear" />

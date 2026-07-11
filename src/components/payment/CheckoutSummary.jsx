@@ -8,16 +8,16 @@ export function CheckoutSummary({
 }) {
   const isKhr = selectedCurrency === "KHR";
   const rate = Number(exchangeRate) || 4100;
-  const subtotalFormatted = isKhr 
-    ? `${(subtotalBeforeDiscount * rate).toLocaleString()} ៛` 
+  const subtotalFormatted = isKhr
+    ? `${(subtotalBeforeDiscount * rate).toLocaleString()} ៛`
     : `$${Number(subtotalBeforeDiscount).toFixed(2)}`;
 
-  const discountFormatted = isKhr 
-    ? `${(discountAmount * rate).toLocaleString()} ៛` 
+  const discountFormatted = isKhr
+    ? `${(discountAmount * rate).toLocaleString()} ៛`
     : `-$${Number(discountAmount).toFixed(2)}`;
 
-  const totalFormatted = isKhr 
-    ? `${(totalAmountWithDiscount * rate).toLocaleString()} ៛` 
+  const totalFormatted = isKhr
+    ? `${(totalAmountWithDiscount * rate).toLocaleString()} ៛`
     : `$${Number(totalAmountWithDiscount).toFixed(2)}`;
   // Treat `amountPaid` as the base USD amount coming from parent (safeAmountPaid).
   // Convert both paid amount and total due into the active currency for comparison.
@@ -47,14 +47,14 @@ export function CheckoutSummary({
           <span>Subtotal</span>
           <span>{subtotalFormatted}</span>
         </div>
-        
+
         {discountAmount > 0 && (
           <div className="flex justify-between text-[#ff9f43] text-[0.85rem]">
             <span>Discount</span>
             <span>{discountFormatted}</span>
           </div>
         )}
-        
+
         <div className="flex justify-between border-t border-white/10 pt-2 text-white font-semibold">
           <span>Total Due</span>
           <span>{totalFormatted}</span>

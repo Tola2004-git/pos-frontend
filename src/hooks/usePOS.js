@@ -197,7 +197,6 @@ export function usePOS({ onOrderCreated, addToast, lastOrderId, promotions = [] 
   const subtotal = cart.reduce((sum, item) => sum + item.subtotal, 0);
   const discount = computeDiscount(cart);
   const totalAmount = subtotal - discount;
-  const change = amountPaid ? Number(amountPaid) - totalAmount : 0;
 
   const getSelectedPromotionForOrder = () => {
     const applicablePromotions = promotions.filter((promotion) => {
@@ -246,6 +245,8 @@ export function usePOS({ onOrderCreated, addToast, lastOrderId, promotions = [] 
     table_id = null,
     totalDue = totalAmount,
     paidAmount = amountPaid,
+    selectedCurrency = "USD",
+    exchangeRateUsed = 4100,
   } = {}) => {
     if (cart.length === 0) {
       alertWarning("Cart is empty", "Please add products to cart!");
@@ -266,6 +267,13 @@ export function usePOS({ onOrderCreated, addToast, lastOrderId, promotions = [] 
     const selectedPaymentMethodId = resolvePaymentMethodId(selectedPayment);
     const selectedPromotion = getSelectedPromotionForOrder();
 
+    // amountPaid is always normalized to USD internally (see useCurrencyConversion).
+    // Split it into the USD/KHR breakdown based on which currency the cashier used to enter it.
+    const rate = Number(exchangeRateUsed) || 4100;
+    const paidTotalUsd = Number(paidAmount) || 0;
+    const paidUsd = selectedCurrency === "KHR" ? 0 : paidTotalUsd;
+    const paidKhr = selectedCurrency === "KHR" ? Math.round(paidTotalUsd * rate) : 0;
+
     try {
       const res = await createOrderApi({
         items: cart.map((i) => ({
@@ -278,7 +286,10 @@ export function usePOS({ onOrderCreated, addToast, lastOrderId, promotions = [] 
         order_type: orderType,
         tax: 0,
         payment_method_id: selectedPaymentMethodId,
-        amount_paid: normalizedStatus === "completed" ? Number(paidAmount) || 0 : 0,
+        amount_paid: normalizedStatus === "completed" ? paidTotalUsd : 0,
+        amount_paid_usd: normalizedStatus === "completed" ? paidUsd : 0,
+        amount_paid_khr: normalizedStatus === "completed" ? paidKhr : 0,
+        exchange_rate_used: rate,
         promotion_id: selectedPromotion?.id || null,
         promotion_name: selectedPromotion?.name || null,
         promotion_type: selectedPromotion?.type || null,
@@ -320,7 +331,6 @@ export function usePOS({ onOrderCreated, addToast, lastOrderId, promotions = [] 
     subtotal,
     discount,
     totalAmount,
-    change,
     addToCart,
     updateQty,
     removeFromCart,

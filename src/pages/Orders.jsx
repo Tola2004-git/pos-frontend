@@ -15,9 +15,27 @@ import OrderDetailModal from "../components/orders/OrderDetailModal";
 import Layout from "../components/layout/Layout";
 import { updateOrderApi, fetchOrderApi, changeTableApi } from "../api/ordersApi";
 import { alertWarning, alertError } from "../utils/alert.jsx";
+import logo from "../assets/logo.png";
 
 
 const handlePrint = (order) => {
+  const rate = Number(order.exchange_rate_used) || 4100;
+  const paidUsd = Number(order.amount_paid_usd) || 0;
+  const paidKhr = Number(order.amount_paid_khr) || 0;
+  const paidInKhrOnly = paidKhr > 0 && paidUsd === 0;
+
+  const paidLabel =
+    paidUsd > 0 && paidKhr > 0
+      ? `$${paidUsd.toFixed(2)} + ${Math.round(paidKhr).toLocaleString()} ៛`
+      : paidInKhrOnly
+        ? `${Math.round(paidKhr).toLocaleString()} ៛`
+        : `$${Number(order.amount_paid).toFixed(2)}`;
+
+  const changeUsd = Number(order.change_amount) || 0;
+  const changeLabel = paidInKhrOnly
+    ? `${Math.round(changeUsd * rate).toLocaleString()} ៛ ($${changeUsd.toFixed(2)})`
+    : `$${changeUsd.toFixed(2)}`;
+
   const win = window.open("", "_blank");
   win.document.write(`
     <html><head><title>Receipt - ${order.order_number}</title>
@@ -27,8 +45,10 @@ const handlePrint = (order) => {
       table { width: 100%; } td { padding: 2px 0; }
       .right { text-align: right; } .center { text-align: center; }
       .bold { font-weight: bold; } .total { font-size: 1.2em; }
+      .logo { display: block; margin: 0 auto 8px; max-width: 80px; max-height: 80px; }
     </style></head><body>
-    <h2>🛍️ POS System</h2>
+    <img class="logo" src="${logo}" alt="Logo" />
+    <h2>POS System</h2>
     <p class="center">${new Date(order.created_at).toLocaleString()}</p>
     <p class="center">Order: ${order.order_number}</p>
     <hr/>
@@ -41,11 +61,11 @@ const handlePrint = (order) => {
     <table>
       <tr><td>Subtotal</td><td class="right">$${Number(order.subtotal).toFixed(2)}</td></tr>
       <tr class="bold total"><td>TOTAL</td><td class="right">$${Number(order.total).toFixed(2)}</td></tr>
-      <tr><td>Paid (${order.payment_method?.name || ""})</td><td class="right">$${Number(order.amount_paid).toFixed(2)}</td></tr>
-      <tr><td>Change</td><td class="right">$${Number(order.change_amount).toFixed(2)}</td></tr>
+      <tr><td>Paid (${order.payment_method?.name || ""})</td><td class="right">${paidLabel}</td></tr>
+      <tr><td>Change</td><td class="right">${changeLabel}</td></tr>
     </table>
     <hr/>
-    <p class="center">Thank you! Come again 😊</p>
+    <p class="center">Thank you! Come again</p>
     </body></html>
   `);
   win.document.close();
@@ -290,12 +310,26 @@ function Orders() {
     }
   };
 
-  const handleSaveEdit = async ({ status = "pending", table_id = null, payment_method_id = null } = {}) => {
+  const handleSaveEdit = async ({
+    status = "pending",
+    table_id = null,
+    payment_method_id = null,
+    paidAmount = 0,
+    selectedCurrency = "USD",
+    exchangeRateUsed = 4100,
+  } = {}) => {
     if (!editOrder) return;
     if (editCart.length === 0) {
       alertWarning("Cart is empty", "Please add products to cart.");
       return;
     }
+
+    // paidAmount is always normalized to USD internally (see useCurrencyConversion).
+    // Split it into the USD/KHR breakdown based on which currency the cashier used to enter it.
+    const rate = Number(exchangeRateUsed) || 4100;
+    const paidTotalUsd = Number(paidAmount) || 0;
+    const paidUsd = selectedCurrency === "KHR" ? 0 : paidTotalUsd;
+    const paidKhr = selectedCurrency === "KHR" ? Math.round(paidTotalUsd * rate) : 0;
 
     try {
       const currentTableId = editOrder?.table_id ?? null;
@@ -326,7 +360,10 @@ function Orders() {
         promotion_type: selectedEditPromotion?.type || editOrder?.promotion_type || null,
         promotion_value: selectedEditPromotion?.value ?? editOrder?.promotion_value ?? null,
         discount_amount: totalDiscountAmount,
-        amount_paid: Number(editAmountPaid || 0),
+        amount_paid: paidTotalUsd,
+        amount_paid_usd: paidUsd,
+        amount_paid_khr: paidKhr,
+        exchange_rate_used: rate,
         payment_method_id,
         note: editNote,
         status,

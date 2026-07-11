@@ -232,6 +232,17 @@ export default function OrdersTable({
                       }}
                     >
                       ${Number(order.total).toFixed(2)}
+                      {Number(order.amount_paid_khr) > 0 && (
+                        <div
+                          style={{
+                            fontWeight: 500,
+                            fontSize: "0.72rem",
+                            color: "rgba(255,255,255,0.4)",
+                          }}
+                        >
+                          {Math.round(Number(order.amount_paid_khr)).toLocaleString()} ៛
+                        </div>
+                      )}
                     </td>
                     <td
                       title={getPaymentMethodName(order)}

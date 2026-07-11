@@ -1,4 +1,12 @@
-import { TickCircle, CardPos, Hashtag, DollarCircle, PauseCircle, RefreshCircle, CloseCircle } from "iconsax-react";
+import {
+  TickCircle,
+  CardPos,
+  Hashtag,
+  DollarCircle,
+  PauseCircle,
+  RefreshCircle,
+  CloseCircle,
+} from "iconsax-react";
 import { colors } from "../../utils/styles";
 
 const TOAST_DURATION = 3000;
@@ -25,9 +33,7 @@ export default function ToastNotification({ toasts, onClose }) {
   if (!toasts.length) return null;
 
   return (
-    <div
-      className="fixed top-6 right-6 z-[999999] flex flex-col gap-3 pointer-events-none"
-    >
+    <div className="fixed top-6 right-6 z-[999999] flex flex-col gap-3 pointer-events-none">
       {toasts.map((t) => {
         const config = TOAST_CONFIG[t.type] || TOAST_CONFIG.payment;
         const Icon = config.Icon;
@@ -60,15 +66,21 @@ export default function ToastNotification({ toasts, onClose }) {
               {t.type === "payment" && (
                 <>
                   <div className="flex items-center gap-1.5">
-                    <DollarCircle size="16" color="#ffffff" variant="Linear" /> Amount: <b style={{ color: colors.gold }}>${Number(t.order.total).toFixed(2)}</b>
+                    <DollarCircle size="16" color="#ffffff" variant="Linear" />{" "}
+                    Amount:{" "}
+                    <b style={{ color: colors.gold }}>
+                      ${Number(t.order.total).toFixed(2)}
+                    </b>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <CardPos size="16" color="#ffffff" variant="Linear" /> Method: <b>{t.order.payment_method?.name || "N/A"}</b>
+                    <CardPos size="16" color="#ffffff" variant="Linear" />{" "}
+                    Method: <b>{t.order.payment_method?.name || "N/A"}</b>
                   </div>
                 </>
               )}
               <div className="flex items-center gap-1.5">
-                <Hashtag size="16" color="#ffffff" variant="Linear" /> Order: <b>{t.order.order_number}</b>
+                <Hashtag size="16" color="#ffffff" variant="Linear" /> Order:{" "}
+                <b>{t.order.order_number}</b>
               </div>
             </div>
 
