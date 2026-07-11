@@ -109,6 +109,7 @@ function Orders() {
     addToast,
     lastOrderId,
     promotions,
+    paymentMethods,
   });
 
   const [showDetail, setShowDetail] = useState(false);

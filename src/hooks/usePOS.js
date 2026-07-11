@@ -2,9 +2,13 @@ import { useCallback, useState } from "react";
 import { createOrderApi } from "../api/ordersApi";
 import { alertWarning, alertError } from "../utils/alert.jsx";
 
-const CASH_PAYMENT_METHOD_ID = 1;
-
-export function usePOS({ onOrderCreated, addToast, lastOrderId, promotions = [] }) {
+export function usePOS({
+  onOrderCreated,
+  addToast,
+  lastOrderId,
+  promotions = [],
+  paymentMethods = [],
+}) {
   const [showPOS, setShowPOS] = useState(false);
   const [cart, setCart] = useState([]);
   const [posSearch, setPosSearch] = useState("");
@@ -227,11 +231,17 @@ export function usePOS({ onOrderCreated, addToast, lastOrderId, promotions = [] 
     const isCashMethod =
       paymentMethod?.name?.toLowerCase() === "cash" ||
       paymentMethod?.type === "cash" ||
-      paymentMethod?.id === "cash" ||
-      paymentMethod?.id === CASH_PAYMENT_METHOD_ID ||
-      paymentMethod?.payment_method_id === CASH_PAYMENT_METHOD_ID;
+      paymentMethod?.id === "cash";
 
-    if (isCashMethod) return CASH_PAYMENT_METHOD_ID;
+    if (isCashMethod) {
+      // Cash's real database id varies per environment (seeded via
+      // updateOrInsert, so it isn't guaranteed to be 1) - look it up from
+      // the actual fetched list instead of assuming an id.
+      const realCashMethod = paymentMethods.find(
+        (m) => m.name?.toLowerCase() === "cash" || m.type === "cash",
+      );
+      return realCashMethod?.id ?? null;
+    }
 
     const rawId = paymentMethod?.payment_method_id ?? paymentMethod?.id;
     if (rawId == null || rawId === "") return null;

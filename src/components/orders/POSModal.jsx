@@ -61,8 +61,14 @@ export default function POSModal({
   handleCreateOrder,
   promotions = [],
 }) {
-  const CASH_PAYMENT_METHOD_ID = 1;
   const isEditMode = mode === "edit";
+  // Cash's real database id varies per environment (seeded via
+  // updateOrInsert, so it isn't guaranteed to be 1) - resolve it from the
+  // actual fetched list, falling back to the "cash" placeholder id.
+  const cashPaymentMethodId =
+    paymentMethods.find(
+      (m) => m.name?.toLowerCase() === "cash" || m.type === "cash",
+    )?.id ?? "cash";
 
   // Local UI state
   const [focusedField, setFocusedField] = useState("");
@@ -203,7 +209,7 @@ export default function POSModal({
 
     return {
       ...(method || {}),
-      id: CASH_PAYMENT_METHOD_ID,
+      id: cashPaymentMethodId,
       name: "Cash",
       type: "cash",
     };
