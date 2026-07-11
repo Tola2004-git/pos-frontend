@@ -42,7 +42,7 @@ export default function ThresholdSetting({
             position: "absolute",
             top: "110%",
             right: 0,
-            zIndex: 9999,
+            zIndex: 10000,
             borderRadius: "14px",
             padding: "16px",
             minWidth: "220px",

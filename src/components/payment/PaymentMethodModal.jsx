@@ -90,7 +90,7 @@ function PaymentMethodModal({
     left: 0,
     right: 0,
     bottom: 0,
-    zIndex: 9999,
+    zIndex: 10000,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -132,12 +132,12 @@ function PaymentMethodModal({
             {editMethod ? (
               <>
                 <Card
-                  size="30"
+                  size="28"
                   color="white"
                   variant="Linear"
                   style={{
-                    width: "40px",
-                    height: "40px",
+                    width: "28px",
+                    height: "28px",
                     animation: "float 2s ease-in-out infinite",
                   }}
                 />
@@ -145,12 +145,12 @@ function PaymentMethodModal({
             ) : (
               <>
                 <Card
-                  size="30"
+                  size="28"
                   color="white"
                   variant="Linear"
                   style={{
-                    width: "40px",
-                    height: "40px",
+                    width: "28px",
+                    height: "28px",
                     animation: "float 2s ease-in-out infinite",
                   }}
                 />
@@ -161,7 +161,7 @@ function PaymentMethodModal({
                 color: colors.whiteFull,
                 fontWeight: 600,
                 margin: 0,
-                fontSize: "30px",
+                fontSize: "1.5rem",
               }}
             >
               {viewMode
@@ -241,7 +241,7 @@ function PaymentMethodModal({
             <h3
               style={{
                 color: "white",
-                fontSize: "1.7rem",
+                fontSize: "1.2rem",
                 margin: "0 0 8px",
               }}
             >
@@ -270,7 +270,7 @@ function PaymentMethodModal({
                   style={{
                     color: "white",
                     fontWeight: 600,
-                    fontSize: "0.95rem",
+                    fontSize: "0.9rem",
                   }}
                 >
                   {form.account_name || "N/A"}
@@ -295,7 +295,7 @@ function PaymentMethodModal({
                   style={{
                     color: "white",
                     fontWeight: 600,
-                    fontSize: "0.95rem",
+                    fontSize: "0.9rem",
                   }}
                 >
                   {form.account_number || "N/A"}
@@ -360,7 +360,7 @@ function PaymentMethodModal({
               <p
                 style={{
                   color: "#fff",
-                  fontSize: "0.82rem",
+                  fontSize: "0.85rem",
                   fontWeight: 600,
                   marginBottom: "12px",
                   display: "flex",
@@ -538,6 +538,7 @@ function PaymentMethodModal({
               color: "white",
               cursor: submitting ? "not-allowed" : "pointer",
               fontWeight: 500,
+              fontSize: "0.9rem",
               opacity: submitting ? 0.5 : 1,
             }}
           >
@@ -557,6 +558,7 @@ function PaymentMethodModal({
                 alignItems: "center",
                 justifyContent: "center",
                 gap: "8px",
+                fontSize: "0.9rem",
                 opacity: submitting ? 0.8 : 1,
                 cursor: submitting ? "not-allowed" : "pointer",
                 border: "none",

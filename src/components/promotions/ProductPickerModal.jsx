@@ -129,13 +129,17 @@ export default function ProductPickerModal({
           >
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <AddCircle
-                size={40}
+                size={28}
                 color="white"
                 variant="Linear"
-                style={{ animation: "float 3s ease-in-out infinite" }}
+                style={{
+                  width: 28,
+                  height: 28,
+                  animation: "float 2s ease-in-out infinite",
+                }}
               />
               <h2
-                style={{ color: "white", fontSize: "1.4rem", fontWeight: 700 }}
+                style={{ color: "white", fontSize: "1.5rem", fontWeight: 600 }}
               >
                 Select Products
               </h2>
@@ -166,7 +170,7 @@ export default function ProductPickerModal({
               border: "1px solid rgba(255,255,255,0.1)",
             }}
           >
-            <SearchNormal1 size={18} color="#fff" variant="Linear" />
+            <SearchNormal1 size={18} color="white" variant="Linear" />
             <input
               type="text"
               placeholder="Search products..."
@@ -185,7 +189,7 @@ export default function ProductPickerModal({
           </div>
 
           <div
-            className="hide-scrollbar"
+            className="table-scroll-x"
             style={{
               display: "flex",
               overflowX: "auto",
@@ -229,7 +233,7 @@ export default function ProductPickerModal({
         </div>
 
         <div
-          className="hide-scrollbar"
+          className="thin-light-scrollbar"
           style={{
             flex: "none",
             overflowY: "auto",
@@ -329,6 +333,7 @@ export default function ProductPickerModal({
               color: "white",
               cursor: "pointer",
               fontWeight: 500,
+              fontSize: "0.9rem",
             }}
           >
             Cancel
@@ -346,6 +351,7 @@ export default function ProductPickerModal({
               alignItems: "center",
               justifyContent: "center",
               gap: 8,
+              fontSize: "0.9rem",
             }}
           >
             <TickCircle size={18} color="white" variant="Linear" />

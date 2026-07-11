@@ -82,7 +82,7 @@ export const paymentStyles = {
 
   bankInfoLabel: {
     color: "#3498db",
-    fontSize: "0.82rem",
+    fontSize: "0.85rem",
     fontWeight: 600,
     marginBottom: "12px",
   },
@@ -102,7 +102,7 @@ export const paymentStyles = {
     display: "flex",
     alignItems: "center",
     gap: "4px",
-    fontSize: "0.82rem",
+    fontSize: "0.85rem",
   },
 
   deleteButton: {
@@ -115,6 +115,6 @@ export const paymentStyles = {
     display: "flex",
     alignItems: "center",
     gap: "4px",
-    fontSize: "0.82rem",
+    fontSize: "0.85rem",
   },
 };

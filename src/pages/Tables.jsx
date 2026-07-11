@@ -38,12 +38,49 @@ function Tables() {
   } = useTables();
 
   const [moveModalOpen, setMoveModalOpen] = useState(false);
+  const [isMoveMounted, setIsMoveMounted] = useState(false);
+  const [isMoveVisible, setIsMoveVisible] = useState(false);
   const [moveTable, setMoveTable] = useState(null);
   const [selectedTargetId, setSelectedTargetId] = useState("");
   const [moveLoading, setMoveLoading] = useState(false);
   const [clearModalOpen, setClearModalOpen] = useState(false);
+  const [isClearMounted, setIsClearMounted] = useState(false);
+  const [isClearVisible, setIsClearVisible] = useState(false);
   const [clearTable, setClearTable] = useState(null);
   const [clearLoading, setClearLoading] = useState(false);
+
+  useEffect(() => {
+    let timeout;
+    if (moveModalOpen) {
+      setIsMoveMounted(true);
+      requestAnimationFrame(() => setIsMoveVisible(true));
+    } else {
+      setIsMoveVisible(false);
+      timeout = setTimeout(() => {
+        setIsMoveMounted(false);
+        setMoveTable(null);
+        setSelectedTargetId("");
+        setMoveLoading(false);
+      }, 300);
+    }
+    return () => clearTimeout(timeout);
+  }, [moveModalOpen]);
+
+  useEffect(() => {
+    let timeout;
+    if (clearModalOpen) {
+      setIsClearMounted(true);
+      requestAnimationFrame(() => setIsClearVisible(true));
+    } else {
+      setIsClearVisible(false);
+      timeout = setTimeout(() => {
+        setIsClearMounted(false);
+        setClearTable(null);
+        setClearLoading(false);
+      }, 300);
+    }
+    return () => clearTimeout(timeout);
+  }, [clearModalOpen]);
 
   const availableCount = tables.filter((t) => t.status === "available").length;
   const occupiedCount = tables.filter((t) => t.status === "occupied").length;
@@ -85,9 +122,6 @@ function Tables() {
 
   const closeMoveModal = () => {
     setMoveModalOpen(false);
-    setMoveTable(null);
-    setSelectedTargetId("");
-    setMoveLoading(false);
   };
 
   const confirmMove = async () => {
@@ -109,8 +143,6 @@ function Tables() {
 
   const closeClearModal = () => {
     setClearModalOpen(false);
-    setClearTable(null);
-    setClearLoading(false);
   };
 
   const confirmClear = async () => {
@@ -155,6 +187,14 @@ function Tables() {
             50%  { transform: translateY(-6px); }
             100% { transform: translateY(0px); }
           }
+          @keyframes confirm-fade-in {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+          }
+          @keyframes confirm-pop {
+            from { opacity: 0; transform: scale(0.95) translateY(20px); }
+            to   { opacity: 1; transform: scale(1) translateY(0); }
+          }
         `}
       </style>
       <div
@@ -195,6 +235,7 @@ function Tables() {
             padding: "10px 20px",
             borderRadius: "12px",
             fontWeight: 600,
+            fontSize: "0.9rem",
             display: "flex",
             alignItems: "center",
             gap: "8px",
@@ -252,7 +293,7 @@ function Tables() {
                   <span
                     style={{
                       color: "rgba(255,255,255,0.4)",
-                      fontSize: "0.82rem",
+                      fontSize: "0.85rem",
                     }}
                   >
                     Tables
@@ -337,7 +378,7 @@ function Tables() {
         </div>
       )}
 
-      {moveModalOpen && (
+      {isMoveMounted && (
         <div
           style={{
             ...glassCard,
@@ -346,10 +387,13 @@ function Tables() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            zIndex: 1000,
+            zIndex: 10000,
             padding: "24px",
+            opacity: isMoveVisible ? 1 : 0,
+            animation: isMoveVisible ? "confirm-fade-in 0.2s ease forwards" : "none",
+            transition: "opacity 220ms ease",
+            pointerEvents: isMoveVisible ? "auto" : "none",
           }}
-          onClick={closeMoveModal}
         >
           <div
             style={{
@@ -361,8 +405,13 @@ function Tables() {
               color: "white",
               border: "1px solid rgba(255,255,255,0.16)",
               boxShadow: "0 24px 60px rgba(0, 0, 0, 0.35)",
+              transform: isMoveVisible ? "translateY(0)" : "translateY(24px)",
+              opacity: isMoveVisible ? 1 : 0,
+              animation: isMoveVisible
+                ? "confirm-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards"
+                : "none",
+              transition: "transform 220ms ease, opacity 220ms ease",
             }}
-            onClick={(event) => event.stopPropagation()}
           >
             <div
               style={{
@@ -481,6 +530,7 @@ function Tables() {
                   color: "white",
                   cursor: modalLoading ? "not-allowed" : "pointer",
                   fontWeight: 500,
+                  fontSize: "0.9rem",
                   opacity: modalLoading ? 0.6 : 1,
                 }}
                 disabled={modalLoading}
@@ -497,6 +547,7 @@ function Tables() {
                   border: "none",
                   cursor: moveLoading || availableTargets.length === 0 ? "not-allowed" : "pointer",
                   fontWeight: 600,
+                  fontSize: "0.9rem",
                   opacity: moveLoading || availableTargets.length === 0 ? 0.8 : 1,
                   display: "flex",
                   alignItems: "center",
@@ -542,7 +593,7 @@ function Tables() {
         </div>
       )}
 
-      {clearModalOpen && (
+      {isClearMounted && (
         <div
           style={{
             ...glassCard,
@@ -551,10 +602,13 @@ function Tables() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            zIndex: 1000,
+            zIndex: 10000,
             padding: "24px",
+            opacity: isClearVisible ? 1 : 0,
+            animation: isClearVisible ? "confirm-fade-in 0.2s ease forwards" : "none",
+            transition: "opacity 220ms ease",
+            pointerEvents: isClearVisible ? "auto" : "none",
           }}
-          onClick={closeClearModal}
         >
           <div
             style={{
@@ -566,25 +620,54 @@ function Tables() {
               color: "white",
               border: "1px solid rgba(255,255,255,0.16)",
               boxShadow: "0 24px 60px rgba(0, 0, 0, 0.35)",
+              transform: isClearVisible ? "translateY(0)" : "translateY(24px)",
+              opacity: isClearVisible ? 1 : 0,
+              animation: isClearVisible
+                ? "confirm-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards"
+                : "none",
+              transition: "transform 220ms ease, opacity 220ms ease",
             }}
-            onClick={(event) => event.stopPropagation()}
           >
-            <div style={{ marginBottom: "16px" }}>
-              <div
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "16px",
+              }}
+            >
+              <div>
+                <div
+                  style={{
+                    color: "#f59e0b",
+                    fontSize: "0.74rem",
+                    fontWeight: 700,
+                    letterSpacing: "1.6px",
+                    textTransform: "uppercase",
+                    marginBottom: "6px",
+                  }}
+                >
+                  Check out table
+                </div>
+                <h3 style={{ margin: 0, fontSize: "1.3rem", fontWeight: 700 }}>
+                  Clear {clearTable?.name}?
+                </h3>
+              </div>
+              <button
+                onClick={closeClearModal}
                 style={{
-                  color: "#f59e0b",
-                  fontSize: "0.74rem",
-                  fontWeight: 700,
-                  letterSpacing: "1.6px",
-                  textTransform: "uppercase",
-                  marginBottom: "6px",
+                  background: "rgba(255,255,255,0.1)",
+                  border: "1px solid rgba(255,255,255,0.16)",
+                  color: "white",
+                  width: "36px",
+                  height: "36px",
+                  borderRadius: "999px",
+                  cursor: "pointer",
+                  fontSize: "1rem",
                 }}
               >
-                Check out table
-              </div>
-              <h3 style={{ margin: 0, fontSize: "1.3rem", fontWeight: 700 }}>
-                Clear {clearTable?.name}?
-              </h3>
+                ✕
+              </button>
             </div>
 
             <p style={{ margin: "0 0 20px", color: "rgba(255,255,255,0.72)", lineHeight: 1.6 }}>
@@ -602,6 +685,7 @@ function Tables() {
                   color: "white",
                   cursor: clearLoading ? "not-allowed" : "pointer",
                   fontWeight: 500,
+                  fontSize: "0.9rem",
                   opacity: clearLoading ? 0.6 : 1,
                 }}
                 disabled={clearLoading}
@@ -618,6 +702,7 @@ function Tables() {
                   border: "none",
                   cursor: clearLoading ? "not-allowed" : "pointer",
                   fontWeight: 600,
+                  fontSize: "0.9rem",
                   opacity: clearLoading ? 0.8 : 1,
                   display: "flex",
                   alignItems: "center",

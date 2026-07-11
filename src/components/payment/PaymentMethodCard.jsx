@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { RiEditLine, RiDeleteBinLine } from "react-icons/ri";
 import { glass, colors } from "../../utils/styles";
 import { paymentStyles } from "../../styles/paymentStyles";
@@ -10,9 +11,22 @@ function PaymentMethodCard({
   onToggleStatus,
   onView,
 }) {
-  const handleToggleStatus = () => {
-    onToggleStatus(method);
-    alertSuccess("Status Changed", method.status ? "Payment method activated" : "Payment method deactivated");
+  const [isToggling, setIsToggling] = useState(false);
+
+  const handleToggleStatus = async () => {
+    if (isToggling) return;
+    setIsToggling(true);
+    const nextStatus = !method.status;
+    try {
+      const result = await onToggleStatus(method);
+      if (result?.success) {
+        alertSuccess("Status Changed", nextStatus ? "Payment method activated" : "Payment method deactivated");
+      } else {
+        alertError("Toggle Failed", result?.error || "Unable to update payment method status");
+      }
+    } finally {
+      setIsToggling(false);
+    }
   };
 
   const handleDelete = async () => {
@@ -69,7 +83,7 @@ function PaymentMethodCard({
       <h3
         style={{
           color: "white",
-          fontSize: "1.7rem",
+          fontSize: "1.2rem",
           margin: "0 0 8px",
         }}
       >
@@ -86,10 +100,13 @@ function PaymentMethodCard({
         }}
       >
         <div
-          onClick={handleToggleStatus}
+          onClick={isToggling ? undefined : handleToggleStatus}
           style={{
             ...paymentStyles.statusToggle,
             background: method.status ? "#2ecc71" : "rgba(255,255,255,0.2)",
+            opacity: isToggling ? 0.5 : 1,
+            cursor: isToggling ? "not-allowed" : "pointer",
+            pointerEvents: isToggling ? "none" : "auto",
           }}
         >
           <div
@@ -137,6 +154,7 @@ function PaymentMethodCard({
                   justifyContent: "center",
                   cursor: "pointer",
                   padding: "5px",
+                  fontSize: "0.9rem",
                 }}
               >
                 {icon}

@@ -15,7 +15,7 @@ export function SkeletonPromotion({ index = 0 }) {
   );
 
   return (
-    <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+    <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.05)", height: 56 }}>
       {cell(
         <div style={{ display: "flex", justifyContent: "center" }}>
           {s(28)}

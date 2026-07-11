@@ -91,7 +91,7 @@ function UserModal({
         left: 0,
         right: 0,
         bottom: 0,
-        zIndex: 9999,
+        zIndex: 10000,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",

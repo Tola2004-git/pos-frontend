@@ -152,6 +152,7 @@ function Promotions() {
             gap: "8px",
             padding: "10px 20px",
             fontWeight: 600,
+            fontSize: "0.9rem",
           }}
         >
           <Add size={24} color="white" variant="Linear" />

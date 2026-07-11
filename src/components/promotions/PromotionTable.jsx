@@ -14,14 +14,14 @@ export default function PromotionTable({
   if (loading) {
     return (
       <div style={{ ...glassCard, borderRadius: 16, overflow: "hidden" }}>
-        <div style={{ overflowX: "auto" }}>
+        <div className="table-scroll-x" style={{ overflowX: "auto" }}>
           <table
             style={{
               width: "100%",
               borderCollapse: "collapse",
               // tableLayout: "fixed",
               color: "white",
-              fontSize: "0.88rem",
+              fontSize: "0.85rem",
             }}
           >
             <thead>
@@ -96,14 +96,14 @@ export default function PromotionTable({
 
   return (
     <div style={{ ...glassCard, borderRadius: 16, overflow: "hidden" }}>
-      <div style={{ overflowX: "auto" }}>
+      <div className="table-scroll-x" style={{ overflowX: "auto" }}>
         <table
           style={{
             width: "100%",
             borderCollapse: "collapse",
             // tableLayout: "fixed",
             color: "white",
-            fontSize: "0.88rem",
+            fontSize: "0.85rem",
           }}
         >
           <thead>

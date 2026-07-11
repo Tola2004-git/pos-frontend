@@ -20,11 +20,7 @@ export function usePromotionLogic(promotions = [], cart = []) {
       if (today < startDate) return false;
     }
 
-    if (promotion.end_date) {
-      const endDate = new Date(promotion.end_date);
-      endDate.setHours(0, 0, 0, 0);
-      if (today > endDate) return false;
-    }
+    if (promotion.is_expired) return false;
 
     return true;
   };

@@ -7,6 +7,7 @@ import {
   formatDiscount,
 } from "../../constants/promotionConstants.js";
 import StatusToggle from "./StatusToggle.jsx";
+import { glassCard } from "../../utils/styles.js";
 
 export default function PromotionRow({
   index,
@@ -68,32 +69,24 @@ export default function PromotionRow({
     return { label: promo.apply_to, items: [] };
   };
 
-  const isPromotionExpired = (() => {
-    if (!promo.end_date) return false;
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const endDate = new Date(promo.end_date);
-    endDate.setHours(0, 0, 0, 0);
-    return today > endDate;
-  })();
+  const isPromotionExpired = !!promo.is_expired;
 
   const applyToDetails = getApplyToDetails();
   const showInfoIcon = applyToDetails.items.length > 0;
 
   return (
     <>
-      <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-        <td style={{ padding: "12px", textAlign: "center" }}>{index + 1}</td>
-        <td style={{ padding: "12px", fontWeight: 500 }}>
+      <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.06)", height: 56 }}>
+        <td style={{ padding: "12px 14px", textAlign: "center" }}>{index + 1}</td>
+        <td style={{ padding: "12px 14px", fontWeight: 500, textAlign: "left" }}>
           <div
-            className="truncate whitespace-nowrap max-w-[100px]"
+            className="block max-w-[180px] truncate"
             title={promo.name}
-            style={{ overflow: "hidden" }}
           >
             {promo.name}
           </div>
         </td>
-        <td style={{ padding: "12px", textAlign: "center" }}>
+        <td style={{ padding: "12px 14px", textAlign: "center" }}>
           <span
             style={{
               color: promo.type === "percentage" ? "#3498db" : "#2ecc71",
@@ -105,10 +98,10 @@ export default function PromotionRow({
             {promo.type === "percentage" ? "%" : "$"}
           </span>
         </td>
-        <td style={{ padding: "12px", textAlign: "center" }}>
+        <td style={{ padding: "12px 14px", textAlign: "center" }}>
           {formatDiscount(promo.type, promo.value)}
         </td>
-        <td style={{ padding: "12px", textAlign: "center" }}>
+        <td style={{ padding: "12px 14px", textAlign: "center", whiteSpace: "nowrap" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
             <span>{formatApplyTo(promo)}</span>
             {showInfoIcon && (
@@ -140,7 +133,7 @@ export default function PromotionRow({
         </td>
       <td
         style={{
-          padding: "12px",
+          padding: "12px 14px",
           textAlign: "center",
           color: "rgba(255,255,255,0.7)",
         }}
@@ -149,7 +142,7 @@ export default function PromotionRow({
       </td>
       <td
         style={{
-          padding: "12px",
+          padding: "12px 14px",
           textAlign: "center",
           color: "rgba(255,255,255,0.7)",
         }}
@@ -158,7 +151,7 @@ export default function PromotionRow({
       </td>
       <td
         style={{
-          padding: "12px",
+          padding: "12px 14px",
           textAlign: "center",
         }}
       >
@@ -190,14 +183,14 @@ export default function PromotionRow({
             : "Disabled"}
         </span>
       </td>
-      <td style={{ padding: "12px", textAlign: "center" }}>
+      <td style={{ padding: "12px 14px", textAlign: "center" }}>
         <StatusToggle
           active={!isPromotionExpired && !!promo.status}
           disabled={isPromotionExpired}
           onChange={() => onToggleStatus(promo)}
         />
       </td>
-      <td style={{ padding: "12px", textAlign: "center" }}>
+      <td style={{ padding: "12px 14px", textAlign: "center" }}>
         <div style={{ display: "flex", gap: 16, justifyContent: "center" }}>
           <div
             style={{ position: "relative", display: "inline-block" }}
@@ -301,18 +294,16 @@ export default function PromotionRow({
       <div
         ref={popoverRef}
         style={{
+          ...glassCard,
           position: "fixed",
           top: popoverPosition.top,
           left: popoverPosition.left,
           transform: "translateX(-50%)",
-          background: "rgba(20,28,35,0.98)",
-          border: "1px solid rgba(255,255,255,0.1)",
           borderRadius: 10,
           padding: "12px 14px",
           width: 280,
           maxWidth: "calc(100vw - 20px)",
           zIndex: 9999,
-          boxShadow: "0 12px 28px rgba(0,0,0,0.25)",
         }}
       >
         <div
@@ -356,6 +347,7 @@ export default function PromotionRow({
         </div>
 
         <ul
+          className="[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:bg-white/20 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent"
           style={{
             listStyle: "none",
             padding: 0,
@@ -363,13 +355,17 @@ export default function PromotionRow({
             display: "flex",
             flexDirection: "column",
             gap: 8,
+            maxHeight: "220px",
+            overflowY: "auto",
+            scrollbarWidth: "thin",
+            scrollbarColor: "rgba(255, 255, 255, 0.2) transparent",
           }}
         >
           {applyToDetails.items.map((item, idx) => (
             <li
               key={idx}
               style={{
-                fontSize: "0.9rem",
+                fontSize: "0.85rem",
                 color: "rgba(255,255,255,0.9)",
                 padding: "10px 12px",
                 background: "rgba(255,255,255,0.05)",

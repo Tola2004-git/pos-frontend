@@ -178,3 +178,21 @@ input::placeholder {
 .table-scroll-x::-webkit-scrollbar-thumb:hover {
   background-color: rgba(255, 255, 255, 0.4);
 }
+
+.thin-light-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+}
+.thin-light-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.thin-light-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.thin-light-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+}
+.thin-light-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}

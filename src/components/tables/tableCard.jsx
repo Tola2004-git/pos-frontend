@@ -95,14 +95,14 @@ function TableCard({ table, onEdit, onDelete, onClear, onOpenMove, statusStyle }
             color: "white",
             fontWeight: 400,
             margin: "10px 0 4px",
-            fontSize: "1.5rem",
+            fontSize: "1.2rem",
           }}
         >
           {table.name}
         </h3>
       </div>
 
-      {table.note && (
+      {table.notes && (
         <div
           style={{
             color: "rgba(255,255,255,0.4)",
@@ -111,7 +111,7 @@ function TableCard({ table, onEdit, onDelete, onClear, onOpenMove, statusStyle }
             marginBottom: "14px",
           }}
         >
-          {table.note}
+          {table.notes}
         </div>
       )}
 

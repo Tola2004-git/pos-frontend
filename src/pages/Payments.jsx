@@ -8,7 +8,6 @@ import PaymentMethodModal from "../components/payment/PaymentMethodModal.jsx";
 import { usePaymentMethods } from "../hooks/usePaymentMethods.js";
 import { usePaymentForm } from "../hooks/usePaymentForm.js";
 import { DEFAULT_METHODS } from "../constants/paymentConstants.js";
-import { paymentService } from "../api/paymentService.js";
 import { Add, Card, Minus } from "iconsax-react";
 import { alertSuccess, alertError } from "../utils/alert.jsx";
 import { PaymentMethodSkeletonCard } from "../components/ui/SkeletonPayment.jsx";
@@ -18,6 +17,8 @@ function PaymentMethods() {
     methods,
     loading,
     fetchMethods,
+    createMethod,
+    updateMethod,
     toggleStatus: toggleStatusHook,
     deleteMethod,
   } = usePaymentMethods();
@@ -49,35 +50,30 @@ function PaymentMethods() {
       return;
     }
     setSubmitting(true);
-    try {
-      if (editMethod) {
-        await paymentService.updateMethod(editMethod.id, form);
-        alertSuccess("Updated", "Payment method updated successfully");
-      } else {
-        await paymentService.createMethod(form);
-        alertSuccess("Created", "Payment method added successfully");
-      }
+    const result = editMethod
+      ? await updateMethod(editMethod.id, form)
+      : await createMethod(form);
+    setSubmitting(false);
+
+    if (result.success) {
+      alertSuccess(
+        editMethod ? "Updated" : "Created",
+        editMethod
+          ? "Payment method updated successfully"
+          : "Payment method added successfully",
+      );
       closeModal();
-      fetchMethods();
-    } catch (err) {
-      const message = err.response?.data?.message || "Something went wrong!";
-      setFormError(message);
-      alertError("Error", message);
-    } finally {
-      setSubmitting(false);
+    } else {
+      setFormError(result.error);
+      alertError("Error", result.error);
     }
   };
 
   const handleDelete = async (id) => await deleteMethod(id);
 
-  const handleToggleStatus = async (method) => {
-    await toggleStatusHook(method);
-  };
+  const handleToggleStatus = async (method) => await toggleStatusHook(method);
 
-  const handleAddDefault = async (method) => {
-    await paymentService.createMethod(method);
-    fetchMethods();
-  };
+  const handleAddDefault = async (method) => await createMethod(method);
 
   return (
     <Layout>
@@ -119,6 +115,7 @@ function PaymentMethods() {
             padding: "10px 20px",
             borderRadius: "12px",
             fontWeight: 600,
+            fontSize: "0.9rem",
             display: "flex",
             alignItems: "center",
             gap: "8px",
@@ -149,7 +146,7 @@ function PaymentMethods() {
               style={{
                 color: "white",
                 fontWeight: 600,
-                fontSize: "1rem",
+                fontSize: "0.9rem",
                 margin: "0 0 6px",
               }}
             >

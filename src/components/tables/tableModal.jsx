@@ -83,7 +83,7 @@ function TableModal({
     left: 0,
     right: 0,
     bottom: 0,
-    zIndex: 9998,
+    zIndex: 10000,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -124,23 +124,23 @@ function TableModal({
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             {editTable ? (
               <Grid3
-                size="30"
+                size="28"
                 color="#fff"
                 variant="Outline"
                 style={{
-                  width: "40px",
-                  height: "40px",
+                  width: "28px",
+                  height: "28px",
                   animation: "float 2s ease-in-out infinite",
                 }}
               />
             ) : (
               <Grid3
-                size="30px"
+                size="28"
                 color="#fff"
                 variant="Outline"
                 style={{
-                  width: "40px",
-                  height: "40px",
+                  width: "28px",
+                  height: "28px",
                   animation: "float 2s ease-in-out infinite",
                 }}
               />
@@ -150,7 +150,7 @@ function TableModal({
                 color: colors.whiteFull,
                 fontWeight: 600,
                 margin: 0,
-                fontSize: "30px",
+                fontSize: "1.5rem",
               }}
             >
               {editTable ? "Edit Table" : "Add Table"}
@@ -333,6 +333,7 @@ function TableModal({
               color: "white",
               cursor: modalLoading ? "not-allowed" : "pointer",
               fontWeight: 500,
+              fontSize: "0.9rem",
               opacity: modalLoading ? 0.6 : 1,
             }}
             disabled={modalLoading}
@@ -349,6 +350,7 @@ function TableModal({
               border: "none",
               cursor: modalLoading ? "not-allowed" : "pointer",
               fontWeight: 600,
+              fontSize: "0.9rem",
               opacity: modalLoading ? 0.8 : 1,
               display: "flex",
               alignItems: "center",

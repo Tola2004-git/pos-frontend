@@ -159,7 +159,7 @@ export default function PromotionModal({
         left: 0,
         right: 0,
         bottom: 0,
-        zIndex: 9999,
+        zIndex: 10000,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -198,18 +198,22 @@ export default function PromotionModal({
         >
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <TicketDiscount
-              size={40}
+              size={28}
               color="white"
               variant="Linear"
-              style={{ animation: "float 3s ease-in-out infinite" }}
+              style={{
+                width: 28,
+                height: 28,
+                animation: "float 2s ease-in-out infinite",
+              }}
             />
             <div>
               <h2
                 style={{
                   color: "white",
                   margin: 0,
-                  fontSize: "1.4rem",
-                  fontWeight: 700,
+                  fontSize: "1.5rem",
+                  fontWeight: 600,
                 }}
               >
                 {editPromotion ? "Edit Promotion" : "New Promotion"}
@@ -254,8 +258,8 @@ export default function PromotionModal({
             <label style={labelStyle}>Promotion Name</label>
             <div style={{ position: "relative" }}>
               <Tag
-                size="20"
-                color="#fff"
+                size={20}
+                color="white"
                 variant="Linear"
                 style={iconStyle("Promotion Name")}
               />
@@ -472,9 +476,9 @@ export default function PromotionModal({
             <label style={labelStyle}>Minimum Purchase ($)</label>
             <div style={{ position: "relative" }}>
               <DollarCircle
-                size="18"
-                color="#fff"
-                variant="outline"
+                size={20}
+                color="white"
+                variant="Linear"
                 style={iconStyle("Minimum Purchase")}
               />
               <input
@@ -510,6 +514,7 @@ export default function PromotionModal({
                 color: "white",
                 cursor: submitting ? "not-allowed" : "pointer",
                 fontWeight: 500,
+                fontSize: "0.9rem",
                 opacity: submitting ? 0.5 : 1,
               }}
             >
@@ -527,6 +532,7 @@ export default function PromotionModal({
                 alignItems: "center",
                 justifyContent: "center",
                 gap: "8px",
+                fontSize: "0.9rem",
                 opacity: submitting ? 0.8 : 1,
                 cursor: submitting ? "not-allowed" : "pointer",
                 border: "none",

@@ -65,7 +65,7 @@ export function useTables() {
     setForm({
       name: table.name || "",
       capacity: table.capacity || null,
-      note: table.note || "",
+      note: table.notes || "",
       status: table.status || "available",
     });
     setShowModal(true);
@@ -142,13 +142,13 @@ export function useTables() {
           updateTable(fromTable.id, {
             name: fromTable.name || "",
             capacity: fromTable.capacity ?? null,
-            note: fromTable.note || "",
+            note: fromTable.notes || "",
             status: "available",
           }),
           updateTable(targetTable.id, {
             name: targetTable.name || "",
             capacity: targetTable.capacity ?? null,
-            note: targetTable.note || "",
+            note: targetTable.notes || "",
             status: fromTable.status,
           }),
         ]);
