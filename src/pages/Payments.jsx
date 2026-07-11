@@ -40,8 +40,7 @@ function PaymentMethods() {
   const SkeletonCount = sidebarOpen ? 6 : 8;
   const visibleMethods = methods.filter((method) => {
     const methodName = method?.name?.toLowerCase();
-    const methodId = Number(method?.id);
-    return methodName !== "cash" && methodId !== 1;
+    return methodName !== "cash";
   });
 
   const handleSubmit = async () => {

@@ -253,6 +253,7 @@ const ICONS = {
   info: toSvgString(<InfoCircle size="22" variant="Bulk" color="white" />),
   trash: toSvgString(<Trash size="50" variant="Bulk" color="white" />),
   arrowRight: toSvgString(<ArrowRight size="50" variant="Bulk" color="white" />),
+  confirmWarning: toSvgString(<Danger size="50" variant="Bulk" color="white" />),
 };
 
 function showToast(type, title, message, duration = 3500) {
@@ -364,6 +365,6 @@ export const alertConfirmWarning = (
     title,
     message,
     confirmText,
-    icon: ICONS.warning,
+    icon: ICONS.confirmWarning,
     variant: "warning",
   });
