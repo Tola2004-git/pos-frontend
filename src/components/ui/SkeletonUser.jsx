@@ -12,7 +12,7 @@ export function SkeletonRow({ index = 0 }) {
   );
 
   return (
-    <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+    <tr style={{ height: "56px", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
       <SkeletonCell>{cell(20)}</SkeletonCell>
       <SkeletonCell>{cell(40, 40, 50)}</SkeletonCell>
       <SkeletonCell>{cell(110)}</SkeletonCell>

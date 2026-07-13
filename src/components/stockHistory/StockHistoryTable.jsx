@@ -2,6 +2,14 @@ import { ArrowDown, ArrowUp } from "iconsax-react";
 import { glassCard } from "../../utils/styles";
 import { SkeletonStockTable } from "../ui/SkeletonInventory";
 
+const INCREASE_ACTIONS = ["add", "cancel_restore"];
+const ACTION_LABELS = {
+  add: "Add",
+  remove: "Remove",
+  sale: "Sale",
+  cancel_restore: "Restored",
+};
+
 const HEADERS = [
   "#",
   "Product",
@@ -25,7 +33,11 @@ export function StockHistoryTable({ logs, loading, page }) {
         marginBottom: "16px",
       }}
     >
-      <table style={{ width: "100%", borderCollapse: "collapse" }}>
+      <div className="table-scroll-x" style={{ overflowX: "auto" }}>
+        <table
+          className="min-w-[1100px]"
+          style={{ width: "100%", borderCollapse: "collapse" }}
+        >
         <thead>
           <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
             {HEADERS.map((h) => (
@@ -36,7 +48,7 @@ export function StockHistoryTable({ logs, loading, page }) {
                   textAlign: "left",
                   color: "#ffffff",
                   fontWeight: 600,
-                  fontSize: "1.2rem",
+                  fontSize: "0.9rem",
                 }}
               >
                 {h}
@@ -61,7 +73,9 @@ export function StockHistoryTable({ logs, loading, page }) {
               </td>
             </tr>
           ) : (
-            logs.map((log, index) => (
+            logs.map((log, index) => {
+              const isIncrease = INCREASE_ACTIONS.includes(log.action);
+              return (
               <tr
                 key={log.id}
                 style={{
@@ -103,30 +117,29 @@ export function StockHistoryTable({ logs, loading, page }) {
                       fontSize: "0.78rem",
                       fontWeight: 600,
                       width: "fit-content",
-                      background:
-                        log.action === "add"
-                          ? "rgba(46,204,113,0.2)"
-                          : "rgba(192,57,43,0.2)",
-                      color: log.action === "add" ? "#2ecc71" : "#e74c3c",
-                      border: `1px solid ${log.action === "add" ? "rgba(46,204,113,0.3)" : "rgba(192,57,43,0.3)"}`,
+                      background: isIncrease
+                        ? "rgba(46,204,113,0.2)"
+                        : "rgba(192,57,43,0.2)",
+                      color: isIncrease ? "#2ecc71" : "#e74c3c",
+                      border: `1px solid ${isIncrease ? "rgba(46,204,113,0.3)" : "rgba(192,57,43,0.3)"}`,
                     }}
                   >
-                    {log.action === "add" ? (
+                    {isIncrease ? (
                       <ArrowUp size={12} color="#37d67a" variant="bold" />
                     ) : (
                       <ArrowDown size={12} color="#f47373" variant="bold" />
                     )}
-                    {log.action === "add" ? "Add" : "Remove"}
+                    {ACTION_LABELS[log.action] || log.action}
                   </span>
                 </td>
                 <td
                   style={{
                     padding: "12px 14px",
-                    color: log.action === "add" ? "#2ecc71" : "#e74c3c",
+                    color: isIncrease ? "#2ecc71" : "#e74c3c",
                     fontWeight: 700,
                   }}
                 >
-                  {log.action === "add" ? "+" : "-"}
+                  {isIncrease ? "+" : "-"}
                   {log.quantity}
                 </td>
                 <td
@@ -153,7 +166,9 @@ export function StockHistoryTable({ logs, loading, page }) {
                     fontSize: "0.85rem",
                   }}
                 >
-                  {log.supplier || "N/A"}
+                  {log.action === "sale" || log.action === "cancel_restore"
+                    ? "—"
+                    : log.supplier || "N/A"}
                 </td>
                 <td
                   style={{
@@ -197,10 +212,12 @@ export function StockHistoryTable({ logs, loading, page }) {
                   </span>
                 </td>
               </tr>
-            ))
+              );
+            })
           )}
         </tbody>
-      </table>
+        </table>
+      </div>
     </div>
   );
 }

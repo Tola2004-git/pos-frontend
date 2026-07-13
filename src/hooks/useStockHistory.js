@@ -1,7 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import axios from "axios";
 import { fetchStockHistory } from "../utils/stockHistoryApi";
-import { User } from "iconsax-react";
 
 export function useStockHistory() {
   const [logs, setLogs] = useState([]);
@@ -26,17 +24,12 @@ export function useStockHistory() {
     setPage(1);
   };
 
-  const loadHistory = useCallback(async () => {
+  const loadHistory = useCallback(async (signal) => {
     setLoading(true);
-    const controller = new AbortController();
     try {
       const data = await fetchStockHistory(
-        {
-          search: debouncedSearch,
-          action: actionFilter,
-          page,
-        },
-        controller.signal,
+        { search: debouncedSearch, action: actionFilter, page },
+        signal,
       );
       setLogs(data.data);
       setLastPage(data.last_page);
@@ -44,16 +37,17 @@ export function useStockHistory() {
     } catch (err) {
       if (err.name !== "CanceledError") console.error(err);
     } finally {
-      setLoading(false);
+      // Skip the state update if this request was aborted by the cleanup
+      // below (e.g. search/filter changed) so a stale response can't
+      // flip `loading` back off after a newer request has taken over.
+      if (!signal.aborted) setLoading(false);
     }
-    return () => controller.abort();
   }, [debouncedSearch, actionFilter, page]);
 
   useEffect(() => {
-    const cleanup = loadHistory();
-    return () => {
-      if (cleanup instanceof Function) cleanup();
-    };
+    const controller = new AbortController();
+    loadHistory(controller.signal);
+    return () => controller.abort();
   }, [loadHistory]);
 
   return {

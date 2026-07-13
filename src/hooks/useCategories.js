@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { alertSuccess, alertError, alertConfirmDelete } from "../utils/alert.jsx";
 import api from "../api/productApi.js";
 
-export function useCategories() {
+export function useCategories(type = "product") {
   const [categories, setCategories] = useState([]);
   const [catLoading, setCatLoading] = useState(false);
   const [editCat, setEditCat] = useState(null);
@@ -12,12 +12,12 @@ export function useCategories() {
 
   useEffect(() => {
     fetchCategories();
-  }, []);
+  }, [type]);
 
   const fetchCategories = async () => {
     setCatLoading(true);
     try {
-      const res = await api.get("/categories");
+      const res = await api.get(`/categories?type=${type}`);
       setCategories(res.data);
     } catch (err) {
       console.error(err);
@@ -35,10 +35,10 @@ export function useCategories() {
     setCatSubmitting(true);
     try {
       if (editCat) {
-        await api.put(`/categories/${editCat.id}`, catForm);
+        await api.put(`/categories/${editCat.id}`, { ...catForm, type });
         alertSuccess("Updated!", "Category has been updated.");
       } else {
-        await api.post("/categories", catForm);
+        await api.post("/categories", { ...catForm, type });
         alertSuccess("Created!", "New category has been created.");
       }
       setEditCat(null);

@@ -1,6 +1,6 @@
-import { glassCard, colors } from "../../utils/styles";
+import { glassCard } from "../../utils/styles";
 import { SkeletonTable } from "../ui/SkeletonUser";
-import { Trash, Edit } from "iconsax-react";
+import { Trash, Edit2, Edit } from "iconsax-react";
 
 function TooltipButton({ onClick, tooltip, children }) {
   return (
@@ -57,181 +57,207 @@ function TooltipButton({ onClick, tooltip, children }) {
   );
 }
 
-function UserTable({ users = [], loading, onEdit, onDelete }) {
+function UserTable({ users = [], loading, onEdit, onDelete, currentUser }) {
   return (
     <div style={{ ...glassCard, borderRadius: "20px", overflow: "hidden" }}>
-      <table style={{ width: "100%", borderCollapse: "collapse" }}>
-        <thead>
-          <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
-            {[
-              "#",
-              "Profile",
-              "Name",
-              "Email",
-              "Role",
-              "Created",
-              "Updated",
-              "Actions",
-            ].map((h) => (
-              <th
-                key={h}
-                style={{
-                  padding: "16px 20px",
-                  textAlign: "left",
-                  color: colors.whiteFull,
-                  fontWeight: 600,
-                  fontSize: "1.1rem",
-                }}
-              >
-                {h}
-              </th>
-            ))}
-          </tr>
-        </thead>
-
-        <tbody>
-          {loading ? (
-            <SkeletonTable rows={6} />
-          ) : users.length === 0 ? (
-            <tr>
-              <td
-                colSpan={8}
-                style={{
-                  padding: "40px",
-                  textAlign: "center",
-                  color: "rgba(255,255,255,0.5)",
-                }}
-              >
-                No users found
-              </td>
+      <div className="w-full overflow-x-auto table-scroll-x">
+        <table
+          className="w-full min-w-[1000px] border-collapse"
+          style={{ color: "white", fontSize: "0.85rem" }}
+        >
+          <thead>
+            <tr
+              style={{
+                borderBottom: "1px solid rgba(255,255,255,0.12)",
+                background: "rgba(255,255,255,0.03)",
+              }}
+            >
+              {[
+                "#",
+                "Profile",
+                "Name",
+                "Email",
+                "Role",
+                "Created",
+                "Updated",
+                "Actions",
+              ].map((h) => (
+                <th
+                  key={h}
+                  style={{
+                    padding: "12px 14px",
+                    textAlign: "left",
+                    fontWeight: 600,
+                    color: "white",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {h}
+                </th>
+              ))}
             </tr>
-          ) : (
-            users.map((user, index) => (
-              <tr
-                key={user.id || index}
-                style={{
-                  borderBottom: "1px solid rgba(255,255,255,0.05)",
-                  transition: "background 0.2s",
-                }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.background = "rgba(255,255,255,0.05)")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.background = "transparent")
-                }
-              >
-                <td
-                  style={{
-                    padding: "14px 20px",
-                    color: "rgba(255,255,255,0.5)",
-                  }}
-                >
-                  {index + 1}
-                </td>
-                <td style={{ padding: "14px 20px" }}>
-                  {user.profile_image ? (
-                    <div
-                      style={{
-                        width: "40px",
-                        height: "40px",
-                        borderRadius: "50%",
-                        overflow: "hidden",
-                        border: "2px solid rgba(255,255,255,0.2)",
-                      }}
-                    >
-                      <img
-                        src={user.profile_image}
-                        alt={user.name}
-                        style={{
-                          // width: "100%",
-                          // height: "100%",
-                          objectFit: "contain",
-                        }}
-                      />
-                    </div>
-                  ) : (
-                    <div
-                      style={{
-                        width: "40px",
-                        height: "40px",
-                        borderRadius: "50%",
-                        background: "linear-gradient(135deg, #667eea, #764ba2)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        color: "white",
-                        fontWeight: 700,
-                      }}
-                    >
-                      {user.name?.charAt(0).toUpperCase() || "U"}
-                    </div>
-                  )}
-                </td>
-                <td style={{ padding: "14px 20px", color: "white" }}>
-                  {user.name}
-                </td>
-                <td
-                  style={{
-                    padding: "14px 20px",
-                    color: "rgba(255,255,255,0.7)",
-                  }}
-                >
-                  {user.email}
-                </td>
-                <td style={{ padding: "14px 20px" }}>
-                  <span
-                    style={{
-                      padding: "4px 12px",
-                      borderRadius: "20px",
-                      fontSize: "0.8rem",
-                      fontWeight: 600,
-                      color: "white",
-                      border: "1px solid white",
-                    }}
-                  >
-                    {user.role || "cashier"}
-                  </span>
-                </td>
-                <td
-                  style={{
-                    padding: "14px 20px",
-                    color: "rgba(255,255,255,0.5)",
-                    fontSize: "0.85rem",
-                  }}
-                >
-                  {new Date(user.created_at).toLocaleDateString("en-GB")}
-                </td>
-                <td
-                  style={{
-                    padding: "14px 20px",
-                    color: "rgba(255,255,255,0.5)",
-                    fontSize: "0.85rem",
-                  }}
-                >
-                  {new Date(user.updated_at).toLocaleDateString("en-GB")}
-                </td>
-                <td style={{ padding: "14px 20px" }}>
-                  <div style={{ display: "flex", gap: "10px" }}>
-                    <TooltipButton
-                      onClick={() => onEdit(user)}
-                      tooltip="Edit User"
-                    >
-                      <Edit size="20" color="#fff" />
-                    </TooltipButton>
+          </thead>
 
-                    <TooltipButton
-                      onClick={() => onDelete(user.id)}
-                      tooltip="Delete User"
-                    >
-                      <Trash size="20" color="#fff" />
-                    </TooltipButton>
-                  </div>
+          <tbody>
+            {loading ? (
+              <SkeletonTable rows={6} />
+            ) : users.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={8}
+                  style={{
+                    padding: "40px",
+                    textAlign: "center",
+                    color: "rgba(255,255,255,0.5)",
+                  }}
+                >
+                  No users found
                 </td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            ) : (
+              users.map((user, index) => (
+                <tr
+                  key={user.id || index}
+                  style={{
+                    height: "56px",
+                    borderBottom: "1px solid rgba(255,255,255,0.05)",
+                    transition: "background 0.2s",
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.background =
+                      "rgba(255,255,255,0.05)")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.background = "transparent")
+                  }
+                >
+                  <td
+                    style={{
+                      padding: "12px 14px",
+                      color: "rgba(255,255,255,0.5)",
+                    }}
+                  >
+                    {index + 1}
+                  </td>
+                  <td style={{ padding: "12px 14px" }}>
+                    {user.profile_image ? (
+                      <div
+                        style={{
+                          width: "40px",
+                          height: "40px",
+                          borderRadius: "50%",
+                          overflow: "hidden",
+                          border: "2px solid rgba(255,255,255,0.2)",
+                        }}
+                      >
+                        <img
+                          src={user.profile_image}
+                          alt={user.name}
+                          style={{
+                            // width: "100%",
+                            // height: "100%",
+                            objectFit: "contain",
+                          }}
+                        />
+                      </div>
+                    ) : (
+                      <div
+                        style={{
+                          width: "40px",
+                          height: "40px",
+                          borderRadius: "50%",
+                          background:
+                            "linear-gradient(135deg, #667eea, #764ba2)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          color: "white",
+                          fontWeight: 700,
+                        }}
+                      >
+                        {user.name?.charAt(0).toUpperCase() || "U"}
+                      </div>
+                    )}
+                  </td>
+                  <td
+                    style={{
+                      padding: "12px 14px",
+                      color: "white",
+                      fontSize: "0.85rem",
+                    }}
+                  >
+                    {user.name}
+                  </td>
+                  <td
+                    style={{
+                      padding: "12px 14px",
+                      color: "rgba(255,255,255,0.7)",
+                      fontSize: "0.85rem",
+                    }}
+                  >
+                    {user.email}
+                  </td>
+                  <td style={{ padding: "12px 14px" }}>
+                    <span
+                      style={{
+                        padding: "3px 10px",
+                        borderRadius: "20px",
+                        fontSize: "0.78rem",
+                        fontWeight: 600,
+                        color: "white",
+                        border: "1px solid white",
+                      }}
+                    >
+                      {user.role || "cashier"}
+                    </span>
+                  </td>
+                  <td
+                    style={{
+                      padding: "12px 14px",
+                      color: "rgba(255,255,255,0.5)",
+                      fontSize: "0.85rem",
+                    }}
+                  >
+                    {new Date(user.created_at).toLocaleDateString("en-GB")}
+                  </td>
+                  <td
+                    style={{
+                      padding: "12px 14px",
+                      color: "rgba(255,255,255,0.5)",
+                      fontSize: "0.85rem",
+                    }}
+                  >
+                    {new Date(user.updated_at).toLocaleDateString("en-GB")}
+                  </td>
+                  <td style={{ padding: "12px 14px" }}>
+                    {user.role === "admin" && user.id !== currentUser?.id ? (
+                      <span className="text-white/30 text-xs italic">
+                        Protected
+                      </span>
+                    ) : (
+                      <div style={{ display: "flex", gap: "10px" }}>
+                        <TooltipButton
+                          onClick={() => onEdit(user)}
+                          tooltip="Edit"
+                        >
+                          <Edit size={18} color="#fff" variant="linear" />
+                        </TooltipButton>
+
+                        <TooltipButton
+                          onClick={() => onDelete(user.id)}
+                          tooltip="Delete"
+                        >
+                          <Trash size={18} color="#fff" variant="linear" />
+                        </TooltipButton>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

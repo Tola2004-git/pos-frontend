@@ -24,7 +24,7 @@ export function Skeleton({
 
 export function SkeletonCell({ children, width }) {
   return (
-    <td style={{ padding: "14px 20px" }}>
+    <td style={{ padding: "12px 14px" }}>
       <div style={{ display: "flex", alignItems: "center", width }}>
         {children}
       </div>

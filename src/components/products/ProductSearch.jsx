@@ -40,7 +40,7 @@ function ProductSearch({ search, setSearch, categoryFilter, setCategoryFilter, c
           gap: "12px",
         }}
       >
-        <SearchNormal1 size="20" color="#fff" variant="Linear" />
+        <SearchNormal1 size={20} color="white" variant="Linear" />
         <input
           type="text"
           placeholder="Search by name, SKU, barcode..."
@@ -69,7 +69,7 @@ function ProductSearch({ search, setSearch, categoryFilter, setCategoryFilter, c
             cursor: "pointer",
             color: "white",
             fontWeight: 600,
-            fontSize: "0.85rem",
+            fontSize: "0.9rem",
             display: "flex",
             alignItems: "center",
             gap: "8px",

@@ -159,6 +159,19 @@ export default function RestockModal({
 }) {
   const [focusedField, setFocusedField] = useState("");
 
+  // Lock background page scroll while the modal (or its loading skeleton) is
+  // visible. Unlike the other modals in the app, this component stays
+  // mounted at all times and toggles visibility via `showRestock`/
+  // `loadingRestock` instead of being conditionally rendered by its parent,
+  // so the lock has to track those flags rather than running once on mount.
+  useEffect(() => {
+    if (!showRestock && !loadingRestock) return;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showRestock, loadingRestock]);
+
   const overlayStyle = {
     ...glassCard,
     position: "fixed",
@@ -201,6 +214,7 @@ export default function RestockModal({
       }}
     >
       <div
+        className="thin-light-scrollbar"
         style={{
           ...glass,
           borderRadius: "24px",
@@ -221,12 +235,12 @@ export default function RestockModal({
         >
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <RefreshCircle
-              size="40"
+              size={28}
               color="#fff"
               variant="bulk"
               style={{
-                width: "40px",
-                height: "40px",
+                width: 28,
+                height: 28,
                 animation: "float 2s ease-in-out infinite",
               }}
             />
@@ -235,7 +249,7 @@ export default function RestockModal({
                 color: colors.whiteFull,
                 fontWeight: 600,
                 margin: 0,
-                fontSize: "30px",
+                fontSize: "1.5rem",
               }}
             >
               Restock Item
@@ -317,6 +331,7 @@ export default function RestockModal({
 
           {showDropdown && (
             <div
+              className="thin-light-scrollbar"
               style={{
                 position: "absolute",
                 left: 0,
@@ -623,8 +638,10 @@ export default function RestockModal({
               flex: 1,
               padding: "12px",
               borderRadius: "12px",
+              color: "white",
               cursor: submitting ? "not-allowed" : "pointer",
               fontWeight: 500,
+              fontSize: "0.9rem",
               opacity: submitting ? 0.5 : 1,
             }}
           >
@@ -642,8 +659,10 @@ export default function RestockModal({
               alignItems: "center",
               justifyContent: "center",
               gap: "8px",
+              fontSize: "0.9rem",
               opacity: submitting ? 0.8 : 1,
               cursor: submitting ? "not-allowed" : "pointer",
+              border: "none",
             }}
           >
             {submitting ? (

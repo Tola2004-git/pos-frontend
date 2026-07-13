@@ -77,7 +77,7 @@ function StockHistory() {
             size="35"
             color="#fff"
             variant="bulk"
-            style={{ animation: "float 2s ease-in-out infinite" }}
+            style={{ animation: "float 3s ease-in-out infinite" }}
           />
           Stock History
         </h2>
@@ -115,11 +115,19 @@ function StockHistory() {
                 page === 1 ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.1)",
               color: page === 1 ? "rgba(255,255,255,0.3)" : "white",
               fontWeight: 600,
+              fontSize: "0.85rem",
             }}
           >
             Back
           </button>
-          <span style={{ color: "white", fontWeight: 600, padding: "0 8px" }}>
+          <span
+            style={{
+              color: "white",
+              fontWeight: 600,
+              fontSize: "0.85rem",
+              padding: "0 8px",
+            }}
+          >
             {page} / {lastPage}
           </span>
           <button
@@ -136,6 +144,7 @@ function StockHistory() {
                   : "rgba(255,255,255,0.1)",
               color: page === lastPage ? "rgba(255,255,255,0.3)" : "white",
               fontWeight: 600,
+              fontSize: "0.85rem",
             }}
           >
             Next

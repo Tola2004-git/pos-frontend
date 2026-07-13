@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import apiClient from "../api/apiClient.js";
 import { getUsers, createUser, updateUser, deleteUser } from "../api/usersApi.js";
 import { checkPasswordStrength, compressImage } from "../utils/userHelpers.js";
 import {
@@ -40,11 +41,20 @@ export function useUsers() {
   const [passwordStrength, setPasswordStrength] = useState(defaultStrength);
   const [focusedField, setFocusedField] = useState("");
 
+  const [currentUser, setCurrentUser] = useState(null);
+
   const dropdownRef = useRef(null);
 
   useEffect(() => {
     fetchUsers();
   }, [search, roleFilter, page]);
+
+  useEffect(() => {
+    apiClient
+      .get("/me")
+      .then((res) => setCurrentUser(res.data))
+      .catch((err) => console.error("Failed to fetch current user:", err));
+  }, []);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -126,6 +136,7 @@ export function useUsers() {
   const handleEdit = async (user) => {
     setForm(defaultForm);
     setEditUser(user);
+    setError("");
     setModalLoading(true);
     setShowModal(true);
     await new Promise((r) => setTimeout(r, 500));
@@ -159,24 +170,21 @@ export function useUsers() {
   };
 
   const openAddModal = () => {
-    setModalLoading(true);
-    setShowModal(true);
+    setForm(defaultForm);
     setEditUser(null);
-    setTimeout(() => setModalLoading(false), 500);
+    setError("");
+    setPasswordStrength(defaultStrength);
+    setShowModal(true);
   };
 
   const closeModal = () => {
     setShowModal(false);
-    setError("");
-    setEditUser(null);
-    setModalLoading(false);
     setSubmitting(false);
-    setPasswordStrength(defaultStrength);
-    setForm(defaultForm);
   };
 
   return {
     users,
+    currentUser,
     search,
     loading,
     page,

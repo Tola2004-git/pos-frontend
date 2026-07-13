@@ -7,7 +7,7 @@ import ProductSearch from "../components/products/ProductSearch";
 import ProductTable from "../components/products/ProductTable";
 import ProductModal from "../components/products/ProductModal";
 import CategoryModal from "../components/products/CategoryModal";
-import { Box, Category } from "iconsax-react";
+import { Add, Box, Category } from "iconsax-react";
 
 function Products() {
   const {
@@ -38,7 +38,7 @@ function Products() {
     handleCatDelete,
     toggleCatStatus,
     resetCatForm,
-  } = useCategories();
+  } = useCategories("product");
 
   const [showModal, setShowModal] = useState(false);
   const [editProduct, setEditProduct] = useState(null);
@@ -47,12 +47,10 @@ function Products() {
   const [showCatModal, setShowCatModal] = useState(false);
   const [catModalLoading, setCatModalLoading] = useState(false);
 
-  const handleAddProduct = async () => {
+  const handleAddProduct = () => {
     setEditProduct(null);
-    setModalLoading(true);
-    setShowModal(true);
-    await new Promise((r) => setTimeout(r, 600));
     setModalLoading(false);
+    setShowModal(true);
   };
 
   const handleEdit = async (product) => {
@@ -115,7 +113,7 @@ function Products() {
               animation: "float 3s ease-in-out infinite",
             }}
           >
-            <Box size="40" color="#fff" variant="Linear" />
+            <Box size={40} color="white" variant="Linear" />
           </div>
           Products Management
         </h2>
@@ -131,11 +129,11 @@ function Products() {
               color: "white",
               display: "flex",
               alignItems: "center",
-              gap: "6px",
+              gap: "8px",
               fontSize: "0.9rem",
             }}
           >
-            <Category size="25" color="#fff" variant="bulk" />
+            <Category size={20} color="white" variant="Linear" />
             Categories
           </button>
           <button
@@ -147,10 +145,14 @@ function Products() {
               fontWeight: 600,
               display: "flex",
               alignItems: "center",
+              justifyContent: "center",
+              border: "none",
+              cursor: "pointer",
               gap: "8px",
+              fontSize: "0.9rem",
             }}
           >
-            <Box size="25" color="#fff" variant="bulk" />
+            <Add size={24} color="white" variant="Linear" />
             Add Product
           </button>
         </div>
@@ -178,6 +180,8 @@ function Products() {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          marginTop: "16px",
+          padding: "0 4px",
         }}
       >
         <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.85rem" }}>
@@ -196,11 +200,19 @@ function Products() {
                 page === 1 ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.1)",
               color: page === 1 ? "rgba(255,255,255,0.3)" : "white",
               fontWeight: 600,
+              fontSize: "0.85rem",
             }}
           >
             Back
           </button>
-          <span style={{ color: "white", fontWeight: 600, padding: "0 8px" }}>
+          <span
+            style={{
+              color: "white",
+              fontWeight: 600,
+              fontSize: "0.85rem",
+              padding: "0 8px",
+            }}
+          >
             {page} / {lastPage}
           </span>
           <button
@@ -217,6 +229,7 @@ function Products() {
                   : "rgba(255,255,255,0.1)",
               color: page === lastPage ? "rgba(255,255,255,0.3)" : "white",
               fontWeight: 600,
+              fontSize: "0.85rem",
             }}
           >
             Next

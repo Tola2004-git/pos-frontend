@@ -25,6 +25,9 @@ function Promotions() {
   const [showFilter, setShowFilter] = useState(false);
   const filterRef = useRef(null);
 
+  const PAGE_SIZE = 10;
+  const [page, setPage] = useState(1);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (filterRef.current && !filterRef.current.contains(event.target)) {
@@ -42,6 +45,13 @@ function Promotions() {
       statusFilter === "all" || String(Number(promo.status)) === statusFilter;
     return matchSearch && matchStatus;
   });
+
+  const lastPage = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const safePage = Math.min(page, lastPage);
+  const paginated = filtered.slice(
+    (safePage - 1) * PAGE_SIZE,
+    safePage * PAGE_SIZE,
+  );
 
   const openCreate = () => {
     setEditPromotion(null);
@@ -162,9 +172,15 @@ function Promotions() {
 
       <PromotionFilter
         search={search}
-        onSearchChange={(e) => setSearch(e.target.value)}
+        onSearchChange={(e) => {
+          setSearch(e.target.value);
+          setPage(1);
+        }}
         statusFilter={statusFilter}
-        onStatusChange={setStatusFilter}
+        onStatusChange={(value) => {
+          setStatusFilter(value);
+          setPage(1);
+        }}
         showFilter={showFilter}
         setShowFilter={setShowFilter}
         filterRef={filterRef}
@@ -186,12 +202,74 @@ function Promotions() {
       )}
 
       <PromotionTable
-        promotions={filtered}
+        promotions={paginated}
         loading={loading}
         onEdit={openEdit}
         onDelete={handleDelete}
         onToggleStatus={handleToggleStatus}
       />
+
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginTop: "16px",
+          padding: "0 4px",
+        }}
+      >
+        <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.85rem" }}>
+          Total: {filtered.length} promotions
+        </span>
+        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+          <button
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={safePage === 1}
+            style={{
+              padding: "8px 16px",
+              borderRadius: "10px",
+              border: "none",
+              cursor: safePage === 1 ? "not-allowed" : "pointer",
+              background:
+                safePage === 1 ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.1)",
+              color: safePage === 1 ? "rgba(255,255,255,0.3)" : "white",
+              fontWeight: 600,
+              fontSize: "0.85rem",
+            }}
+          >
+            Back
+          </button>
+          <span
+            style={{
+              color: "white",
+              fontWeight: 600,
+              fontSize: "0.85rem",
+              padding: "0 8px",
+            }}
+          >
+            {safePage} / {lastPage}
+          </span>
+          <button
+            onClick={() => setPage((p) => Math.min(lastPage, p + 1))}
+            disabled={safePage === lastPage}
+            style={{
+              padding: "8px 16px",
+              borderRadius: "10px",
+              border: "none",
+              cursor: safePage === lastPage ? "not-allowed" : "pointer",
+              background:
+                safePage === lastPage
+                  ? "rgba(255,255,255,0.05)"
+                  : "rgba(255,255,255,0.1)",
+              color: safePage === lastPage ? "rgba(255,255,255,0.3)" : "white",
+              fontWeight: 600,
+              fontSize: "0.85rem",
+            }}
+          >
+            Next
+          </button>
+        </div>
+      </div>
 
       <PromotionModal
         show={showModal}

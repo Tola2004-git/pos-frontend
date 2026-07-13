@@ -8,6 +8,7 @@ import { Profile2User, UserCirlceAdd } from "iconsax-react";
 function Users() {
   const {
     users,
+    currentUser,
     search,
     loading,
     roleFilter,
@@ -106,6 +107,7 @@ function Users() {
             padding: "10px 20px",
             borderRadius: "12px",
             fontWeight: 600,
+            fontSize: "0.9rem",
             display: "flex",
             alignItems: "center",
             gap: "8px",
@@ -131,6 +133,7 @@ function Users() {
         loading={loading}
         onEdit={handleEdit}
         onDelete={handleDelete}
+        currentUser={currentUser}
       />
 
       <div
@@ -158,11 +161,19 @@ function Users() {
                 page === 1 ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.1)",
               color: page === 1 ? "rgba(255,255,255,0.3)" : "white",
               fontWeight: 600,
+              fontSize: "0.85rem",
             }}
           >
             Back
           </button>
-          <span style={{ color: "white", fontWeight: 600, padding: "0 8px" }}>
+          <span
+            style={{
+              color: "white",
+              fontWeight: 600,
+              fontSize: "0.85rem",
+              padding: "0 8px",
+            }}
+          >
             {page} / {lastPage}
           </span>
           <button
@@ -179,6 +190,7 @@ function Users() {
                   : "rgba(255,255,255,0.1)",
               color: page === lastPage ? "rgba(255,255,255,0.3)" : "white",
               fontWeight: 600,
+              fontSize: "0.85rem",
             }}
           >
             Next

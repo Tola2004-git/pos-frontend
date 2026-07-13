@@ -9,6 +9,7 @@ import {
   Grid3,
   Card,
   TicketDiscount,
+  Cake,
 } from "iconsax-react";
 
 export const MENU_ITEMS = [
@@ -31,6 +32,11 @@ export const MENU_ITEMS = [
     key: "stockHistory",
     path: "/inventory/history",
     icon: ReceiptSearch,
+  },
+  {
+    key: "ingredients",
+    path: "/ingredients",
+    icon: Cake,
   },
   {
     key: "orders",

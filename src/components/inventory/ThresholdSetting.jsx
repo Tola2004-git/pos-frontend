@@ -29,9 +29,10 @@ export default function ThresholdSetting({
           alignItems: "center",
           gap: "6px",
           fontWeight: 600,
+          fontSize: "0.9rem",
         }}
       >
-        <Notification size="20" color="#fff" variant="Outline"/>
+        <Notification size="20" color="#fff" variant="Outline" />
         Low Stock: {threshold}
       </button>
 
@@ -73,6 +74,7 @@ export default function ThresholdSetting({
               padding: "8px",
               borderRadius: "8px",
               fontWeight: 600,
+              fontSize: "0.9rem",
             }}
           >
             Save

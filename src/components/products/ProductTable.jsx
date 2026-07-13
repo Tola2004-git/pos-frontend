@@ -1,69 +1,172 @@
-import { colors, glassCard } from "../../utils/styles";
+import { useState } from "react";
+import { glassCard } from "../../utils/styles";
 import { SkeletonProductTable } from "../ui/SkeletonProduct";
 import { Edit, Trash, Gallery } from "iconsax-react";
 
-function ProductTable({ products, loading, page, onEdit, onDelete }) {
+const COLUMNS = [
+  "#",
+  "Image",
+  "Name",
+  "Category",
+  "SKU",
+  "QTY",
+  "Price",
+  "Barcode",
+  "Status",
+  "Actions",
+];
+
+function ProductImagePlaceholder() {
   return (
     <div
       style={{
-        ...glassCard,
-        borderRadius: "20px",
-        overflow: "hidden",
-        marginBottom: "16px",
+        width: "44px",
+        height: "44px",
+        borderRadius: "10px",
+        background: "rgba(255,255,255,0.06)",
+        border: "1px solid rgba(255,255,255,0.1)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
-      <table style={{ width: "100%", borderCollapse: "collapse" }}>
-        <thead>
-          <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
-            {[
-              "#",
-              "Image",
-              "Name",
-              "Category",
-              "SKU",
-              "QTY",
-              "Price",
-              "Barcode",
-              "Status",
-              "Actions",
-            ].map((h) => (
-              <th
-                key={h}
+      <Gallery size={22} color="white" variant="Bulk" />
+    </div>
+  );
+}
+
+function ProductImage({ image, name }) {
+  const [failed, setFailed] = useState(false);
+
+  if (!image || failed) {
+    return <ProductImagePlaceholder />;
+  }
+
+  return (
+    <div
+      style={{
+        width: "44px",
+        height: "44px",
+        borderRadius: "10px",
+        overflow: "hidden",
+      }}
+    >
+      <img
+        src={image}
+        alt={name}
+        onError={() => setFailed(true)}
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "contain",
+          objectPosition: "top",
+        }}
+      />
+    </div>
+  );
+}
+
+function ProductTable({ products, loading, page, onEdit, onDelete }) {
+  if (loading) {
+    return (
+      <div style={{ ...glassCard, borderRadius: 16, overflow: "hidden", marginBottom: "16px" }}>
+        <div className="table-scroll-x" style={{ overflowX: "auto" }}>
+          <table
+            className="min-w-[1100px]"
+            style={{ width: "100%", borderCollapse: "collapse", color: "white", fontSize: "0.85rem" }}
+          >
+            <thead>
+              <tr
                 style={{
-                  padding: "16px 14px",
-                  textAlign: "left",
-                  color: colors.whiteFull,
-                  fontWeight: 600,
-                  fontSize: "1.2rem",
+                  borderBottom: "1px solid rgba(255,255,255,0.12)",
+                  background: "rgba(255,255,255,0.03)",
                 }}
               >
-                {h}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {loading ? (
-            <SkeletonProductTable rows={8} />
-          ) : products.length === 0 ? (
-            <tr>
-              <td
-                colSpan={10}
-                style={{
-                  padding: "40px",
-                  textAlign: "center",
-                  color: "rgba(255,255,255,0.5)",
-                }}
-              >
-                No products found
-              </td>
+                {COLUMNS.map((col) => (
+                  <th
+                    key={col}
+                    style={{
+                      padding: "12px 14px",
+                      textAlign: col === "Name" ? "left" : "center",
+                      fontWeight: 600,
+                      color: "white",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {col}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              <SkeletonProductTable rows={8} />
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  }
+
+  if (products.length === 0) {
+    return (
+      <div
+        style={{
+          ...glassCard,
+          borderRadius: 16,
+          padding: "48px 24px",
+          textAlign: "center",
+          color: "rgba(255,255,255,0.5)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "8px",
+          marginBottom: "16px",
+        }}
+      >
+        <Gallery size={80} color="rgba(255,255,255,0.5)" variant="Linear" />
+        No products found
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ ...glassCard, borderRadius: 16, overflow: "hidden", marginBottom: "16px" }}>
+      <div className="table-scroll-x" style={{ overflowX: "auto" }}>
+        <table
+          className="min-w-[1100px]"
+          style={{ width: "100%", borderCollapse: "collapse", color: "white", fontSize: "0.85rem" }}
+        >
+          <thead>
+            <tr
+              style={{
+                borderBottom: "1px solid rgba(255,255,255,0.12)",
+                background: "rgba(255,255,255,0.03)",
+              }}
+            >
+              {COLUMNS.map((col) => (
+                <th
+                  key={col}
+                  style={{
+                    padding: "12px 14px",
+                    textAlign: col === "Name" ? "left" : "center",
+                    fontWeight: 600,
+                    color: "white",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {col}
+                </th>
+              ))}
             </tr>
-          ) : (
-            products.map((product, index) => (
+          </thead>
+          <tbody>
+            {products.map((product, index) => (
               <tr
                 key={product.id}
                 style={{
-                  borderBottom: "1px solid rgba(255,255,255,0.05)",
+                  height: "64px",
+                  borderBottom: "1px solid rgba(255,255,255,0.06)",
                   transition: "background 0.2s",
                 }}
                 onMouseEnter={(e) =>
@@ -76,67 +179,39 @@ function ProductTable({ products, loading, page, onEdit, onDelete }) {
                 <td
                   style={{
                     padding: "12px 14px",
+                    textAlign: "center",
                     color: "rgba(255,255,255,0.5)",
-                    fontSize: "0.85rem",
                   }}
                 >
                   {(page - 1) * 10 + index + 1}
                 </td>
-                <td style={{ padding: "12px 14px" }}>
-                  {product.image ? (
-                    <div
-                      style={{
-                        width: "50px",
-                        height: "50px",
-                        borderRadius: "10px",
-                        overflow: "hidden",
-                      }}
-                    >
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "contain",
-                          objectPosition: "top",
-                        }}
-                      />
-                    </div>
-                  ) : (
-                    <div
-                      style={{
-                        width: "50px",
-                        height: "50px",
-                        borderRadius: "10px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: "1.2rem",
-                      }}
-                    >
-                      <Gallery size="30" color="#fff" variant="bulk"/>
-                    </div>
-                  )}
+                <td style={{ padding: "12px 14px", textAlign: "center" }}>
+                  <div style={{ display: "flex", justifyContent: "center" }}>
+                    <ProductImage image={product.image} name={product.name} />
+                  </div>
                 </td>
                 <td
                   style={{
                     padding: "12px 14px",
+                    textAlign: "left",
                     color: "white",
                     fontWeight: 500,
                   }}
                 >
-                  {product.name}
+                  <div className="block max-w-[180px] truncate" title={product.name}>
+                    {product.name}
+                  </div>
                 </td>
-                <td style={{ padding: "12px 14px" }}>
+                <td style={{ padding: "12px 14px", textAlign: "center" }}>
                   <span
                     style={{
-                      padding: "3px 10px",
-                      borderRadius: "20px",
-                      fontSize: "0.78rem",
+                      display: "inline-flex",
+                      padding: "6px 12px",
+                      borderRadius: 999,
+                      fontSize: "0.8rem",
                       fontWeight: 600,
                       color: "#3498db",
-                      border: "#3498db 1px solid",
+                      background: "rgba(52,152,219,0.12)",
                     }}
                   >
                     {product.category?.name || "N/A"}
@@ -145,20 +220,20 @@ function ProductTable({ products, loading, page, onEdit, onDelete }) {
                 <td
                   style={{
                     padding: "12px 14px",
-                    color: "rgba(255,255,255,0.6)",
-                    fontSize: "0.85rem",
+                    textAlign: "center",
+                    color: "rgba(255,255,255,0.7)",
                   }}
                 >
                   {product.sku || "N/A"}
                 </td>
-                <td style={{ padding: "12px 14px" }}>
+                <td style={{ padding: "12px 14px", textAlign: "center" }}>
                   <span
                     style={{
                       color:
                         product.qty <= 5
                           ? "#e74c3c"
                           : product.qty <= 20
-                            ? colors.whiteFull
+                            ? "white"
                             : "#2ecc71",
                       fontWeight: 600,
                     }}
@@ -169,7 +244,8 @@ function ProductTable({ products, loading, page, onEdit, onDelete }) {
                 <td
                   style={{
                     padding: "12px 14px",
-                    color: colors.whiteFull,
+                    textAlign: "center",
+                    color: "white",
                     fontWeight: 600,
                   }}
                 >
@@ -178,28 +254,33 @@ function ProductTable({ products, loading, page, onEdit, onDelete }) {
                 <td
                   style={{
                     padding: "12px 14px",
-                    color: "rgba(255,255,255,0.6)",
-                    fontSize: "0.85rem",
+                    textAlign: "center",
+                    color: "rgba(255,255,255,0.7)",
                   }}
                 >
                   {product.barcode || "N/A"}
                 </td>
-                <td style={{ padding: "12px 14px" }}>
+                <td style={{ padding: "12px 14px", textAlign: "center" }}>
                   <span
                     style={{
-                      padding: "3px 10px",
-                      borderRadius: "20px",
-                      fontSize: "0.78rem",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: "6px 12px",
+                      borderRadius: 999,
+                      fontSize: "0.8rem",
                       fontWeight: 600,
                       color: product.status ? "#2ecc71" : "#e74c3c",
-                      border: `1px solid ${product.status ? "#2ecc71" : "#e74c3c"}`,
+                      background: product.status
+                        ? "rgba(46,204,113,0.12)"
+                        : "rgba(231,76,60,0.12)",
                     }}
                   >
                     {product.status ? "Active" : "Inactive"}
                   </span>
                 </td>
-                <td style={{ padding: "12px 14px" }}>
-                  <div style={{ display: "flex", gap: "6px" }}>
+                <td style={{ padding: "12px 14px", textAlign: "center" }}>
+                  <div style={{ display: "flex", gap: 16, justifyContent: "center" }}>
                     <div
                       style={{ position: "relative", display: "inline-block" }}
                       onMouseEnter={(e) =>
@@ -214,19 +295,19 @@ function ProductTable({ products, loading, page, onEdit, onDelete }) {
                       }
                     >
                       <button
+                        type="button"
                         onClick={() => onEdit(product)}
+                        className="duration-200 hover:scale-110 transition-transform"
                         style={{
-                          padding: "6px 10px",
-                          borderRadius: "8px",
                           border: "none",
+                          borderRadius: 8,
                           cursor: "pointer",
                           background: "transparent",
-                          display: "flex",
+                          display: "inline-flex",
                           alignItems: "center",
                         }}
-                        className="duration-200 hover:scale-110 transition-transform"
                       >
-                        <Edit size="20" color="#fff" variant="Outline"/>
+                        <Edit size={20} color="white" variant="Linear" />
                       </button>
                       <div
                         className="tooltip"
@@ -244,10 +325,10 @@ function ProductTable({ products, loading, page, onEdit, onDelete }) {
                           pointerEvents: "none",
                           opacity: 0,
                           transition: "opacity 0.2s",
-                          border: "1px solid rgba(255,255,255,0.1)",
+                          marginBottom: 5,
                         }}
                       >
-                        Edit Product
+                        Edit
                       </div>
                     </div>
                     <div
@@ -264,20 +345,19 @@ function ProductTable({ products, loading, page, onEdit, onDelete }) {
                       }
                     >
                       <button
+                        type="button"
                         onClick={() => onDelete(product.id)}
+                        className="duration-200 hover:scale-110 transition-transform"
                         style={{
-                          padding: "6px 10px",
-                          borderRadius: "8px",
                           border: "none",
+                          borderRadius: 8,
                           cursor: "pointer",
                           background: "transparent",
-                          display: "flex",
+                          display: "inline-flex",
                           alignItems: "center",
-                          justifyContent: "center",
                         }}
-                        className="duration-200 hover:scale-110 transition-transform"
                       >
-                        <Trash size="20" color="#fff" variant="outline"/>
+                        <Trash size={20} color="white" variant="Linear" />
                       </button>
                       <div
                         className="tooltip"
@@ -295,18 +375,19 @@ function ProductTable({ products, loading, page, onEdit, onDelete }) {
                           pointerEvents: "none",
                           opacity: 0,
                           transition: "opacity 0.2s",
+                          marginBottom: 5,
                         }}
                       >
-                        Delete Product
+                        Delete
                       </div>
                     </div>
                   </div>
                 </td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

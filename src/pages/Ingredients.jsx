@@ -1,21 +1,28 @@
+import { useState } from "react";
 import Layout from "../components/layout/Layout";
-import { glass, glassCard, colors } from "../utils/styles";
-import { useInventory } from "../hooks/useInventory";
-import { getStockStatus } from "../utils/stockHelpers";
-import ThresholdSetting from "../components/inventory/ThresholdSetting";
+import { glass, glassCard } from "../utils/styles";
+import { useIngredients } from "../hooks/useIngredients";
+import { useCategories } from "../hooks/useCategories";
+import IngredientsTable from "../components/ingredients/IngredientsTable";
+import IngredientModal from "../components/ingredients/IngredientModal";
+import RestockModal from "../components/ingredients/RestockModal";
 import StockFilterDropdown from "../components/inventory/StockFilterDropdown";
-import InventoryTable from "../components/inventory/InventoryTable";
-import RestockModal from "../components/inventory/RestockModal";
-
-import { BoxRemove, BoxSearch, BoxTick, Box, Refresh2, SearchNormal1 } from "iconsax-react";
+import CategoryModal from "../components/products/CategoryModal";
+import {
+  Add,
+  Cake,
+  BoxTick,
+  BoxSearch,
+  BoxRemove,
+  SearchNormal1,
+  Category,
+} from "iconsax-react";
 
 const STAT_CARDS = [
-  {
-    key: "in_stock",
-    label: "IN STOCK",
-    color: "#2ecc71",
-    StatIcon: BoxTick,
-  },
+  { key: "in_stock", 
+    label: "IN STOCK", 
+    color: "#2ecc71", 
+    StatIcon: BoxTick },
   {
     key: "low_stock",
     label: "LOW STOCK",
@@ -30,14 +37,55 @@ const STAT_CARDS = [
   },
 ];
 
-function Inventory() {
-  const inv = useInventory();
+function Ingredients() {
+  const ing = useIngredients();
+  const {
+    categories,
+    catLoading,
+    editCat,
+    setEditCat,
+    catForm,
+    setCatForm,
+    catError,
+    catSubmitting,
+    handleCatSubmit,
+    handleCatDelete,
+    toggleCatStatus,
+    resetCatForm,
+  } = useCategories("ingredient");
 
-  const filteredProducts = inv.allProducts.filter(
-    (p) =>
-      p.name.toLowerCase().includes(inv.restockSearch.toLowerCase()) ||
-      (p.sku && p.sku.toLowerCase().includes(inv.restockSearch.toLowerCase())),
-  );
+  const [showModal, setShowModal] = useState(false);
+  const [editIngredient, setEditIngredient] = useState(null);
+  const [modalLoading, setModalLoading] = useState(false);
+
+  const [showCatModal, setShowCatModal] = useState(false);
+  const [catModalLoading, setCatModalLoading] = useState(false);
+
+  const handleAdd = () => {
+    setEditIngredient(null);
+    setModalLoading(false);
+    setShowModal(true);
+  };
+
+  const handleEdit = async (ingredient) => {
+    setEditIngredient(ingredient);
+    setModalLoading(true);
+    setShowModal(true);
+    await new Promise((r) => setTimeout(r, 400));
+    setModalLoading(false);
+  };
+
+  const handleOpenCatModal = async () => {
+    setCatModalLoading(true);
+    setShowCatModal(true);
+    await new Promise((r) => setTimeout(r, 600));
+    setCatModalLoading(false);
+  };
+
+  const handleCloseCatModal = () => {
+    setShowCatModal(false);
+    resetCatForm();
+  };
 
   return (
     <Layout>
@@ -51,27 +99,6 @@ function Inventory() {
           @keyframes spin {
             from { transform: rotate(0deg); }
             to   { transform: rotate(360deg); }
-          }
-          .floating-wrapper {
-            line-height: 0;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-          }
-          .floating-wrapper img {
-            display: block;
-            animation: float 2s ease-in-out infinite;
-            transform-origin: center center;
-            transform: translateZ(0);
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
-            -webkit-font-smoothing: antialiased;
-            filter: blur(0px);
-          }
-          .modal-icon {
-            width: 40px;
-            height: 40px;
-            display: block;
           }
         `}
       </style>
@@ -96,28 +123,39 @@ function Inventory() {
             gap: "10px",
           }}
         >
-          <div className="floating-wrapper">
-            <Box
-              size="40"
-              color="#fff"
-              variant="bulk"
-              style={{ animation: "float 3s ease-in-out infinite" }}
-            />
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              animation: "float 3s ease-in-out infinite",
+            }}
+          >
+            <Cake size={40} color="white" variant="Outline" />
           </div>
-          Inventory Management
+          Ingredients Management
         </h2>
         <div style={{ display: "flex", gap: "10px" }}>
-          <ThresholdSetting
-            thresholdRef={inv.thresholdRef}
-            threshold={inv.threshold}
-            showThreshold={inv.showThreshold}
-            setShowThreshold={inv.setShowThreshold}
-            tempThreshold={inv.tempThreshold}
-            setTempThreshold={inv.setTempThreshold}
-            saveThreshold={inv.saveThreshold}
-          />
           <button
-            onClick={() => inv.openRestock()}
+            onClick={handleOpenCatModal}
+            style={{
+              ...glassCard,
+              padding: "10px 18px",
+              borderRadius: "12px",
+              fontWeight: 600,
+              cursor: "pointer",
+              color: "white",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              fontSize: "0.9rem",
+            }}
+          >
+            <Category size={20} color="white" variant="Linear" />
+            Categories
+          </button>
+          <button
+            onClick={handleAdd}
             className="btn-shine-blue"
             style={{
               padding: "10px 20px",
@@ -132,22 +170,25 @@ function Inventory() {
               fontSize: "0.9rem",
             }}
           >
-            <Refresh2 size="20" color="#fff" variant="bulk" />
-            Restock
+            <Add size={24} color="white" variant="Linear" />
+            Add Ingredient
           </button>
         </div>
       </div>
 
+      {/* Stat Cards */}
       <div style={{ display: "flex", gap: "16px", marginBottom: "16px" }}>
         {STAT_CARDS.map((s) => {
           const IconComponent = s.StatIcon;
-          const count = inv.allProducts.filter((p) =>
-            s.key === "in_stock"
-              ? p.qty > inv.threshold
+          const count = ing.allIngredients.filter((i) => {
+            const qty = Number(i.quantity);
+            const threshold = Number(i.low_stock_threshold);
+            return s.key === "in_stock"
+              ? qty > threshold
               : s.key === "low_stock"
-                ? p.qty > 0 && p.qty <= inv.threshold
-                : p.qty <= 0,
-          ).length;
+                ? qty > 0 && qty <= threshold
+                : qty <= 0;
+          }).length;
           return (
             <div
               key={s.key}
@@ -196,7 +237,7 @@ function Inventory() {
                       fontSize: "0.82rem",
                     }}
                   >
-                    Items
+                    Ingredients
                   </span>
                 </div>
               </div>
@@ -237,11 +278,11 @@ function Inventory() {
           <SearchNormal1 size="20" color="#fff" variant="linear" />
           <input
             type="text"
-            placeholder="Search by product name or SKU..."
-            value={inv.search}
+            placeholder="Search by ingredient name or supplier..."
+            value={ing.search}
             onChange={(e) => {
-              inv.setSearch(e.target.value);
-              inv.setPage(1);
+              ing.setSearch(e.target.value);
+              ing.setPage(1);
             }}
             style={{
               border: "none",
@@ -255,22 +296,23 @@ function Inventory() {
           />
         </div>
         <StockFilterDropdown
-          stockDropdownRef={inv.stockDropdownRef}
-          stockFilter={inv.stockFilter}
-          setStockFilter={inv.setStockFilter}
-          setPage={inv.setPage}
-          showFilterDropdown={inv.showFilterDropdown}
-          setShowFilterDropdown={inv.setShowFilterDropdown}
+          stockDropdownRef={ing.stockDropdownRef}
+          stockFilter={ing.stockFilter}
+          setStockFilter={ing.setStockFilter}
+          setPage={ing.setPage}
+          showFilterDropdown={ing.showFilterDropdown}
+          setShowFilterDropdown={ing.setShowFilterDropdown}
         />
       </div>
 
       {/* Table */}
-      <InventoryTable
-        products={inv.products}
-        loading={inv.loading}
-        page={inv.page}
-        threshold={inv.threshold}
-        openRestock={inv.openRestock}
+      <IngredientsTable
+        ingredients={ing.ingredients}
+        loading={ing.loading}
+        page={ing.page}
+        onEdit={handleEdit}
+        onDelete={ing.handleDelete}
+        onRestock={ing.openRestock}
       />
 
       {/* Pagination */}
@@ -279,25 +321,27 @@ function Inventory() {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          marginTop: "16px",
+          padding: "0 4px",
         }}
       >
         <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.85rem" }}>
-          Total: {inv.total} products
+          Total: {ing.total} ingredients
         </span>
         <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
           <button
-            onClick={() => inv.setPage((p) => Math.max(1, p - 1))}
-            disabled={inv.page === 1}
+            onClick={() => ing.setPage((p) => Math.max(1, p - 1))}
+            disabled={ing.page === 1}
             style={{
               padding: "8px 16px",
               borderRadius: "10px",
               border: "none",
-              cursor: inv.page === 1 ? "not-allowed" : "pointer",
+              cursor: ing.page === 1 ? "not-allowed" : "pointer",
               background:
-                inv.page === 1
+                ing.page === 1
                   ? "rgba(255,255,255,0.05)"
                   : "rgba(255,255,255,0.1)",
-              color: inv.page === 1 ? "rgba(255,255,255,0.3)" : "white",
+              color: ing.page === 1 ? "rgba(255,255,255,0.3)" : "white",
               fontWeight: 600,
               fontSize: "0.85rem",
             }}
@@ -312,22 +356,22 @@ function Inventory() {
               padding: "0 8px",
             }}
           >
-            {inv.page} / {inv.lastPage}
+            {ing.page} / {ing.lastPage}
           </span>
           <button
-            onClick={() => inv.setPage((p) => Math.min(inv.lastPage, p + 1))}
-            disabled={inv.page === inv.lastPage}
+            onClick={() => ing.setPage((p) => Math.min(ing.lastPage, p + 1))}
+            disabled={ing.page === ing.lastPage}
             style={{
               padding: "8px 16px",
               borderRadius: "10px",
               border: "none",
-              cursor: inv.page === inv.lastPage ? "not-allowed" : "pointer",
+              cursor: ing.page === ing.lastPage ? "not-allowed" : "pointer",
               background:
-                inv.page === inv.lastPage
+                ing.page === ing.lastPage
                   ? "rgba(255,255,255,0.05)"
                   : "rgba(255,255,255,0.1)",
               color:
-                inv.page === inv.lastPage ? "rgba(255,255,255,0.3)" : "white",
+                ing.page === ing.lastPage ? "rgba(255,255,255,0.3)" : "white",
               fontWeight: 600,
               fontSize: "0.85rem",
             }}
@@ -337,29 +381,53 @@ function Inventory() {
         </div>
       </div>
 
-      {/* Restock Modal */}
+      {showModal && (
+        <IngredientModal
+          editIngredient={editIngredient}
+          categories={categories}
+          modalLoading={modalLoading}
+          onClose={() => {
+            setShowModal(false);
+            setEditIngredient(null);
+          }}
+          onSuccess={() => {
+            ing.fetchIngredients();
+            ing.fetchAllIngredients();
+          }}
+        />
+      )}
+
       <RestockModal
-        loadingRestock={inv.loadingRestock}
-        showRestock={inv.showRestock}
-        restockDropdownRef={inv.restockDropdownRef}
-        restockSearch={inv.restockSearch}
-        setRestockSearch={inv.setRestockSearch}
-        setRestockForm={inv.setRestockForm}
-        setSelectedProduct={inv.setSelectedProduct}
-        showDropdown={inv.showDropdown}
-        setShowDropdown={inv.setShowDropdown}
-        filteredProducts={filteredProducts}
-        handleSelectProduct={inv.handleSelectProduct}
-        selectedProduct={inv.selectedProduct}
-        threshold={inv.threshold}
-        restockForm={inv.restockForm}
-        restockError={inv.restockError}
-        submitting={inv.submitting}
-        handleRestock={inv.handleRestock}
-        closeRestock={inv.closeRestock}
+        showRestock={ing.showRestock}
+        selectedIngredient={ing.selectedIngredient}
+        restockForm={ing.restockForm}
+        setRestockForm={ing.setRestockForm}
+        restockError={ing.restockError}
+        submitting={ing.submitting}
+        handleRestock={ing.handleRestock}
+        closeRestock={ing.closeRestock}
       />
+
+      {showCatModal && (
+        <CategoryModal
+          categories={categories}
+          catLoading={catLoading}
+          catModalLoading={catModalLoading}
+          editCat={editCat}
+          setEditCat={setEditCat}
+          catForm={catForm}
+          setCatForm={setCatForm}
+          catError={catError}
+          catSubmitting={catSubmitting}
+          onSubmit={handleCatSubmit}
+          onDelete={handleCatDelete}
+          onToggleStatus={toggleCatStatus}
+          onClose={handleCloseCatModal}
+          resetCatForm={resetCatForm}
+        />
+      )}
     </Layout>
   );
 }
 
-export default Inventory;
+export default Ingredients;

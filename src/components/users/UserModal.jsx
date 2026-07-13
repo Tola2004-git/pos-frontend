@@ -1,27 +1,19 @@
+import { useEffect, useState } from "react";
 import { RiEyeLine, RiEyeOffLine } from "react-icons/ri";
 import { glass, colors, glassCard } from "../../utils/styles";
 import { SkeletonModal } from "../ui/SkeletonUser";
 import { isValidEmail } from "../../utils/userHelpers";
-import personIcon from "../../assets/icons/self-employed.png";
-import addIcon from "../../assets/icons/add-group.png";
-import emailIcon from "../../assets/icons/email.png";
-import passwordIcon from "../../assets/icons/password.png";
-import usernameIcon from "../../assets/icons/user.png";
 import {
   AddCircle,
-  BoxAdd,
-  BoxTick,
   Camera,
   Eye,
   EyeSlash,
   InfoCircle,
+  Key,
   LampCharge,
-  Lock,
-  Profile,
-  Profile2User,
   Sms,
   TickCircle,
-  TickSquare,
+  User,
   UserAdd,
   UserEdit,
 } from "iconsax-react";
@@ -44,11 +36,6 @@ const labelStyle = {
   marginBottom: "6px",
 };
 
-const iconStyle = {
-  animation: "float 2s ease-in-out infinite",
-  display: "block",
-};
-
 function UserModal({
   showModal,
   modalLoading,
@@ -67,7 +54,24 @@ function UserModal({
   handleSubmit,
   closeModal,
 }) {
-  if (!showModal) return null;
+  const [isMounted, setIsMounted] = useState(showModal);
+  const [isVisible, setIsVisible] = useState(showModal);
+
+  useEffect(() => {
+    let timeout;
+
+    if (showModal) {
+      setIsMounted(true);
+      requestAnimationFrame(() => setIsVisible(true));
+    } else {
+      setIsVisible(false);
+      timeout = setTimeout(() => setIsMounted(false), 300);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [showModal]);
+
+  if (!isMounted) return null;
 
   const iconStyle = (field) => ({
     position: "absolute",
@@ -96,6 +100,10 @@ function UserModal({
         alignItems: "center",
         justifyContent: "center",
         padding: "20px",
+        opacity: isVisible ? 1 : 0,
+        animation: isVisible ? "confirm-fade-in 0.2s ease forwards" : "none",
+        transition: "opacity 220ms ease",
+        pointerEvents: showModal ? "auto" : "none",
       }}
     >
       <div
@@ -107,6 +115,12 @@ function UserModal({
           maxWidth: "500px",
           maxHeight: "90vh",
           overflowY: "auto",
+          transform: isVisible ? "translateY(0)" : "translateY(24px)",
+          opacity: isVisible ? 1 : 0,
+          animation: isVisible
+            ? "confirm-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards"
+            : "none",
+          transition: "transform 220ms ease, opacity 220ms ease",
         }}
       >
         <div
@@ -138,7 +152,7 @@ function UserModal({
                 color: colors.white,
                 fontWeight: 600,
                 margin: 0,
-                fontSize: "25px",
+                fontSize: "1.5rem",
               }}
             >
               {editUser ? "Edit User" : "Add User"}
@@ -159,6 +173,19 @@ function UserModal({
             ✕
           </button>
         </div>
+
+        <style>
+          {`
+            @keyframes confirm-fade-in {
+              from { opacity: 0; }
+              to   { opacity: 1; }
+            }
+            @keyframes confirm-pop {
+              from { opacity: 0; transform: scale(0.95) translateY(20px); }
+              to   { opacity: 1; transform: scale(1) translateY(0); }
+            }
+          `}
+        </style>
 
         {modalLoading ? (
           <SkeletonModal />
@@ -247,7 +274,7 @@ function UserModal({
             <div style={{ marginBottom: "16px" }}>
               <label style={labelStyle}>Full Name</label>
               <div style={{ position: "relative" }}>
-                <Profile
+                <User
                   size={18}
                   color="#fff"
                   variant="bulk"
@@ -335,10 +362,10 @@ function UserModal({
                 {editUser ? "New Password (leave blank to keep)" : "Password"}
               </label>
               <div style={{ position: "relative" }}>
-                <Lock
+                <Key
                   size={18}
                   color="#fff"
-                  variant="bulk"
+                  variant="Outline"
                   style={iconStyle("password")}
                 />
                 <input
@@ -455,18 +482,29 @@ function UserModal({
 
             <div style={{ marginBottom: "24px" }}>
               <label style={labelStyle}>Role</label>
-              <select
-                style={{ ...inputStyle, cursor: "pointer" }}
-                value={form.role}
-                onChange={(e) => setForm({ ...form, role: e.target.value })}
-              >
-                <option value="cashier" style={{ background: "#2c3e50" }}>
-                  Cashier
-                </option>
-                <option value="admin" style={{ background: "#2c3e50" }}>
-                  Admin
-                </option>
-              </select>
+              {editUser?.role === "admin" ? (
+                <div
+                  style={{
+                    ...inputStyle,
+                    display: "flex",
+                    alignItems: "center",
+                    color: "rgba(255,255,255,0.6)",
+                  }}
+                >
+                  Admin (protected role)
+                </div>
+              ) : (
+                <select
+                  style={{ ...inputStyle, cursor: "pointer" }}
+                  value="cashier"
+                  disabled
+                  onChange={(e) => setForm({ ...form, role: e.target.value })}
+                >
+                  <option value="cashier" style={{ background: "#2c3e50" }}>
+                    Cashier
+                  </option>
+                </select>
+              )}
             </div>
 
             <div style={{ display: "flex", gap: "12px" }}>
@@ -480,6 +518,7 @@ function UserModal({
                   color: "white",
                   cursor: submitting ? "not-allowed" : "pointer",
                   fontWeight: 500,
+                  fontSize: "0.9rem",
                   opacity: submitting ? 0.5 : 1,
                 }}
               >
@@ -498,6 +537,7 @@ function UserModal({
                   alignItems: "center",
                   justifyContent: "center",
                   gap: "8px",
+                  fontSize: "0.9rem",
                   opacity: submitting ? 0.8 : 1,
                   cursor: submitting ? "not-allowed" : "pointer",
                 }}

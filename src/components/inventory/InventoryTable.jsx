@@ -32,7 +32,11 @@ export default function InventoryTable({
         marginBottom: "16px",
       }}
     >
-      <table style={{ width: "100%", borderCollapse: "collapse" }}>
+      <div className="table-scroll-x" style={{ overflowX: "auto" }}>
+        <table
+          className="min-w-[1000px]"
+          style={{ width: "100%", borderCollapse: "collapse" }}
+        >
         <thead>
           <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
             {HEADERS.map((h) => (
@@ -43,7 +47,7 @@ export default function InventoryTable({
                   textAlign: "left",
                   color: colors.whiteFull,
                   fontWeight: 600,
-                  fontSize: "1.2rem",
+                  fontSize: "0.9rem",
                 }}
               >
                 {h}
@@ -202,9 +206,10 @@ export default function InventoryTable({
                       }
                     >
                       <button
+                        type="button"
                         onClick={() => openRestock(product)}
                         style={{
-                          padding: "6px 14px",
+                          padding: "6px",
                           borderRadius: "8px",
                           border: "none",
                           cursor: "pointer",
@@ -244,7 +249,8 @@ export default function InventoryTable({
             })
           )}
         </tbody>
-      </table>
+        </table>
+      </div>
     </div>
   );
 }

@@ -1,43 +1,42 @@
 import { useEffect, useState } from "react";
-import imageCompression from "browser-image-compression";
 import { alertSuccess, alertError } from "../../utils/alert.jsx";
 import { glass, glassCard, colors } from "../../utils/styles.js";
-import { SkeletonProductModal } from "../ui/SkeletonProduct.jsx";
-import api from "../../api/productApi.js";
+import { SkeletonIngredientModal } from "../ui/SkeletonIngredients.jsx";
+import api from "../../api/apiClient";
 
 import {
   BoxAdd,
-  Camera,
   Tag,
   Category,
-  ScanBarcode,
-  Barcode,
+  Weight,
   MoneySend,
+  Shop,
+  NoteText,
   BoxTick,
   Edit,
 } from "iconsax-react";
 
-function ProductModal({
-  editProduct,
+function IngredientModal({
+  editIngredient,
   categories,
   onClose,
   onSuccess,
   modalLoading,
 }) {
   const [form, setForm] = useState({
-    name: editProduct?.name || "",
-    category_id: editProduct?.category_id || "",
-    price: editProduct?.price || "",
-    sku: editProduct?.sku || "",
-    barcode: editProduct?.barcode || "",
-    image: editProduct?.image || "",
-    status: editProduct?.status ?? true,
+    name: editIngredient?.name || "",
+    category_id: editIngredient?.category_id || "",
+    unit: editIngredient?.unit || "",
+    low_stock_threshold: editIngredient?.low_stock_threshold ?? "",
+    cost_per_unit: editIngredient?.cost_per_unit ?? "",
+    supplier: editIngredient?.supplier || "",
+    note: editIngredient?.note || "",
+    status: editIngredient?.status ?? true,
   });
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [focusedField, setFocusedField] = useState("");
 
-  // Lock background page scroll while the modal is open
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
@@ -70,49 +69,38 @@ function ProductModal({
     transform: "translateY(-50%)",
     width: "18px",
     height: "18px",
-    filter: "brightness(0) invert(1)",
     opacity: focusedField === field ? 1 : 0.4,
     transition: "opacity 0.2s",
     pointerEvents: "none",
   });
 
-  const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    try {
-      const compressed = await imageCompression(file, {
-        maxSizeMB: 0.3,
-        maxWidthOrHeight: 500,
-        useWebWorker: true,
-      });
-      const reader = new FileReader();
-      reader.onloadend = () =>
-        setForm((prev) => ({ ...prev, image: reader.result }));
-      reader.readAsDataURL(compressed);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  const borderFor = (field) => ({
+    border:
+      focusedField === field
+        ? "1px solid rgba(255,255,255,0.8)"
+        : "1px solid rgba(255,255,255,0.2)",
+    transition: "border 0.2s",
+  });
 
   const handleSubmit = async () => {
     setError("");
     if (!form.name) {
-      setError("Product name is required!");
+      setError("Ingredient name is required!");
       return;
     }
-    if (!form.price) {
-      setError("Price is required!");
+    if (!form.unit) {
+      setError("Unit is required!");
       return;
     }
 
     setSubmitting(true);
     try {
-      if (editProduct) {
-        await api.put(`/products/${editProduct.id}`, form);
-        alertSuccess("Updated!", "Product has been updated successfully.");
+      if (editIngredient) {
+        await api.put(`/ingredients/${editIngredient.id}`, form);
+        alertSuccess("Updated!", "Ingredient has been updated successfully.");
       } else {
-        await api.post("/products", form);
-        alertSuccess("Created!", "New product has been created.");
+        await api.post("/ingredients", form);
+        alertSuccess("Created!", "New ingredient has been created.");
       }
       onSuccess();
       onClose();
@@ -153,7 +141,6 @@ function ProductModal({
           overflowY: "auto",
         }}
       >
-
         <div
           style={{
             display: "flex",
@@ -163,30 +150,21 @@ function ProductModal({
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            {editProduct ? (
+            {editIngredient ? (
               <Edit
                 size={28}
                 color="white"
                 variant="Linear"
-                style={{
-                  width: 28,
-                  height: 28,
-                  animation: "float 2s ease-in-out infinite",
-                }}
+                style={{ animation: "float 2s ease-in-out infinite" }}
               />
             ) : (
               <BoxAdd
                 size={28}
                 color="white"
                 variant="Linear"
-                style={{
-                  width: 28,
-                  height: 28,
-                  animation: "float 2s ease-in-out infinite",
-                }}
+                style={{ animation: "float 2s ease-in-out infinite" }}
               />
             )}
-
             <h2
               style={{
                 color: colors.whiteFull,
@@ -195,7 +173,7 @@ function ProductModal({
                 fontSize: "1.5rem",
               }}
             >
-              {editProduct ? "Edit Product" : "Add New Product"}
+              {editIngredient ? "Edit Ingredient" : "Add New Ingredient"}
             </h2>
           </div>
           <button
@@ -215,7 +193,7 @@ function ProductModal({
         </div>
 
         {modalLoading ? (
-          <SkeletonProductModal />
+          <SkeletonIngredientModal />
         ) : (
           <>
             {error && (
@@ -234,70 +212,6 @@ function ProductModal({
               </div>
             )}
 
-            <div style={{ marginBottom: "20px", textAlign: "center" }}>
-              <label style={{ cursor: "pointer", display: "inline-block" }}>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  style={{ display: "none" }}
-                />
-                {form.image ? (
-                  <div
-                    style={{
-                      width: "100px",
-                      height: "100px",
-                      borderRadius: "16px",
-                      overflow: "hidden",
-                      border: `1px solid ${colors.gold}`,
-                      margin: "0 auto",
-                    }}
-                  >
-                    <img
-                      src={form.image}
-                      alt="product"
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                        objectPosition: "top",
-                      }}
-                    />
-                  </div>
-                ) : (
-                  <div
-                    style={{
-                      width: "100px",
-                      height: "100px",
-                      borderRadius: "16px",
-                      background: "rgba(255,255,255,0.1)",
-                      border: "2px dashed rgba(255,255,255,0.3)",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      color: "rgba(255,255,255,0.5)",
-                      gap: "4px",
-                      margin: "0 auto",
-                    }}
-                  >
-                    <Camera size={28} color="white" variant="Linear" />
-                    <span style={{ fontSize: "0.7rem" }}>Upload</span>
-                  </div>
-                )}
-                <p
-                  style={{
-                    color: "rgba(255,255,255,0.5)",
-                    fontSize: "0.75rem",
-                    marginTop: "6px",
-                  }}
-                >
-                  Click to upload photo
-                </p>
-              </label>
-            </div>
-
-            {/* Form Grid */}
             <div
               style={{
                 display: "grid",
@@ -306,34 +220,31 @@ function ProductModal({
                 marginBottom: "16px",
               }}
             >
-              {/* Product Name */}
+              {/* Name */}
               <div style={{ gridColumn: "1 / -1" }}>
-                <label style={labelStyle}>Product Name *</label>
+                <label style={labelStyle}>Ingredient Name *</label>
                 <div style={{ position: "relative" }}>
                   <Tag
                     size={20}
                     color="white"
                     variant="Linear"
-                    style={iconStyle("Product Name")}
+                    style={iconStyle("name")}
                   />
                   <input
                     style={{
                       ...inputStyle,
                       paddingLeft: "40px",
-                      border:
-                        focusedField === "Product Name"
-                          ? "1px solid rgba(255,255,255,0.8)"
-                          : "1px solid rgba(255,255,255,0.2)",
-                      transition: "border 0.2s",
+                      ...borderFor("name"),
                     }}
-                    placeholder="Enter product name"
+                    placeholder="e.g. Flour, Butter, Sugar"
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    onFocus={() => setFocusedField("Product Name")}
+                    onFocus={() => setFocusedField("name")}
                     onBlur={() => setFocusedField("")}
                   />
                 </div>
               </div>
+
               {/* Category */}
               <div>
                 <label style={labelStyle}>Category</label>
@@ -342,24 +253,20 @@ function ProductModal({
                     size={20}
                     color="white"
                     variant="Linear"
-                    style={iconStyle("Category")}
+                    style={iconStyle("category")}
                   />
                   <select
                     style={{
                       ...inputStyle,
                       cursor: "pointer",
                       paddingLeft: "40px",
-                      border:
-                        focusedField === "Category"
-                          ? "1px solid rgba(255,255,255,0.8)"
-                          : "1px solid rgba(255,255,255,0.2)",
-                      transition: "border 0.2s",
+                      ...borderFor("category"),
                     }}
                     value={form.category_id}
                     onChange={(e) =>
                       setForm({ ...form, category_id: e.target.value })
                     }
-                    onFocus={() => setFocusedField("Category")}
+                    onFocus={() => setFocusedField("category")}
                     onBlur={() => setFocusedField("")}
                   >
                     <option value="" style={{ background: "#2c3e50" }}>
@@ -379,93 +286,103 @@ function ProductModal({
                   </select>
                 </div>
               </div>
+
+              {/* Unit */}
               <div>
-                <label style={labelStyle}>Price ($) *</label>
+                <label style={labelStyle}>Unit *</label>
+                <div style={{ position: "relative" }}>
+                  <Weight
+                    size={20}
+                    color="white"
+                    variant="Linear"
+                    style={iconStyle("unit")}
+                  />
+                  <input
+                    style={{
+                      ...inputStyle,
+                      paddingLeft: "40px",
+                      ...borderFor("unit"),
+                    }}
+                    placeholder="kg, g, L, ml, pcs"
+                    value={form.unit}
+                    onChange={(e) => setForm({ ...form, unit: e.target.value })}
+                    onFocus={() => setFocusedField("unit")}
+                    onBlur={() => setFocusedField("")}
+                  />
+                </div>
+              </div>
+
+              {/* Low Stock Threshold */}
+              <div>
+                <label style={labelStyle}>Low Stock Threshold</label>
+                <input
+                  style={{ ...inputStyle, ...borderFor("threshold") }}
+                  type="number"
+                  placeholder="0.00"
+                  value={form.low_stock_threshold}
+                  onChange={(e) =>
+                    setForm({ ...form, low_stock_threshold: e.target.value })
+                  }
+                  onFocus={() => setFocusedField("threshold")}
+                  onBlur={() => setFocusedField("")}
+                />
+              </div>
+
+              {/* Cost Per Unit */}
+              <div>
+                <label style={labelStyle}>Cost per Unit ($)</label>
                 <div style={{ position: "relative" }}>
                   <MoneySend
                     size={20}
                     color="white"
                     variant="Linear"
-                    style={iconStyle("Price")}
+                    style={iconStyle("cost")}
                   />
                   <input
                     style={{
                       ...inputStyle,
                       paddingLeft: "40px",
-                      border:
-                        focusedField === "Price"
-                          ? "1px solid rgba(255,255,255,0.8)"
-                          : "1px solid rgba(255,255,255,0.2)",
-                      transition: "border 0.2s",
+                      ...borderFor("cost"),
                     }}
                     type="number"
                     placeholder="0.00"
-                    value={form.price}
+                    value={form.cost_per_unit}
                     onChange={(e) =>
-                      setForm({ ...form, price: e.target.value })
+                      setForm({ ...form, cost_per_unit: e.target.value })
                     }
-                    onFocus={() => setFocusedField("Price")}
+                    onFocus={() => setFocusedField("cost")}
                     onBlur={() => setFocusedField("")}
                   />
                 </div>
               </div>
+
+              {/* Supplier */}
               <div>
-                <label style={labelStyle}>SKU</label>
+                <label style={labelStyle}>Supplier</label>
                 <div style={{ position: "relative" }}>
-                  <ScanBarcode
+                  <Shop
                     size={20}
                     color="white"
                     variant="Linear"
-                    style={iconStyle("SKU")}
+                    style={iconStyle("supplier")}
                   />
                   <input
                     style={{
                       ...inputStyle,
                       paddingLeft: "40px",
-                      border:
-                        focusedField === "SKU"
-                          ? "1px solid rgba(255,255,255,0.8)"
-                          : "1px solid rgba(255,255,255,0.2)",
-                      transition: "border 0.2s",
+                      ...borderFor("supplier"),
                     }}
-                    placeholder="SKU-001"
-                    value={form.sku}
-                    onChange={(e) => setForm({ ...form, sku: e.target.value })}
-                    onFocus={() => setFocusedField("SKU")}
-                    onBlur={() => setFocusedField("")}
-                  />
-                </div>
-              </div>
-              {/* Barcode */}
-              <div>
-                <label style={labelStyle}>Barcode</label>
-                <div style={{ position: "relative" }}>
-                  <Barcode
-                    size={20}
-                    color="white"
-                    variant="Linear"
-                    style={iconStyle("Barcode")}
-                  />
-                  <input
-                    style={{
-                      ...inputStyle,
-                      paddingLeft: "40px",
-                      border:
-                        focusedField === "Barcode"
-                          ? "1px solid rgba(255,255,255,0.8)"
-                          : "1px solid rgba(255,255,255,0.2)",
-                      transition: "border 0.2s",
-                    }}
-                    placeholder="123456789"
-                    value={form.barcode}
+                    placeholder="Supplier name"
+                    value={form.supplier}
                     onChange={(e) =>
-                      setForm({ ...form, barcode: e.target.value })
+                      setForm({ ...form, supplier: e.target.value })
                     }
-                    onFocus={() => setFocusedField("Barcode")}
+                    onFocus={() => setFocusedField("supplier")}
                     onBlur={() => setFocusedField("")}
                   />
                 </div>
               </div>
+
               {/* Status Toggle */}
               <div
                 style={{
@@ -511,6 +428,37 @@ function ProductModal({
                 >
                   {form.status ? "Active" : "Inactive"}
                 </span>
+              </div>
+
+              {/* Note */}
+              <div style={{ gridColumn: "1 / -1" }}>
+                <label style={labelStyle}>Note</label>
+                <div style={{ position: "relative" }}>
+                  <NoteText
+                    size={18}
+                    color="white"
+                    variant="Linear"
+                    style={{
+                      ...iconStyle("note"),
+                      top: "14px",
+                      transform: "none",
+                    }}
+                  />
+                  <textarea
+                    style={{
+                      ...inputStyle,
+                      paddingLeft: "40px",
+                      resize: "vertical",
+                      minHeight: "70px",
+                      ...borderFor("note"),
+                    }}
+                    placeholder="Additional notes..."
+                    value={form.note}
+                    onChange={(e) => setForm({ ...form, note: e.target.value })}
+                    onFocus={() => setFocusedField("note")}
+                    onBlur={() => setFocusedField("")}
+                  />
+                </div>
               </div>
             </div>
 
@@ -574,27 +522,19 @@ function ProductModal({
                         strokeLinecap="round"
                       />
                     </svg>
-                    {editProduct ? "Saving..." : "Creating..."}
+                    {editIngredient ? "Saving..." : "Creating..."}
                   </>
                 ) : (
                   <>
-                    {editProduct ? (
+                    {editIngredient ? (
                       <BoxTick size="22" color="#fff" variant="outline" />
                     ) : (
                       <BoxAdd size="22" color="#fff" variant="outline" />
                     )}
-                    {editProduct ? "Save" : "Create"}
+                    {editIngredient ? "Save" : "Create"}
                   </>
                 )}
               </button>
-              <style>
-                {`
-                @keyframes spin {
-                  from { transform: rotate(0deg);}
-                  to { transform: rotate(360deg);}
-                }
-                `}
-              </style>
             </div>
           </>
         )}
@@ -603,4 +543,4 @@ function ProductModal({
   );
 }
 
-export default ProductModal;
+export default IngredientModal;

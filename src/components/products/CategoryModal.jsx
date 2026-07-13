@@ -1,7 +1,69 @@
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { RiCloseLine } from "react-icons/ri";
 import { glassCard, glass, colors } from "../../utils/styles";
 import { SkeletonCategoryList } from "../ui/SkeletonProduct";
 import { Edit, Trash, AddCircle, TickCircle, Category2, Tag } from "iconsax-react";
+
+function IconButtonWithTooltip({ icon, label, onClick }) {
+  const [show, setShow] = useState(false);
+  const [pos, setPos] = useState({ top: 0, left: 0 });
+  const btnRef = useRef(null);
+
+  const handleEnter = () => {
+    const rect = btnRef.current.getBoundingClientRect();
+    setPos({ top: rect.top - 8, left: rect.left + rect.width / 2 });
+    setShow(true);
+  };
+
+  return (
+    <>
+      <button
+        ref={btnRef}
+        type="button"
+        onClick={onClick}
+        onMouseEnter={handleEnter}
+        onMouseLeave={() => setShow(false)}
+        style={{
+          width: "32px",
+          height: "32px",
+          borderRadius: "8px",
+          border: "none",
+          background: "transparent",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+        className="duration-200 hover:scale-110 transition-transform"
+      >
+        {icon}
+      </button>
+      {show &&
+        createPortal(
+          <div
+            style={{
+              position: "fixed",
+              top: pos.top,
+              left: pos.left,
+              transform: "translate(-50%, -100%)",
+              background: "rgba(20,28,35,0.95)",
+              color: "white",
+              padding: "4px 10px",
+              borderRadius: "6px",
+              fontSize: "0.75rem",
+              whiteSpace: "nowrap",
+              pointerEvents: "none",
+              zIndex: 20000,
+            }}
+          >
+            {label}
+          </div>,
+          document.body,
+        )}
+    </>
+  );
+}
 
 function CategoryModal({
   categories,
@@ -19,6 +81,14 @@ function CategoryModal({
   onClose,
   resetCatForm,
 }) {
+  // Lock background page scroll while the modal is open
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
+
   const inputStyle = {
     width: "100%",
     padding: "10px 14px",
@@ -54,7 +124,9 @@ function CategoryModal({
           width: "100%",
           maxWidth: "480px",
           maxHeight: "85vh",
-          overflowY: "auto",
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
         }}
       >
         {/* Header */}
@@ -64,14 +136,17 @@ function CategoryModal({
             justifyContent: "space-between",
             alignItems: "center",
             marginBottom: "24px",
+            flexShrink: 0,
           }}
         >
           <h3
             style={{
               color: colors.whiteFull,
               fontWeight: 700,
+              fontSize: "1.5rem",
               margin: 0,
               display: "flex",
+              alignItems: "center",
               gap: "10px",
             }}
           >
@@ -83,7 +158,7 @@ function CategoryModal({
                 animation: "float 3s ease-in-out infinite",
               }}
             >
-              <Category2 size="24" color="#fff" variant="bulk" />
+              <Category2 size={28} color="white" variant="Linear" />
             </div>
             Categories
           </h3>
@@ -104,7 +179,7 @@ function CategoryModal({
         </div>
 
         {/* Add / Edit Form */}
-        <div style={{ marginBottom: "24px" }}>
+        <div style={{ marginBottom: "24px", flexShrink: 0 }}>
           {catError && (
             <div
               style={{
@@ -121,7 +196,7 @@ function CategoryModal({
             </div>
           )}
           <div style={{ position: 'relative', alignItems: "center", display: "flex", gap: "10px" }}>
-            <Tag size="20" color="#fff" variant="outline" style={{position: 'absolute', left: '12px', pointerEvents: 'none', zIndex: 1}}/>
+            <Tag size={20} color="white" variant="Linear" style={{position: 'absolute', left: '12px', pointerEvents: 'none', zIndex: 1}}/>
             <input
               style={{ ...inputStyle, flex: 1, paddingLeft: "40px" }}
               placeholder="Category name..."
@@ -136,6 +211,7 @@ function CategoryModal({
                 padding: "10px 20px",
                 borderRadius: "10px",
                 fontWeight: 600,
+                fontSize: "0.9rem",
                 whiteSpace: "nowrap",
                 display: "flex",
                 alignItems: "center",
@@ -173,9 +249,9 @@ function CategoryModal({
               ) : (
                 <>
                   {editCat ? (
-                    <TickCircle size="20" color="#fff" variant="bold" />
+                    <TickCircle size="22" color="#fff" variant="outline" />
                   ) : (
-                    <AddCircle size="20" color="#fff" variant="bold" />
+                    <AddCircle size="22" color="#fff" variant="outline" />
                   )}
                   {editCat ? "Save" : "Add"}
                 </>
@@ -200,6 +276,7 @@ function CategoryModal({
         </div>
 
         {/* Category List */}
+        <div className="hide-scrollbar" style={{ flex: 1, overflowY: "auto" }}>
         {catModalLoading || catLoading ? (
           <SkeletonCategoryList rows={5} />
         ) : categories.length === 0 ? (
@@ -262,109 +339,26 @@ function CategoryModal({
                     />
                   </div>
                   {/* Edit */}
-                  <div
-                    style={{ position: "relative", display: "inline-block" }}
-                    onMouseEnter={(e) =>
-                      (e.currentTarget.querySelector(".tooltip").style.opacity =
-                        1)
-                    }
-                    onMouseLeave={(e) =>
-                      (e.currentTarget.querySelector(".tooltip").style.opacity =
-                        0)
-                    }
-                  >
-                    <button
-                      onClick={() => {
-                        setEditCat(cat);
-                        setCatForm({ name: cat.name, status: cat.status });
-                      }}
-                      style={{
-                        width: "32px",
-                        height: "32px",
-                        borderRadius: "8px",
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                      className="duration-200 hover:scale-110 transition-transform"
-                    >
-                      <Edit size="20" color="#fff" variant="outline" />
-                    </button>
-                    <div
-                      className="tooltip"
-                      style={{
-                        position: "absolute",
-                        bottom: "110%",
-                        left: "50%",
-                        transform: "translateX(-50%)",
-                        background: "rgba(20,28,35,0.95)",
-                        color: "white",
-                        padding: "4px 10px",
-                        borderRadius: "6px",
-                        fontSize: "0.75rem",
-                        whiteSpace: "nowrap",
-                        pointerEvents: "none",
-                        opacity: 0,
-                        transition: "opacity 0.2s",
-                      }}
-                    >
-                      Edit Category
-                    </div>
-                  </div>
+                  <IconButtonWithTooltip
+                    icon={<Edit size={20} color="white" variant="Linear" />}
+                    label="Edit"
+                    onClick={() => {
+                      setEditCat(cat);
+                      setCatForm({ name: cat.name, status: cat.status });
+                    }}
+                  />
                   {/* Delete */}
-                  <div
-                    style={{ position: "relative", display: "inline-block" }}
-                    onMouseEnter={(e) =>
-                      (e.currentTarget.querySelector(".tooltip").style.opacity =
-                        1)
-                    }
-                    onMouseLeave={(e) =>
-                      (e.currentTarget.querySelector(".tooltip").style.opacity =
-                        0)
-                    }
-                  >
-                    <button
-                      onClick={() => onDelete(cat.id)}
-                      style={{
-                        width: "32px",
-                        height: "32px",
-                        borderRadius: "8px",
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                      className="duration-200 hover:scale-110 transition-transform"
-                    >
-                      <Trash size="20" color="#fff" variant="outline" />
-                    </button>
-                    <div
-                      className="tooltip"
-                      style={{
-                        position: "absolute",
-                        bottom: "110%",
-                        left: "50%",
-                        transform: "translateX(-50%)",
-                        background: "rgba(20,28,35,0.95)",
-                        color: "white",
-                        padding: "4px 10px",
-                        borderRadius: "6px",
-                        fontSize: "0.75rem",
-                        whiteSpace: "nowrap",
-                        pointerEvents: "none",
-                        opacity: 0,
-                        transition: "opacity 0.2s",
-                      }}
-                    >
-                      Delete Category
-                    </div>
-                  </div>
+                  <IconButtonWithTooltip
+                    icon={<Trash size={20} color="white" variant="Linear" />}
+                    label="Delete"
+                    onClick={() => onDelete(cat.id)}
+                  />
                 </div>
               </div>
             ))}
           </div>
         )}
+        </div>
       </div>
     </div>
   );

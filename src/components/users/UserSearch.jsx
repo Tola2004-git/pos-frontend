@@ -73,7 +73,7 @@ function UserSearch({
             cursor: "pointer",
             color: "white",
             fontWeight: 600,
-            fontSize: "0.85rem",
+            fontSize: "0.9rem",
             display: "flex",
             alignItems: "center",
             gap: "8px",

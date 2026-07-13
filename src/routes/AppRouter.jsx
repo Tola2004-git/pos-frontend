@@ -7,6 +7,7 @@ import Users from "../pages/Users";
 import Products from "../pages/Products";
 import Inventory from "../pages/Inventory";
 import StockHistory from "../pages/StockHistory";
+import Ingredients from "../pages/Ingredients";
 import PaymentMethods from "../pages/Payments";
 import Orders from "../pages/Orders";
 import Tables from "../pages/Tables";
@@ -90,6 +91,14 @@ function AppRouter() {
           element={
             <PrivateRoute>
               <StockHistory />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/ingredients"
+          element={
+            <PrivateRoute>
+              <Ingredients />
             </PrivateRoute>
           }
         />
