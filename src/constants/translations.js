@@ -1,6 +1,7 @@
 export const translations = {
   en: {
     dashboard: "Dashboard",
+    cashierPos: "Cashier POS",
     products: "Products",
     inventory: "Inventory",
     stockHistory: "Stock History",
@@ -13,9 +14,11 @@ export const translations = {
     background: "Background",
     welcome: "Welcome",
     tables: "Tables",
+    shifts: "Cashier Shifts",
   },
   kh: {
     dashboard: "ផ្ទាំងគ្រប់គ្រង",
+    cashierPos: "កម្មវិធីលក់",
     products: "ផលិតផល",
     inventory: "ស្តុក",
     stockHistory: "ប្រវត្តិស្តុក",
@@ -28,5 +31,6 @@ export const translations = {
     background: "ផ្ទៃខាងក្រោយ",
     welcome: "សូមស្វាគមន៍",
     tables: "តុ",
+    shifts: "វេនអ្នកគិតលុយ",
   },
 };

@@ -5,6 +5,7 @@ import {
   updateTable,
   clearTable,
   deleteTable,
+  moveTableReservation,
 } from "../api/tableApi.js";
 import { changeTableApi } from "../api/ordersApi.js";
 import {
@@ -138,20 +139,10 @@ export function useTables() {
       } else {
         // Reserved with no order yet (e.g. a manual reservation set from the table modal) -
         // there's nothing to transfer, just move the reservation between the two tables.
-        await Promise.all([
-          updateTable(fromTable.id, {
-            name: fromTable.name || "",
-            capacity: fromTable.capacity ?? null,
-            note: fromTable.notes || "",
-            status: "available",
-          }),
-          updateTable(targetTable.id, {
-            name: targetTable.name || "",
-            capacity: targetTable.capacity ?? null,
-            note: targetTable.notes || "",
-            status: fromTable.status,
-          }),
-        ]);
+        // Goes through the cashier-safe status-only endpoint (not the admin updateTable()
+        // PUT) since cashiers can't touch full table CRUD but still need to move
+        // reservations from the Cashier home grid.
+        await moveTableReservation(fromTable.id, targetTable.id);
       }
 
       alertSuccess("Moved!", `${fromTable.name} is now available and ${targetTable.name} is ${fromTable.status}.`);

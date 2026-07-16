@@ -12,21 +12,62 @@ import PaymentMethods from "../pages/Payments";
 import Orders from "../pages/Orders";
 import Tables from "../pages/Tables";
 import Promotions from "../pages/Promotions";
+import CashierHome from "../pages/CashierHome";
+import CashierOrders from "../pages/CashierOrders";
+import ShiftReview from "../pages/ShiftReview";
 
-function PrivateRoute({ children }) {
+// Role isn't embedded in the JWT (see AuthController@login) - it's cached in
+// localStorage right after login (see Login.jsx) so route guards can check
+// it synchronously, the same way the token itself is checked.
+const KNOWN_ROLES = ["admin", "cashier"];
+
+function getStoredRole() {
+  return localStorage.getItem("role");
+}
+
+function getHomePathForRole(role) {
+  return role === "admin" ? "/dashboard" : "/cashier";
+}
+
+function clearSession() {
+  localStorage.removeItem("token");
+  localStorage.removeItem("role");
+}
+
+function PrivateRoute({ children, roles }) {
   const token = localStorage.getItem("token");
 
-  if (!token) return <Navigate to="/login" />;
+  if (!token) return <Navigate to="/login" replace />;
 
   try {
     const { exp } = jwtDecode(token);
     if (exp * 1000 < Date.now()) {
-      localStorage.removeItem("token");
-      return <Navigate to="/login" />;
+      clearSession();
+      return <Navigate to="/login" replace />;
     }
   } catch {
-    localStorage.removeItem("token");
-    return <Navigate to="/login" />;
+    clearSession();
+    return <Navigate to="/login" replace />;
+  }
+
+  if (roles && roles.length > 0) {
+    const role = getStoredRole();
+
+    // A missing/unrecognized role can't be trusted to compute a safe home
+    // path - getHomePathForRole would default it to "/cashier", which can
+    // equal the very route being blocked and cause an infinite redirect
+    // loop (React's "Maximum update depth exceeded", seen as a blank
+    // white screen). Treat an untrustworthy role as an invalid session.
+    if (!role || !KNOWN_ROLES.includes(role)) {
+      clearSession();
+      return <Navigate to="/login" replace />;
+    }
+
+    if (!roles.includes(role)) {
+      // Authenticated with a known role, just not allowed on this route -
+      // send them back to whichever home page actually matches their role.
+      return <Navigate to={getHomePathForRole(role)} replace />;
+    }
   }
 
   return children;
@@ -48,24 +89,45 @@ function AppRouter() {
           path="/"
           element={(() => {
             const token = localStorage.getItem("token");
-            if (!token) return <Navigate to="/login" />;
+            if (!token) return <Navigate to="/login" replace />;
             try {
               const { exp } = jwtDecode(token);
               if (exp * 1000 < Date.now()) {
-                localStorage.removeItem("token");
-                return <Navigate to="/login" />;
+                clearSession();
+                return <Navigate to="/login" replace />;
               }
-              return <Navigate to="/dashboard" />;
+              const role = getStoredRole();
+              if (!role || !KNOWN_ROLES.includes(role)) {
+                clearSession();
+                return <Navigate to="/login" replace />;
+              }
+              return <Navigate to={getHomePathForRole(role)} replace />;
             } catch {
-              localStorage.removeItem("token");
-              return <Navigate to="/login" />;
+              clearSession();
+              return <Navigate to="/login" replace />;
             }
           })()}
         />
         <Route
+          path="/cashier"
+          element={
+            <PrivateRoute roles={["admin", "cashier"]}>
+              <CashierHome />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/cashier/orders"
+          element={
+            <PrivateRoute roles={["admin", "cashier"]}>
+              <CashierOrders />
+            </PrivateRoute>
+          }
+        />
+        <Route
           path="/dashboard"
           element={
-            <PrivateRoute>
+            <PrivateRoute roles={["admin", "cashier"]}>
               <Dashboard />
             </PrivateRoute>
           }
@@ -73,7 +135,7 @@ function AppRouter() {
         <Route
           path="/products"
           element={
-            <PrivateRoute>
+            <PrivateRoute roles={["admin"]}>
               <Products />
             </PrivateRoute>
           }
@@ -81,7 +143,7 @@ function AppRouter() {
         <Route
           path="/inventory"
           element={
-            <PrivateRoute>
+            <PrivateRoute roles={["admin"]}>
               <Inventory />
             </PrivateRoute>
           }
@@ -89,7 +151,7 @@ function AppRouter() {
         <Route
           path="/inventory/history"
           element={
-            <PrivateRoute>
+            <PrivateRoute roles={["admin"]}>
               <StockHistory />
             </PrivateRoute>
           }
@@ -97,7 +159,7 @@ function AppRouter() {
         <Route
           path="/ingredients"
           element={
-            <PrivateRoute>
+            <PrivateRoute roles={["admin"]}>
               <Ingredients />
             </PrivateRoute>
           }
@@ -105,7 +167,7 @@ function AppRouter() {
         <Route
           path="/payment-methods"
           element={
-            <PrivateRoute>
+            <PrivateRoute roles={["admin"]}>
               <PaymentMethods />
             </PrivateRoute>
           }
@@ -113,7 +175,7 @@ function AppRouter() {
         <Route
           path="/orders"
           element={
-            <PrivateRoute>
+            <PrivateRoute roles={["admin", "cashier"]}>
               <Orders />
             </PrivateRoute>
           }
@@ -121,7 +183,7 @@ function AppRouter() {
         <Route
           path="/tables"
           element={
-            <PrivateRoute>
+            <PrivateRoute roles={["admin"]}>
               <Tables />
             </PrivateRoute>
           }
@@ -129,7 +191,7 @@ function AppRouter() {
         <Route
           path="/users"
           element={
-            <PrivateRoute>
+            <PrivateRoute roles={["admin"]}>
               <Users />
             </PrivateRoute>
           }
@@ -137,8 +199,16 @@ function AppRouter() {
         <Route
           path="/promotions"
           element={
-            <PrivateRoute>
+            <PrivateRoute roles={["admin"]}>
               <Promotions />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/shifts"
+          element={
+            <PrivateRoute roles={["admin"]}>
+              <ShiftReview />
             </PrivateRoute>
           }
         />

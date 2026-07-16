@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { RiAddLine } from "react-icons/ri";
-import { ClipboardText, ReceiptAdd, ReceiptItem, ShoppingCart } from "iconsax-react";
+import { ClipboardText, ReceiptAdd, ReceiptItem, ShoppingCart, Chart2 } from "iconsax-react";
 import { glassCard, colors } from "../utils/styles";
 import { useOrders, useProducts, usePaymentMethods } from "../hooks/useOrders";
 import { useCategories } from "../hooks/useCategories";
@@ -13,64 +13,10 @@ import OrdersTable from "../components/orders/OrdersTable";
 import POSModal from "../components/orders/POSModal";
 import OrderDetailModal from "../components/orders/OrderDetailModal";
 import Layout from "../components/layout/Layout";
-import { updateOrderApi, fetchOrderApi, changeTableApi } from "../api/ordersApi";
+import { updateOrderApi, fetchOrderApi, changeTableApi, fetchSalesByCashierApi } from "../api/ordersApi";
+import { getAllCashiers } from "../api/usersApi";
 import { alertWarning, alertError } from "../utils/alert.jsx";
-import logo from "../assets/logo.png";
-
-
-const handlePrint = (order) => {
-  const rate = Number(order.exchange_rate_used) || 4100;
-  const paidUsd = Number(order.amount_paid_usd) || 0;
-  const paidKhr = Number(order.amount_paid_khr) || 0;
-  const paidInKhrOnly = paidKhr > 0 && paidUsd === 0;
-
-  const paidLabel =
-    paidUsd > 0 && paidKhr > 0
-      ? `$${paidUsd.toFixed(2)} + ${Math.round(paidKhr).toLocaleString()} ៛`
-      : paidInKhrOnly
-        ? `${Math.round(paidKhr).toLocaleString()} ៛`
-        : `$${Number(order.amount_paid).toFixed(2)}`;
-
-  const changeUsd = Number(order.change_amount) || 0;
-  const changeLabel = paidInKhrOnly
-    ? `${Math.round(changeUsd * rate).toLocaleString()} ៛ ($${changeUsd.toFixed(2)})`
-    : `$${changeUsd.toFixed(2)}`;
-
-  const win = window.open("", "_blank");
-  win.document.write(`
-    <html><head><title>Receipt - ${order.order_number}</title>
-    <style>
-      body { font-family: monospace; width: 300px; margin: 0 auto; padding: 20px; }
-      h2 { text-align: center; } hr { border: 1px dashed #000; }
-      table { width: 100%; } td { padding: 2px 0; }
-      .right { text-align: right; } .center { text-align: center; }
-      .bold { font-weight: bold; } .total { font-size: 1.2em; }
-      .logo { display: block; margin: 0 auto 8px; max-width: 80px; max-height: 80px; }
-    </style></head><body>
-    <img class="logo" src="${logo}" alt="Logo" />
-    <h2>POS System</h2>
-    <p class="center">${new Date(order.created_at).toLocaleString()}</p>
-    <p class="center">Order: ${order.order_number}</p>
-    <hr/>
-    ${order.customer_name ? `<p>Customer: ${order.customer_name}</p>` : ""}
-    <hr/>
-    <table>
-      ${order.items.map((i) => `<tr><td>${i.product_name} x${i.quantity}</td><td class="right">$${Number(i.subtotal).toFixed(2)}</td></tr>`).join("")}
-    </table>
-    <hr/>
-    <table>
-      <tr><td>Subtotal</td><td class="right">$${Number(order.subtotal).toFixed(2)}</td></tr>
-      <tr class="bold total"><td>TOTAL</td><td class="right">$${Number(order.total).toFixed(2)}</td></tr>
-      <tr><td>Paid (${order.payment_method?.name || ""})</td><td class="right">${paidLabel}</td></tr>
-      <tr><td>Change</td><td class="right">${changeLabel}</td></tr>
-    </table>
-    <hr/>
-    <p class="center">Thank you! Come again</p>
-    </body></html>
-  `);
-  win.document.close();
-  win.print();
-};
+import { printReceipt } from "../components/receipt/ReceiptTemplate";
 
 function Orders() {
   const {
@@ -87,6 +33,8 @@ function Orders() {
     setDateFrom,
     dateTo,
     setDateTo,
+    cashierFilter,
+    setCashierFilter,
     setPage,
     toasts,
     addToast,
@@ -94,7 +42,12 @@ function Orders() {
     lastOrderId,
     fetchOrders,
     handleCancel,
+    cancelLoadingId,
   } = useOrders();
+
+  const [cashiers, setCashiers] = useState([]);
+  const [salesSummary, setSalesSummary] = useState([]);
+  const [salesSummaryLoading, setSalesSummaryLoading] = useState(false);
 
   const { products, refetchProducts } = useProducts();
   const { categories } = useCategories();
@@ -137,6 +90,30 @@ function Orders() {
     window.addEventListener("orders:refresh", handleRefreshOrders);
     return () => window.removeEventListener("orders:refresh", handleRefreshOrders);
   }, [fetchOrders, refetchProducts]);
+
+  useEffect(() => {
+    getAllCashiers()
+      .then((res) => setCashiers(res.data.data))
+      .catch(() => setCashiers([]));
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    setSalesSummaryLoading(true);
+    fetchSalesByCashierApi({ dateFrom, dateTo })
+      .then((res) => {
+        if (active) setSalesSummary(res.data);
+      })
+      .catch(() => {
+        if (active) setSalesSummary([]);
+      })
+      .finally(() => {
+        if (active) setSalesSummaryLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [dateFrom, dateTo, orders]);
 
   const editCartItems = useMemo(() => {
     return editCart.map((item) => {
@@ -382,7 +359,7 @@ function Orders() {
 
   return (
     <Layout>
-      <ToastNotification toasts={toasts} onClose={removeToast} />
+      <ToastNotification toasts={toasts} onClose={removeToast} onPrint={printReceipt} />
       <style>{`
         @keyframes float {
           0%   { transform: translateY(0px); }
@@ -466,7 +443,50 @@ function Orders() {
           setDateTo(v);
           setPage(1);
         }}
+        cashiers={cashiers}
+        cashierFilter={cashierFilter}
+        onCashierChange={(v) => {
+          setCashierFilter(v);
+          setPage(1);
+        }}
       />
+
+      {!salesSummaryLoading && (
+        <div
+          style={{ ...glassCard }}
+          className="rounded-[20px] p-5 mb-5"
+        >
+          <h3 className="text-white font-bold text-base m-0 mb-4 flex items-center gap-2">
+            <Chart2 size={20} color="#fff" variant="Bold" />
+            Sales by Cashier
+          </h3>
+          {salesSummary.length === 0 ? (
+            <p className="text-white/50 text-sm m-0">No completed sales in this date range.</p>
+          ) : (
+          <div className="flex gap-3 flex-wrap">
+            {salesSummary.map((row) => (
+              <div
+                key={row.user_id}
+                className="rounded-[14px] px-4 py-3 flex-1"
+                style={{
+                  minWidth: "180px",
+                  background: "rgba(255,255,255,0.06)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                }}
+              >
+                <div className="text-white/60 text-xs mb-1">{row.name}</div>
+                <div className="text-white font-bold text-lg">
+                  ${Number(row.total_sales || 0).toFixed(2)}
+                </div>
+                <div className="text-white/40 text-[0.72rem] mt-1">
+                  {row.orders_count} order{row.orders_count === 1 ? "" : "s"}
+                </div>
+              </div>
+            ))}
+          </div>
+          )}
+        </div>
+      )}
 
       <OrdersTable
         orders={orders}
@@ -480,8 +500,9 @@ function Orders() {
         }}
         onEdit={handleEditClick}
         editLoadingId={editLoadingId}
-        onPrint={handlePrint}
+        onPrint={printReceipt}
         onCancel={handleCancel}
+        cancelLoadingId={cancelLoadingId}
         onPagePrev={() => setPage((p) => Math.max(1, p - 1))}
         onPageNext={() => setPage((p) => Math.min(lastPage, p + 1))}
       />
@@ -540,7 +561,7 @@ function Orders() {
         <OrderDetailModal
           order={selectedOrder}
           onClose={() => setShowDetail(false)}
-          onPrint={handlePrint}
+          onPrint={printReceipt}
         />
       )}
     </Layout>

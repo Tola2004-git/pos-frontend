@@ -1,19 +1,56 @@
 import { glassCard } from "../../utils/styles";
-import { ArrowSwapHorizontal, Edit, TickCircle, Trash } from "iconsax-react";
+import { ArrowSwapHorizontal, Edit, TickCircle, Trash, PauseCircle } from "iconsax-react";
 
-function TableCard({ table, onEdit, onDelete, onClear, onOpenMove, statusStyle }) {
+function TableCard({
+  table,
+  onEdit,
+  onDelete,
+  onClear,
+  onOpenMove,
+  onSelect,
+  statusStyle,
+  readOnly = false,
+}) {
+  const hasHeldOrder = table.current_order?.status === "pending";
+
   return (
     <div
+      onClick={readOnly && onSelect ? () => onSelect(table) : undefined}
       style={{
         ...glassCard,
         position: "relative",
         borderRadius: "20px",
         padding: "20px",
-        border: `2px solid ${statusStyle.border}`,
+        border: `2px solid ${hasHeldOrder ? "rgba(243,156,18,0.7)" : statusStyle.border}`,
         background: statusStyle.bg,
         transition: "all 0.3s",
+        cursor: readOnly && onSelect ? "pointer" : "default",
       }}
+      className={readOnly && onSelect ? "hover:scale-[1.02] transition-transform" : ""}
     >
+      {hasHeldOrder && (
+        <div
+          style={{
+            position: "absolute",
+            top: "12px",
+            right: "12px",
+            display: "flex",
+            alignItems: "center",
+            gap: "4px",
+            padding: "4px 9px",
+            borderRadius: "999px",
+            background: "rgba(243,156,18,0.25)",
+            border: "1px solid rgba(243,156,18,0.7)",
+            color: "#f39c12",
+            fontSize: "0.68rem",
+            fontWeight: 700,
+            letterSpacing: "0.3px",
+          }}
+        >
+          <PauseCircle size={12} color="#f39c12" variant="Bold" />
+          Held
+        </div>
+      )}
       <div
         style={{ position: "absolute", top: "12px", left: "12px", display: "inline-block" }}
         onMouseEnter={(e) =>
@@ -116,8 +153,199 @@ function TableCard({ table, onEdit, onDelete, onClear, onOpenMove, statusStyle }
       )}
 
       <div style={{ display: "flex", gap: "12px", justifyContent: "end", flexWrap: "wrap" }}>
-        {["occupied", "reserved"].includes(table.status) && (
+        {readOnly ? (
+          ["occupied", "reserved"].includes(table.status) && (
+            <>
+              {onOpenMove && (
+                <div
+                  style={{ position: "relative", display: "inline-block" }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.querySelector(".tooltip").style.opacity = 1)
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.querySelector(".tooltip").style.opacity = 0)
+                  }
+                >
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onOpenMove(table);
+                    }}
+                    style={{
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                    className="duration-200 hover:scale-110 transition-transform"
+                  >
+                    <ArrowSwapHorizontal size={20} color="white" variant="Linear" />
+                  </button>
+                  <div
+                    className="tooltip"
+                    style={{
+                      position: "absolute",
+                      bottom: "110%",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      background: "rgba(20,28,35,0.95)",
+                      color: "white",
+                      padding: "4px 10px",
+                      borderRadius: "6px",
+                      fontSize: "0.75rem",
+                      whiteSpace: "nowrap",
+                      pointerEvents: "none",
+                      opacity: 0,
+                      transition: "opacity 0.2s",
+                      margin: "5px"
+                    }}
+                  >
+                    Move Table
+                  </div>
+                </div>
+              )}
+              {onClear && (
+                <div
+                  style={{ position: "relative", display: "inline-block" }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.querySelector(".tooltip").style.opacity = 1)
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.querySelector(".tooltip").style.opacity = 0)
+                  }
+                >
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onClear(table);
+                    }}
+                    style={{
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                    className="duration-200 hover:scale-110 transition-transform"
+                  >
+                    <TickCircle size={20} color="white" variant="Linear" />
+                  </button>
+                  <div
+                    className="tooltip"
+                    style={{
+                      position: "absolute",
+                      bottom: "110%",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      background: "rgba(20,28,35,0.95)",
+                      color: "white",
+                      padding: "4px 10px",
+                      borderRadius: "6px",
+                      fontSize: "0.75rem",
+                      whiteSpace: "nowrap",
+                      pointerEvents: "none",
+                      opacity: 0,
+                      transition: "opacity 0.2s",
+                      margin: "5px"
+                    }}
+                  >
+                    Clear Table
+                  </div>
+                </div>
+              )}
+            </>
+          )
+        ) : (
           <>
+            {["occupied", "reserved"].includes(table.status) && (
+              <>
+                <div
+                  style={{ position: "relative", display: "inline-block" }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.querySelector(".tooltip").style.opacity = 1)
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.querySelector(".tooltip").style.opacity = 0)
+                  }
+                >
+                  <button
+                    onClick={() => onOpenMove(table)}
+                    style={{
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                    className="duration-200 hover:scale-110 transition-transform"
+                  >
+                    <ArrowSwapHorizontal size={20} color="white" variant="Linear" />
+                  </button>
+                  <div
+                    className="tooltip"
+                    style={{
+                      position: "absolute",
+                      bottom: "110%",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      background: "rgba(20,28,35,0.95)",
+                      color: "white",
+                      padding: "4px 10px",
+                      borderRadius: "6px",
+                      fontSize: "0.75rem",
+                      whiteSpace: "nowrap",
+                      pointerEvents: "none",
+                      opacity: 0,
+                      transition: "opacity 0.2s",
+                      margin: "5px"
+                    }}
+                  >
+                    Move Table
+                  </div>
+                </div>
+                <div
+                  style={{ position: "relative", display: "inline-block" }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.querySelector(".tooltip").style.opacity = 1)
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.querySelector(".tooltip").style.opacity = 0)
+                  }
+                >
+                  <button
+                    onClick={() => onClear(table)}
+                    style={{
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                    className="duration-200 hover:scale-110 transition-transform"
+                  >
+                    <TickCircle size={20} color="white" variant="Linear" />
+                  </button>
+                  <div
+                    className="tooltip"
+                    style={{
+                      position: "absolute",
+                      bottom: "110%",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      background: "rgba(20,28,35,0.95)",
+                      color: "white",
+                      padding: "4px 10px",
+                      borderRadius: "6px",
+                      fontSize: "0.75rem",
+                      whiteSpace: "nowrap",
+                      pointerEvents: "none",
+                      opacity: 0,
+                      transition: "opacity 0.2s",
+                      margin: "5px"
+                    }}
+                  >
+                    Clear Table
+                  </div>
+                </div>
+              </>
+            )}
             <div
               style={{ position: "relative", display: "inline-block" }}
               onMouseEnter={(e) =>
@@ -128,7 +356,7 @@ function TableCard({ table, onEdit, onDelete, onClear, onOpenMove, statusStyle }
               }
             >
               <button
-                onClick={() => onOpenMove(table)}
+                onClick={() => onEdit(table)}
                 style={{
                   cursor: "pointer",
                   display: "flex",
@@ -137,7 +365,7 @@ function TableCard({ table, onEdit, onDelete, onClear, onOpenMove, statusStyle }
                 }}
                 className="duration-200 hover:scale-110 transition-transform"
               >
-                <ArrowSwapHorizontal size={20} color="white" variant="Linear" />
+                <Edit size={20} color="white" variant="Linear" />
               </button>
               <div
                 className="tooltip"
@@ -158,7 +386,7 @@ function TableCard({ table, onEdit, onDelete, onClear, onOpenMove, statusStyle }
                   margin: "5px"
                 }}
               >
-                Move Table
+                Edit
               </div>
             </div>
             <div
@@ -171,7 +399,7 @@ function TableCard({ table, onEdit, onDelete, onClear, onOpenMove, statusStyle }
               }
             >
               <button
-                onClick={() => onClear(table)}
+                onClick={() => onDelete(table.id)}
                 style={{
                   cursor: "pointer",
                   display: "flex",
@@ -180,7 +408,7 @@ function TableCard({ table, onEdit, onDelete, onClear, onOpenMove, statusStyle }
                 }}
                 className="duration-200 hover:scale-110 transition-transform"
               >
-                <TickCircle size={20} color="white" variant="Linear" />
+                <Trash size={20} color="white" variant="Linear" />
               </button>
               <div
                 className="tooltip"
@@ -201,97 +429,11 @@ function TableCard({ table, onEdit, onDelete, onClear, onOpenMove, statusStyle }
                   margin: "5px"
                 }}
               >
-                Clear Table
+                Delete
               </div>
             </div>
           </>
         )}
-        <div
-          style={{ position: "relative", display: "inline-block" }}
-          onMouseEnter={(e) =>
-            (e.currentTarget.querySelector(".tooltip").style.opacity = 1)
-          }
-          onMouseLeave={(e) =>
-            (e.currentTarget.querySelector(".tooltip").style.opacity = 0)
-          }
-        >
-          <button
-            onClick={() => onEdit(table)}
-            style={{
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-            className="duration-200 hover:scale-110 transition-transform"
-          >
-            <Edit size={20} color="white" variant="Linear" />
-          </button>
-          <div
-            className="tooltip"
-            style={{
-              position: "absolute",
-              bottom: "110%",
-              left: "50%",
-              transform: "translateX(-50%)",
-              background: "rgba(20,28,35,0.95)",
-              color: "white",
-              padding: "4px 10px",
-              borderRadius: "6px",
-              fontSize: "0.75rem",
-              whiteSpace: "nowrap",
-              pointerEvents: "none",
-              opacity: 0,
-              transition: "opacity 0.2s",
-              margin: "5px"
-            }}
-          >
-            Edit
-          </div>
-        </div>
-        <div
-          style={{ position: "relative", display: "inline-block" }}
-          onMouseEnter={(e) =>
-            (e.currentTarget.querySelector(".tooltip").style.opacity = 1)
-          }
-          onMouseLeave={(e) =>
-            (e.currentTarget.querySelector(".tooltip").style.opacity = 0)
-          }
-        >
-          <button
-            onClick={() => onDelete(table.id)}
-            style={{
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-            className="duration-200 hover:scale-110 transition-transform"
-          >
-            <Trash size={20} color="white" variant="Linear" />
-          </button>
-          <div
-            className="tooltip"
-            style={{
-              position: "absolute",
-              bottom: "110%",
-              left: "50%",
-              transform: "translateX(-50%)",
-              background: "rgba(20,28,35,0.95)",
-              color: "white",
-              padding: "4px 10px",
-              borderRadius: "6px",
-              fontSize: "0.75rem",
-              whiteSpace: "nowrap",
-              pointerEvents: "none",
-              opacity: 0,
-              transition: "opacity 0.2s",
-              margin: "5px"
-            }}
-          >
-            Delete
-          </div>
-        </div>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { createOrderApi } from "../api/ordersApi";
+import { createOrderApi, updateOrderApi } from "../api/ordersApi";
 import { alertWarning, alertError } from "../utils/alert.jsx";
 
 export function usePOS({
@@ -20,6 +20,10 @@ export function usePOS({
   const [orderType, setOrderType] = useState("dine-in");
   const [note, setPosNote] = useState("");
   const [posStep, setPosStep] = useState(1);
+  // Set when the cart was loaded from an existing held (pending) order via
+  // loadOrderIntoCart - confirming then updates that order instead of
+  // creating a new one.
+  const [resumingOrderId, setResumingOrderId] = useState(null);
 
   // Stock checks below read `cart` directly and call setCart with a plain
   // value (never the functional updater form). The alertWarning side effect
@@ -223,7 +227,47 @@ export function usePOS({
     setOrderType("takeaway");
     setPosNote("");
     setPosStep(1);
+    setResumingOrderId(null);
   };
+
+  // Loads an existing held (pending) order's items into the cart so a
+  // cashier can add more items or go straight to checkout instead of
+  // starting a duplicate order on the same table. `products` is the live
+  // catalog, used to recover image/category and to figure out how much more
+  // of each item can still be added (the order's own quantity is already
+  // reserved out of the product's current stock).
+  const loadOrderIntoCart = useCallback((order, products = []) => {
+    const items = (order.items || []).map((item) => {
+      const product = products.find(
+        (p) => String(p.id) === String(item.product_id),
+      );
+      const remainingStock = Number(product?.qty) || 0;
+      const quantity = Number(item.quantity) || 0;
+
+      return {
+        product_id: item.product_id,
+        product_name: item.product_name || product?.name || "Item",
+        price: Number(item.price ?? product?.price ?? 0),
+        quantity,
+        subtotal: Number(item.subtotal ?? (item.price ?? product?.price ?? 0) * quantity),
+        image: product?.image ?? null,
+        category_id: product?.category_id ?? null,
+        // Units already on this order were deducted from stock at hold time,
+        // so the real ceiling while editing is what's left plus what's
+        // already reserved here.
+        stock: remainingStock + quantity,
+      };
+    });
+
+    setCart(items);
+    setCustomerName(order.customer_name || "");
+    setCustomerPhone(order.customer_phone || "");
+    setPagerNumber(order.pager_number || "");
+    setPosNote(order.note || "");
+    setOrderType(order.order_type || "dine-in");
+    setPosStep(1);
+    setResumingOrderId(order.id);
+  }, []);
 
   const resolvePaymentMethodId = (paymentMethod) => {
     if (!paymentMethod) return null;
@@ -284,35 +328,42 @@ export function usePOS({
     const paidUsd = selectedCurrency === "KHR" ? 0 : paidTotalUsd;
     const paidKhr = selectedCurrency === "KHR" ? Math.round(paidTotalUsd * rate) : 0;
 
+    const payload = {
+      items: cart.map((i) => ({
+        product_id: i.product_id,
+        quantity: i.quantity,
+      })),
+      customer_name: customerName || null,
+      customer_phone: customerPhone || null,
+      pager_number: pagerNumber || null,
+      order_type: orderType,
+      tax: 0,
+      payment_method_id: selectedPaymentMethodId,
+      amount_paid: normalizedStatus === "completed" ? paidTotalUsd : 0,
+      amount_paid_usd: normalizedStatus === "completed" ? paidUsd : 0,
+      amount_paid_khr: normalizedStatus === "completed" ? paidKhr : 0,
+      exchange_rate_used: rate,
+      promotion_id: selectedPromotion?.id || null,
+      promotion_name: selectedPromotion?.name || null,
+      promotion_type: selectedPromotion?.type || null,
+      promotion_value: selectedPromotion?.value ?? null,
+      discount_amount: Number(discount) || 0,
+      note,
+      status: normalizedStatus,
+      table_id,
+    };
+
     try {
-      const res = await createOrderApi({
-        items: cart.map((i) => ({
-          product_id: i.product_id,
-          quantity: i.quantity,
-        })),
-        customer_name: customerName || null,
-        customer_phone: customerPhone || null,
-        pager_number: pagerNumber || null,
-        order_type: orderType,
-        tax: 0,
-        payment_method_id: selectedPaymentMethodId,
-        amount_paid: normalizedStatus === "completed" ? paidTotalUsd : 0,
-        amount_paid_usd: normalizedStatus === "completed" ? paidUsd : 0,
-        amount_paid_khr: normalizedStatus === "completed" ? paidKhr : 0,
-        exchange_rate_used: rate,
-        promotion_id: selectedPromotion?.id || null,
-        promotion_name: selectedPromotion?.name || null,
-        promotion_type: selectedPromotion?.type || null,
-        promotion_value: selectedPromotion?.value ?? null,
-        discount_amount: Number(discount) || 0,
-        note,
-        status: normalizedStatus,
-        table_id,
-      });
+      const res = resumingOrderId
+        ? await updateOrderApi(resumingOrderId, payload)
+        : await createOrderApi(payload);
       addToast(res.data.order, status === "hold" ? "hold" : "payment");
       lastOrderId.current = res.data.order.id;
       closePOS();
       onOrderCreated();
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("tables:refresh"));
+      }
     } catch (err) {
       alertError("Order failed", err.response?.data?.message || "Something went wrong!");
     }
@@ -348,5 +399,7 @@ export function usePOS({
     handleCreateOrder,
     pagerNumber,
     setPagerNumber,
+    resumingOrderId,
+    loadOrderIntoCart,
   };
 }

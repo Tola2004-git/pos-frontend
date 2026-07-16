@@ -173,7 +173,20 @@ function Login() {
         password,
       });
       localStorage.setItem("token", res.data.token);
-      navigate("/dashboard");
+
+      // Role isn't embedded in the JWT, so fetch it once here and cache it
+      // for PrivateRoute's synchronous role checks. Default to the
+      // least-privileged role if the lookup fails.
+      let role = "cashier";
+      try {
+        const me = await apiClient.get("/me");
+        role = me.data?.role || "cashier";
+      } catch (err) {
+        console.error("Failed to fetch user role:", err);
+      }
+      localStorage.setItem("role", role);
+
+      navigate(role === "admin" ? "/dashboard" : "/cashier");
     } catch {
       setError("Email or password is incorrect. Please try again.");
       triggerShake();

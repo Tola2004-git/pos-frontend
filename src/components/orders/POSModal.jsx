@@ -60,6 +60,8 @@ export default function POSModal({
   closePOS,
   handleCreateOrder,
   promotions = [],
+  initialTableId = null,
+  resumingOrderId = null,
 }) {
   const isEditMode = mode === "edit";
   // Cash's real database id varies per environment (seeded via
@@ -76,6 +78,7 @@ export default function POSModal({
   const [isConfirming, setIsConfirming] = useState(false);
   const [exchangeRate, setExchangeRate] = useState(4100);
   const [selectedCurrency, setSelectedCurrency] = useState("USD");
+  const [amountPaidInput, setAmountPaidInput] = useState("");
   const [isMounted, setIsMounted] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isChangingTable, setIsChangingTable] = useState(false);
@@ -98,8 +101,8 @@ export default function POSModal({
   const promotionLogic = usePromotionLogic(promotions, cart);
   const currency = useCurrencyConversion(exchangeRate);
   const tableSelection = useTableSelection(
-    isEditMode ? (activeEditingOrder?.table_id ?? null) : null,
-    { allowOccupiedTables: isEditMode },
+    isEditMode ? (activeEditingOrder?.table_id ?? null) : initialTableId,
+    { allowOccupiedTables: isEditMode || Boolean(initialTableId) },
   );
   const paymentMethodsValidation = usePaymentMethodValidation(paymentMethods);
 
@@ -125,10 +128,20 @@ export default function POSModal({
     (!isEditMode && !isAmountValid) ||
     !hasValidTableSelection;
 
-  const amountPaidDisplay = currency.formatInputAmount(
-    safeAmountPaid,
-    selectedCurrency,
-  );
+  // Mirrors amountPaid as a raw string the cashier can freely type into -
+  // deriving the display value straight from formatInputAmount() on every
+  // render would round-trip through toFixed()/parseFloat() on each
+  // keystroke, snapping "10." back to "10" before a trailing digit like
+  // ".50" could ever be typed. Only re-sync from the numeric amount while
+  // the field isn't focused, so programmatic changes (payment method
+  // selection, currency switch, resets) still update it.
+  useEffect(() => {
+    if (focusedField !== "amount") {
+      setAmountPaidInput(currency.formatInputAmount(safeAmountPaid, selectedCurrency));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [safeAmountPaid, selectedCurrency, focusedField]);
+  const amountPaidDisplay = amountPaidInput;
   const amountPaidActive =
     selectedCurrency === "KHR" ? safeAmountPaid * exchangeRate : safeAmountPaid;
 
@@ -144,9 +157,15 @@ export default function POSModal({
 
   const availableTables = tableSelection.getAvailableTables();
   const blockedTables = tableSelection.getBlockedTables();
+  // Switching tables is only meaningful for an order that's already seated
+  // and still unpaid - true whether we got here via the Orders page's Edit
+  // flow (isEditMode) or by resuming a held order from the Cashier table
+  // grid (resumingOrderId).
+  const canChangeTable = isEditMode
+    ? activeEditingOrder?.status === "pending"
+    : Boolean(resumingOrderId);
   const currentSessionTable =
-    isEditMode &&
-    activeEditingOrder?.status === "pending" &&
+    canChangeTable &&
     tableSelection.getSelectedTable() &&
     tableSelection.getSelectedTable().status !== "available"
       ? tableSelection.getSelectedTable()
@@ -236,11 +255,9 @@ export default function POSModal({
   };
 
   const handleChangeTable = async (nextTableId) => {
-    if (
-      !isEditMode ||
-      activeEditingOrder?.status !== "pending" ||
-      !nextTableId
-    ) {
+    const orderId = isEditMode ? activeEditingOrder?.id : resumingOrderId;
+
+    if (!canChangeTable || !orderId || !nextTableId) {
       return;
     }
 
@@ -248,10 +265,10 @@ export default function POSModal({
     setTableActionMessage("");
 
     try {
-      const response = await changeTableApi(activeEditingOrder.id, nextTableId);
+      const response = await changeTableApi(orderId, nextTableId);
       const freshOrder = response?.data?.order;
 
-      if (freshOrder) {
+      if (freshOrder && isEditMode) {
         setActiveEditingOrder(freshOrder);
       }
 
@@ -342,6 +359,7 @@ export default function POSModal({
 
   // Handle amount paid input
   const handleAmountPaidChange = (inputValue) => {
+    setAmountPaidInput(inputValue);
     if (inputValue === "") {
       setAmountPaid(0);
       return;
@@ -395,7 +413,7 @@ export default function POSModal({
             <div className="animate-bounce">
               <ShoppingBag size={25} color="#fff" variant="Linear" />
             </div>
-            {isEditMode ? "Edit Order" : "New Order"}
+            {isEditMode ? "Edit Order" : resumingOrderId ? "Resume Held Order" : "New Order"}
           </h3>
           <div className="flex items-center gap-[10px]">
             {[
@@ -530,9 +548,7 @@ export default function POSModal({
                   <div className="col-span-12 lg:col-span-8 xl:col-span-8 flex flex-col lg:pl-1">
                     {requiresTableSelection && (
                       <div className="mb-4 rounded-[14px] border border-white/10 bg-white/5 p-3">
-                        {isEditMode &&
-                        currentSessionTable &&
-                        !showTablePicker ? (
+                        {currentSessionTable && !showTablePicker ? (
                           // Compact view: current table badge + a small icon to open the switcher.
                           <div className="flex items-center justify-between gap-2">
                             <div className="flex min-w-0 items-center gap-2">
@@ -543,7 +559,7 @@ export default function POSModal({
                                 {getTableLabel(currentSessionTable)}
                               </span>
                             </div>
-                            {activeEditingOrder?.status === "pending" && (
+                            {canChangeTable && (
                               <button
                                 type="button"
                                 onClick={() => setShowTablePicker(true)}
@@ -565,7 +581,7 @@ export default function POSModal({
                               <h5 className="text-white font-medium">
                                 Select Table
                               </h5>
-                              {isEditMode && currentSessionTable ? (
+                              {currentSessionTable ? (
                                 <button
                                   type="button"
                                   onClick={() => setShowTablePicker(false)}
@@ -586,7 +602,7 @@ export default function POSModal({
                               <div className="text-sm text-white/60">
                                 Loading tables...
                               </div>
-                            ) : isEditMode && currentSessionTable ? (
+                            ) : currentSessionTable ? (
                               // Switching an already-seated order: a compact dropdown beats a
                               // full grid + separate confirm button for this quick action.
                               <div className="space-y-2">

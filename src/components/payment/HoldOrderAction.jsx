@@ -1,5 +1,19 @@
 import { Archive } from "iconsax-react";
 
+const spinnerStyles = `
+@keyframes hold-spin {
+  to { transform: rotate(360deg); }
+}
+.hold-spin-loader {
+  width: 16px;
+  height: 16px;
+  border: 2.5px solid rgba(255,255,255,0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: hold-spin 0.7s linear infinite;
+}
+`;
+
 export function HoldOrderAction({ onHold, disabled, loading }) {
   const handleHold = async () => {
     if (loading || disabled) return;
@@ -19,7 +33,12 @@ export function HoldOrderAction({ onHold, disabled, loading }) {
         fontWeight: 500,
       }}
     >
-      <Archive size={18} color="white" variant="Outline"/>
+      <style>{spinnerStyles}</style>
+      {loading ? (
+        <span className="hold-spin-loader" />
+      ) : (
+        <Archive size={18} color="white" variant="Outline" />
+      )}
       {loading ? "Holding..." : "Hold"}
     </button>
   );

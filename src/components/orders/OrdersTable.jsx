@@ -68,6 +68,7 @@ export default function OrdersTable({
   editLoadingId,
   onPrint,
   onCancel,
+  cancelLoadingId,
   onPagePrev,
   onPageNext,
 }) {
@@ -500,24 +501,33 @@ export default function OrdersTable({
                             }
                           >
                             <button
-                              onClick={() => onCancel(order.id)}
+                              onClick={() => !(cancelLoadingId === order.id) && onCancel(order.id)}
+                              disabled={cancelLoadingId === order.id}
                               style={{
                                 padding: "5px 10px",
                                 borderRadius: "7px",
                                 border: "none",
-                                cursor: "pointer",
+                                cursor: cancelLoadingId === order.id ? "not-allowed" : "pointer",
                                 display: "flex",
                                 alignItems: "center",
                                 gap: "3px",
                                 fontSize: "0.78rem",
+                                opacity: cancelLoadingId === order.id ? 0.7 : 1,
                               }}
                               className="duration-200 hover:scale-110 transition-transform"
                             >
-                              <CloseCircle
-                                size={20}
-                                color="#fff"
-                                variant="TwoTone"
-                              />
+                              {cancelLoadingId === order.id ? (
+                                <svg width="18" height="18" viewBox="0 0 24 24" style={{ animation: "spin 1s linear infinite" }}>
+                                  <circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.2)" strokeWidth="3" fill="none" />
+                                  <path d="M22 12a10 10 0 0 1-10 10" stroke="white" strokeWidth="3" strokeLinecap="round" fill="none" />
+                                </svg>
+                              ) : (
+                                <CloseCircle
+                                  size={20}
+                                  color="#fff"
+                                  variant="TwoTone"
+                                />
+                              )}
                             </button>
                             <div
                               className="tooltip"
@@ -538,7 +548,7 @@ export default function OrdersTable({
                                 border: "1px solid rgba(255,255,255,0.1)",
                               }}
                             >
-                              Cancel
+                              {cancelLoadingId === order.id ? "Cancelling..." : "Cancel"}
                             </div>
                           </div>
                         )}

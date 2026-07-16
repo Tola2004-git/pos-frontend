@@ -37,6 +37,10 @@ function Tooltip({ label, targetRect }) {
 function Sidebar({ open, onToggle, onLogout, t }) {
   const location = useLocation();
   const [tooltip, setTooltip] = useState(null);
+  const role = localStorage.getItem("role");
+  const visibleMenuItems = MENU_ITEMS.filter(
+    (menu) => !menu.roles || menu.roles.includes(role),
+  );
   const handleMouseEnter = (e, label) => {
     if (open) return;
     const rect = e.currentTarget.getBoundingClientRect();
@@ -127,7 +131,7 @@ function Sidebar({ open, onToggle, onLogout, t }) {
           </button>
         </div>
         <nav className={`flex-1 py-[15px] overflow-y-auto overflow-x-hidden ${open ? "sidebar-open" : "sidebar-closed"}`}>
-          {MENU_ITEMS.map((menu) => {
+          {visibleMenuItems.map((menu) => {
             const active = location.pathname === menu.path;
             const Icon = menu.icon;
 

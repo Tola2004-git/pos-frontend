@@ -34,9 +34,17 @@ export default function OrdersFilter({
   onDateFromChange,
   dateTo,
   onDateToChange,
+  datesDisabled = false,
+  cashiers,
+  cashierFilter,
+  onCashierChange,
 }) {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
+  const [showCashierDropdown, setShowCashierDropdown] = useState(false);
+  const cashierDropdownRef = useRef(null);
+  const selectedCashierName =
+    cashiers?.find((c) => String(c.id) === String(cashierFilter))?.name;
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -51,6 +59,20 @@ export default function OrdersFilter({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [showDropdown]);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (cashierDropdownRef.current && !cashierDropdownRef.current.contains(e.target)) {
+        setShowCashierDropdown(false);
+      }
+    };
+    if (showCashierDropdown) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showCashierDropdown]);
 
   return (
     <div
@@ -94,13 +116,16 @@ export default function OrdersFilter({
         type="date"
         value={dateFrom}
         onChange={(e) => onDateFromChange(e.target.value)}
+        disabled={datesDisabled}
+        title={datesDisabled ? "Uncheck \"Current Shift Only\" to filter by date" : undefined}
         style={{
           ...inputStyle,
           width: "auto",
           padding: "12px 14px",
           borderRadius: "16px",
           colorScheme: "dark",
-
+          opacity: datesDisabled ? 0.45 : 1,
+          cursor: datesDisabled ? "not-allowed" : "text",
         }}
       />
 
@@ -108,12 +133,16 @@ export default function OrdersFilter({
         type="date"
         value={dateTo}
         onChange={(e) => onDateToChange(e.target.value)}
+        disabled={datesDisabled}
+        title={datesDisabled ? "Uncheck \"Current Shift Only\" to filter by date" : undefined}
         style={{
           ...inputStyle,
           width: "auto",
           padding: "12px 14px",
           borderRadius: "16px",
           colorScheme: "dark",
+          opacity: datesDisabled ? 0.45 : 1,
+          cursor: datesDisabled ? "not-allowed" : "text",
         }}
       />
 
@@ -211,6 +240,99 @@ export default function OrdersFilter({
           </div>
         )}
       </div>
+
+      {cashiers && (
+        <div ref={cashierDropdownRef} style={{ position: "relative" }}>
+          <button
+            onClick={() => setShowCashierDropdown((v) => !v)}
+            style={{
+              ...glassCard,
+              padding: "12px 18px",
+              borderRadius: "16px",
+              cursor: "pointer",
+              color: "white",
+              fontWeight: 600,
+              fontSize: "0.85rem",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {selectedCashierName || "All Cashiers"}
+            <span style={{ fontSize: "0.7rem" }}>{showCashierDropdown ? "▲" : "▼"}</span>
+          </button>
+
+          {showCashierDropdown && (
+            <div
+              style={{
+                ...glassCard,
+                position: "absolute",
+                top: "110%",
+                right: 0,
+                borderRadius: "14px",
+                zIndex: 99999,
+                minWidth: "180px",
+                maxHeight: "280px",
+                overflowY: "auto",
+                boxShadow: "0 15px 40px rgba(0,0,0,0.5)",
+                animation: "dropdownFade 0.2s ease",
+                transformOrigin: "top right",
+              }}
+            >
+              <button
+                onClick={() => {
+                  onCashierChange("");
+                  setShowCashierDropdown(false);
+                }}
+                style={{
+                  display: "flex",
+                  width: "100%",
+                  padding: "11px 16px",
+                  background: !cashierFilter ? "rgba(255,255,255,0.15)" : "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                  color: !cashierFilter ? colors.white : "rgba(255,255,255,0.85)",
+                  fontSize: "0.88rem",
+                  fontWeight: !cashierFilter ? 700 : 400,
+                  textAlign: "left",
+                  borderLeft: !cashierFilter ? `3px solid ${colors.white}` : "3px solid transparent",
+                }}
+              >
+                All Cashiers
+              </button>
+              {cashiers.map((c) => (
+                <button
+                  key={c.id}
+                  onClick={() => {
+                    onCashierChange(String(c.id));
+                    setShowCashierDropdown(false);
+                  }}
+                  style={{
+                    display: "flex",
+                    width: "100%",
+                    padding: "11px 16px",
+                    background:
+                      String(cashierFilter) === String(c.id) ? "rgba(255,255,255,0.15)" : "transparent",
+                    border: "none",
+                    cursor: "pointer",
+                    color: String(cashierFilter) === String(c.id) ? colors.white : "rgba(255,255,255,0.85)",
+                    fontSize: "0.88rem",
+                    fontWeight: String(cashierFilter) === String(c.id) ? 700 : 400,
+                    textAlign: "left",
+                    borderLeft:
+                      String(cashierFilter) === String(c.id)
+                        ? `3px solid ${colors.white}`
+                        : "3px solid transparent",
+                  }}
+                >
+                  {c.name}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

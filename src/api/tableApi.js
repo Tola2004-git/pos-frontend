@@ -8,5 +8,7 @@ export const clearTable = (table) => {
   return apiClient.post(`/tables/${tableData.id}/clear`);
 };
 export const deleteTable = (id) => apiClient.delete(`/tables/${id}`);
+export const moveTableReservation = (fromId, targetTableId) =>
+  apiClient.post(`/tables/${fromId}/move-reservation`, { target_table_id: targetTableId });
 
 export default apiClient;

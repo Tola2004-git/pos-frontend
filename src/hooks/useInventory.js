@@ -134,10 +134,17 @@ export function useInventory() {
     }
   };
 
-  const saveThreshold = () => {
-    setThreshold(tempThreshold);
-    setShowThreshold(false);
-    alertSuccess("Saved!", `Low stock threshold set to ${tempThreshold}.`);
+  const saveThreshold = async () => {
+    try {
+      await setThreshold(tempThreshold);
+      setShowThreshold(false);
+      alertSuccess("Saved!", `Low stock threshold set to ${tempThreshold}.`);
+    } catch (err) {
+      alertError(
+        "Save Failed",
+        err.response?.data?.message || "Unable to save the low stock threshold.",
+      );
+    }
   };
 
   const closeRestock = () => {

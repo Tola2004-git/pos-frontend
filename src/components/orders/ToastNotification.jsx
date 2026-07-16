@@ -6,6 +6,7 @@ import {
   PauseCircle,
   RefreshCircle,
   CloseCircle,
+  Printer,
 } from "iconsax-react";
 import { colors } from "../../utils/styles";
 
@@ -29,7 +30,7 @@ const TOAST_CONFIG = {
   },
 };
 
-export default function ToastNotification({ toasts, onClose }) {
+export default function ToastNotification({ toasts, onClose, onPrint }) {
   if (!toasts.length) return null;
 
   return (
@@ -37,6 +38,7 @@ export default function ToastNotification({ toasts, onClose }) {
       {toasts.map((t) => {
         const config = TOAST_CONFIG[t.type] || TOAST_CONFIG.payment;
         const Icon = config.Icon;
+        const duration = t.duration || TOAST_DURATION;
         return (
           <div
             key={t.id}
@@ -84,11 +86,22 @@ export default function ToastNotification({ toasts, onClose }) {
               </div>
             </div>
 
+            {t.type === "payment" && onPrint && (
+              <button
+                type="button"
+                onClick={() => onPrint(t.order)}
+                className="mt-3 flex w-full items-center justify-center gap-2 rounded-[10px] border border-white/25 bg-white/15 py-2 text-[0.82rem] font-semibold text-white transition-colors hover:bg-white/25"
+              >
+                <Printer size="16" color="white" variant="Linear" />
+                Print Receipt
+              </button>
+            )}
+
             <div className="absolute inset-x-0 bottom-0 h-[3px] bg-white/15">
               <div
                 className="h-full bg-white/70"
                 style={{
-                  animation: `toastShrink ${TOAST_DURATION}ms linear forwards`,
+                  animation: `toastShrink ${duration}ms linear forwards`,
                 }}
               />
             </div>
