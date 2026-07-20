@@ -10,6 +10,7 @@ export function CartItem({
   truncatePromoName,
   getItemTotal,
   getItemDiscount,
+  t,
 }) {
   const promotions = findItemPromotions(item);
   const itemTotal = getItemTotal(item);
@@ -69,7 +70,7 @@ export function CartItem({
           </div>
         ) : (
           <span className="text-white/50 text-[0.72rem] mb-1 block">
-            No promo
+            {t?.noPromo || "No promo"}
           </span>
         )}
 
@@ -90,7 +91,7 @@ export function CartItem({
         <button
           onClick={() => onRemove(item.product_id)}
           className="bg-transparent border-none cursor-pointer pl-[5px] pb-[5px] hover:scale-110 transition-transform"
-          aria-label="Remove item"
+          aria-label={t?.removeItemAction || "Remove item"}
         >
           <Trash size={20} variant="Linear" color="red" />
         </button>
@@ -100,7 +101,7 @@ export function CartItem({
           <button
             onClick={() => onUpdateQty(item.product_id, item.quantity - 1)}
             className="w-[22px] h-[22px] rounded-full border-none bg-white/15 text-white flex items-center justify-center cursor-pointer hover:bg-white/25 transition-colors"
-            aria-label="Decrease quantity"
+            aria-label={t?.decreaseQtyAction || "Decrease quantity"}
           >
             <Minus size={14} variant="Linear" color="white" />
           </button>
@@ -110,7 +111,7 @@ export function CartItem({
           <button
             onClick={() => onUpdateQty(item.product_id, item.quantity + 1)}
             className="w-[22px] h-[22px] rounded-full border-none bg-white/15 text-white flex items-center justify-center cursor-pointer hover:bg-white/25 transition-colors"
-            aria-label="Increase quantity"
+            aria-label={t?.increaseQtyAction || "Increase quantity"}
           >
             <Add size={14} color="white" variant="Linear" />
           </button>

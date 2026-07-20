@@ -8,30 +8,32 @@ import InventoryTable from "../components/inventory/InventoryTable";
 import RestockModal from "../components/inventory/RestockModal";
 
 import { BoxRemove, BoxSearch, BoxTick, Box, Refresh2, SearchNormal1 } from "iconsax-react";
-
-const STAT_CARDS = [
-  {
-    key: "in_stock",
-    label: "IN STOCK",
-    color: "#2ecc71",
-    StatIcon: BoxTick,
-  },
-  {
-    key: "low_stock",
-    label: "LOW STOCK",
-    color: "#f1c40f",
-    StatIcon: BoxSearch,
-  },
-  {
-    key: "out_of_stock",
-    label: "OUT OF STOCK",
-    color: "#e74c3c",
-    StatIcon: BoxRemove,
-  },
-];
+import { useTranslations } from "../hooks/useTranslations";
 
 function Inventory() {
+  const { t } = useTranslations();
   const inv = useInventory();
+
+  const STAT_CARDS = [
+    {
+      key: "in_stock",
+      label: t.statInStockLabel,
+      color: "#2ecc71",
+      StatIcon: BoxTick,
+    },
+    {
+      key: "low_stock",
+      label: t.statLowStockLabel,
+      color: "#f1c40f",
+      StatIcon: BoxSearch,
+    },
+    {
+      key: "out_of_stock",
+      label: t.statOutOfStockLabel,
+      color: "#e74c3c",
+      StatIcon: BoxRemove,
+    },
+  ];
 
   const filteredProducts = inv.allProducts.filter(
     (p) =>
@@ -104,7 +106,7 @@ function Inventory() {
               style={{ animation: "float 3s ease-in-out infinite" }}
             />
           </div>
-          Inventory Management
+          {t.inventoryManagementTitle}
         </h2>
         <div style={{ display: "flex", gap: "10px" }}>
           <ThresholdSetting
@@ -115,6 +117,7 @@ function Inventory() {
             tempThreshold={inv.tempThreshold}
             setTempThreshold={inv.setTempThreshold}
             saveThreshold={inv.saveThreshold}
+            t={t}
           />
           <button
             onClick={() => inv.openRestock()}
@@ -133,7 +136,7 @@ function Inventory() {
             }}
           >
             <Refresh2 size="20" color="#fff" variant="bulk" />
-            Restock
+            {t.restockAction}
           </button>
         </div>
       </div>
@@ -196,7 +199,7 @@ function Inventory() {
                       fontSize: "0.82rem",
                     }}
                   >
-                    Items
+                    {t.itemsUnitLabel}
                   </span>
                 </div>
               </div>
@@ -237,7 +240,7 @@ function Inventory() {
           <SearchNormal1 size="20" color="#fff" variant="linear" />
           <input
             type="text"
-            placeholder="Search by product name or SKU..."
+            placeholder={t.searchInventoryPlaceholder}
             value={inv.search}
             onChange={(e) => {
               inv.setSearch(e.target.value);
@@ -261,6 +264,7 @@ function Inventory() {
           setPage={inv.setPage}
           showFilterDropdown={inv.showFilterDropdown}
           setShowFilterDropdown={inv.setShowFilterDropdown}
+          t={t}
         />
       </div>
 
@@ -271,6 +275,7 @@ function Inventory() {
         page={inv.page}
         threshold={inv.threshold}
         openRestock={inv.openRestock}
+        t={t}
       />
 
       {/* Pagination */}
@@ -282,7 +287,7 @@ function Inventory() {
         }}
       >
         <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.85rem" }}>
-          Total: {inv.total} products
+          {t.totalProductsCountMsg.replace("{n}", inv.total)}
         </span>
         <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
           <button
@@ -302,7 +307,7 @@ function Inventory() {
               fontSize: "0.85rem",
             }}
           >
-            Back
+            {t.paginationBackAction}
           </button>
           <span
             style={{
@@ -332,7 +337,7 @@ function Inventory() {
               fontSize: "0.85rem",
             }}
           >
-            Next
+            {t.paginationNextAction}
           </button>
         </div>
       </div>
@@ -357,6 +362,7 @@ function Inventory() {
         submitting={inv.submitting}
         handleRestock={inv.handleRestock}
         closeRestock={inv.closeRestock}
+        t={t}
       />
     </Layout>
   );

@@ -20,15 +20,15 @@ export const labelStyle = {
   marginBottom: "6px",
 };
 
-export const PROMOTION_TYPES = [
-  { value: "percentage", label: "Percentage", icon: PercentageCircle },
-  { value: "fixed", label: "Fixed Amount", icon: DollarCircle },
+export const getPromotionTypes = (t) => [
+  { value: "percentage", label: t.percentageLabel, icon: PercentageCircle },
+  { value: "fixed", label: t.fixedAmountLabel, icon: DollarCircle },
 ];
 
-export const STATUS_FILTER_OPTIONS = [
-  { value: "all", label: "All Status" },
-  { value: "1", label: "Active" },
-  { value: "0", label: "Inactive" },
+export const getStatusFilterOptions = (t) => [
+  { value: "all", label: t.statusAll },
+  { value: "1", label: t.activeLabel },
+  { value: "0", label: t.inactiveLabel },
 ];
 
 export const defaultPromotionForm = {
@@ -48,13 +48,15 @@ export function formatDiscount(type, value) {
   return `$${Number(value).toFixed(2)}`;
 }
 
-export function formatApplyTo(promo) {
-  if (promo.apply_to === "all") return "All Products";
+export function formatApplyTo(promo, t) {
+  if (promo.apply_to === "all") return t.allProductsLabel;
   if (promo.apply_to === "product") {
     const count = promo.products?.length ?? 0;
-    return count > 0 ? `${count} Product(s)` : "Selected Products";
+    return count > 0
+      ? t.productsCountLabel.replace("{n}", count)
+      : t.selectedProductsLabel;
   }
-  if (promo.apply_to === "category") return "Categories";
+  if (promo.apply_to === "category") return t.categoriesLabel;
   return promo.apply_to;
 }
 

@@ -5,27 +5,42 @@ function ImageUploader({
   onUpload,
   customUrl,
   onCustomUrlChange,
+  compressing = false,
+  uploadError = "",
+  t,
 }) {
   return (
     <div>
       <p className="text-[rgba(255,255,255,0.6)] text-[0.85rem] mb-2">
-        Upload your own image
+        {t.bgChangerUploadLabel}
       </p>
       <label
-        className={`flex items-center justify-center gap-[10px] p-3 rounded-xl cursor-pointer mb-3 border-2 border-dashed transition-all duration-200 
+        className={`flex items-center justify-center gap-[10px] p-3 rounded-xl cursor-pointer mb-3 border-2 border-dashed transition-all duration-200
       ${
         previewUpload
           ? "bg-white/20 border-white text-white"
           : "bg-white/5 border-white/30 text-white/60"
-      }`}
+      } ${compressing ? "pointer-events-none opacity-70" : ""}`}
       >
         <input
           type="file"
           accept="image/*"
           onChange={onUpload}
+          disabled={compressing}
           style={{ display: "none" }}
         />
-        {previewUpload ? (
+        {compressing ? (
+          <>
+            <span
+              className="w-[18px] h-[18px] rounded-full flex-none animate-spin"
+              style={{
+                border: "2.5px solid rgba(255,255,255,0.3)",
+                borderTopColor: "#fff",
+              }}
+            />
+            <span className="text-[0.85rem]">{t.bgChangerOptimizingImage}</span>
+          </>
+        ) : previewUpload ? (
           <>
             <img
               src={previewUpload}
@@ -34,7 +49,7 @@ function ImageUploader({
             />
             <span className="text-[0.85rem] flex items-center gap-1">
               <TickCircle size={18} color="white" variant="Outline" />
-              Image selected!
+              {t.bgChangerImageSelected}
             </span>
           </>
         ) : (
@@ -42,12 +57,18 @@ function ImageUploader({
             <span className="text-2xl">
               <Folder size={30} color="white" variant="Outline" />
             </span>
-            <span className="text-[0.85rem]">Click to upload image</span>
+            <span className="text-[0.85rem]">{t.bgChangerClickToUpload}</span>
           </>
         )}
       </label>
 
-      <p className="text-white/60 text-[0.85rem] mb-2">Or paste image URL</p>
+      {uploadError && (
+        <div className="mb-3 rounded-[10px] bg-[#c0392b]/25 border border-[#c0392b]/50 text-[#ff8a80] text-[0.8rem] px-3 py-2">
+          {uploadError}
+        </div>
+      )}
+
+      <p className="text-white/60 text-[0.85rem] mb-2">{t.bgChangerUrlLabel}</p>
       <input
         type="text"
         placeholder="https://example.com/image.jpg"

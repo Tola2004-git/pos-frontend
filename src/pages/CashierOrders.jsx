@@ -13,6 +13,18 @@ import ToastNotification from "../components/orders/ToastNotification";
 import { printReceipt } from "../components/receipt/ReceiptTemplate";
 import { fetchSalesByCashierApi } from "../api/ordersApi";
 import { glassCard } from "../utils/styles";
+import { useTranslations } from "../hooks/useTranslations";
+
+// This whole page remounts every time the cashier switches to the "My
+// Sales" tab (CashierHome and CashierOrders each mount their own route, they
+// don't share state). Without caching the last fetched totals, `mySales`
+// would reset to null on every visit, so the card would only pop in after
+// the orders table (which has its own skeleton) had already finished
+// loading - a jarring "appears late" flash. Cache by the query params it
+// depends on so a same-day revisit shows the last known totals immediately
+// while a background refetch keeps them fresh.
+let cachedMySales = null;
+let cachedMySalesKey = null;
 
 // Sales history for the logged-in cashier. The backend
 // (OrderController::index) automatically scopes results to the
@@ -26,6 +38,7 @@ import { glassCard } from "../utils/styles";
 // takeaway/self-seating pending order too, not just a dine-in one tied to a
 // table card.
 function CashierOrders() {
+  const { t } = useTranslations();
   const {
     orders,
     loading,
@@ -71,23 +84,25 @@ function CashierOrders() {
   const [initialTableId, setInitialTableId] = useState(null);
   const [showDetail, setShowDetail] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const [mySales, setMySales] = useState(null);
+  const salesKey = `${dateFrom}|${dateTo}|${currentShiftOnly}`;
+  const [mySales, setMySales] = useState(
+    salesKey === cachedMySalesKey ? cachedMySales : null,
+  );
 
   useEffect(() => {
     let active = true;
     fetchSalesByCashierApi({ dateFrom, dateTo, currentShiftOnly })
       .then((res) => {
-        if (active) {
-          setMySales(
-            res.data[0] || {
-              orders_count: 0,
-              total_sales: 0,
-              cash_usd_total: 0,
-              cash_khr_total: 0,
-              digital_total: 0,
-            }
-          );
-        }
+        const data = res.data[0] || {
+          orders_count: 0,
+          total_sales: 0,
+          cash_usd_total: 0,
+          cash_khr_total: 0,
+          digital_total: 0,
+        };
+        cachedMySales = data;
+        cachedMySalesKey = salesKey;
+        if (active) setMySales(data);
       })
       .catch(() => {
         if (active) setMySales(null);
@@ -110,65 +125,57 @@ function CashierOrders() {
 
   return (
     <CashierLayout>
-      <ToastNotification toasts={toasts} onClose={removeToast} onPrint={printReceipt} />
+      <ToastNotification
+        toasts={toasts}
+        onClose={removeToast}
+        onPrint={printReceipt}
+      />
 
       <div className="flex items-center gap-3 mb-6">
         <h2 className="text-white font-bold text-2xl m-0 flex items-center gap-3">
-          <ReceiptText size={32} color="white" variant="Linear" />
-          My Sales
+          <ReceiptText
+            size={32}
+            color="white"
+            variant="Linear"
+            style={{ animation: "float 3s ease-in-out infinite" }}
+          />
+          {t.mySales}
         </h2>
       </div>
 
       {mySales && (
-        <div style={glassCard} className="rounded-[20px] p-5 mb-5">
-          <h3 className="text-white font-bold text-base m-0 mb-4 flex items-center gap-2">
-            <Chart2 size={20} color="#fff" variant="Bold" />
-            My Sales Total
-          </h3>
-          <div className="flex gap-3 flex-wrap items-stretch">
-            <div
-              className="rounded-[14px] px-4 py-3 inline-flex flex-col"
-              style={{
-                minWidth: "180px",
-                background: "rgba(255,255,255,0.06)",
-                border: "1px solid rgba(255,255,255,0.1)",
-              }}
-            >
-              <div className="text-white font-bold text-2xl">
-                ${Number(mySales.total_sales || 0).toFixed(2)}
-              </div>
-              <div className="text-white/50 text-[0.8rem] mt-1">
-                {mySales.orders_count || 0} order{mySales.orders_count === 1 ? "" : "s"}
-              </div>
-            </div>
-
-            <div
-              className="rounded-[14px] px-4 py-3 flex flex-col justify-center gap-1.5"
-              style={{
-                minWidth: "220px",
-                background: "rgba(255,255,255,0.06)",
-                border: "1px solid rgba(255,255,255,0.1)",
-              }}
-            >
-              <div className="flex justify-between gap-4 text-[0.78rem]">
-                <span className="text-white/50">Cash (USD)</span>
-                <span className="text-white font-semibold">
-                  ${Number(mySales.cash_usd_total || 0).toFixed(2)}
-                </span>
-              </div>
-              <div className="flex justify-between gap-4 text-[0.78rem]">
-                <span className="text-white/50">Cash (KHR)</span>
-                <span className="text-white font-semibold">
-                  {Math.round(Number(mySales.cash_khr_total || 0)).toLocaleString()} ៛
-                </span>
-              </div>
-              <div className="flex justify-between gap-4 text-[0.78rem]">
-                <span className="text-white/50">Digital / Bank</span>
-                <span className="text-white font-semibold">
-                  ${Number(mySales.digital_total || 0).toFixed(2)}
-                </span>
-              </div>
-            </div>
+        <div
+          style={glassCard}
+          className="w-full max-w-[280px] rounded-[16px] px-5 py-4 mb-5"
+        >
+          <div className="flex items-baseline gap-2 mb-2.5">
+            <Chart2 size={18} color="#fff" variant="Bold" />
+            <span className="text-white font-bold text-xl">
+              ${Number(mySales.total_sales || 0).toFixed(2)}
+            </span>
+            <span className="text-white/50 text-xs">
+              ({mySales.orders_count || 0}{" "}
+              {mySales.orders_count === 1 ? t.orderSingular : t.orderPlural})
+            </span>
+          </div>
+          <div className="flex justify-between text-[0.8rem] text-white/50 py-1 border-t border-white/10">
+            <span>{t.cashUsdLabel}</span>
+            <span className="text-white font-semibold">
+              ${Number(mySales.cash_usd_total || 0).toFixed(2)}
+            </span>
+          </div>
+          <div className="flex justify-between text-[0.8rem] text-white/50 py-1 border-t border-white/10">
+            <span>{t.cashKhrLabel}</span>
+            <span className="text-white font-semibold">
+              {Math.round(Number(mySales.cash_khr_total || 0)).toLocaleString()}{" "}
+              ៛
+            </span>
+          </div>
+          <div className="flex justify-between text-[0.8rem] text-white/50 py-1 border-t border-white/10">
+            <span>{t.digitalBankLabel}</span>
+            <span className="text-white font-semibold">
+              ${Number(mySales.digital_total || 0).toFixed(2)}
+            </span>
           </div>
         </div>
       )}
@@ -183,7 +190,7 @@ function CashierOrders() {
           }}
           className="w-4 h-4 cursor-pointer"
         />
-        Current Shift Only
+        {t.currentShiftOnly}
       </label>
 
       <OrdersFilter
@@ -208,6 +215,7 @@ function CashierOrders() {
           setPage(1);
         }}
         datesDisabled={currentShiftOnly}
+        t={t}
       />
 
       <OrdersTable
@@ -226,6 +234,7 @@ function CashierOrders() {
         cancelLoadingId={cancelLoadingId}
         onPagePrev={() => setPage((p) => Math.max(1, p - 1))}
         onPageNext={() => setPage((p) => Math.min(lastPage, p + 1))}
+        t={t}
       />
 
       {showDetail && (
@@ -233,6 +242,7 @@ function CashierOrders() {
           order={selectedOrder}
           onClose={() => setShowDetail(false)}
           onPrint={printReceipt}
+          t={t}
         />
       )}
 

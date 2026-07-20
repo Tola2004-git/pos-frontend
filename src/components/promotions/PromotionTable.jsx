@@ -10,7 +10,21 @@ export default function PromotionTable({
   onEdit,
   onDelete,
   onToggleStatus,
+  t,
 }) {
+  const COLUMNS = [
+    t.promoColId,
+    t.promoColName,
+    t.promoColType,
+    t.promoColDiscount,
+    t.promoColApplyTo,
+    t.promoColStartDate,
+    t.promoColEndDate,
+    t.productColStatus,
+    t.promoColEnable,
+    t.promoColAction,
+  ];
+
   if (loading) {
     return (
       <div style={{ ...glassCard, borderRadius: 16, overflow: "hidden" }}>
@@ -31,25 +45,12 @@ export default function PromotionTable({
                   background: "rgba(255,255,255,0.03)",
                 }}
               >
-                {[
-                  "ID",
-                  "Promotion Name",
-                  "Type",
-                  "Discount",
-                  "Apply To",
-                  "Start Date",
-                  "End Date",
-                  "Status",
-                  "Enable",
-                  "Action",
-                ].map((col) => (
+                {COLUMNS.map((col, colIndex) => (
                   <th
                     key={col}
                     style={{
                       padding: "12px 14px",
-                      // textAlign: "center",
-                      // color: "rgba(255,255,255,0.7)",
-                      textAlign: col === "Promotion Name" ? "left" : "center",
+                      textAlign: colIndex === 1 ? "left" : "center",
                       fontWeight: 600,
                       color: "white",
                       whiteSpace: "nowrap",
@@ -89,7 +90,7 @@ export default function PromotionTable({
           color="rgba(255,255,255,0.5)"
           variant="Linear"
         />
-        No promotions found
+        {t.noPromotionsFoundMsg}
       </div>
     );
   }
@@ -113,23 +114,12 @@ export default function PromotionTable({
                 background: "rgba(255,255,255,0.03)",
               }}
             >
-              {[
-                "ID",
-                "Promotion Name",
-                "Type",
-                "Discount",
-                "Apply To",
-                "Start Date",
-                "End Date",
-                "Status",
-                "Enable",
-                "Action",
-              ].map((col) => (
+              {COLUMNS.map((col, colIndex) => (
                 <th
                   key={col}
                   style={{
                     padding: "12px 14px",
-                    textAlign: col === "Promotion Name" ? "left" : "center",
+                    textAlign: colIndex === 1 ? "left" : "center",
                     fontWeight: 600,
                     color: "white",
                     whiteSpace: "nowrap",
@@ -149,6 +139,7 @@ export default function PromotionTable({
                 onEdit={onEdit}
                 onDelete={onDelete}
                 onToggleStatus={onToggleStatus}
+                t={t}
               />
             ))}
           </tbody>

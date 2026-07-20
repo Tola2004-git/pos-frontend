@@ -6,8 +6,10 @@ import { alertSuccess, alertError, alertConfirmDelete } from "../utils/alert.jsx
 import PromotionFilter from "../components/promotions/PromotionFilter.jsx";
 import PromotionTable from "../components/promotions/PromotionTable.jsx";
 import PromotionModal from "../components/promotions/PromotionModal.jsx";
+import { useTranslations } from "../hooks/useTranslations";
 
 function Promotions() {
+  const { t } = useTranslations();
   const {
     promotions,
     loading,
@@ -77,27 +79,29 @@ function Promotions() {
 
     if (result.success) {
       alertSuccess(
-        "Success",
-        editPromotion ? "Promotion updated!" : "Promotion created!",
+        t.successTitle,
+        editPromotion ? t.promotionUpdatedMsg : t.promotionCreatedMsg,
       );
       handleClose();
     } else {
-      alertError("Error", result.error);
+      alertError(t.genericErrorTitleShort, result.error);
     }
   };
 
   const handleDelete = async (id) => {
     const result = await alertConfirmDelete(
-      "Delete this Promotion?",
-      "Do you really want to delete this promotion?"
+      t.promotionDeleteConfirmTitle,
+      t.promotionDeleteConfirmMsg,
+      t.cancel,
+      t.deleteAction,
     );
     if (!result.isConfirmed) return;
 
     const response = await deletePromotion(id);
     if (response.success){
-      alertSuccess("Deleted", "Promotion deleted successfully");
+      alertSuccess(t.paymentDeletedTitle, t.promotionDeletedMsg);
     } else {
-      alertError("Error", response.error);
+      alertError(t.genericErrorTitleShort, response.error);
     }
   };
 
@@ -114,9 +118,9 @@ function Promotions() {
       product_ids: promo.products?.map((p) => p.id) ?? [],
     });
     if (result.success) {
-      alertSuccess("Success", "Promotion status updated!");
+      alertSuccess(t.successTitle, t.promotionStatusUpdatedMsg);
     } else {
-      alertError("Error", result.error);
+      alertError(t.genericErrorTitleShort, result.error);
     }
   };
 
@@ -147,7 +151,7 @@ function Promotions() {
             variant="Linear"
             style={{ animation: "float 3s ease-in-out infinite" }}
           />
-          Promotion & Discount
+          {t.promotions}
         </h2>
         <button
           onClick={openCreate}
@@ -166,7 +170,7 @@ function Promotions() {
           }}
         >
           <Add size={24} color="white" variant="Linear" />
-          New Promotion
+          {t.newPromotionAction}
         </button>
       </div>
 
@@ -184,6 +188,7 @@ function Promotions() {
         showFilter={showFilter}
         setShowFilter={setShowFilter}
         filterRef={filterRef}
+        t={t}
       />
 
       {error && (
@@ -207,6 +212,7 @@ function Promotions() {
         onEdit={openEdit}
         onDelete={handleDelete}
         onToggleStatus={handleToggleStatus}
+        t={t}
       />
 
       <div
@@ -219,7 +225,7 @@ function Promotions() {
         }}
       >
         <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.85rem" }}>
-          Total: {filtered.length} promotions
+          {t.totalPromotionsCountMsg.replace("{n}", filtered.length)}
         </span>
         <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
           <button
@@ -237,7 +243,7 @@ function Promotions() {
               fontSize: "0.85rem",
             }}
           >
-            Back
+            {t.paginationBackAction}
           </button>
           <span
             style={{
@@ -266,7 +272,7 @@ function Promotions() {
               fontSize: "0.85rem",
             }}
           >
-            Next
+            {t.paginationNextAction}
           </button>
         </div>
       </div>
@@ -277,6 +283,7 @@ function Promotions() {
         editPromotion={editPromotion}
         submitting={submitting}
         onSubmit={handleSubmit}
+        t={t}
       />
     </Layout>
   );

@@ -1,11 +1,13 @@
-import { createContext, useContext, useEffect, useState, useCallback, useMemo } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+} from "react";
 import apiClient from "../api/apiClient";
 
-// Cache key only - the backend (`settings` table, via /settings/low-stock-threshold)
-// is the source of truth so every device/session (admin desktop, cashier
-// terminal, ...) agrees on the same threshold. Without this, each browser
-// used to fall back to its own default the moment it didn't match whichever
-// machine last saved a value in localStorage.
 const LOW_STOCK_THRESHOLD_CACHE_KEY = "low_stock_threshold";
 const DEFAULT_THRESHOLD = 10;
 const POLL_INTERVAL_MS = 30000;
@@ -13,14 +15,16 @@ const POLL_INTERVAL_MS = 30000;
 const LowStockContext = createContext(null);
 
 function readCachedThreshold() {
-  return Number(localStorage.getItem(LOW_STOCK_THRESHOLD_CACHE_KEY)) || DEFAULT_THRESHOLD;
+  return (
+    Number(localStorage.getItem(LOW_STOCK_THRESHOLD_CACHE_KEY)) ||
+    DEFAULT_THRESHOLD
+  );
 }
 
 export function LowStockProvider({ children }) {
-  // Paint instantly from the last-known local value, then reconcile with
-  // the server as soon as fetchThreshold() below resolves.
   const [threshold, setThresholdState] = useState(readCachedThreshold);
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [dismissedIds, setDismissedIds] = useState(() => new Set());
 
   const applyThreshold = useCallback((value) => {
@@ -39,18 +43,21 @@ export function LowStockProvider({ children }) {
     }
   }, [applyThreshold]);
 
-  // Admin-only write (route is role:admin-gated server-side); updates the
-  // shared setting so every other session picks it up on its next poll.
-  const setThreshold = useCallback(async (next) => {
-    const value = Number(next) || DEFAULT_THRESHOLD;
-    try {
-      const res = await apiClient.put("/settings/low-stock-threshold", { threshold: value });
-      applyThreshold(res.data.threshold);
-    } catch (err) {
-      console.error("Failed to save low stock threshold", err);
-      throw err;
-    }
-  }, [applyThreshold]);
+  const setThreshold = useCallback(
+    async (next) => {
+      const value = Number(next) || DEFAULT_THRESHOLD;
+      try {
+        const res = await apiClient.put("/settings/low-stock-threshold", {
+          threshold: value,
+        });
+        applyThreshold(res.data.threshold);
+      } catch (err) {
+        console.error("Failed to save low stock threshold", err);
+        throw err;
+      }
+    },
+    [applyThreshold],
+  );
 
   const fetchProducts = useCallback(async () => {
     if (!localStorage.getItem("token")) return;
@@ -59,6 +66,8 @@ export function LowStockProvider({ children }) {
       setProducts(res.data.data || []);
     } catch (err) {
       console.error("Failed to fetch products for low stock tracking", err);
+    } finally {
+      setLoading(false);
     }
   }, []);
 
@@ -73,11 +82,10 @@ export function LowStockProvider({ children }) {
   }, [fetchThreshold, fetchProducts]);
 
   const lowStockProducts = useMemo(
-    () => products.filter((p) => Number(p.qty) > 0 && Number(p.qty) <= threshold),
+    () => products.filter((p) => Number(p.qty) <= threshold),
     [products, threshold],
   );
 
-  // Let a dismissed item alert again if it drops back into low stock later.
   useEffect(() => {
     const lowStockIds = new Set(lowStockProducts.map((p) => p.id));
     setDismissedIds((prev) => {
@@ -99,15 +107,32 @@ export function LowStockProvider({ children }) {
     () => ({
       threshold,
       setThreshold,
-      lowStockProducts: visibleLowStockProducts,
+      // Full current low-stock list - always reflects real stock levels, so
+      // dashboard widgets/counters stay correct regardless of which toast
+      // popups the user has dismissed.
+      lowStockProducts,
+      // Same list minus anything the user dismissed from the toast stack -
+      // only the popup notifications should use this one.
+      toastLowStockProducts: visibleLowStockProducts,
+      loading,
       dismissLowStock,
       refreshLowStockProducts: fetchProducts,
     }),
-    [threshold, setThreshold, visibleLowStockProducts, dismissLowStock, fetchProducts],
+    [
+      threshold,
+      setThreshold,
+      lowStockProducts,
+      visibleLowStockProducts,
+      loading,
+      dismissLowStock,
+      fetchProducts,
+    ],
   );
 
   return (
-    <LowStockContext.Provider value={value}>{children}</LowStockContext.Provider>
+    <LowStockContext.Provider value={value}>
+      {children}
+    </LowStockContext.Provider>
   );
 }
 

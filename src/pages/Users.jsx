@@ -4,8 +4,10 @@ import UserSearch from "../components/users/UserSearch";
 import UserTable from "../components/users/UserTable";
 import UserModal from "../components/users/UserModal";
 import { Profile2User, UserCirlceAdd } from "iconsax-react";
+import { useTranslations } from "../hooks/useTranslations";
 
 function Users() {
+  const { t } = useTranslations();
   const {
     users,
     currentUser,
@@ -97,7 +99,7 @@ function Users() {
           >
             <Profile2User size={35} color="#fff" variant="bulk" />
           </div>
-          Users Management
+          {t.usersManagementTitle}
         </h2>
 
         <button
@@ -114,7 +116,7 @@ function Users() {
           }}
         >
           <UserCirlceAdd size={25} color="#fff" variant="bulk" />
-          Add User
+          {t.addUserAction}
         </button>
       </div>
 
@@ -126,6 +128,7 @@ function Users() {
         showRoleDropdown={showRoleDropdown}
         setShowRoleDropdown={setShowRoleDropdown}
         dropdownRef={dropdownRef}
+        t={t}
       />
 
       <UserTable
@@ -134,6 +137,7 @@ function Users() {
         onEdit={handleEdit}
         onDelete={handleDelete}
         currentUser={currentUser}
+        t={t}
       />
 
       <div
@@ -146,7 +150,7 @@ function Users() {
         }}
       >
         <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.85rem" }}>
-          Total: {total} users
+          {t.totalUsersCountMsg.replace("{n}", total)}
         </span>
         <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
           <button
@@ -164,7 +168,7 @@ function Users() {
               fontSize: "0.85rem",
             }}
           >
-            Back
+            {t.paginationBackAction}
           </button>
           <span
             style={{
@@ -193,7 +197,7 @@ function Users() {
               fontSize: "0.85rem",
             }}
           >
-            Next
+            {t.paginationNextAction}
           </button>
         </div>
       </div>
@@ -215,6 +219,7 @@ function Users() {
         handleImageUpload={handleImageUpload}
         handleSubmit={handleSubmit}
         closeModal={closeModal}
+        t={t}
       />
     </Layout>
   );

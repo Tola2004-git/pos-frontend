@@ -14,7 +14,7 @@ const spinnerStyles = `
 }
 `;
 
-export function HoldOrderAction({ onHold, disabled, loading }) {
+export function HoldOrderAction({ onHold, disabled, loading, t }) {
   const handleHold = async () => {
     if (loading || disabled) return;
     await onHold();
@@ -39,7 +39,7 @@ export function HoldOrderAction({ onHold, disabled, loading }) {
       ) : (
         <Archive size={18} color="white" variant="Outline" />
       )}
-      {loading ? "Holding..." : "Hold"}
+      {loading ? (t?.holding || "Holding...") : (t?.hold || "Hold")}
     </button>
   );
 }

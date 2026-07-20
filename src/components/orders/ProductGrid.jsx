@@ -21,7 +21,9 @@ export const ProductGrid = memo(function ProductGrid({
   findProductPromotions,
   formatPromotionLabel,
   truncatePromoName,
+  t,
 }) {
+  const tr = (key, fallback) => t?.[key] || fallback;
   console.time("⚡ ProductGrid Total Render Time");
 
   const { threshold } = useLowStock();
@@ -74,7 +76,7 @@ export const ProductGrid = memo(function ProductGrid({
           />
           <input
             type="text"
-            placeholder="Search products..."
+            placeholder={tr("searchProducts", "Search products...")}
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             className="flex-1 bg-transparent border-none outline-none text-white text-[14px] py-1"
@@ -106,7 +108,7 @@ export const ProductGrid = memo(function ProductGrid({
                 : "bg-white/5 text-white/70 border border-white/15 hover:bg-white/10 hover:text-white"
             }`}
           >
-            All
+            {tr("allCategory", "All")}
           </button>
           {(categories || [])
             .filter((c) => c.status)
@@ -163,10 +165,10 @@ export const ProductGrid = memo(function ProductGrid({
                   fontWeight: "500",
                 }}
               >
-                No products available
+                {tr("noProductsAvailable", "No products available")}
               </div>
               <div style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.4)" }}>
-                Try selecting another category
+                {tr("tryAnotherCategory", "Try selecting another category")}
               </div>
             </div>
           ) : (
@@ -194,7 +196,7 @@ export const ProductGrid = memo(function ProductGrid({
                 {isOutOfStock && (
                   <div className="absolute inset-0 z-10 flex items-center justify-center rounded-[12px] bg-black/50">
                     <span className="rounded-full bg-red-600/90 px-2 py-1 text-[0.68rem] font-bold uppercase tracking-wide text-white">
-                      Out of Stock
+                      {tr("outOfStock", "Out of Stock")}
                     </span>
                   </div>
                 )}
@@ -202,7 +204,7 @@ export const ProductGrid = memo(function ProductGrid({
                 {/* Low Stock Badge */}
                 {isLowStock && (
                   <span className="absolute left-1.5 top-1.5 z-10 rounded-full bg-amber-500/95 px-2 py-0.5 text-[0.6rem] font-bold uppercase tracking-wide text-[#1a1a2e] shadow-sm">
-                    Low Stock
+                    {tr("lowStock", "Low Stock")}
                   </span>
                 )}
 
@@ -269,7 +271,7 @@ export const ProductGrid = memo(function ProductGrid({
                         : "text-white/40"
                   }`}
                 >
-                  Stock: {p.qty}
+                  {tr("stockLabel", "Stock")}: {p.qty}
                 </div>
               </div>
             );
@@ -288,14 +290,16 @@ export const ProductGrid = memo(function ProductGrid({
           className="flex items-center gap-1 rounded-full px-4 py-2 text-[0.8rem] font-semibold text-white transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed hover:enabled:scale-105"
         >
           <ArrowLeft2 size={14} color="#fff" variant="Linear" />
-          Back
+          {tr("back2", "Back")}
         </button>
 
         <div
           style={glassCard}
           className="rounded-full px-4 py-2 text-[0.78rem] font-semibold text-white/80"
         >
-          Page {currentPage} of {totalPages}
+          {tr("pageOf", "Page {current} of {total}")
+            .replace("{current}", currentPage)
+            .replace("{total}", totalPages)}
         </div>
 
         <button
@@ -305,7 +309,7 @@ export const ProductGrid = memo(function ProductGrid({
           style={glassCard}
           className="flex items-center gap-1 rounded-full px-4 py-2 text-[0.8rem] font-semibold text-white transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed hover:enabled:scale-105"
         >
-          Next
+          {tr("next", "Next")}
           <ArrowRight2 size={14} color="#fff" variant="Linear" />
         </button>
       </div>

@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { alertSuccess, alertError, alertConfirmDelete } from "../utils/alert.jsx";
+import { useTranslations } from "./useTranslations";
 import api from "../api/apiClient";
 
 export function useIngredients() {
+  const { t } = useTranslations();
   const [ingredients, setIngredients] = useState([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
@@ -72,17 +74,19 @@ export function useIngredients() {
 
   const handleDelete = async (id) => {
     const result = await alertConfirmDelete(
-      "Delete this ingredient?",
-      "This cannot be undone."
+      t.ingredientDeleteConfirmTitle,
+      t.ingredientDeleteConfirmMsg,
+      t.cancel,
+      t.deleteAction,
     );
     if (!result.isConfirmed) return;
     try {
       await api.delete(`/ingredients/${id}`);
-      alertSuccess("Deleted!", "Ingredient has been removed.");
+      alertSuccess(t.tableDeletedTitle, t.ingredientDeletedMsg);
       fetchIngredients();
       fetchAllIngredients();
     } catch (err) {
-      alertError("Failed to delete", err.response?.data?.message || "Please try again.");
+      alertError(t.ingredientDeleteFailedTitle, err.response?.data?.message || t.tryAgainMsg);
     }
   };
 
@@ -104,7 +108,7 @@ export function useIngredients() {
   const handleRestock = async () => {
     setRestockError("");
     if (!restockForm.quantity || restockForm.quantity <= 0) {
-      setRestockError("Quantity must be greater than 0!");
+      setRestockError(t.quantityRequiredMsg);
       return;
     }
     setSubmitting(true);
@@ -113,13 +117,13 @@ export function useIngredients() {
       setShowRestock(false);
       setSelectedIngredient(null);
       alertSuccess(
-        "Stock updated!",
-        restockForm.action === "add" ? "Stock has been added successfully." : "Stock has been removed successfully."
+        t.ingredientStockUpdatedTitle,
+        restockForm.action === "add" ? t.stockAddedMsg : t.stockRemovedMsg
       );
       await fetchIngredients();
       await fetchAllIngredients();
     } catch (err) {
-      alertError("Something went wrong!", err.response?.data?.message || "Please try again.");
+      alertError(t.genericErrorTitle, err.response?.data?.message || t.tryAgainMsg);
     } finally {
       setSubmitting(false);
     }

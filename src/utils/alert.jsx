@@ -203,6 +203,33 @@ function injectAlertStyles() {
       box-shadow: 0 4px 16px rgba(243,156,18,0.4);
     }
 
+    .confirm-input {
+      width: 100%;
+      box-sizing: border-box;
+      resize: vertical;
+      min-height: 70px;
+      margin-bottom: 20px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.07);
+      color: white;
+      font-size: 0.85rem;
+      font-family: inherit;
+      outline: none;
+      text-align: left;
+    }
+    .confirm-input::placeholder {
+      color: rgba(255,255,255,0.35);
+    }
+
+    .confirm-input-error {
+      color: #e67e22;
+      font-size: 0.78rem;
+      margin: -14px 0 16px;
+      text-align: left;
+    }
+
     @keyframes toast-in {
       from { opacity: 0; transform: translateX(60px) scale(0.9); }
       to   { opacity: 1; transform: translateX(0)    scale(1);   }
@@ -332,6 +359,86 @@ function showConfirm({
   });
 }
 
+function showPrompt({
+  title,
+  message,
+  placeholder = "",
+  confirmText = "Confirm",
+  cancelText = "Cancel",
+  icon = ICONS.confirmWarning,
+  variant = "danger",
+  requiredMessage = "This field is required.",
+}) {
+  injectAlertStyles();
+
+  return new Promise((resolve) => {
+    const overlay = document.createElement("div");
+    overlay.className = "confirm-overlay";
+    overlay.innerHTML = `
+      <div class="confirm-box">
+        <span class="confirm-emoji">${icon}</span>
+        <h3 class="confirm-title">${title}</h3>
+        <p class="confirm-message">${message}</p>
+        <textarea class="confirm-input" placeholder="${placeholder}"></textarea>
+        <p class="confirm-input-error" style="display:none;">${requiredMessage}</p>
+        <div class="confirm-buttons">
+          <button class="confirm-btn confirm-btn-cancel">${cancelText}</button>
+          <button class="confirm-btn confirm-btn-${variant}">${confirmText}</button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    const input = overlay.querySelector(".confirm-input");
+    const errorEl = overlay.querySelector(".confirm-input-error");
+    input.focus();
+
+    const close = (confirmed, value) => {
+      overlay.style.animation = "confirm-fade-in 0.2s ease reverse forwards";
+      setTimeout(() => {
+        overlay.remove();
+        resolve({ isConfirmed: confirmed, value });
+      }, 200);
+    };
+
+    overlay
+      .querySelector(".confirm-btn-cancel")
+      .addEventListener("click", () => close(false, ""));
+    overlay
+      .querySelector(`.confirm-btn-${variant}`)
+      .addEventListener("click", () => {
+        const value = input.value.trim();
+        if (!value) {
+          errorEl.style.display = "block";
+          input.focus();
+          return;
+        }
+        close(true, value);
+      });
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) close(false, "");
+    });
+  });
+}
+
+export const alertPromptDanger = (
+  title,
+  message,
+  placeholder,
+  confirmText = "Confirm",
+  cancelText = "Cancel",
+) =>
+  showPrompt({
+    title,
+    message,
+    placeholder,
+    confirmText,
+    cancelText,
+    icon: ICONS.confirmWarning,
+    variant: "danger",
+  });
+
 export const alertSuccess = (title, message) =>
   showToast("success", title, message);
 export const alertError = (title, message) =>
@@ -340,11 +447,17 @@ export const alertWarning = (title, message) =>
   showToast("warning", title, message);
 export const alertInfo = (title, message) => showToast("info", title, message);
 
-export const alertConfirmDelete = (title, message) =>
+export const alertConfirmDelete = (
+  title,
+  message,
+  cancelText = "Cancel",
+  confirmText = "Delete",
+) =>
   showConfirm({
     title,
     message,
-    confirmText: "Delete",
+    confirmText,
+    cancelText,
     icon: ICONS.trash,
     variant: "danger",
   });
@@ -354,17 +467,28 @@ export const alertConfirm = (
   message,
   confirmText = "Confirm",
   icon = ICONS.arrowRight,
-) => showConfirm({ title, message, confirmText, icon, variant: "danger" });
-
-export const alertConfirmWarning = (
-  title,
-  message,
-  confirmText = "Confirm",
+  cancelText = "Cancel",
 ) =>
   showConfirm({
     title,
     message,
     confirmText,
+    cancelText,
+    icon,
+    variant: "danger",
+  });
+
+export const alertConfirmWarning = (
+  title,
+  message,
+  confirmText = "Confirm",
+  cancelText = "Cancel",
+) =>
+  showConfirm({
+    title,
+    message,
+    confirmText,
+    cancelText,
     icon: ICONS.confirmWarning,
     variant: "warning",
   });

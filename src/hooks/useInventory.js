@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { alertSuccess, alertError } from "../utils/alert.jsx";
 import { useLowStock } from "../context/LowStockContext";
+import { useTranslations } from "./useTranslations";
 import api from "../api/apiClient";
 
 export function useInventory() {
+  const { t } = useTranslations();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
@@ -110,8 +112,8 @@ export function useInventory() {
 
   const handleRestock = async () => {
     setRestockError("");
-    if (!restockForm.product_id) { setRestockError("Please select a product!"); return; }
-    if (!restockForm.quantity || restockForm.quantity <= 0) { setRestockError("Quantity must be greater than 0!"); return; }
+    if (!restockForm.product_id) { setRestockError(t.selectProductRequiredMsg); return; }
+    if (!restockForm.quantity || restockForm.quantity <= 0) { setRestockError(t.quantityRequiredMsg); return; }
     setSubmitting(true);
     try {
       await api.post("/inventory/restock", restockForm);
@@ -124,11 +126,11 @@ export function useInventory() {
       await fetchAllProducts();
       await refreshLowStockProducts();
       alertSuccess(
-        "Restocked!",
-        restockForm.action === "add" ? "Stock has been added successfully." : "Stock has been removed successfully."
+        t.restockedTitle,
+        restockForm.action === "add" ? t.stockAddedMsg : t.stockRemovedMsg
       );
     } catch (err) {
-      alertError("Something went wrong!", err.response?.data?.message || "Please try again.");
+      alertError(t.genericErrorTitle, err.response?.data?.message || t.tryAgainMsg);
     } finally {
       setSubmitting(false);
     }
@@ -138,11 +140,11 @@ export function useInventory() {
     try {
       await setThreshold(tempThreshold);
       setShowThreshold(false);
-      alertSuccess("Saved!", `Low stock threshold set to ${tempThreshold}.`);
+      alertSuccess(t.thresholdSavedTitle, t.thresholdSavedMsg.replace("{n}", tempThreshold));
     } catch (err) {
       alertError(
-        "Save Failed",
-        err.response?.data?.message || "Unable to save the low stock threshold.",
+        t.thresholdSaveFailedTitle,
+        err.response?.data?.message || t.thresholdSaveFailedMsg,
       );
     }
   };

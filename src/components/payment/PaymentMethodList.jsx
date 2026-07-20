@@ -3,11 +3,12 @@ export function PaymentMethodList({
   paymentMethodsSource = paymentMethods,
   selectedPaymentId,
   onSelectPayment,
+  t,
 }) {
   if (paymentMethods.length === 0) {
     return (
       <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-white/40 text-center italic">
-        No payment methods found. Please add them in settings.
+        {t?.noPaymentMethodsFound || "No payment methods found. Please add them in settings."}
       </div>
     );
   }

@@ -9,39 +9,41 @@ import {
   Printer,
 } from "iconsax-react";
 import { colors } from "../../utils/styles";
+import { useTranslations } from "../../hooks/useTranslations";
 
 const TOAST_DURATION = 3000;
 
-const TOAST_CONFIG = {
-  payment: {
-    title: "Payment Received!",
-    Icon: TickCircle,
-    gradient: "from-[#27ae60] to-[#1e8449]",
-  },
-  hold: {
-    title: "Order Held!",
-    Icon: PauseCircle,
-    gradient: "from-[#f39c12] to-[#b9770e]",
-  },
-  update: {
-    title: "Order Updated!",
-    Icon: RefreshCircle,
-    gradient: "from-[#2980b9] to-[#1f618d]",
-  },
-};
-
 export default function ToastNotification({ toasts, onClose, onPrint }) {
+  const { t } = useTranslations();
   if (!toasts.length) return null;
+
+  const TOAST_CONFIG = {
+    payment: {
+      title: t.paymentReceivedToast,
+      Icon: TickCircle,
+      gradient: "from-[#27ae60] to-[#1e8449]",
+    },
+    hold: {
+      title: t.orderHeldToast,
+      Icon: PauseCircle,
+      gradient: "from-[#f39c12] to-[#b9770e]",
+    },
+    update: {
+      title: t.orderUpdatedToast,
+      Icon: RefreshCircle,
+      gradient: "from-[#2980b9] to-[#1f618d]",
+    },
+  };
 
   return (
     <div className="fixed top-6 right-6 z-[999999] flex flex-col gap-3 pointer-events-none">
-      {toasts.map((t) => {
-        const config = TOAST_CONFIG[t.type] || TOAST_CONFIG.payment;
+      {toasts.map((toast) => {
+        const config = TOAST_CONFIG[toast.type] || TOAST_CONFIG.payment;
         const Icon = config.Icon;
-        const duration = t.duration || TOAST_DURATION;
+        const duration = toast.duration || TOAST_DURATION;
         return (
           <div
-            key={t.id}
+            key={toast.id}
             className={`pointer-events-auto relative overflow-hidden rounded-[16px] border border-white/15 bg-gradient-to-br ${config.gradient} p-[14px_18px] min-w-[300px] max-w-[380px] text-white shadow-[0_8px_24px_rgba(0,0,0,0.35)]`}
             style={{ animation: "slideIn 0.3s ease" }}
           >
@@ -49,9 +51,9 @@ export default function ToastNotification({ toasts, onClose, onPrint }) {
 
             <button
               type="button"
-              onClick={() => onClose?.(t.id)}
+              onClick={() => onClose?.(toast.id)}
               className="absolute right-2.5 top-2.5 text-white/70 transition-colors hover:text-white"
-              aria-label="Dismiss notification"
+              aria-label={t.closeAction}
             >
               <CloseCircle size="18" color="currentColor" variant="Linear" />
             </button>
@@ -65,35 +67,35 @@ export default function ToastNotification({ toasts, onClose, onPrint }) {
               </span>
             </div>
             <div className="text-[0.8rem] leading-[1.4] text-white/85">
-              {t.type === "payment" && (
+              {toast.type === "payment" && (
                 <>
                   <div className="flex items-center gap-1.5">
                     <DollarCircle size="16" color="#ffffff" variant="Linear" />{" "}
-                    Amount:{" "}
+                    {t.amountToastLabel}{" "}
                     <b style={{ color: colors.gold }}>
-                      ${Number(t.order.total).toFixed(2)}
+                      ${Number(toast.order.total).toFixed(2)}
                     </b>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <CardPos size="16" color="#ffffff" variant="Linear" />{" "}
-                    Method: <b>{t.order.payment_method?.name || "N/A"}</b>
+                    {t.methodToastLabel} <b>{toast.order.payment_method?.name || t.notAvailable}</b>
                   </div>
                 </>
               )}
               <div className="flex items-center gap-1.5">
-                <Hashtag size="16" color="#ffffff" variant="Linear" /> Order:{" "}
-                <b>{t.order.order_number}</b>
+                <Hashtag size="16" color="#ffffff" variant="Linear" /> {t.orderToastLabel}{" "}
+                <b>{toast.order.order_number}</b>
               </div>
             </div>
 
-            {t.type === "payment" && onPrint && (
+            {toast.type === "payment" && onPrint && (
               <button
                 type="button"
-                onClick={() => onPrint(t.order)}
+                onClick={() => onPrint(toast.order)}
                 className="mt-3 flex w-full items-center justify-center gap-2 rounded-[10px] border border-white/25 bg-white/15 py-2 text-[0.82rem] font-semibold text-white transition-colors hover:bg-white/25"
               >
                 <Printer size="16" color="white" variant="Linear" />
-                Print Receipt
+                {t.printReceiptBtn}
               </button>
             )}
 

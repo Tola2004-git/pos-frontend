@@ -17,8 +17,10 @@ import { updateOrderApi, fetchOrderApi, changeTableApi, fetchSalesByCashierApi }
 import { getAllCashiers } from "../api/usersApi";
 import { alertWarning, alertError } from "../utils/alert.jsx";
 import { printReceipt } from "../components/receipt/ReceiptTemplate";
+import { useTranslations } from "../hooks/useTranslations";
 
 function Orders() {
+  const { t } = useTranslations();
   const {
     orders,
     loading,
@@ -43,7 +45,11 @@ function Orders() {
     fetchOrders,
     handleCancel,
     cancelLoadingId,
+    handleRefund,
+    refundLoadingId,
   } = useOrders();
+
+  const isAdmin = localStorage.getItem("role") === "admin";
 
   const [cashiers, setCashiers] = useState([]);
   const [salesSummary, setSalesSummary] = useState([]);
@@ -298,7 +304,7 @@ function Orders() {
   } = {}) => {
     if (!editOrder) return;
     if (editCart.length === 0) {
-      alertWarning("Cart is empty", "Please add products to cart.");
+      alertWarning(t.cartEmptyTitle, t.cartEmptyMsg);
       return;
     }
 
@@ -353,7 +359,10 @@ function Orders() {
       refetchProducts();
       addToast(res.data.order, status === "completed" ? "payment" : "update");
     } catch (err) {
-      alertError("Update failed", err.response?.data?.message || "Unable to update the order.");
+      alertError(
+        t.orderUpdateFailedTitle,
+        err.response?.data?.message || t.orderUpdateFailedMsg,
+      );
     }
   };
 
@@ -402,7 +411,7 @@ function Orders() {
           >
             <ShoppingCart size={40} color="#fff" variant="Outline" />
           </div>
-          Orders Management
+          {t.ordersManagementTitle}
         </h2>
         <button
           onClick={() => pos.setShowPOS(true)}
@@ -418,7 +427,7 @@ function Orders() {
           }}
         >
           <ReceiptAdd size={25} color="#fff" variant="bulk"/>
-          New Order
+          {t.newOrderTitle}
         </button>
       </div>
 
@@ -449,6 +458,7 @@ function Orders() {
           setCashierFilter(v);
           setPage(1);
         }}
+        t={t}
       />
 
       {!salesSummaryLoading && (
@@ -458,10 +468,10 @@ function Orders() {
         >
           <h3 className="text-white font-bold text-base m-0 mb-4 flex items-center gap-2">
             <Chart2 size={20} color="#fff" variant="Bold" />
-            Sales by Cashier
+            {t.salesByCashierTitle}
           </h3>
           {salesSummary.length === 0 ? (
-            <p className="text-white/50 text-sm m-0">No completed sales in this date range.</p>
+            <p className="text-white/50 text-sm m-0">{t.noSalesInRangeMsg}</p>
           ) : (
           <div className="flex gap-3 flex-wrap">
             {salesSummary.map((row) => (
@@ -479,7 +489,8 @@ function Orders() {
                   ${Number(row.total_sales || 0).toFixed(2)}
                 </div>
                 <div className="text-white/40 text-[0.72rem] mt-1">
-                  {row.orders_count} order{row.orders_count === 1 ? "" : "s"}
+                  {row.orders_count}{" "}
+                  {row.orders_count === 1 ? t.orderSingular : t.orderPlural}
                 </div>
               </div>
             ))}
@@ -503,8 +514,12 @@ function Orders() {
         onPrint={printReceipt}
         onCancel={handleCancel}
         cancelLoadingId={cancelLoadingId}
+        onRefund={handleRefund}
+        refundLoadingId={refundLoadingId}
+        isAdmin={isAdmin}
         onPagePrev={() => setPage((p) => Math.max(1, p - 1))}
         onPageNext={() => setPage((p) => Math.min(lastPage, p + 1))}
+        t={t}
       />
 
       {pos.showPOS && (
@@ -562,6 +577,10 @@ function Orders() {
           order={selectedOrder}
           onClose={() => setShowDetail(false)}
           onPrint={printReceipt}
+          onRefund={handleRefund}
+          refundLoadingId={refundLoadingId}
+          isAdmin={isAdmin}
+          t={t}
         />
       )}
     </Layout>

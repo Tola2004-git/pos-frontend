@@ -19,7 +19,13 @@ const TYPE_STYLES = {
   },
 };
 
-export default function AlertToast({ type = "info", title, message, onClose }) {
+export default function AlertToast({
+  type = "info",
+  title,
+  message,
+  onClose,
+  closeLabel = "Close",
+}) {
   const { gradient, Icon } = TYPE_STYLES[type] || TYPE_STYLES.info;
 
   return (
@@ -53,7 +59,7 @@ export default function AlertToast({ type = "info", title, message, onClose }) {
               <button
                 type="button"
                 onClick={onClose}
-                aria-label="Close"
+                aria-label={closeLabel}
                 className="flex-shrink-0 rounded-full p-1 text-white/60 transition-colors hover:bg-white/10 hover:text-white"
               >
                 ✕

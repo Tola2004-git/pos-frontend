@@ -1,7 +1,9 @@
 import { colors } from "../../utils/styles";
 
-function UserProfile({ user }) {
+function UserProfile({ user, t }) {
   const initial = user?.name?.charAt(0).toUpperCase() || "A";
+  const roleLabel =
+    user?.role === "cashier" ? t?.roleCashier : t?.roleAdmin;
 
   return (
     <div className="flex items-center gap-[10px]">
@@ -23,13 +25,13 @@ function UserProfile({ user }) {
 
       <div className="flex flex-col">
         <span className="text-white text-[0.85rem] font-semibold leading-[1.2]">
-          {user?.name || "Admin"}
+          {user?.name || t?.roleAdmin || "Admin"}
         </span>
         <span
           style={{ color: colors.white }}
           className="text-[0.72rem] font-medium"
         >
-          {user?.role || "admin"}
+          {roleLabel || "Admin"}
         </span>
       </div>
     </div>

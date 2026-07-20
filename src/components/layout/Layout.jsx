@@ -14,7 +14,8 @@ function Layout({ children }) {
   const { sidebarOpen, toggleSidebar: handleToggle } = useContext(SidebarContext);
   const {
     bgStyle,
-    showBgChanger,
+    isBgChangerMounted,
+    isBgChangerVisible,
     openBgChanger,
     closeBgChanger,
     applyBg,
@@ -25,6 +26,8 @@ function Layout({ children }) {
     handleSelectPreset,
     handleImageUpload,
     handleCustomUrlChange,
+    compressing,
+    uploadError,
   } = useBackgroundChanger(
     () => { },
     () => { },
@@ -56,8 +59,9 @@ function Layout({ children }) {
       className="min-h-screen bg-cover bg-center bg-no-repeat transition-all duration-500"
     >
       <div className="fixed inset-0 bg-black/50 pointer-events-none z-0" />
-      {showBgChanger && (
+      {isBgChangerMounted && (
         <BackgroundChanger
+          visible={isBgChangerVisible}
           onClose={closeBgChanger}
           onApply={applyBg}
           selected={selected}
@@ -67,6 +71,9 @@ function Layout({ children }) {
           handleSelectPreset={handleSelectPreset}
           handleImageUpload={handleImageUpload}
           handleCustomUrlChange={handleCustomUrlChange}
+          compressing={compressing}
+          uploadError={uploadError}
+          t={t}
         />
       )}
       <div className="relative z-10 flex min-h-screen">

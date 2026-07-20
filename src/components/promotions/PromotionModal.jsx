@@ -14,7 +14,7 @@ import {
 import { glass, glassCard } from "../../utils/styles";
 import {
   defaultPromotionForm,
-  PROMOTION_TYPES,
+  getPromotionTypes,
 } from "../../constants/promotionConstants";
 import ProductPickerModal from "./ProductPickerModal";
 
@@ -24,7 +24,9 @@ export default function PromotionModal({
   editPromotion,
   submitting,
   onSubmit,
+  t,
 }) {
+  const PROMOTION_TYPES = getPromotionTypes(t);
   const [isMounted, setIsMounted] = useState(show);
   const [isVisible, setIsVisible] = useState(show);
   const [form, setForm] = useState(() => {
@@ -92,17 +94,17 @@ export default function PromotionModal({
 
   const applyToLabel =
     form.product_ids.length > 0
-      ? `${form.product_ids.length} product(s) selected`
-      : "All products (tap to select specific)";
+      ? t.productsSelectedMsg.replace("{n}", form.product_ids.length)
+      : t.allProductsTapMsg;
 
   const handleSubmit = () => {
     setError("");
 
-    if (!form.name.trim()) return setError("Promotion name is required");
+    if (!form.name.trim()) return setError(t.promotionNameRequiredMsg);
     if (!form.value || Number(form.value) < 0)
-      return setError("Discount value is required");
+      return setError(t.discountValueRequiredMsg);
     if (form.type === "percentage" && Number(form.value) > 100)
-      return setError("Percentage cannot exceed 100%");
+      return setError(t.percentageExceedMsg);
 
     onSubmit({
       name: form.name.trim(),
@@ -148,7 +150,7 @@ export default function PromotionModal({
     marginBottom: "6px",
   };
 
-  const SelectedIcon = PROMOTION_TYPES.find((t) => t.value === form.type)?.icon;
+  const SelectedIcon = PROMOTION_TYPES.find((pt) => pt.value === form.type)?.icon;
 
   return (
     <div
@@ -216,13 +218,14 @@ export default function PromotionModal({
                   fontWeight: 600,
                 }}
               >
-                {editPromotion ? "Edit Promotion" : "New Promotion"}
+                {editPromotion ? t.editPromotionTitle : t.newPromotionAction}
               </h2>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
+            aria-label={t.cancel}
             style={{
               background: "rgba(255,255,255,0.1)",
               border: "none",
@@ -255,7 +258,7 @@ export default function PromotionModal({
 
         <div>
           <div style={{ marginBottom: 16 }}>
-            <label style={labelStyle}>Promotion Name</label>
+            <label style={labelStyle}>{t.promotionNameLabel}</label>
             <div style={{ position: "relative" }}>
               <Tag
                 size={20}
@@ -273,7 +276,7 @@ export default function PromotionModal({
                       : "1px solid rgba(255,255,255,0.2)",
                   transition: "border 0.2s",
                 }}
-                placeholder="e.g. Summer Sale"
+                placeholder={t.promotionNamePlaceholder}
                 value={form.name}
                 onChange={(e) => set("name", e.target.value)}
                 onFocus={() => setFocusedField("Promotion Name")}
@@ -283,7 +286,7 @@ export default function PromotionModal({
           </div>
 
           <div style={{ marginBottom: 16 }}>
-            <label style={labelStyle}>Promotion Type</label>
+            <label style={labelStyle}>{t.promotionTypeLabel}</label>
             <div style={{ position: "relative" }}>
               {SelectedIcon && (
                 <SelectedIcon
@@ -309,13 +312,13 @@ export default function PromotionModal({
                 onFocus={() => setFocusedField("Promotion Type")}
                 onBlur={() => setFocusedField("")}
               >
-                {PROMOTION_TYPES.map((t) => (
+                {PROMOTION_TYPES.map((pt) => (
                   <option
-                    key={t.value}
-                    value={t.value}
+                    key={pt.value}
+                    value={pt.value}
                     style={{ background: "#2c3e50" }}
                   >
-                    {t.label}
+                    {pt.label}
                   </option>
                 ))}
               </select>
@@ -324,7 +327,7 @@ export default function PromotionModal({
 
           <div style={{ marginBottom: 16 }}>
             <label style={labelStyle}>
-              Discount Value {form.type === "percentage" ? "(%)" : "($)"}
+              {t.discountValueLabel} {form.type === "percentage" ? "(%)" : "($)"}
             </label>
             <div style={{ position: "relative" }}>
               <div
@@ -375,7 +378,7 @@ export default function PromotionModal({
           </div>
 
           <div style={{ marginBottom: 16 }}>
-            <label style={labelStyle}>Apply To</label>
+            <label style={labelStyle}>{t.applyToFieldLabel}</label>
             <div style={{ position: "relative" }}>
               <Box
                 size={20}
@@ -415,7 +418,7 @@ export default function PromotionModal({
             }}
           >
             <div>
-              <label style={labelStyle}>Start Date</label>
+              <label style={labelStyle}>{t.startDateLabel}</label>
               <div style={{ position: "relative" }}>
                 <Calendar
                   size={20}
@@ -443,7 +446,7 @@ export default function PromotionModal({
               </div>
             </div>
             <div>
-              <label style={labelStyle}>End Date</label>
+              <label style={labelStyle}>{t.endDateLabel}</label>
               <div style={{ position: "relative" }}>
                 <Calendar
                   size={20}
@@ -473,7 +476,7 @@ export default function PromotionModal({
           </div>
 
           <div style={{ marginBottom: 24 }}>
-            <label style={labelStyle}>Minimum Purchase ($)</label>
+            <label style={labelStyle}>{t.minPurchaseLabel}</label>
             <div style={{ position: "relative" }}>
               <DollarCircle
                 size={20}
@@ -494,7 +497,7 @@ export default function PromotionModal({
                       : "1px solid rgba(255,255,255,0.2)",
                   transition: "border 0.2s",
                 }}
-                placeholder="0.00 (optional)"
+                placeholder={t.minPurchasePlaceholder}
                 value={form.min_purchase}
                 onChange={(e) => set("min_purchase", e.target.value)}
                 onFocus={() => setFocusedField("Minimum Purchase")}
@@ -518,7 +521,7 @@ export default function PromotionModal({
                 opacity: submitting ? 0.5 : 1,
               }}
             >
-              Cancel
+              {t.cancel}
             </button>
             <button
               onClick={() => !submitting && handleSubmit()}
@@ -562,7 +565,7 @@ export default function PromotionModal({
                       strokeLinecap="round"
                     />
                   </svg>
-                  {editPromotion ? "Saving..." : "Creating..."}
+                  {editPromotion ? t.savingAction : t.creatingAction}
                 </>
               ) : (
                 <>
@@ -571,7 +574,7 @@ export default function PromotionModal({
                   ) : (
                     <AddCircle size="22" color="#fff" variant="outline" />
                   )}
-                  {editPromotion ? "Save" : "Create"}
+                  {editPromotion ? t.saveAction : t.createAction}
                 </>
               )}
             </button>
@@ -600,6 +603,7 @@ export default function PromotionModal({
         selectedIds={form.product_ids}
         onClose={() => setShowPicker(false)}
         onConfirm={handleProductConfirm}
+        t={t}
       />
     </div>
   );

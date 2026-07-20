@@ -8,6 +8,7 @@ import {
   alertConfirmDelete,
 } from "../utils/alert.jsx";
 import { isValidEmail } from "../utils/userHelpers.js";
+import { useTranslations } from "./useTranslations";
 
 const defaultForm = {
   name: "",
@@ -20,6 +21,7 @@ const defaultForm = {
 const defaultStrength = { score: 0, label: "", color: "" };
 
 export function useUsers() {
+  const { t } = useTranslations();
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
@@ -88,7 +90,7 @@ export function useUsers() {
 
   const handlePasswordChange = (value) => {
     setForm((prev) => ({ ...prev, password: value }));
-    setPasswordStrength(checkPasswordStrength(value));
+    setPasswordStrength(checkPasswordStrength(value, t));
   };
 
   const handleImageUpload = async (e) => {
@@ -105,28 +107,28 @@ export function useUsers() {
   const handleSubmit = async () => {
     setError("");
     if (!isValidEmail(form.email)) {
-      alertError("Invalid Email", "Please enter a valid email address!");
+      alertError(t.invalidEmailTitle, t.invalidEmailMsg);
       return;
     }
     if (!editUser && passwordStrength.score < 3) {
-      alertError("Weak Password", "Please use at least Fair strength.");
+      alertError(t.weakPasswordTitle, t.weakPasswordMsg);
       return;
     }
     setSubmitting(true);
     try {
       if (editUser) {
         await updateUser(editUser.id, form);
-        alertSuccess("Updated!", "User has been updated successfully.");
+        alertSuccess(t.tableUpdatedTitle, t.userUpdatedMsg);
       } else {
         await createUser(form);
-        alertSuccess("Created!", "New user has been created.");
+        alertSuccess(t.tableCreatedTitle, t.userCreatedMsg);
       }
       closeModal();
       fetchUsers();
     } catch (err) {
       alertError(
-        "Something went wrong!",
-        err.response?.data?.message || "Please try again.",
+        t.genericErrorTitle,
+        err.response?.data?.message || t.tryAgainMsg,
       );
     } finally {
       setSubmitting(false);
@@ -153,18 +155,20 @@ export function useUsers() {
 
   const handleDelete = async (id) => {
     const result = await alertConfirmDelete(
-      "Delete this user?",
-      "This cannot be undone.",
+      t.userDeleteConfirmTitle,
+      t.ingredientDeleteConfirmMsg,
+      t.cancel,
+      t.deleteAction,
     );
     if (!result.isConfirmed) return;
     try {
       await deleteUser(id);
-      alertSuccess("Deleted!", "User has been removed.");
+      alertSuccess(t.tableDeletedTitle, t.userDeletedMsg);
       fetchUsers();
     } catch (err) {
       alertError(
-        "Failed to delete",
-        err.response?.data?.message || "Please try again.",
+        t.ingredientDeleteFailedTitle,
+        err.response?.data?.message || t.tryAgainMsg,
       );
     }
   };

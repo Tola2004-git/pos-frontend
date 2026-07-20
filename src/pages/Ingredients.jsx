@@ -17,28 +17,30 @@ import {
   SearchNormal1,
   Category,
 } from "iconsax-react";
-
-const STAT_CARDS = [
-  { key: "in_stock", 
-    label: "IN STOCK", 
-    color: "#2ecc71", 
-    StatIcon: BoxTick },
-  {
-    key: "low_stock",
-    label: "LOW STOCK",
-    color: "#f1c40f",
-    StatIcon: BoxSearch,
-  },
-  {
-    key: "out_of_stock",
-    label: "OUT OF STOCK",
-    color: "#e74c3c",
-    StatIcon: BoxRemove,
-  },
-];
+import { useTranslations } from "../hooks/useTranslations";
 
 function Ingredients() {
+  const { t } = useTranslations();
   const ing = useIngredients();
+
+  const STAT_CARDS = [
+    { key: "in_stock",
+      label: t.statInStockLabel,
+      color: "#2ecc71",
+      StatIcon: BoxTick },
+    {
+      key: "low_stock",
+      label: t.statLowStockLabel,
+      color: "#f1c40f",
+      StatIcon: BoxSearch,
+    },
+    {
+      key: "out_of_stock",
+      label: t.statOutOfStockLabel,
+      color: "#e74c3c",
+      StatIcon: BoxRemove,
+    },
+  ];
   const {
     categories,
     catLoading,
@@ -133,7 +135,7 @@ function Ingredients() {
           >
             <Cake size={40} color="white" variant="Outline" />
           </div>
-          Ingredients Management
+          {t.ingredientsManagementTitle}
         </h2>
         <div style={{ display: "flex", gap: "10px" }}>
           <button
@@ -152,7 +154,7 @@ function Ingredients() {
             }}
           >
             <Category size={20} color="white" variant="Linear" />
-            Categories
+            {t.categoriesAction}
           </button>
           <button
             onClick={handleAdd}
@@ -171,7 +173,7 @@ function Ingredients() {
             }}
           >
             <Add size={24} color="white" variant="Linear" />
-            Add Ingredient
+            {t.addIngredientAction}
           </button>
         </div>
       </div>
@@ -237,7 +239,7 @@ function Ingredients() {
                       fontSize: "0.82rem",
                     }}
                   >
-                    Ingredients
+                    {t.ingredientsUnitLabel}
                   </span>
                 </div>
               </div>
@@ -278,7 +280,7 @@ function Ingredients() {
           <SearchNormal1 size="20" color="#fff" variant="linear" />
           <input
             type="text"
-            placeholder="Search by ingredient name or supplier..."
+            placeholder={t.searchIngredientsPlaceholder}
             value={ing.search}
             onChange={(e) => {
               ing.setSearch(e.target.value);
@@ -302,6 +304,7 @@ function Ingredients() {
           setPage={ing.setPage}
           showFilterDropdown={ing.showFilterDropdown}
           setShowFilterDropdown={ing.setShowFilterDropdown}
+          t={t}
         />
       </div>
 
@@ -313,6 +316,7 @@ function Ingredients() {
         onEdit={handleEdit}
         onDelete={ing.handleDelete}
         onRestock={ing.openRestock}
+        t={t}
       />
 
       {/* Pagination */}
@@ -326,7 +330,7 @@ function Ingredients() {
         }}
       >
         <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.85rem" }}>
-          Total: {ing.total} ingredients
+          {t.totalIngredientsCountMsg.replace("{n}", ing.total)}
         </span>
         <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
           <button
@@ -346,7 +350,7 @@ function Ingredients() {
               fontSize: "0.85rem",
             }}
           >
-            Back
+            {t.paginationBackAction}
           </button>
           <span
             style={{
@@ -376,7 +380,7 @@ function Ingredients() {
               fontSize: "0.85rem",
             }}
           >
-            Next
+            {t.paginationNextAction}
           </button>
         </div>
       </div>
@@ -394,6 +398,7 @@ function Ingredients() {
             ing.fetchIngredients();
             ing.fetchAllIngredients();
           }}
+          t={t}
         />
       )}
 
@@ -406,6 +411,7 @@ function Ingredients() {
         submitting={ing.submitting}
         handleRestock={ing.handleRestock}
         closeRestock={ing.closeRestock}
+        t={t}
       />
 
       {showCatModal && (
@@ -424,6 +430,7 @@ function Ingredients() {
           onToggleStatus={toggleCatStatus}
           onClose={handleCloseCatModal}
           resetCatForm={resetCatForm}
+          t={t}
         />
       )}
     </Layout>

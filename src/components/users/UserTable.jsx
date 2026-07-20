@@ -57,7 +57,7 @@ function TooltipButton({ onClick, tooltip, children }) {
   );
 }
 
-function UserTable({ users = [], loading, onEdit, onDelete, currentUser }) {
+function UserTable({ users = [], loading, onEdit, onDelete, currentUser, t }) {
   return (
     <div style={{ ...glassCard, borderRadius: "20px", overflow: "hidden" }}>
       <div className="w-full overflow-x-auto table-scroll-x">
@@ -74,13 +74,13 @@ function UserTable({ users = [], loading, onEdit, onDelete, currentUser }) {
             >
               {[
                 "#",
-                "Profile",
-                "Name",
-                "Email",
-                "Role",
-                "Created",
-                "Updated",
-                "Actions",
+                t.userColProfile,
+                t.userColName,
+                t.userColEmail,
+                t.userColRole,
+                t.userColCreated,
+                t.userColUpdated,
+                t.productColActions,
               ].map((h) => (
                 <th
                   key={h}
@@ -111,7 +111,7 @@ function UserTable({ users = [], loading, onEdit, onDelete, currentUser }) {
                     color: "rgba(255,255,255,0.5)",
                   }}
                 >
-                  No users found
+                  {t.noUsersFoundMsg}
                 </td>
               </tr>
             ) : (
@@ -208,7 +208,7 @@ function UserTable({ users = [], loading, onEdit, onDelete, currentUser }) {
                         border: "1px solid white",
                       }}
                     >
-                      {user.role || "cashier"}
+                      {user.role === "admin" ? t.roleAdmin : t.roleCashier}
                     </span>
                   </td>
                   <td
@@ -232,20 +232,20 @@ function UserTable({ users = [], loading, onEdit, onDelete, currentUser }) {
                   <td style={{ padding: "12px 14px" }}>
                     {user.role === "admin" && user.id !== currentUser?.id ? (
                       <span className="text-white/30 text-xs italic">
-                        Protected
+                        {t.protectedLabel}
                       </span>
                     ) : (
                       <div style={{ display: "flex", gap: "10px" }}>
                         <TooltipButton
                           onClick={() => onEdit(user)}
-                          tooltip="Edit"
+                          tooltip={t.editAction}
                         >
                           <Edit size={18} color="#fff" variant="linear" />
                         </TooltipButton>
 
                         <TooltipButton
                           onClick={() => onDelete(user.id)}
-                          tooltip="Delete"
+                          tooltip={t.deleteAction}
                         >
                           <Trash size={18} color="#fff" variant="linear" />
                         </TooltipButton>

@@ -1,5 +1,6 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import logo from "../../assets/logo.png";
+import { recordReceiptPrintApi } from "../../api/ordersApi";
 
 const DEFAULT_EXCHANGE_RATE = 4100;
 
@@ -74,6 +75,11 @@ export function ReceiptTemplate({ order }) {
       <p style={{ textAlign: "center", margin: "2px 0", fontWeight: "bold" }}>
         Order: {order.order_number}
       </p>
+      {Number(order.receipt_reprint_count) > 1 && (
+        <p style={{ textAlign: "center", margin: "2px 0", fontWeight: "bold", color: "#000" }}>
+          *** REPRINT #{order.receipt_reprint_count} ***
+        </p>
+      )}
 
       <hr style={hrStyle} />
 
@@ -154,13 +160,31 @@ export function ReceiptTemplate({ order }) {
 /**
  * Opens a print-ready popup rendered from the same ReceiptTemplate markup
  * used for on-screen previews, so the two never drift apart.
+ *
+ * Records the print server-side first so repeated reprints (loss-prevention
+ * relevant, e.g. printing a receipt many times) are counted and watermarked -
+ * if the tracking call fails, printing still proceeds rather than blocking
+ * checkout on it.
  */
-export function printReceipt(order) {
+export async function printReceipt(order) {
   if (!order) return;
 
-  const markup = renderToStaticMarkup(<ReceiptTemplate order={order} />);
+  // Open the popup synchronously, before the await below, so browsers that
+  // only allow window.open() as a direct result of a user gesture don't
+  // block it (an awaited call first would lose that "direct" gesture link).
   const win = window.open("", "_blank", "width=380,height=640");
   if (!win) return;
+
+  let reprintCount = order.receipt_reprint_count;
+  try {
+    const res = await recordReceiptPrintApi(order.id);
+    reprintCount = res.data.receipt_reprint_count;
+  } catch {
+    // Non-fatal - still let the cashier print if the tracking call fails.
+  }
+
+  const orderForPrint = { ...order, receipt_reprint_count: reprintCount };
+  const markup = renderToStaticMarkup(<ReceiptTemplate order={orderForPrint} />);
 
   win.document.write(`
     <html>

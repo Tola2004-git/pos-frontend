@@ -1,19 +1,24 @@
 import AlertToast from "../common/AlertToast";
 import { useLowStock } from "../../context/LowStockContext";
+import { useTranslations } from "../../hooks/useTranslations";
 
 export default function LowStockToastStack() {
-  const { lowStockProducts, dismissLowStock } = useLowStock();
+  const { toastLowStockProducts, dismissLowStock } = useLowStock();
+  const { t } = useTranslations();
 
-  if (lowStockProducts.length === 0) return null;
+  if (toastLowStockProducts.length === 0) return null;
 
   return (
     <div className="pointer-events-none fixed top-6 right-6 z-[10000] flex flex-col gap-3">
-      {lowStockProducts.map((p) => (
+      {toastLowStockProducts.map((p) => (
         <AlertToast
           key={p.id}
           type="warning"
-          title="Low Stock Warning"
-          message={`${p.name} — ${p.qty} left`}
+          title={t.lowStockWarningTitle}
+          message={t.lowStockWarningMsg
+            .replace("{name}", p.name)
+            .replace("{qty}", p.qty)}
+          closeLabel={t.closeAction}
           onClose={() => dismissLowStock(p.id)}
         />
       ))}

@@ -11,6 +11,7 @@ import {
   CardPos,
   DollarCircle,
   MoneyRecive,
+  Danger,
 } from "iconsax-react";
 import { glassCard, colors } from "../../utils/styles";
 
@@ -43,7 +44,20 @@ function Row({ icon: Icon, label, value, valueStyle }) {
   );
 }
 
-export default function OrderDetailModal({ order, onClose, onPrint }) {
+export default function OrderDetailModal({
+  order,
+  onClose,
+  onPrint,
+  onRefund,
+  refundLoadingId,
+  isAdmin = false,
+  t,
+}) {
+  // Optional - the admin Orders page doesn't pass a translation table, so
+  // every lookup below falls back to the English default this component
+  // always had.
+  const tr = (key, fallback) => t?.[key] || fallback;
+
   useEffect(() => {
     if (!order) return;
     document.body.style.overflow = "hidden";
@@ -51,6 +65,15 @@ export default function OrderDetailModal({ order, onClose, onPrint }) {
       document.body.style.overflow = "";
     };
   }, [order]);
+
+  useEffect(() => {
+    if (!order) return;
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [order, onClose]);
 
   if (!order) return null;
 
@@ -68,6 +91,9 @@ export default function OrderDetailModal({ order, onClose, onPrint }) {
         alignItems: "center",
         justifyContent: "center",
         padding: "20px",
+      }}
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) onClose();
       }}
     >
       <div
@@ -105,7 +131,7 @@ export default function OrderDetailModal({ order, onClose, onPrint }) {
             }}
           >
             <ReceiptText size={22} color="white" variant="Bold" />
-            Order Detail
+            {tr("orderDetailTitle", "Order Detail")}
           </h3>
           <div style={{ display: "flex", gap: "8px" }}>
             <button
@@ -124,10 +150,36 @@ export default function OrderDetailModal({ order, onClose, onPrint }) {
                 fontWeight: 600,
               }}
             >
-              <Printer size={16} color={colors.gold} variant="Linear" /> Print
+              <Printer size={16} color={colors.gold} variant="Linear" /> {tr("print", "Print")}
             </button>
+            {isAdmin && order.status === "completed" && onRefund && (
+              <button
+                onClick={() => !(refundLoadingId === order.id) && onRefund(order.id)}
+                disabled={refundLoadingId === order.id}
+                style={{
+                  padding: "7px 14px",
+                  borderRadius: "8px",
+                  border: "none",
+                  cursor: refundLoadingId === order.id ? "not-allowed" : "pointer",
+                  background: "rgba(155,89,182,0.2)",
+                  color: "#9b59b6",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "5px",
+                  fontSize: "0.82rem",
+                  fontWeight: 600,
+                  opacity: refundLoadingId === order.id ? 0.7 : 1,
+                }}
+              >
+                <MoneyRecive size={16} color="#9b59b6" variant="Linear" />
+                {refundLoadingId === order.id
+                  ? tr("refundingAction", "Refunding...")
+                  : tr("refundAction", "Refund")}
+              </button>
+            )}
             <button
               onClick={onClose}
+              aria-label={tr("cancel", "Close")}
               style={{
                 background: "rgba(255,255,255,0.1)",
                 border: "none",
@@ -146,6 +198,57 @@ export default function OrderDetailModal({ order, onClose, onPrint }) {
           </div>
         </div>
 
+        {/* Refund info */}
+        {order.status === "refunded" && (
+          <div
+            style={{
+              ...glassCard,
+              marginBottom: "16px",
+              padding: "14px",
+              borderRadius: "12px",
+              border: "1px solid rgba(155,89,182,0.35)",
+              background: "rgba(155,89,182,0.08)",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                color: "#9b59b6",
+                fontWeight: 700,
+                fontSize: "0.85rem",
+                marginBottom: "8px",
+              }}
+            >
+              <Danger size={16} color="#9b59b6" variant="Bold" />
+              {tr("refundedLabel", "Refunded")}
+            </div>
+            <Row
+              icon={User}
+              label={tr("refundedByLabel", "Refunded by")}
+              value={order.refundedBy?.name || tr("notAvailable", "N/A")}
+            />
+            {order.refunded_at && (
+              <Row
+                icon={Calendar2}
+                label={tr("refundedOnLabel", "Refunded on")}
+                value={new Date(order.refunded_at).toLocaleString()}
+              />
+            )}
+            {order.refund_reason && (
+              <div style={{ marginTop: "6px" }}>
+                <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.85rem" }}>
+                  {tr("reasonLabel", "Reason")}
+                </span>
+                <div style={{ color: "white", fontSize: "0.85rem", marginTop: "4px" }}>
+                  {order.refund_reason}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Order info */}
         <div
           style={{
@@ -157,22 +260,22 @@ export default function OrderDetailModal({ order, onClose, onPrint }) {
         >
           <Row
             icon={Hashtag}
-            label="Order#"
+            label={tr("orderHash", "Order#")}
             value={order.order_number}
             valueStyle={{ color: "white", fontWeight: 600 }}
           />
           <Row
             icon={User}
-            label="Customer"
-            value={order.customer_name || "Walk-in"}
+            label={tr("customerLabel", "Customer")}
+            value={order.customer_name || tr("walkIn", "Walk-in")}
           />
           {order.customer_phone && (
-            <Row icon={Call} label="Phone" value={order.customer_phone} />
+            <Row icon={Call} label={tr("phoneLabel", "Phone")} value={order.customer_phone} />
           )}
-          <Row icon={User} label="Cashier" value={order.user?.name || "N/A"} />
+          <Row icon={User} label={tr("cashierLabel", "Cashier")} value={order.user?.name || tr("notAvailable", "N/A")} />
           <Row
             icon={Calendar2}
-            label="Date"
+            label={tr("dateLabel", "Date")}
             value={new Date(order.created_at).toLocaleString()}
           />
         </div>
@@ -190,7 +293,7 @@ export default function OrderDetailModal({ order, onClose, onPrint }) {
           }}
         >
           <Bag2 size={18} color="white" variant="Outline" />
-          Items
+          {tr("itemsLabel", "Items")}
         </h4>
         <div
           style={{
@@ -235,7 +338,7 @@ export default function OrderDetailModal({ order, onClose, onPrint }) {
         >
           <Row
             icon={DollarCircle}
-            label="Subtotal"
+            label={tr("subtotalLabel", "Subtotal")}
             value={`$${Number(order.subtotal).toFixed(2)}`}
           />
           <div
@@ -256,7 +359,7 @@ export default function OrderDetailModal({ order, onClose, onPrint }) {
                 fontSize: "0.9rem",
               }}
             >
-              TOTAL
+              {tr("totalLabel", "TOTAL")}
             </span>
             <span
               style={{
@@ -270,18 +373,18 @@ export default function OrderDetailModal({ order, onClose, onPrint }) {
           </div>
           <Row
             icon={CardPos}
-            label="Payment"
-            value={order.payment_method?.name || "N/A"}
+            label={tr("paymentLabel", "Payment")}
+            value={order.payment_method?.name || tr("notAvailable", "N/A")}
           />
           <Row
             icon={MoneyRecive}
-            label="Amount Paid"
+            label={tr("amountPaidLabel", "Amount Paid")}
             value={`$${Number(order.amount_paid).toFixed(2)}`}
           />
           {(Number(order.amount_paid_usd) > 0 ||
             Number(order.amount_paid_khr) > 0) && (
             <Row
-              label="Paid Breakdown"
+              label={tr("paidBreakdownLabel", "Paid Breakdown")}
               value={[
                 Number(order.amount_paid_usd) > 0 &&
                   `$${Number(order.amount_paid_usd).toFixed(2)}`,
@@ -294,7 +397,7 @@ export default function OrderDetailModal({ order, onClose, onPrint }) {
             />
           )}
           <Row
-            label="Change"
+            label={tr("changeLabel", "Change")}
             value={(() => {
               const changeUsd = Number(order.change_amount) || 0;
               const paidInKhrOnly =

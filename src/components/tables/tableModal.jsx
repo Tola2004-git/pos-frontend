@@ -23,7 +23,13 @@ function TableModal({
   onClose,
   onSave,
   modalLoading,
+  t,
 }) {
+  const STATUS_LABEL_KEYS = {
+    available: t.tableStatAvailable,
+    occupied: t.tableStatOccupied,
+    reserved: t.tableStatReserved,
+  };
   const [focusedField, setFocusedField] = useState("");
   const [isMounted, setIsMounted] = useState(showModal);
   const [isVisible, setIsVisible] = useState(showModal);
@@ -153,11 +159,12 @@ function TableModal({
                 fontSize: "1.5rem",
               }}
             >
-              {editTable ? "Edit Table" : "Add Table"}
+              {editTable ? t.editTableTitle : t.addTableTitle}
             </h2>
           </div>
           <button
             onClick={onClose}
+            aria-label={t.cancel}
             style={{
               background: "rgba(255,255,255,0.1)",
               border: "none",
@@ -175,7 +182,7 @@ function TableModal({
 
         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
           <div>
-            <label style={labelStyle}>Table Name *</label>
+            <label style={labelStyle}>{t.tableNameLabel}</label>
             <div style={{ position: "relative" }}>
               <Grid4
                 size="20"
@@ -194,7 +201,7 @@ function TableModal({
                       : "1px solid rgba(255,255,255,0.2)",
                   transition: "border 0.2s",
                 }}
-                placeholder="e.g. Table 1, VIP Room..."
+                placeholder={t.tableNamePlaceholder}
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 onFocus={() => setFocusedField("Table Name")}
@@ -204,7 +211,7 @@ function TableModal({
           </div>
 
           <div>
-            <label style={labelStyle}>Capacity (seats) *</label>
+            <label style={labelStyle}>{t.tableCapacityLabel}</label>
             <div style={{ position: "relative" }}>
               <Profile2User
                 size={20}
@@ -224,7 +231,7 @@ function TableModal({
                 }}
                 type="number"
                 max="50"
-                placeholder="e.g. 4, 6, 10..."
+                placeholder={t.tableCapacityPlaceholder}
                 value={form.capacity || ""}
                 onChange={(e) =>
                   setForm({ ...form, capacity: Number(e.target.value) })
@@ -237,7 +244,7 @@ function TableModal({
 
           {editTable && (
             <div>
-              <label style={labelStyle}>Status</label>
+              <label style={labelStyle}>{t.tableStatusLabel}</label>
               <div style={{ position: "relative" }}>
                 <Status
                   size={20}
@@ -277,7 +284,7 @@ function TableModal({
                         padding: "8px",
                       }}
                     >
-                      {option.label}
+                      {STATUS_LABEL_KEYS[option.value] || option.label}
                     </option>
                   ))}
                 </select>
@@ -286,7 +293,7 @@ function TableModal({
           )}
 
           <div>
-            <label style={labelStyle}>Note (optional)</label>
+            <label style={labelStyle}>{t.tableNoteLabel}</label>
             <div style={{ position: "relative" }}>
               <NoteText
                 size={20}
@@ -312,7 +319,7 @@ function TableModal({
                       : "1px solid rgba(255,255,255,0.2)",
                   transition: "border 0.2s",
                 }}
-                placeholder="e.g. Window seat, Near kitchen..."
+                placeholder={t.tableNotePlaceholder}
                 value={form.note}
                 onChange={(e) => setForm({ ...form, note: e.target.value })}
                 onFocus={() => setFocusedField("Note")}
@@ -338,7 +345,7 @@ function TableModal({
             }}
             disabled={modalLoading}
           >
-            Cancel
+            {t.cancel}
           </button>
           <button
             onClick={onSave}
@@ -383,7 +390,7 @@ function TableModal({
                     strokeLinecap="round"
                   />
                 </svg>
-                {editTable ? "Saving..." : "Creating..."}
+                {editTable ? t.savingAction : t.creatingAction}
               </>
             ) : (
               <>
@@ -392,7 +399,7 @@ function TableModal({
                 ) : (
                   <AddCircle size="22" color="#fff" variant="Outline" />
                 )}
-                {editTable ? "Save" : "Create"}
+                {editTable ? t.saveAction : t.createAction}
               </>
             )}
           </button>

@@ -23,6 +23,7 @@ function ProductModal({
   onClose,
   onSuccess,
   modalLoading,
+  t,
 }) {
   const [form, setForm] = useState({
     name: editProduct?.name || "",
@@ -97,11 +98,11 @@ function ProductModal({
   const handleSubmit = async () => {
     setError("");
     if (!form.name) {
-      setError("Product name is required!");
+      setError(t.productNameRequiredMsg);
       return;
     }
     if (!form.price) {
-      setError("Price is required!");
+      setError(t.priceRequiredMsg);
       return;
     }
 
@@ -109,17 +110,17 @@ function ProductModal({
     try {
       if (editProduct) {
         await api.put(`/products/${editProduct.id}`, form);
-        alertSuccess("Updated!", "Product has been updated successfully.");
+        alertSuccess(t.productUpdatedTitle, t.productUpdatedMsg);
       } else {
         await api.post("/products", form);
-        alertSuccess("Created!", "New product has been created.");
+        alertSuccess(t.productCreatedTitle, t.productCreatedMsg);
       }
       onSuccess();
       onClose();
     } catch (err) {
       alertError(
-        "Something went wrong!",
-        err.response?.data?.message || "Please try again.",
+        t.genericErrorTitle,
+        err.response?.data?.message || t.tryAgainMsg,
       );
     } finally {
       setSubmitting(false);
@@ -195,11 +196,12 @@ function ProductModal({
                 fontSize: "1.5rem",
               }}
             >
-              {editProduct ? "Edit Product" : "Add New Product"}
+              {editProduct ? t.editProductTitle : t.addProductTitle}
             </h2>
           </div>
           <button
             onClick={onClose}
+            aria-label={t.cancel}
             style={{
               background: "rgba(255,255,255,0.1)",
               border: "none",
@@ -282,7 +284,7 @@ function ProductModal({
                     }}
                   >
                     <Camera size={28} color="white" variant="Linear" />
-                    <span style={{ fontSize: "0.7rem" }}>Upload</span>
+                    <span style={{ fontSize: "0.7rem" }}>{t.uploadLabel}</span>
                   </div>
                 )}
                 <p
@@ -292,7 +294,7 @@ function ProductModal({
                     marginTop: "6px",
                   }}
                 >
-                  Click to upload photo
+                  {t.clickToUploadPhotoMsg}
                 </p>
               </label>
             </div>
@@ -308,7 +310,7 @@ function ProductModal({
             >
               {/* Product Name */}
               <div style={{ gridColumn: "1 / -1" }}>
-                <label style={labelStyle}>Product Name *</label>
+                <label style={labelStyle}>{t.productNameLabel}</label>
                 <div style={{ position: "relative" }}>
                   <Tag
                     size={20}
@@ -326,7 +328,7 @@ function ProductModal({
                           : "1px solid rgba(255,255,255,0.2)",
                       transition: "border 0.2s",
                     }}
-                    placeholder="Enter product name"
+                    placeholder={t.productNamePlaceholder}
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
                     onFocus={() => setFocusedField("Product Name")}
@@ -336,7 +338,7 @@ function ProductModal({
               </div>
               {/* Category */}
               <div>
-                <label style={labelStyle}>Category</label>
+                <label style={labelStyle}>{t.categoryLabel}</label>
                 <div style={{ position: "relative" }}>
                   <Category
                     size={20}
@@ -363,7 +365,7 @@ function ProductModal({
                     onBlur={() => setFocusedField("")}
                   >
                     <option value="" style={{ background: "#2c3e50" }}>
-                      Select Category
+                      {t.selectCategoryOption}
                     </option>
                     {categories
                       .filter((c) => c.status)
@@ -380,7 +382,7 @@ function ProductModal({
                 </div>
               </div>
               <div>
-                <label style={labelStyle}>Price ($) *</label>
+                <label style={labelStyle}>{t.priceLabel}</label>
                 <div style={{ position: "relative" }}>
                   <MoneySend
                     size={20}
@@ -410,7 +412,7 @@ function ProductModal({
                 </div>
               </div>
               <div>
-                <label style={labelStyle}>SKU</label>
+                <label style={labelStyle}>{t.skuLabel}</label>
                 <div style={{ position: "relative" }}>
                   <ScanBarcode
                     size={20}
@@ -428,7 +430,7 @@ function ProductModal({
                           : "1px solid rgba(255,255,255,0.2)",
                       transition: "border 0.2s",
                     }}
-                    placeholder="SKU-001"
+                    placeholder={t.skuPlaceholder}
                     value={form.sku}
                     onChange={(e) => setForm({ ...form, sku: e.target.value })}
                     onFocus={() => setFocusedField("SKU")}
@@ -438,7 +440,7 @@ function ProductModal({
               </div>
               {/* Barcode */}
               <div>
-                <label style={labelStyle}>Barcode</label>
+                <label style={labelStyle}>{t.barcodeLabel}</label>
                 <div style={{ position: "relative" }}>
                   <Barcode
                     size={20}
@@ -456,7 +458,7 @@ function ProductModal({
                           : "1px solid rgba(255,255,255,0.2)",
                       transition: "border 0.2s",
                     }}
-                    placeholder="123456789"
+                    placeholder={t.barcodePlaceholder}
                     value={form.barcode}
                     onChange={(e) =>
                       setForm({ ...form, barcode: e.target.value })
@@ -475,7 +477,7 @@ function ProductModal({
                   paddingTop: "24px",
                 }}
               >
-                <label style={{ ...labelStyle, marginBottom: 0 }}>Status</label>
+                <label style={{ ...labelStyle, marginBottom: 0 }}>{t.tableStatusLabel}</label>
                 <div
                   onClick={() => setForm({ ...form, status: !form.status })}
                   style={{
@@ -509,7 +511,7 @@ function ProductModal({
                     fontSize: "0.85rem",
                   }}
                 >
-                  {form.status ? "Active" : "Inactive"}
+                  {form.status ? t.activeLabel : t.inactiveLabel}
                 </span>
               </div>
             </div>
@@ -530,7 +532,7 @@ function ProductModal({
                   opacity: submitting ? 0.5 : 1,
                 }}
               >
-                Cancel
+                {t.cancel}
               </button>
               <button
                 onClick={() => !submitting && handleSubmit()}
@@ -574,7 +576,7 @@ function ProductModal({
                         strokeLinecap="round"
                       />
                     </svg>
-                    {editProduct ? "Saving..." : "Creating..."}
+                    {editProduct ? t.savingAction : t.creatingAction}
                   </>
                 ) : (
                   <>
@@ -583,7 +585,7 @@ function ProductModal({
                     ) : (
                       <BoxAdd size="22" color="#fff" variant="outline" />
                     )}
-                    {editProduct ? "Save" : "Create"}
+                    {editProduct ? t.saveAction : t.createAction}
                   </>
                 )}
               </button>

@@ -80,6 +80,7 @@ function CategoryModal({
   onToggleStatus,
   onClose,
   resetCatForm,
+  t,
 }) {
   // Lock background page scroll while the modal is open
   useEffect(() => {
@@ -160,10 +161,11 @@ function CategoryModal({
             >
               <Category2 size={28} color="white" variant="Linear" />
             </div>
-            Categories
+            {t.categoriesAction}
           </h3>
           <button
             onClick={onClose}
+            aria-label={t.cancel}
             style={{
               border: "none",
               color: "white",
@@ -199,7 +201,7 @@ function CategoryModal({
             <Tag size={20} color="white" variant="Linear" style={{position: 'absolute', left: '12px', pointerEvents: 'none', zIndex: 1}}/>
             <input
               style={{ ...inputStyle, flex: 1, paddingLeft: "40px" }}
-              placeholder="Category name..."
+              placeholder={t.categoryNamePlaceholder}
               value={catForm.name}
               onChange={(e) => setCatForm({ ...catForm, name: e.target.value })}
             />
@@ -244,7 +246,7 @@ function CategoryModal({
                       strokeLinecap="round"
                     />
                   </svg>
-                  {editCat ? "Saving..." : "Adding..."}
+                  {editCat ? t.savingAction : t.catAddingAction}
                 </>
               ) : (
                 <>
@@ -253,7 +255,7 @@ function CategoryModal({
                   ) : (
                     <AddCircle size="22" color="#fff" variant="outline" />
                   )}
-                  {editCat ? "Save" : "Add"}
+                  {editCat ? t.saveAction : t.catAddAction}
                 </>
               )}
             </button>
@@ -287,7 +289,7 @@ function CategoryModal({
               padding: "20px",
             }}
           >
-            No categories yet
+            {t.noCategoriesYetMsg}
           </p>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
@@ -341,7 +343,7 @@ function CategoryModal({
                   {/* Edit */}
                   <IconButtonWithTooltip
                     icon={<Edit size={20} color="white" variant="Linear" />}
-                    label="Edit"
+                    label={t.editAction}
                     onClick={() => {
                       setEditCat(cat);
                       setCatForm({ name: cat.name, status: cat.status });
@@ -350,7 +352,7 @@ function CategoryModal({
                   {/* Delete */}
                   <IconButtonWithTooltip
                     icon={<Trash size={20} color="white" variant="Linear" />}
-                    label="Delete"
+                    label={t.deleteAction}
                     onClick={() => onDelete(cat.id)}
                   />
                 </div>

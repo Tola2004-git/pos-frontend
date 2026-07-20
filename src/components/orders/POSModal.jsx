@@ -10,6 +10,7 @@ import { glassCard } from "../../utils/styles";
 import apiClient from "../../api/apiClient";
 import { changeTableApi } from "../../api/ordersApi";
 import { alertConfirmWarning } from "../../utils/alert.jsx";
+import { useTranslations } from "../../hooks/useTranslations";
 
 // Import custom hooks
 import { usePromotionLogic } from "../../hooks/usePromotionLogic";
@@ -63,6 +64,7 @@ export default function POSModal({
   initialTableId = null,
   resumingOrderId = null,
 }) {
+  const { t } = useTranslations();
   const isEditMode = mode === "edit";
   // Cash's real database id varies per environment (seeded via
   // updateOrInsert, so it isn't guaranteed to be 1) - resolve it from the
@@ -148,11 +150,14 @@ export default function POSModal({
   const paymentValidationMessage = isEditMode
     ? ""
     : !selectedPayment
-      ? "Please select a payment method before confirming."
+      ? t.selectPaymentMethodValidation
       : requiresTableSelection && !tableSelection.selectedTableId
-        ? "Please select a table before confirming this dine-in order."
+        ? t.selectTableValidation
         : !isAmountValid && totalDue > 0
-          ? `Enter ${currency.displayAmount(totalDue, selectedCurrency)} or more to confirm this order.`
+          ? t.enterAmountOrMoreValidation.replace(
+              "{amount}",
+              currency.displayAmount(totalDue, selectedCurrency),
+            )
           : "";
 
   const availableTables = tableSelection.getAvailableTables();
@@ -278,12 +283,11 @@ export default function POSModal({
         window.dispatchEvent(new CustomEvent("orders:refresh"));
         window.dispatchEvent(new CustomEvent("tables:refresh"));
       }
-      setTableActionMessage("Table updated successfully.");
+      setTableActionMessage(t.tableUpdatedSuccess);
       setShowTablePicker(false);
     } catch (error) {
       setTableActionMessage(
-        error.response?.data?.message ||
-          "Unable to change the table right now.",
+        error.response?.data?.message || t.tableChangeError,
       );
     } finally {
       setIsChangingTable(false);
@@ -413,12 +417,12 @@ export default function POSModal({
             <div className="animate-bounce">
               <ShoppingBag size={25} color="#fff" variant="Linear" />
             </div>
-            {isEditMode ? "Edit Order" : resumingOrderId ? "Resume Held Order" : "New Order"}
+            {isEditMode ? t.editOrderTitle : resumingOrderId ? t.resumeHeldOrderTitle : t.newOrderTitle}
           </h3>
           <div className="flex items-center gap-[10px]">
             {[
-              { step: 1, label: "1. Cart" },
-              { step: 2, label: "2. Payment" },
+              { step: 1, label: t.stepCart },
+              { step: 2, label: t.stepPayment },
             ].map(({ step, label }) => (
               <button
                 className={`px-[14px] py-[6px] rounded-[20px] border-none cursor-pointer font-semibold text-[0.85rem] transition-colors ${
@@ -436,6 +440,7 @@ export default function POSModal({
             ))}
             <button
               onClick={closePOS}
+              aria-label={t.cancel}
               className="bg-white/10 border-none text-white w-8 h-8 rounded-full cursor-pointer"
             >
               ✕
@@ -454,18 +459,19 @@ export default function POSModal({
               findProductPromotions={promotionLogic.findProductPromotions}
               formatPromotionLabel={promotionLogic.formatPromotionLabel}
               truncatePromoName={promotionLogic.truncatePromoName}
+              t={t}
             />
 
             {/* Cart Sidebar */}
             <div className="flex flex-col min-w-[320px] border-l border-white/10 bg-white/5">
               <div className="px-4 py-3 border-b border-white/10">
                 <div className="text-[0.8rem] text-white/70 mb-2">
-                  Order Type
+                  {t.orderTypeLabel}
                 </div>
                 <div className="flex gap-2">
                   {[
-                    { value: "dine-in", label: "Dine-in" },
-                    { value: "takeaway", label: "Takeaway" },
+                    { value: "dine-in", label: t.dineIn },
+                    { value: "takeaway", label: t.takeaway },
                   ].map((option) => {
                     const selected = orderType === option.value;
                     return (
@@ -508,6 +514,7 @@ export default function POSModal({
                 getItemDiscount={promotionLogic.getItemDiscount}
                 focusedField={focusedField}
                 setFocusedField={setFocusedField}
+                t={t}
               />
             </div>
           </div>
@@ -532,7 +539,7 @@ export default function POSModal({
                   {/* Payment Method Selection */}
                   <div className="col-span-12 lg:col-span-4 xl:col-span-4 lg:pr-1">
                     <h4 className="flex items-center gap-2 text-white mb-[8px] text-lg font-medium">
-                      Select Payment Method
+                      {t.selectPaymentMethod}
                     </h4>
                     <PaymentMethodList
                       paymentMethods={
@@ -541,6 +548,7 @@ export default function POSModal({
                       paymentMethodsSource={paymentMethods}
                       selectedPaymentId={selectedPayment?.id}
                       onSelectPayment={handlePaymentMethodSelect}
+                      t={t}
                     />
                   </div>
 
@@ -553,7 +561,7 @@ export default function POSModal({
                           <div className="flex items-center justify-between gap-2">
                             <div className="flex min-w-0 items-center gap-2">
                               <span className="text-[0.72rem] uppercase tracking-[0.2em] text-white/45">
-                                Table
+                                {t.tableLabel}
                               </span>
                               <span className="truncate rounded-[10px] border border-white/10 bg-white/10 px-3 py-1.5 text-sm font-medium text-white">
                                 {getTableLabel(currentSessionTable)}
@@ -563,8 +571,8 @@ export default function POSModal({
                               <button
                                 type="button"
                                 onClick={() => setShowTablePicker(true)}
-                                title="Switch table"
-                                aria-label="Switch table"
+                                title={t.switchTable}
+                                aria-label={t.switchTable}
                                 className="flex-shrink-0 rounded-full border border-white/10 bg-white/10 p-2 text-white transition-all hover:bg-white/20"
                               >
                                 <Edit2
@@ -579,7 +587,7 @@ export default function POSModal({
                           <>
                             <div className="mb-2 flex items-center justify-between">
                               <h5 className="text-white font-medium">
-                                Select Table
+                                {t.selectTable}
                               </h5>
                               {currentSessionTable ? (
                                 <button
@@ -587,20 +595,20 @@ export default function POSModal({
                                   onClick={() => setShowTablePicker(false)}
                                   className="text-[0.8rem] text-white/60 transition-all hover:text-white"
                                 >
-                                  Cancel
+                                  {t.cancel}
                                 </button>
                               ) : (
                                 <span className="text-[0.8rem] text-white/60">
                                   {tableSelection.selectedTableId
-                                    ? "Selected"
-                                    : "Required"}
+                                    ? t.selected
+                                    : t.required}
                                 </span>
                               )}
                             </div>
 
                             {tableSelection.tableLoading ? (
                               <div className="text-sm text-white/60">
-                                Loading tables...
+                                {t.loadingTables}
                               </div>
                             ) : currentSessionTable ? (
                               // Switching an already-seated order: a compact dropdown beats a
@@ -625,7 +633,7 @@ export default function POSModal({
                                     className="bg-[#1a1a2e]"
                                   >
                                     {getTableLabel(currentSessionTable)}{" "}
-                                    (current)
+                                    {t.currentSuffix}
                                   </option>
                                   {availableTables.map((table) => (
                                     <option
@@ -639,7 +647,7 @@ export default function POSModal({
                                 </select>
                                 {isChangingTable && (
                                   <div className="text-sm text-white/60">
-                                    Switching table...
+                                    {t.switchingTable}
                                   </div>
                                 )}
                               </div>
@@ -673,29 +681,28 @@ export default function POSModal({
                                     })
                                   ) : (
                                     <div className="col-span-full text-sm text-white/60">
-                                      No available tables.
+                                      {t.noAvailableTables}
                                     </div>
                                   )}
                                 </div>
 
                                 {!isEditMode && (
                                   <div className="rounded-[10px] border border-amber-400/20 bg-amber-500/10 px-3 py-2 text-sm text-amber-100">
-                                    Only available tables are shown for new
-                                    dine-in orders to prevent table overlap.
+                                    {t.onlyAvailableTablesNote}
                                   </div>
                                 )}
 
                                 {blockedTables.length > 0 && (
                                   <div className="space-y-2">
                                     <div className="text-[0.72rem] uppercase tracking-[0.2em] text-white/45">
-                                      In-use tables
+                                      {t.inUseTables}
                                     </div>
                                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                                       {blockedTables.map((table) => {
                                         const statusLabel =
                                           table.status === "reserved"
-                                            ? "Reserved"
-                                            : "Occupied";
+                                            ? t.reservedStatus
+                                            : t.occupiedStatus;
 
                                         if (isEditMode) {
                                           return (
@@ -721,9 +728,10 @@ export default function POSModal({
                                           async () => {
                                             const result =
                                               await alertConfirmWarning(
-                                                "Table already occupied?",
-                                                "This table is currently occupied. Are you sure you want to add a new concurrent order to this table (e.g., for a friend joining later)?",
-                                                "Yes, Add Order",
+                                                t.tableOccupiedConfirmTitle,
+                                                t.tableOccupiedConfirmMsg,
+                                                t.yesAddOrder,
+                                                t.cancel,
                                               );
                                             if (!result.isConfirmed) return;
                                             tableSelection.setSelectedTableId(
@@ -791,6 +799,7 @@ export default function POSModal({
                       focusedField={focusedField}
                       onFocusFocus={setFocusedField}
                       onFocusBlur={() => setFocusedField("")}
+                      t={t}
                     />
 
                     <div className="mt-4">
@@ -801,6 +810,7 @@ export default function POSModal({
                         amountPaid={safeAmountPaid}
                         selectedCurrency={selectedCurrency}
                         exchangeRate={exchangeRate}
+                        t={t}
                       />
                     </div>
 
@@ -822,7 +832,7 @@ export default function POSModal({
                         }}
                       >
                         <ArrowLeft2 size={18} color="white" variant="Linear" />
-                        Back
+                        {t.back2}
                       </button>
 
                       {!isEditMode && (
@@ -835,6 +845,7 @@ export default function POSModal({
                               (!tableSelection.selectedTableId ||
                                 tableSelection.tableLoading))
                           }
+                          t={t}
                         />
                       )}
 
@@ -894,7 +905,7 @@ export default function POSModal({
                                     strokeLinecap="round"
                                   />
                                 </svg>
-                                Updating...
+                                {t.updating}
                               </>
                             ) : (
                               <>
@@ -903,7 +914,7 @@ export default function POSModal({
                                   color="white"
                                   variant="Outline"
                                 />
-                                Update
+                                {t.update}
                               </>
                             )}
                           </button>
@@ -968,7 +979,7 @@ export default function POSModal({
                                     strokeLinecap="round"
                                   />
                                 </svg>
-                                Completing...
+                                {t.completing}
                               </>
                             ) : (
                               <>
@@ -977,7 +988,7 @@ export default function POSModal({
                                   color="white"
                                   variant="Outline"
                                 />
-                                Pay Now
+                                {t.payNow}
                               </>
                             )}
                           </button>
@@ -1031,7 +1042,7 @@ export default function POSModal({
                                   strokeLinecap="round"
                                 />
                               </svg>
-                              Confirming...
+                              {t.confirming}
                             </>
                           ) : (
                             <>
@@ -1040,7 +1051,7 @@ export default function POSModal({
                                 color="white"
                                 variant="Outline"
                               />
-                              Confirm
+                              {t.confirm}
                             </>
                           )}
                         </button>

@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { alertSuccess, alertError, alertConfirmDelete } from "../utils/alert.jsx";
+import { useTranslations } from "./useTranslations";
 import api from "../api/productApi.js";
 
 export function useProducts() {
+  const { t } = useTranslations();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
@@ -33,16 +35,18 @@ export function useProducts() {
 
   const handleDelete = async (id) => {
     const result = await alertConfirmDelete(
-      "Delete this product?",
-      "This cannot be undone."
+      t.productDeleteConfirmTitle,
+      t.productDeleteConfirmMsg,
+      t.cancel,
+      t.deleteAction,
     );
     if (!result.isConfirmed) return;
     try {
       await api.delete(`/products/${id}`);
-      alertSuccess("Deleted!", "Product has been removed.");
+      alertSuccess(t.tableDeletedTitle, t.productDeletedMsg);
       fetchProducts();
     } catch (err) {
-      alertError("Failed to delete", err.response?.data?.message || "Please try again.");
+      alertError(t.productDeleteFailedTitle, err.response?.data?.message || t.tryAgainMsg);
     }
   };
 

@@ -17,7 +17,11 @@ import {
 
 const initialForm = { name: "", capacity: null, note: "", status: "available" };
 
-export function useTables() {
+export function useTables(t) {
+  // Optional - the admin Tables page doesn't pass a translation table, so
+  // every lookup below falls back to the English default this hook always
+  // had.
+  const tr = (key, fallback) => t?.[key] || fallback;
   const [tables, setTables] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -74,7 +78,10 @@ export function useTables() {
 
   const handleSave = async () => {
     if (!form.name.trim()) {
-      alertWarning("Missing Table Name", "Please enter a name before saving.");
+      alertWarning(
+        tr("tableNameRequiredTitle", "Missing Table Name"),
+        tr("tableNameRequiredMsg", "Please enter a name before saving."),
+      );
       return;
     }
 
@@ -87,17 +94,23 @@ export function useTables() {
 
       if (editTable) {
         await updateTable(editTable.id, payload);
-        alertSuccess("Updated!", "Table has been updated successfully.");
+        alertSuccess(
+          tr("tableUpdatedTitle", "Updated!"),
+          tr("tableUpdatedMsg", "Table has been updated successfully."),
+        );
       } else {
         await createTable(payload);
-        alertSuccess("Created!", "Table has been created successfully.");
+        alertSuccess(
+          tr("tableCreatedTitle", "Created!"),
+          tr("tableCreatedMsg", "Table has been created successfully."),
+        );
       }
       setShowModal(false);
       loadTables();
     } catch (err) {
       alertError(
-        "Save Failed",
-        err.response?.data?.message || "Something went wrong!",
+        tr("tableSaveFailedTitle", "Save Failed"),
+        err.response?.data?.message || tr("tableSaveFailedMsg", "Something went wrong!"),
       );
     } finally {
       setModalLoading(false);
@@ -109,12 +122,15 @@ export function useTables() {
 
     try {
       await clearTable(table);
-      alertSuccess("Cleared!", "Table has been reset to available.");
+      alertSuccess(
+        tr("tableClearedTitle", "Cleared!"),
+        tr("tableClearedMsg", "Table has been reset to available."),
+      );
       loadTables();
     } catch (err) {
       alertError(
-        "Clear Failed",
-        err.response?.data?.message || "Unable to clear this table.",
+        tr("tableClearFailedTitle", "Clear Failed"),
+        err.response?.data?.message || tr("tableClearFailedMsg", "Unable to clear this table."),
       );
     }
   };
@@ -124,7 +140,10 @@ export function useTables() {
 
     const targetTable = tables.find((table) => table.id === targetTableId);
     if (!targetTable || targetTable.status !== "available") {
-      alertWarning("Move unavailable", "Please choose an available table to move to.");
+      alertWarning(
+        tr("tableMoveUnavailableTitle", "Move unavailable"),
+        tr("tableMoveUnavailableMsg", "Please choose an available table to move to."),
+      );
       return;
     }
 
@@ -145,34 +164,49 @@ export function useTables() {
         await moveTableReservation(fromTable.id, targetTable.id);
       }
 
-      alertSuccess("Moved!", `${fromTable.name} is now available and ${targetTable.name} is ${fromTable.status}.`);
+      const statusLabel =
+        fromTable.status === "reserved"
+          ? tr("reservedStatus", "Reserved")
+          : tr("occupiedStatus", "Occupied");
+      alertSuccess(
+        tr("tableMovedTitle", "Moved!"),
+        tr("tableMovedMsg", "{from} is now available and {to} is {status}.")
+          .replace("{from}", fromTable.name)
+          .replace("{to}", targetTable.name)
+          .replace("{status}", statusLabel),
+      );
       loadTables();
       if (typeof window !== "undefined") {
         window.dispatchEvent(new CustomEvent("orders:refresh"));
       }
     } catch (err) {
       alertError(
-        "Move Failed",
-        err.response?.data?.message || "Unable to move this table.",
+        tr("tableMoveFailedTitle", "Move Failed"),
+        err.response?.data?.message || tr("tableMoveFailedMsg", "Unable to move this table."),
       );
     }
   };
 
   const handleDelete = async (id) => {
     const result = await alertConfirmDelete(
-      "Delete this table?",
-      "Do you really want to delete this table?",
+      tr("tableDeleteConfirmTitle", "Delete this table?"),
+      tr("tableDeleteConfirmMsg", "Do you really want to delete this table?"),
+      tr("cancel", "Cancel"),
+      tr("deleteAction", "Delete"),
     );
     if (!result.isConfirmed) return;
 
     try {
       await deleteTable(id);
-      alertSuccess("Deleted!", "Table has been deleted successfully.");
+      alertSuccess(
+        tr("tableDeletedTitle", "Deleted!"),
+        tr("tableDeletedMsg", "Table has been deleted successfully."),
+      );
       loadTables();
     } catch (err) {
       alertError(
-        "Delete Failed",
-        err.response?.data?.message || "Cannot delete this table!",
+        tr("tableDeleteFailedTitle", "Delete Failed"),
+        err.response?.data?.message || tr("tableDeleteFailedMsg", "Cannot delete this table!"),
       );
     }
   };

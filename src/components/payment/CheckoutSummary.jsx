@@ -5,7 +5,9 @@ export function CheckoutSummary({
   amountPaid,
   selectedCurrency,
   exchangeRate = 4100,
+  t,
 }) {
+  const tr = (key, fallback) => t?.[key] || fallback;
   const isKhr = selectedCurrency === "KHR";
   const rate = Number(exchangeRate) || 4100;
   const subtotalFormatted = isKhr
@@ -35,7 +37,7 @@ export function CheckoutSummary({
     <>
       <div className="p-4 rounded-xl bg-white/5 mb-4">
         <div className="flex justify-between items-center">
-          <span className="text-white/60">Total Amount</span>
+          <span className="text-white/60">{tr("totalAmountLabel", "Total Amount")}</span>
           <span className="text-white font-extrabold text-[1.3rem]">
             {totalFormatted}
           </span>
@@ -44,19 +46,19 @@ export function CheckoutSummary({
 
       <div className="p-3 rounded-[10px] bg-white/5 mb-4 space-y-2">
         <div className="flex justify-between text-white/60 text-[0.85rem]">
-          <span>Subtotal</span>
+          <span>{tr("subtotal", "Subtotal")}</span>
           <span>{subtotalFormatted}</span>
         </div>
 
         {discountAmount > 0 && (
           <div className="flex justify-between text-[#ff9f43] text-[0.85rem]">
-            <span>Discount</span>
+            <span>{tr("discountLabel", "Discount")}</span>
             <span>{discountFormatted}</span>
           </div>
         )}
 
         <div className="flex justify-between border-t border-white/10 pt-2 text-white font-semibold">
-          <span>Total Due</span>
+          <span>{tr("totalDueLabel", "Total Due")}</span>
           <span>{totalFormatted}</span>
         </div>
       </div>
@@ -64,7 +66,7 @@ export function CheckoutSummary({
       {rawChange > 0 && (
         <div className="p-3 rounded-[10px] bg-[#2ecc71]/15 border border-[#2ecc71]/30 mb-4">
           <div className="flex justify-between items-center">
-            <span className="text-[#2ecc71] font-semibold">Change</span>
+            <span className="text-[#2ecc71] font-semibold">{tr("changeSummaryLabel", "Change")}</span>
             <span className="text-[#2ecc71] font-extrabold text-[1.2rem]">
               {isKhr
                 ? `${Math.round(rawChange).toLocaleString()} ៛ ($ ${(rawChange / rate).toFixed(2)})`

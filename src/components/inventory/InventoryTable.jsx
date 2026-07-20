@@ -4,25 +4,26 @@ import { getStockStatus } from "../../utils/stockHelpers";
 import restockIcon from "../../assets/icons/restock.png";
 import { Gallery, Refresh2 } from "iconsax-react";
 
-const HEADERS = [
-  "#",
-  "Image",
-  "Product Name",
-  "Category",
-  "SKU",
-  "QTY",
-  "Barcode",
-  "Stock Status",
-  "Action",
-];
-
 export default function InventoryTable({
   products,
   loading,
   page,
   threshold,
   openRestock,
+  t,
 }) {
+  const HEADERS = [
+    "#",
+    t.invColImage,
+    t.invColProductName,
+    t.invColCategory,
+    t.invColSku,
+    t.invColQty,
+    t.invColBarcode,
+    t.invColStockStatus,
+    t.invColAction,
+  ];
+
   return (
     <div
       style={{
@@ -68,12 +69,12 @@ export default function InventoryTable({
                   color: "rgba(255,255,255,0.5)",
                 }}
               >
-                No products found
+                {t.noProductsFoundMsg}
               </td>
             </tr>
           ) : (
             products.map((product, index) => {
-              const status = getStockStatus(product.qty, threshold);
+              const status = getStockStatus(product.qty, threshold, t);
               return (
                 <tr
                   key={product.id}
@@ -145,7 +146,7 @@ export default function InventoryTable({
                         border: "1px solid #3498db",
                       }}
                     >
-                      {product.category?.name || "N/A"}
+                      {product.category?.name || t.naLabel}
                     </span>
                   </td>
                   <td
@@ -155,7 +156,7 @@ export default function InventoryTable({
                       fontSize: "0.85rem",
                     }}
                   >
-                    {product.sku || "N/A"}
+                    {product.sku || t.naLabel}
                   </td>
                   <td style={{ padding: "12px 14px" }}>
                     <span
@@ -175,7 +176,7 @@ export default function InventoryTable({
                       fontSize: "0.85rem",
                     }}
                   >
-                    {product.barcode || "N/A"}
+                    {product.barcode || t.naLabel}
                   </td>
                   <td style={{ padding: "12px 14px" }}>
                     <span
@@ -240,7 +241,7 @@ export default function InventoryTable({
                           border: "1px solid rgba(255,255,255,0.1)",
                         }}
                       >
-                        Restock
+                        {t.restockAction}
                       </div>
                     </div>
                   </td>

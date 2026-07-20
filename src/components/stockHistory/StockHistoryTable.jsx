@@ -3,27 +3,28 @@ import { glassCard } from "../../utils/styles";
 import { SkeletonStockTable } from "../ui/SkeletonInventory";
 
 const INCREASE_ACTIONS = ["add", "cancel_restore"];
-const ACTION_LABELS = {
-  add: "Add",
-  remove: "Remove",
-  sale: "Sale",
-  cancel_restore: "Restored",
-};
 
-const HEADERS = [
-  "#",
-  "Product",
-  "Action",
-  "Qty",
-  "Before",
-  "After",
-  "Supplier",
-  "Note",
-  "By",
-  "Date",
-];
+export function StockHistoryTable({ logs, loading, page, t }) {
+  const ACTION_LABELS = {
+    add: t.actionLabelAdd,
+    remove: t.actionLabelRemove,
+    sale: t.actionLabelSale,
+    cancel_restore: t.actionLabelRestored,
+  };
 
-export function StockHistoryTable({ logs, loading, page }) {
+  const HEADERS = [
+    "#",
+    t.shColProduct,
+    t.shColAction,
+    t.shColQty,
+    t.shColBefore,
+    t.shColAfter,
+    t.shColSupplier,
+    t.shColNote,
+    t.shColBy,
+    t.shColDate,
+  ];
+
   return (
     <div
       style={{
@@ -69,7 +70,7 @@ export function StockHistoryTable({ logs, loading, page }) {
                   color: "rgba(255,255,255,0.5)",
                 }}
               >
-                No stock history found
+                {t.noStockHistoryFoundMsg}
               </td>
             </tr>
           ) : (
@@ -104,7 +105,7 @@ export function StockHistoryTable({ logs, loading, page }) {
                     fontWeight: 500,
                   }}
                 >
-                  {log.product?.name || "N/A"}
+                  {log.product?.name || t.naLabel}
                 </td>
                 <td style={{ padding: "12px 14px" }}>
                   <span
@@ -168,7 +169,7 @@ export function StockHistoryTable({ logs, loading, page }) {
                 >
                   {log.action === "sale" || log.action === "cancel_restore"
                     ? "—"
-                    : log.supplier || "N/A"}
+                    : log.supplier || t.naLabel}
                 </td>
                 <td
                   style={{
@@ -186,7 +187,7 @@ export function StockHistoryTable({ logs, loading, page }) {
                       whiteSpace: "nowrap",
                     }}
                   >
-                    {log.note || "N/A"}
+                    {log.note || t.naLabel}
                   </span>
                 </td>
                 <td
@@ -196,7 +197,7 @@ export function StockHistoryTable({ logs, loading, page }) {
                     fontSize: "0.85rem",
                   }}
                 >
-                  {log.user?.name || "N/A"}
+                  {log.user?.name || t.naLabel}
                 </td>
                 <td
                   style={{

@@ -22,6 +22,7 @@ function IngredientModal({
   onClose,
   onSuccess,
   modalLoading,
+  t,
 }) {
   const [form, setForm] = useState({
     name: editIngredient?.name || "",
@@ -85,11 +86,11 @@ function IngredientModal({
   const handleSubmit = async () => {
     setError("");
     if (!form.name) {
-      setError("Ingredient name is required!");
+      setError(t.ingredientNameRequiredMsg);
       return;
     }
     if (!form.unit) {
-      setError("Unit is required!");
+      setError(t.unitRequiredMsg);
       return;
     }
 
@@ -97,17 +98,17 @@ function IngredientModal({
     try {
       if (editIngredient) {
         await api.put(`/ingredients/${editIngredient.id}`, form);
-        alertSuccess("Updated!", "Ingredient has been updated successfully.");
+        alertSuccess(t.productUpdatedTitle, t.ingredientUpdatedMsg);
       } else {
         await api.post("/ingredients", form);
-        alertSuccess("Created!", "New ingredient has been created.");
+        alertSuccess(t.productCreatedTitle, t.ingredientCreatedMsg);
       }
       onSuccess();
       onClose();
     } catch (err) {
       alertError(
-        "Something went wrong!",
-        err.response?.data?.message || "Please try again.",
+        t.genericErrorTitle,
+        err.response?.data?.message || t.tryAgainMsg,
       );
     } finally {
       setSubmitting(false);
@@ -173,11 +174,12 @@ function IngredientModal({
                 fontSize: "1.5rem",
               }}
             >
-              {editIngredient ? "Edit Ingredient" : "Add New Ingredient"}
+              {editIngredient ? t.editIngredientTitle : t.addIngredientTitle}
             </h2>
           </div>
           <button
             onClick={onClose}
+            aria-label={t.cancel}
             style={{
               background: "rgba(255,255,255,0.1)",
               border: "none",
@@ -222,7 +224,7 @@ function IngredientModal({
             >
               {/* Name */}
               <div style={{ gridColumn: "1 / -1" }}>
-                <label style={labelStyle}>Ingredient Name *</label>
+                <label style={labelStyle}>{t.ingredientNameLabel}</label>
                 <div style={{ position: "relative" }}>
                   <Tag
                     size={20}
@@ -236,7 +238,7 @@ function IngredientModal({
                       paddingLeft: "40px",
                       ...borderFor("name"),
                     }}
-                    placeholder="e.g. Flour, Butter, Sugar"
+                    placeholder={t.ingredientNamePlaceholder}
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
                     onFocus={() => setFocusedField("name")}
@@ -247,7 +249,7 @@ function IngredientModal({
 
               {/* Category */}
               <div>
-                <label style={labelStyle}>Category</label>
+                <label style={labelStyle}>{t.categoryLabel}</label>
                 <div style={{ position: "relative" }}>
                   <Category
                     size={20}
@@ -270,7 +272,7 @@ function IngredientModal({
                     onBlur={() => setFocusedField("")}
                   >
                     <option value="" style={{ background: "#2c3e50" }}>
-                      Select Category
+                      {t.selectCategoryOption}
                     </option>
                     {categories
                       .filter((c) => c.status)
@@ -289,7 +291,7 @@ function IngredientModal({
 
               {/* Unit */}
               <div>
-                <label style={labelStyle}>Unit *</label>
+                <label style={labelStyle}>{t.unitLabel}</label>
                 <div style={{ position: "relative" }}>
                   <Weight
                     size={20}
@@ -303,7 +305,7 @@ function IngredientModal({
                       paddingLeft: "40px",
                       ...borderFor("unit"),
                     }}
-                    placeholder="kg, g, L, ml, pcs"
+                    placeholder={t.unitPlaceholder}
                     value={form.unit}
                     onChange={(e) => setForm({ ...form, unit: e.target.value })}
                     onFocus={() => setFocusedField("unit")}
@@ -314,7 +316,7 @@ function IngredientModal({
 
               {/* Low Stock Threshold */}
               <div>
-                <label style={labelStyle}>Low Stock Threshold</label>
+                <label style={labelStyle}>{t.lowStockThresholdLabel}</label>
                 <input
                   style={{ ...inputStyle, ...borderFor("threshold") }}
                   type="number"
@@ -330,7 +332,7 @@ function IngredientModal({
 
               {/* Cost Per Unit */}
               <div>
-                <label style={labelStyle}>Cost per Unit ($)</label>
+                <label style={labelStyle}>{t.costPerUnitLabel}</label>
                 <div style={{ position: "relative" }}>
                   <MoneySend
                     size={20}
@@ -358,7 +360,7 @@ function IngredientModal({
 
               {/* Supplier */}
               <div>
-                <label style={labelStyle}>Supplier</label>
+                <label style={labelStyle}>{t.ingColSupplier}</label>
                 <div style={{ position: "relative" }}>
                   <Shop
                     size={20}
@@ -372,7 +374,7 @@ function IngredientModal({
                       paddingLeft: "40px",
                       ...borderFor("supplier"),
                     }}
-                    placeholder="Supplier name"
+                    placeholder={t.ingredientSupplierPlaceholder}
                     value={form.supplier}
                     onChange={(e) =>
                       setForm({ ...form, supplier: e.target.value })
@@ -392,7 +394,9 @@ function IngredientModal({
                   paddingTop: "24px",
                 }}
               >
-                <label style={{ ...labelStyle, marginBottom: 0 }}>Status</label>
+                <label style={{ ...labelStyle, marginBottom: 0 }}>
+                  {t.tableStatusLabel}
+                </label>
                 <div
                   onClick={() => setForm({ ...form, status: !form.status })}
                   style={{
@@ -426,13 +430,13 @@ function IngredientModal({
                     fontSize: "0.85rem",
                   }}
                 >
-                  {form.status ? "Active" : "Inactive"}
+                  {form.status ? t.activeLabel : t.inactiveLabel}
                 </span>
               </div>
 
               {/* Note */}
               <div style={{ gridColumn: "1 / -1" }}>
-                <label style={labelStyle}>Note</label>
+                <label style={labelStyle}>{t.restockNoteLabel}</label>
                 <div style={{ position: "relative" }}>
                   <NoteText
                     size={18}
@@ -452,7 +456,7 @@ function IngredientModal({
                       minHeight: "70px",
                       ...borderFor("note"),
                     }}
-                    placeholder="Additional notes..."
+                    placeholder={t.restockNotePlaceholder}
                     value={form.note}
                     onChange={(e) => setForm({ ...form, note: e.target.value })}
                     onFocus={() => setFocusedField("note")}
@@ -478,7 +482,7 @@ function IngredientModal({
                   opacity: submitting ? 0.5 : 1,
                 }}
               >
-                Cancel
+                {t.cancel}
               </button>
               <button
                 onClick={() => !submitting && handleSubmit()}
@@ -522,7 +526,7 @@ function IngredientModal({
                         strokeLinecap="round"
                       />
                     </svg>
-                    {editIngredient ? "Saving..." : "Creating..."}
+                    {editIngredient ? t.savingAction : t.creatingAction}
                   </>
                 ) : (
                   <>
@@ -531,7 +535,7 @@ function IngredientModal({
                     ) : (
                       <BoxAdd size="22" color="#fff" variant="outline" />
                     )}
-                    {editIngredient ? "Save" : "Create"}
+                    {editIngredient ? t.saveAction : t.createAction}
                   </>
                 )}
               </button>

@@ -104,25 +104,34 @@ function Sidebar({ open, onToggle, onLogout, t }) {
           className={`relative flex items-center border-b border-white/15 h-[85px] group transition-all duration-300 ${open ? "px-5 justify-between" : "justify-center px-0"
             }`}
         >
-          <div className="flex items-center gap-3">
+          <div className={`flex items-center gap-3 ${open ? "min-w-0 flex-1" : ""}`}>
             <img
               src={logo}
               alt="Logo"
-              className={`w-[35px] h-[35px] object-contain transition-all duration-300 ${!open ? "group-hover:opacity-0 group-hover:scale-75" : ""
+              className={`w-[35px] h-[35px] object-contain flex-shrink-0 transition-all duration-300 ${!open ? "group-hover:opacity-0 group-hover:scale-75" : ""
                 }`}
             />
             {open && (
               <h1
                 style={{ color: colors.whiteFull }}
-                className="font-bold text-[1.2rem] m-0 whitespace-nowrap"
+                title="The Temple Sourdough"
+                className="font-bold text-sm m-0 truncate"
               >
-                POS System
+                The Temple Sourdough
               </h1>
             )}
           </div>
           <button
             onClick={onToggle}
-            className={`bg-transparent border-none text-white cursor-pointer flex items-center hover:opacity-80 transition-all duration-300 ${open
+            onMouseEnter={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              setTooltip({
+                label: open ? t.closeSidebarTooltip : t.openSidebarTooltip,
+                rect,
+              });
+            }}
+            onMouseLeave={handleMouseLeave}
+            className={`bg-transparent border-none text-white cursor-pointer flex items-center flex-shrink-0 hover:opacity-80 transition-all duration-300 ${open
               ? "relative opacity-100 visible"
               : "absolute opacity-0 invisible scale-75 group-hover:opacity-100 group-hover:visible group-hover:scale-100"
               }`}

@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { Eye, InfoCircle } from "iconsax-react";
 import { glassCard } from "../../utils/styles";
 
-export default function ItemsPopover({ order }) {
+export default function ItemsPopover({ order, t }) {
   const [open, setOpen] = useState(false);
   const [coords, setCoords] = useState(null);
   const containerRef = useRef(null);
@@ -55,13 +55,16 @@ export default function ItemsPopover({ order }) {
       }}
     >
       <span style={{ color: "rgba(255,255,255,0.7)", fontSize: "0.85rem", whiteSpace: "nowrap" }}>
-        {items.length} item{items.length === 1 ? "" : "s"}
+        {items.length}{" "}
+        {items.length === 1
+          ? t?.itemSingular || "item"
+          : t?.itemPlural || "items"}
       </span>
       <button
         ref={buttonRef}
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        aria-label="View items"
+        aria-label={t?.viewItemsAction || "View items"}
         style={{ padding: "6px", margin: "-6px" }}
         className="inline-flex cursor-pointer items-center justify-center rounded-full border-none bg-transparent text-white/60 transition-colors hover:text-white"
       >
@@ -103,7 +106,9 @@ export default function ItemsPopover({ order }) {
               className="overflow-y-auto flex flex-col gap-2 m-0 list-none [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:bg-white/20 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent"
             >
               {items.length === 0 ? (
-                <li className="text-[0.8rem] text-white/50">No items</li>
+                <li className="text-[0.8rem] text-white/50">
+                  {t?.noItems || "No items"}
+                </li>
               ) : (
                 items.map((item) => (
                   <li

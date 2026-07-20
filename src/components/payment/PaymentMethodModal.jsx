@@ -33,6 +33,7 @@ function PaymentMethodModal({
   onSubmit,
   onFormChange,
   submitting,
+  t,
 }) {
   const [focusedField, setFocusedField] = useState("");
   const [isMounted, setIsMounted] = useState(showModal);
@@ -165,15 +166,16 @@ function PaymentMethodModal({
               }}
             >
               {viewMode
-                ? "View Payment Method"
+                ? t.viewPaymentMethodTitle
                 : editMethod
-                  ? "Edit Payment Method"
-                  : "Add Payment Method"}
+                  ? t.editPaymentMethodTitle
+                  : t.addPaymentMethodTitle}
             </h2>
           </div>
           <button
             onClick={() => !submitting && onClose()}
             disabled={submitting}
+            aria-label={t.cancel}
             style={{
               background: "rgba(255,255,255,0.1)",
               border: "none",
@@ -245,7 +247,7 @@ function PaymentMethodModal({
                 margin: "0 0 8px",
               }}
             >
-              {form.bank_name || form.name || "Payment Method"}
+              {form.bank_name || form.name || t.paymentMethodFallback}
             </h3>
             <div
               style={{ textAlign: "left", maxWidth: "420px", margin: "0 auto" }}
@@ -264,7 +266,7 @@ function PaymentMethodModal({
                 <span
                   style={{ color: "rgba(255,255,255,0.7)", fontSize: "0.9rem" }}
                 >
-                  Account Name
+                  {t.accountNameLabel}
                 </span>
                 <span
                   style={{
@@ -273,7 +275,7 @@ function PaymentMethodModal({
                     fontSize: "0.9rem",
                   }}
                 >
-                  {form.account_name || "N/A"}
+                  {form.account_name || t.naLabel}
                 </span>
               </div>
               <div
@@ -289,7 +291,7 @@ function PaymentMethodModal({
                 <span
                   style={{ color: "rgba(255,255,255,0.7)", fontSize: "0.9rem" }}
                 >
-                  Account Number
+                  {t.accountNumberLabel}
                 </span>
                 <span
                   style={{
@@ -298,7 +300,7 @@ function PaymentMethodModal({
                     fontSize: "0.9rem",
                   }}
                 >
-                  {form.account_number || "N/A"}
+                  {form.account_number || t.naLabel}
                 </span>
               </div>
             </div>
@@ -306,7 +308,7 @@ function PaymentMethodModal({
         ) : (
           <>
             <div style={{ marginBottom: "16px" }}>
-              <label style={labelStyle}>Bank</label>
+              <label style={labelStyle}>{t.bankLabel}</label>
               <div
                 style={{
                   display: "flex",
@@ -369,7 +371,7 @@ function PaymentMethodModal({
                 }}
               >
                 <Bank size={20} color="white" variant="Outline" />
-                <span>Bank Info (optional)</span>
+                <span>{t.bankInfoOptionalMsg}</span>
               </p>
               <div
                 style={{
@@ -379,7 +381,7 @@ function PaymentMethodModal({
                 }}
               >
                 <div>
-                  <label style={labelStyle}>Bank Name</label>
+                  <label style={labelStyle}>{t.bankNameLabel}</label>
                   <div style={{ position: "relative" }}>
                     <Building
                       size={18}
@@ -400,7 +402,7 @@ function PaymentMethodModal({
                           ? "rgba(255,255,255,0.06)"
                           : undefined,
                       }}
-                      placeholder="e.g. ABA, ACLEDA, Wing..."
+                      placeholder={t.bankNamePlaceholder}
                       value={form.bank_name}
                       readOnly={viewMode}
                       onChange={(e) =>
@@ -412,7 +414,7 @@ function PaymentMethodModal({
                   </div>
                 </div>
                 <div>
-                  <label style={labelStyle}>Account Name</label>
+                  <label style={labelStyle}>{t.accountNameLabel}</label>
                   <div style={{ position: "relative" }}>
                     <Personalcard
                       size={18}
@@ -433,7 +435,7 @@ function PaymentMethodModal({
                           ? "rgba(255,255,255,0.06)"
                           : undefined,
                       }}
-                      placeholder="Account holder name..."
+                      placeholder={t.accountNamePlaceholder}
                       value={form.account_name}
                       readOnly={viewMode}
                       onChange={(e) =>
@@ -445,7 +447,7 @@ function PaymentMethodModal({
                   </div>
                 </div>
                 <div>
-                  <label style={labelStyle}>Account Number</label>
+                  <label style={labelStyle}>{t.accountNumberLabel}</label>
                   <div style={{ position: "relative" }}>
                     <Hashtag
                       size={18}
@@ -466,7 +468,7 @@ function PaymentMethodModal({
                           ? "rgba(255,255,255,0.06)"
                           : undefined,
                       }}
-                      placeholder="000123456..."
+                      placeholder={t.accountNumberPlaceholder}
                       value={form.account_number}
                       readOnly={viewMode}
                       onChange={(e) =>
@@ -488,7 +490,7 @@ function PaymentMethodModal({
                 marginBottom: "24px",
               }}
             >
-              <label style={{ ...labelStyle, marginBottom: 0 }}>Status</label>
+              <label style={{ ...labelStyle, marginBottom: 0 }}>{t.tableStatusLabel}</label>
               <div
                 onClick={!viewMode ? handleStatusToggle : undefined}
                 style={{
@@ -520,7 +522,7 @@ function PaymentMethodModal({
                   fontSize: "0.85rem",
                 }}
               >
-                {form.status ? "Active" : "Inactive"}
+                {form.status ? t.activeLabel : t.inactiveLabel}
               </span>
             </div>
           </>
@@ -542,7 +544,7 @@ function PaymentMethodModal({
               opacity: submitting ? 0.5 : 1,
             }}
           >
-            {viewMode ? "Close" : "Cancel"}
+            {viewMode ? t.closeAction : t.cancel}
           </button>
           {!viewMode && (
             <button
@@ -588,7 +590,7 @@ function PaymentMethodModal({
                       strokeLinecap="round"
                     />
                   </svg>
-                  {editMethod ? "Saving..." : "Creating..."}
+                  {editMethod ? t.savingAction : t.creatingAction}
                 </>
               ) : (
                 <>
@@ -597,7 +599,7 @@ function PaymentMethodModal({
                   ) : (
                     <AddCircle size={22} color="white" variant="Outline" />
                   )}
-                  {editMethod ? "Save" : "Create"}
+                  {editMethod ? t.saveAction : t.createAction}
                 </>
               )}
             </button>

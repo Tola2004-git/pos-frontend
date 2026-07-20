@@ -28,7 +28,7 @@ function Navbar({ t, lang, setLang, user, onOpenBgChanger }) {
         </button>
         <LangDropdown lang={lang} setLang={setLang} />
         <div className="w-[1px] h-[30px] bg-white/20" />
-        <UserProfile user={user} />
+        <UserProfile user={user} t={t} />
       </div>
     </header>
   );

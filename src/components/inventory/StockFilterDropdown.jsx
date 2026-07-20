@@ -1,12 +1,5 @@
 import { glassCard, colors } from "../../utils/styles";
 
-const FILTERS = [
-  { key: "all", label: "All Stock" },
-  { key: "in_stock", label: "In Stock" },
-  { key: "low_stock", label: "Low Stock" },
-  { key: "out_of_stock", label: "Out of Stock" },
-];
-
 export default function StockFilterDropdown({
   stockDropdownRef,
   stockFilter,
@@ -14,7 +7,15 @@ export default function StockFilterDropdown({
   setPage,
   showFilterDropdown,
   setShowFilterDropdown,
+  t,
 }) {
+  const FILTERS = [
+    { key: "all", label: t.stockFilterAll },
+    { key: "in_stock", label: t.stockFilterInStock },
+    { key: "low_stock", label: t.stockFilterLowStock },
+    { key: "out_of_stock", label: t.stockFilterOutOfStock },
+  ];
+
   return (
     <div ref={stockDropdownRef} style={{ position: "relative" }}>
       <button
@@ -33,7 +34,7 @@ export default function StockFilterDropdown({
           whiteSpace: "nowrap",
         }}
       >
-        {FILTERS.find((f) => f.key === stockFilter)?.label || "All Stock"}
+        {FILTERS.find((f) => f.key === stockFilter)?.label || t.stockFilterAll}
         <span style={{ fontSize: "0.7rem", opacity: 0.7 }}>
           {showFilterDropdown ? "▲" : "▼"}
         </span>

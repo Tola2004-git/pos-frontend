@@ -17,7 +17,9 @@ export function PaymentDetailsForm({
   focusedField,
   onFocusFocus,
   onFocusBlur,
+  t,
 }) {
+  const tr = (key, fallback) => t?.[key] || fallback;
   const inputStyle = {
     width: "100%",
     padding: "10px 14px",
@@ -43,14 +45,14 @@ export function PaymentDetailsForm({
       {/* Header */}
       <h4 className="flex items-center gap-2 text-white mb-[14px] text-lg font-semibold">
         <ReceiptItem size={24} color="white" variant="Outline" />
-        Payment Details
+        {tr("paymentDetails", "Payment Details")}
       </h4>
 
       {/* Currency Selector */}
       <div className="flex items-center justify-between mb-4">
         <h4 className="flex items-center gap-2 text-white text-lg font-medium">
           <Card size={24} color="white" variant="Outline" />
-          Payment Settings
+          {tr("paymentSettings", "Payment Settings")}
         </h4>
         <div className="flex gap-2">
           {["USD", "KHR"].map((curr) => (
@@ -71,7 +73,7 @@ export function PaymentDetailsForm({
 
       {/* Amount Paid Input */}
       <div className="mb-4">
-        <label style={labelStyle}>Amount Paid *</label>
+        <label style={labelStyle}>{tr("amountPaidRequired", "Amount Paid *")}</label>
         <div className="relative">
           <input
             style={{
@@ -93,7 +95,10 @@ export function PaymentDetailsForm({
           />
         </div>
         <p className="mt-2 text-xs text-white/50">
-          Enter amount in {selectedCurrency === "USD" ? "$ USD" : "៛ KHR"}.
+          {tr("enterAmountInCurrency", "Enter amount in {currency}.").replace(
+            "{currency}",
+            selectedCurrency === "USD" ? "$ USD" : "៛ KHR",
+          )}
         </p>
       </div>
     </div>

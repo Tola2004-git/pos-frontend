@@ -3,18 +3,6 @@ import { SkeletonIngredientTable } from "../ui/SkeletonIngredients";
 import { getStockStatus } from "../../utils/stockHelpers";
 import { Edit, Trash, Refresh2, Cake } from "iconsax-react";
 
-const COLUMNS = [
-  "#",
-  "Name",
-  "Category",
-  "Unit",
-  "Quantity",
-  "Cost/Unit",
-  "Supplier",
-  "Status",
-  "Actions",
-];
-
 function Tooltip({ label, children }) {
   return (
     <div
@@ -59,7 +47,20 @@ export default function IngredientsTable({
   onEdit,
   onDelete,
   onRestock,
+  t,
 }) {
+  const COLUMNS = [
+    "#",
+    t.ingColName,
+    t.productColCategory,
+    t.ingColUnit,
+    t.ingColQuantity,
+    t.ingColCostUnit,
+    t.ingColSupplier,
+    t.productColStatus,
+    t.productColActions,
+  ];
+
   return (
     <div
       style={{
@@ -76,12 +77,12 @@ export default function IngredientsTable({
         >
           <thead>
             <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
-              {COLUMNS.map((h) => (
+              {COLUMNS.map((h, hIndex) => (
                 <th
                   key={h}
                   style={{
                     padding: "16px 14px",
-                    textAlign: h === "Name" ? "left" : "center",
+                    textAlign: hIndex === 1 ? "left" : "center",
                     color: "#ffffff",
                     fontWeight: 600,
                     fontSize: "0.9rem",
@@ -119,7 +120,7 @@ export default function IngredientsTable({
                       color="rgba(255,255,255,0.5)"
                       variant="Bulk"
                     />
-                    No ingredients found
+                    {t.noIngredientsFoundMsg}
                   </div>
                 </td>
               </tr>
@@ -128,6 +129,7 @@ export default function IngredientsTable({
                 const status = getStockStatus(
                   Number(ingredient.quantity),
                   Number(ingredient.low_stock_threshold),
+                  t,
                 );
                 return (
                   <tr
@@ -173,7 +175,7 @@ export default function IngredientsTable({
                           border: "1px solid #3498db",
                         }}
                       >
-                        {ingredient.category?.name || "N/A"}
+                        {ingredient.category?.name || t.naLabel}
                       </span>
                     </td>
                     <td
@@ -213,7 +215,7 @@ export default function IngredientsTable({
                         color: "rgba(255,255,255,0.7)",
                       }}
                     >
-                      {ingredient.supplier || "N/A"}
+                      {ingredient.supplier || t.naLabel}
                     </td>
                     <td style={{ padding: "12px 14px", textAlign: "center" }}>
                       <span
@@ -237,7 +239,7 @@ export default function IngredientsTable({
                           justifyContent: "center",
                         }}
                       >
-                        <Tooltip label="Restock">
+                        <Tooltip label={t.restockAction}>
                           <button
                             onClick={() => onRestock(ingredient)}
                             className="duration-200 hover:scale-110 transition-transform"
@@ -254,7 +256,7 @@ export default function IngredientsTable({
                             <Refresh2 size="20" color="#fff" variant="bulk" />
                           </button>
                         </Tooltip>
-                        <Tooltip label="Edit">
+                        <Tooltip label={t.editAction}>
                           <button
                             onClick={() => onEdit(ingredient)}
                             className="duration-200 hover:scale-110 transition-transform"
@@ -271,7 +273,7 @@ export default function IngredientsTable({
                             <Edit size="20" color="#fff" variant="Linear" />
                           </button>
                         </Tooltip>
-                        <Tooltip label="Delete">
+                        <Tooltip label={t.deleteAction}>
                           <button
                             onClick={() => onDelete(ingredient.id)}
                             className="duration-200 hover:scale-110 transition-transform"

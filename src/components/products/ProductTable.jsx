@@ -3,19 +3,6 @@ import { glassCard } from "../../utils/styles";
 import { SkeletonProductTable } from "../ui/SkeletonProduct";
 import { Edit, Trash, Gallery } from "iconsax-react";
 
-const COLUMNS = [
-  "#",
-  "Image",
-  "Name",
-  "Category",
-  "SKU",
-  "QTY",
-  "Price",
-  "Barcode",
-  "Status",
-  "Actions",
-];
-
 function ProductImagePlaceholder() {
   return (
     <div
@@ -66,7 +53,20 @@ function ProductImage({ image, name }) {
   );
 }
 
-function ProductTable({ products, loading, page, onEdit, onDelete }) {
+function ProductTable({ products, loading, page, onEdit, onDelete, t }) {
+  const COLUMNS = [
+    "#",
+    t.productColImage,
+    t.productColName,
+    t.productColCategory,
+    t.productColSku,
+    t.productColQty,
+    t.productColPrice,
+    t.productColBarcode,
+    t.productColStatus,
+    t.productColActions,
+  ];
+
   if (loading) {
     return (
       <div style={{ ...glassCard, borderRadius: 16, overflow: "hidden", marginBottom: "16px" }}>
@@ -82,12 +82,12 @@ function ProductTable({ products, loading, page, onEdit, onDelete }) {
                   background: "rgba(255,255,255,0.03)",
                 }}
               >
-                {COLUMNS.map((col) => (
+                {COLUMNS.map((col, colIndex) => (
                   <th
                     key={col}
                     style={{
                       padding: "12px 14px",
-                      textAlign: col === "Name" ? "left" : "center",
+                      textAlign: colIndex === 2 ? "left" : "center",
                       fontWeight: 600,
                       color: "white",
                       whiteSpace: "nowrap",
@@ -125,7 +125,7 @@ function ProductTable({ products, loading, page, onEdit, onDelete }) {
         }}
       >
         <Gallery size={80} color="rgba(255,255,255,0.5)" variant="Linear" />
-        No products found
+        {t.noProductsFoundMsg}
       </div>
     );
   }
@@ -214,7 +214,7 @@ function ProductTable({ products, loading, page, onEdit, onDelete }) {
                       background: "rgba(52,152,219,0.12)",
                     }}
                   >
-                    {product.category?.name || "N/A"}
+                    {product.category?.name || t.naLabel}
                   </span>
                 </td>
                 <td
@@ -224,7 +224,7 @@ function ProductTable({ products, loading, page, onEdit, onDelete }) {
                     color: "rgba(255,255,255,0.7)",
                   }}
                 >
-                  {product.sku || "N/A"}
+                  {product.sku || t.naLabel}
                 </td>
                 <td style={{ padding: "12px 14px", textAlign: "center" }}>
                   <span
@@ -258,7 +258,7 @@ function ProductTable({ products, loading, page, onEdit, onDelete }) {
                     color: "rgba(255,255,255,0.7)",
                   }}
                 >
-                  {product.barcode || "N/A"}
+                  {product.barcode || t.naLabel}
                 </td>
                 <td style={{ padding: "12px 14px", textAlign: "center" }}>
                   <span
@@ -276,7 +276,7 @@ function ProductTable({ products, loading, page, onEdit, onDelete }) {
                         : "rgba(231,76,60,0.12)",
                     }}
                   >
-                    {product.status ? "Active" : "Inactive"}
+                    {product.status ? t.activeLabel : t.inactiveLabel}
                   </span>
                 </td>
                 <td style={{ padding: "12px 14px", textAlign: "center" }}>
@@ -328,7 +328,7 @@ function ProductTable({ products, loading, page, onEdit, onDelete }) {
                           marginBottom: 5,
                         }}
                       >
-                        Edit
+                        {t.editAction}
                       </div>
                     </div>
                     <div
@@ -378,7 +378,7 @@ function ProductTable({ products, loading, page, onEdit, onDelete }) {
                           marginBottom: 5,
                         }}
                       >
-                        Delete
+                        {t.deleteAction}
                       </div>
                     </div>
                   </div>

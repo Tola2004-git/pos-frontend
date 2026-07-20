@@ -8,8 +8,10 @@ import ProductTable from "../components/products/ProductTable";
 import ProductModal from "../components/products/ProductModal";
 import CategoryModal from "../components/products/CategoryModal";
 import { Add, Box, Category } from "iconsax-react";
+import { useTranslations } from "../hooks/useTranslations";
 
 function Products() {
+  const { t } = useTranslations();
   const {
     products,
     loading,
@@ -115,7 +117,7 @@ function Products() {
           >
             <Box size={40} color="white" variant="Linear" />
           </div>
-          Products Management
+          {t.productsManagementTitle}
         </h2>
         <div style={{ display: "flex", gap: "10px" }}>
           <button
@@ -134,7 +136,7 @@ function Products() {
             }}
           >
             <Category size={20} color="white" variant="Linear" />
-            Categories
+            {t.categoriesAction}
           </button>
           <button
             onClick={handleAddProduct}
@@ -153,7 +155,7 @@ function Products() {
             }}
           >
             <Add size={24} color="white" variant="Linear" />
-            Add Product
+            {t.addProductAction}
           </button>
         </div>
       </div>
@@ -165,6 +167,7 @@ function Products() {
         setCategoryFilter={setCategoryFilter}
         categories={categories}
         setPage={setPage}
+        t={t}
       />
 
       <ProductTable
@@ -173,6 +176,7 @@ function Products() {
         page={page}
         onEdit={handleEdit}
         onDelete={handleDelete}
+        t={t}
       />
 
       <div
@@ -185,7 +189,7 @@ function Products() {
         }}
       >
         <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.85rem" }}>
-          Total: {total} products
+          {t.totalProductsCountMsg.replace("{n}", total)}
         </span>
         <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
           <button
@@ -203,7 +207,7 @@ function Products() {
               fontSize: "0.85rem",
             }}
           >
-            Back
+            {t.paginationBackAction}
           </button>
           <span
             style={{
@@ -232,7 +236,7 @@ function Products() {
               fontSize: "0.85rem",
             }}
           >
-            Next
+            {t.paginationNextAction}
           </button>
         </div>
       </div>
@@ -247,6 +251,7 @@ function Products() {
             setEditProduct(null);
           }}
           onSuccess={fetchProducts}
+          t={t}
         />
       )}
 
@@ -266,6 +271,7 @@ function Products() {
           onToggleStatus={toggleCatStatus}
           onClose={handleCloseCatModal}
           resetCatForm={resetCatForm}
+          t={t}
         />
       )}
     </Layout>

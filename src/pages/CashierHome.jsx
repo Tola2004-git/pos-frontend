@@ -19,15 +19,17 @@ import { useOrders, useProducts, usePaymentMethods } from "../hooks/useOrders";
 import { useCategories } from "../hooks/useCategories";
 import { usePromotions } from "../hooks/usePromotions";
 import { usePOS } from "../hooks/usePOS";
+import { useTranslations } from "../hooks/useTranslations";
 import { printReceipt } from "../components/receipt/ReceiptTemplate";
 
 function CashierHome() {
+  const { t } = useTranslations();
   const {
     tables,
     loading: tablesLoading,
     handleClear,
     handleMove,
-  } = useTables();
+  } = useTables(t);
   const { products, refetchProducts } = useProducts();
   const { categories } = useCategories();
   const { paymentMethods } = usePaymentMethods();
@@ -171,25 +173,35 @@ function CashierHome() {
     }
   };
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key !== "Escape") return;
+      if (moveModalOpen && !moveLoading) closeMoveModal();
+      else if (clearModalOpen && !clearLoading) closeClearModal();
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [moveModalOpen, moveLoading, clearModalOpen, clearLoading]);
+
   const availableCount = tables.filter((t) => t.status === "available").length;
   const occupiedCount = tables.filter((t) => t.status === "occupied").length;
   const reservedCount = tables.filter((t) => t.status === "reserved").length;
 
   const stats = [
     {
-      label: "Available",
+      label: t.tableStatAvailable,
       value: availableCount,
       color: "#2ecc71",
       StatIcon: TickCircle,
     },
     {
-      label: "Occupied",
+      label: t.tableStatOccupied,
       value: occupiedCount,
       color: "#e74c3c",
       StatIcon: CloseCircle,
     },
     {
-      label: "Reserved",
+      label: t.tableStatReserved,
       value: reservedCount,
       color: "#f1c40f",
       StatIcon: Clock,
@@ -222,14 +234,14 @@ function CashierHome() {
       <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
         <h2 className="text-white font-bold text-2xl m-0 flex items-center gap-3">
           <Grid3 size={32} color="white" variant="Linear" />
-          Select a Table
+          {t.selectATable}
         </h2>
         <button
           onClick={openTakeawayOrder}
           className="btn-shine-blue flex items-center gap-2 px-5 py-3 rounded-[12px] font-semibold text-sm"
         >
           <ReceiptAdd size={22} color="#fff" variant="bulk" />
-          New Takeaway Order
+          {t.newTakeawayOrder}
         </button>
       </div>
 
@@ -256,7 +268,7 @@ function CashierHome() {
                   >
                     {stat.value}
                   </span>
-                  <span className="text-white/40 text-[0.85rem]">Tables</span>
+                  <span className="text-white/40 text-[0.85rem]">{t.tableStatUnit}</span>
                 </div>
               </div>
               <IconComponent
@@ -287,7 +299,7 @@ function CashierHome() {
             <Grid3 size={60} color="white" variant="TwoTone" />
           </div>
           <p className="text-white/50 text-base">
-            No tables have been set up yet.
+            {t.noTablesSetup}
           </p>
         </div>
       ) : (
@@ -309,6 +321,7 @@ function CashierHome() {
               onSelect={openTableOrder}
               onClear={openClearModal}
               onOpenMove={openMoveModal}
+              t={t}
             />
           ))}
         </div>
@@ -338,6 +351,9 @@ function CashierHome() {
             pointerEvents: isMoveVisible ? "auto" : "none",
           }}
           className="fixed inset-0 z-[10000] flex items-center justify-center p-6"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget && !moveLoading) closeMoveModal();
+          }}
         >
           <div
             style={{
@@ -354,14 +370,15 @@ function CashierHome() {
             <div className="flex items-center justify-between mb-3">
               <div>
                 <div className="text-[#8b5cf6] text-[0.74rem] font-bold uppercase tracking-[1.6px] mb-1.5">
-                  Table transfer
+                  {t.tableTransfer}
                 </div>
                 <h3 className="text-[1.3rem] font-bold m-0">
-                  Move {moveTable?.name}
+                  {t.moveTableModalTitle} {moveTable?.name}
                 </h3>
               </div>
               <button
                 onClick={closeMoveModal}
+                aria-label={t.cancel}
                 className="w-9 h-9 rounded-full border border-white/15 bg-white/10 text-white cursor-pointer flex items-center justify-center text-base"
               >
                 ✕
@@ -369,14 +386,13 @@ function CashierHome() {
             </div>
 
             <p className="text-white/70 leading-relaxed mb-4">
-              Select an available table to move this order to. This table will
-              become available and the target will take over its status.
+              {t.moveTableDesc}
             </p>
 
             <div className="rounded-[16px] bg-white/[0.08] border border-white/10 p-3">
               {availableTargets.length === 0 ? (
                 <div className="text-white/70 px-1 py-2.5">
-                  No available tables to move to right now.
+                  {t.noAvailableTablesToMove}
                 </div>
               ) : (
                 <select
@@ -390,7 +406,7 @@ function CashierHome() {
                       value={String(target.id)}
                       className="text-[#0f172a]"
                     >
-                      {target.name} · {target.capacity} seats
+                      {target.name} · {target.capacity} {t.seats}
                     </option>
                   ))}
                 </select>
@@ -403,7 +419,7 @@ function CashierHome() {
                 className="btn-cancel-glass px-5 py-3 rounded-[12px] font-medium text-sm"
                 disabled={moveLoading}
               >
-                Cancel
+                {t.cancel}
               </button>
               <button
                 onClick={confirmMove}
@@ -428,7 +444,7 @@ function CashierHome() {
                     variant="Linear"
                   />
                 )}
-                {moveLoading ? "Moving..." : "Confirm Move"}
+                {moveLoading ? t.moving : t.confirmMove}
               </button>
             </div>
           </div>
@@ -447,6 +463,9 @@ function CashierHome() {
             pointerEvents: isClearVisible ? "auto" : "none",
           }}
           className="fixed inset-0 z-[10000] flex items-center justify-center p-6"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget && !clearLoading) closeClearModal();
+          }}
         >
           <div
             style={{
@@ -463,14 +482,15 @@ function CashierHome() {
             <div className="flex items-center justify-between mb-4">
               <div>
                 <div className="text-[#f59e0b] text-[0.74rem] font-bold uppercase tracking-[1.6px] mb-1.5">
-                  Check out table
+                  {t.checkoutTable}
                 </div>
                 <h3 className="text-[1.3rem] font-bold m-0">
-                  Clear {clearTable?.name}?
+                  {t.clearTableModalTitle} {clearTable?.name}?
                 </h3>
               </div>
               <button
                 onClick={closeClearModal}
+                aria-label={t.cancel}
                 className="w-9 h-9 rounded-full border border-white/15 bg-white/10 text-white cursor-pointer flex items-center justify-center text-base"
               >
                 ✕
@@ -478,9 +498,7 @@ function CashierHome() {
             </div>
 
             <p className="text-white/70 leading-relaxed mb-5">
-              This will release the table session and return it to available
-              status. Please confirm only when the customer has finished and
-              left the table.
+              {t.clearTableDesc}
             </p>
 
             <div className="flex justify-end gap-3">
@@ -489,7 +507,7 @@ function CashierHome() {
                 className="btn-cancel-glass px-5 py-3 rounded-[12px] font-medium text-sm"
                 disabled={clearLoading}
               >
-                Cancel
+                {t.cancel}
               </button>
               <button
                 onClick={confirmClear}
@@ -510,7 +528,7 @@ function CashierHome() {
                 ) : (
                   <TickCircle size={20} color="#fff" variant="Outline" />
                 )}
-                {clearLoading ? "Clearing..." : "Confirm Clear"}
+                {clearLoading ? t.clearing : t.confirmClear}
               </button>
             </div>
           </div>

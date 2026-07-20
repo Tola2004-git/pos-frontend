@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { fetchShiftsApi, reviewShiftApi } from "../api/shiftApi";
+import { fetchShiftsApi, fetchShiftApi, reviewShiftApi } from "../api/shiftApi";
 
 export function useShiftReview() {
   const [shifts, setShifts] = useState([]);
@@ -29,7 +29,18 @@ export function useShiftReview() {
     fetchShifts();
   }, [fetchShifts]);
 
-  const openReview = (shift) => setReviewingShift(shift);
+  // The list row (from fetchShiftsApi) doesn't include cashMovements - fetch
+  // the full shift detail so the review modal can show them. Falls back to
+  // the row itself if that fetch fails, so review still works.
+  const openReview = async (shift) => {
+    setReviewingShift(shift);
+    try {
+      const res = await fetchShiftApi(shift.id);
+      setReviewingShift(res.data);
+    } catch (err) {
+      console.error("Failed to fetch shift detail", err);
+    }
+  };
   const closeReview = () => setReviewingShift(null);
 
   const submitReview = async (reviewNote) => {

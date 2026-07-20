@@ -7,6 +7,7 @@ import emailIcon from "../assets/icons/email.png";
 import passwordIcon from "../assets/icons/password.png";
 import loginIcon from "../assets/icons/login.png";
 import { Sms, Lock, Eye, EyeSlash, Login as LoginIcon } from "iconsax-react";
+import { useTranslations } from "../hooks/useTranslations";
 
 const styles = `
 @keyframes dot-bounce {
@@ -98,7 +99,7 @@ const styles = `
 }
 `;
 
-function DotsLoader() {
+function DotsLoader({ t }) {
   return (
     <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
       <span style={{ display: "flex", gap: "5px" }}>
@@ -106,7 +107,7 @@ function DotsLoader() {
         <span className="dot" />
         <span className="dot" />
       </span>
-      <span>Signing in...</span>
+      <span>{t.signingInMsg}</span>
     </span>
   );
 }
@@ -149,6 +150,7 @@ function EyeOffIcon() {
 }
 
 function Login() {
+  const { t } = useTranslations();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
@@ -188,7 +190,7 @@ function Login() {
 
       navigate(role === "admin" ? "/dashboard" : "/cashier");
     } catch {
-      setError("Email or password is incorrect. Please try again.");
+      setError(t.loginErrorMsg);
       triggerShake();
     } finally {
       setLoading(false);
@@ -287,7 +289,7 @@ function Login() {
               fontSize: "0.88rem",
             }}
           >
-            Sign in to your account
+            {t.signInToAccountMsg}
           </p>
         </div>
         {error && (
@@ -310,7 +312,7 @@ function Login() {
         <form onSubmit={handleLogin}>
           <div style={{ marginBottom: "8px" }}>
             <label style={labelStyle}>
-              Email
+              {t.emailLabel}
             </label>
             <div style={{ position: "relative" }}>
               <Sms
@@ -327,7 +329,7 @@ function Login() {
                   transition: "border 0.25s",
                 }}
                 type="email"
-                placeholder="example@gmail.com"
+                placeholder={t.loginEmailPlaceholder}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -339,7 +341,7 @@ function Login() {
 
           <div style={{ marginBottom: "8px" }}>
             <label style={labelStyle}>
-              Password
+              {t.passwordLabel}
             </label>
             <div style={{ position: "relative" }}>
               <Lock
@@ -413,7 +415,7 @@ function Login() {
               }}
             >
               {loading ? (
-                <DotsLoader />
+                <DotsLoader t={t} />
               ) : (
                 <>
                   <LoginIcon
@@ -421,7 +423,7 @@ function Login() {
                     color="white"
                     variant="Linear"
                   />
-                  Login
+                  {t.loginAction}
                 </>
               )}
             </button>

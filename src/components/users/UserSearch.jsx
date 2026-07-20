@@ -1,12 +1,6 @@
 import { glass, glassCard } from "../../utils/styles";
 import { SearchNormal1 } from "iconsax-react";
 
-const ROLE_OPTIONS = [
-  { value: "all", label: "All Roles" },
-  { value: "admin", label: "Admin" },
-  { value: "cashier", label: "Cashier" },
-];
-
 const inputStyle = {
   width: "100%",
   padding: "10px 14px",
@@ -26,7 +20,14 @@ function UserSearch({
   showRoleDropdown,
   setShowRoleDropdown,
   dropdownRef,
+  t,
 }) {
+  const ROLE_OPTIONS = [
+    { value: "all", label: t.roleFilterAll },
+    { value: "admin", label: t.roleAdmin },
+    { value: "cashier", label: t.roleCashier },
+  ];
+
   return (
     <div
       style={{
@@ -50,7 +51,7 @@ function UserSearch({
         <SearchNormal1 size="20" color="#fff" variant="linear" />
         <input
           type="text"
-          placeholder="Search by name or email..."
+          placeholder={t.searchUsersPlaceholder}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           style={{
@@ -81,7 +82,7 @@ function UserSearch({
           }}
         >
           {ROLE_OPTIONS.find((r) => r.value === roleFilter)?.label ||
-            "All Roles"}
+            t.roleFilterAll}
 
           <span style={{ fontSize: "0.7rem", opacity: 0.7 }}>
             {showRoleDropdown ? "▲" : "▼"}

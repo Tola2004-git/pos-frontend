@@ -5,8 +5,10 @@ import {
   fetchPaymentMethodsApi,
   fetchLatestOrderApi,
   cancelOrderApi,
+  refundOrderApi,
 } from "../api/ordersApi";
-import { alertConfirmWarning, alertError } from "../utils/alert.jsx";
+import { alertConfirmWarning, alertError, alertPromptDanger } from "../utils/alert.jsx";
+import { useTranslations } from "./useTranslations";
 
 const TOAST_DURATION = 3000;
 // Payment toasts carry a "Print Receipt" action - give the cashier a
@@ -22,6 +24,7 @@ function todayStr() {
 }
 
 export function useOrders({ defaultToday = false } = {}) {
+  const { t } = useTranslations();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
@@ -40,6 +43,7 @@ export function useOrders({ defaultToday = false } = {}) {
   const lastOrderId = useRef(null);
   const [focusedField, setFocusedField] = useState("");
   const [cancelLoadingId, setCancelLoadingId] = useState(null);
+  const [refundLoadingId, setRefundLoadingId] = useState(null);
 
 
   const fetchOrders = useCallback(async () => {
@@ -89,9 +93,10 @@ export function useOrders({ defaultToday = false } = {}) {
 
   const handleCancel = async (id) => {
     const result = await alertConfirmWarning(
-      "Cancel this order?",
-      "This will cancel the order and restore any stock it used. This can't be undone.",
-      "Cancel Order",
+      t.cancelOrderConfirmTitle,
+      t.cancelOrderConfirmMsg,
+      t.cancelOrderConfirmBtn,
+      t.cancel,
     );
     if (!result.isConfirmed) return;
 
@@ -100,9 +105,32 @@ export function useOrders({ defaultToday = false } = {}) {
       await cancelOrderApi(id);
       fetchOrders();
     } catch (err) {
-      alertError("Cancel failed", err.response?.data?.message || "Unable to cancel this order.");
+      alertError(t.cancelFailedTitle, err.response?.data?.message || t.cancelFailedMsg);
     } finally {
       setCancelLoadingId(null);
+    }
+  };
+
+  // Admin-only (route/UI already gate this) - always asks for a reason since
+  // the backend requires one, and restores stock + records who approved it.
+  const handleRefund = async (id) => {
+    const { isConfirmed, value: reason } = await alertPromptDanger(
+      t.refundOrderConfirmTitle,
+      t.refundOrderConfirmMsg,
+      t.refundReasonPlaceholder,
+      t.refundOrderConfirmBtn,
+      t.cancel,
+    );
+    if (!isConfirmed) return;
+
+    setRefundLoadingId(id);
+    try {
+      await refundOrderApi(id, reason);
+      fetchOrders();
+    } catch (err) {
+      alertError(t.refundFailedTitle, err.response?.data?.message || t.refundFailedMsg);
+    } finally {
+      setRefundLoadingId(null);
     }
   };
 
@@ -122,6 +150,8 @@ export function useOrders({ defaultToday = false } = {}) {
     fetchOrders,
     handleCancel,
     cancelLoadingId,
+    handleRefund,
+    refundLoadingId,
     setFocusedField,
     focusedField,
   };

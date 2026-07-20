@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import { glass, glassCard, colors } from "../../utils/styles";
 import { SearchNormal1 } from "iconsax-react";
 
-function ProductSearch({ search, setSearch, categoryFilter, setCategoryFilter, categories, setPage }) {
+function ProductSearch({ search, setSearch, categoryFilter, setCategoryFilter, categories, setPage, t }) {
   const [showCategoryFilter, setShowCategoryFilter] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -43,7 +43,7 @@ function ProductSearch({ search, setSearch, categoryFilter, setCategoryFilter, c
         <SearchNormal1 size={20} color="white" variant="Linear" />
         <input
           type="text"
-          placeholder="Search by name, SKU, barcode..."
+          placeholder={t.searchProductsPlaceholder}
           value={search}
           onChange={(e) => {
             setSearch(e.target.value);
@@ -77,8 +77,8 @@ function ProductSearch({ search, setSearch, categoryFilter, setCategoryFilter, c
           }}
         >
           {categoryFilter === "all"
-            ? "All Categories"
-            : categories.find((c) => c.id == categoryFilter)?.name || "Category"}
+            ? t.allCategoriesLabel
+            : categories.find((c) => c.id == categoryFilter)?.name || t.categoryFallbackLabel}
           <span style={{ fontSize: "0.7rem", opacity: 0.7 }}>
             {showCategoryFilter ? "▲" : "▼"}
           </span>
@@ -107,7 +107,7 @@ function ProductSearch({ search, setSearch, categoryFilter, setCategoryFilter, c
               transformOrigin: "top right",
             }}
           >
-            {[{ id: "all", name: "All Categories" }, ...categories].map((c) => (
+            {[{ id: "all", name: t.allCategoriesLabel }, ...categories].map((c) => (
               <button
                 key={c.id}
                 onClick={() => {

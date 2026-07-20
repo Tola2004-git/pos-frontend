@@ -13,9 +13,6 @@ import {
   Wallet2,
 } from "iconsax-react";
 
-// `roles` lists who can see the item in the sidebar. Keep this in sync with
-// the `roles` prop on the matching <PrivateRoute> in AppRouter.jsx - a role
-// listed here but blocked at the route level would show a dead link.
 export const MENU_ITEMS = [
   {
     key: "dashboard",

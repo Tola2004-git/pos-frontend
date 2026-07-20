@@ -11,6 +11,7 @@ export default function ThresholdSetting({
   tempThreshold,
   setTempThreshold,
   saveThreshold,
+  t,
 }) {
   return (
     <div ref={thresholdRef} style={{ position: "relative" }}>
@@ -33,7 +34,7 @@ export default function ThresholdSetting({
         }}
       >
         <Notification size="20" color="#fff" variant="Outline" />
-        Low Stock: {threshold}
+        {t.lowStockThresholdMsg.replace("{n}", threshold)}
       </button>
 
       {showThreshold && (
@@ -57,7 +58,7 @@ export default function ThresholdSetting({
               marginBottom: "10px",
             }}
           >
-            Set Low Stock threshold
+            {t.setLowStockThresholdMsg}
           </p>
           <input
             type="number"
@@ -77,7 +78,7 @@ export default function ThresholdSetting({
               fontSize: "0.9rem",
             }}
           >
-            Save
+            {t.saveAction}
           </button>
         </div>
       )}

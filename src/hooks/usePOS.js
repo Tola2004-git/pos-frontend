@@ -1,6 +1,7 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { createOrderApi, updateOrderApi } from "../api/ordersApi";
 import { alertWarning, alertError } from "../utils/alert.jsx";
+import { useTranslations } from "./useTranslations";
 
 export function usePOS({
   onOrderCreated,
@@ -9,6 +10,7 @@ export function usePOS({
   promotions = [],
   paymentMethods = [],
 }) {
+  const { t } = useTranslations();
   const [showPOS, setShowPOS] = useState(false);
   const [cart, setCart] = useState([]);
   const [posSearch, setPosSearch] = useState("");
@@ -24,6 +26,11 @@ export function usePOS({
   // loadOrderIntoCart - confirming then updates that order instead of
   // creating a new one.
   const [resumingOrderId, setResumingOrderId] = useState(null);
+  // Stable per-checkout-attempt key so a network retry or a double-click that
+  // slips past the confirm-button guard resolves to the same order server-side
+  // instead of charging twice. Cleared once the order is created or the
+  // checkout session is abandoned/reset.
+  const idempotencyKeyRef = useRef(null);
 
   // Stock checks below read `cart` directly and call setCart with a plain
   // value (never the functional updater form). The alertWarning side effect
@@ -33,7 +40,7 @@ export function usePOS({
     const availableStock = Number(product.qty) || 0;
 
     if (availableStock <= 0) {
-      alertWarning("Out of Stock", `${product.name} is currently out of stock.`);
+      alertWarning(t.outOfStockTitle, t.outOfStockMsg.replace("{name}", product.name));
       return;
     }
 
@@ -42,8 +49,8 @@ export function usePOS({
     if (existing) {
       if (existing.quantity >= availableStock) {
         alertWarning(
-          "Stock Limit Reached",
-          `Only ${availableStock} unit(s) of ${product.name} available.`,
+          t.stockLimitTitle,
+          t.stockLimitMsg.replace("{n}", availableStock).replace("{name}", product.name),
         );
         return;
       }
@@ -90,8 +97,8 @@ export function usePOS({
 
     if (qty > maxStock) {
       alertWarning(
-        "Stock Limit Reached",
-        `Only ${maxStock} unit(s) of ${item.product_name} available.`,
+        t.stockLimitTitle,
+        t.stockLimitMsg.replace("{n}", maxStock).replace("{name}", item.product_name),
       );
       if (item.quantity === maxStock) return;
       setCart(
@@ -228,6 +235,7 @@ export function usePOS({
     setPosNote("");
     setPosStep(1);
     setResumingOrderId(null);
+    idempotencyKeyRef.current = null;
   };
 
   // Loads an existing held (pending) order's items into the cart so a
@@ -273,6 +281,7 @@ export function usePOS({
     if (!paymentMethod) return null;
 
     const isCashMethod =
+      paymentMethod?.is_cash ||
       paymentMethod?.name?.toLowerCase() === "cash" ||
       paymentMethod?.type === "cash" ||
       paymentMethod?.id === "cash";
@@ -280,9 +289,10 @@ export function usePOS({
     if (isCashMethod) {
       // Cash's real database id varies per environment (seeded via
       // updateOrInsert, so it isn't guaranteed to be 1) - look it up from
-      // the actual fetched list instead of assuming an id.
+      // the actual fetched list instead of assuming an id. Prefer the
+      // is_cash flag (survives renaming the method) over the name match.
       const realCashMethod = paymentMethods.find(
-        (m) => m.name?.toLowerCase() === "cash" || m.type === "cash",
+        (m) => m.is_cash || m.name?.toLowerCase() === "cash" || m.type === "cash",
       );
       return realCashMethod?.id ?? null;
     }
@@ -303,17 +313,17 @@ export function usePOS({
     exchangeRateUsed = 4100,
   } = {}) => {
     if (cart.length === 0) {
-      alertWarning("Cart is empty", "Please add products to cart!");
+      alertWarning(t.cartEmptyTitle, t.cartEmptyMsg);
       return;
     }
 
     if (status === "completed" && !selectedPayment) {
-      alertWarning("Payment method required", "Please select a payment method!");
+      alertWarning(t.paymentMethodRequiredTitle, t.paymentMethodRequiredMsg);
       return;
     }
 
     if (orderType === "dine-in" && !table_id) {
-      alertWarning("Table required", "Please select a table before saving this order.");
+      alertWarning(t.tableRequiredTitle, t.tableRequiredMsg);
       return;
     }
 
@@ -353,6 +363,19 @@ export function usePOS({
       table_id,
     };
 
+    if (!resumingOrderId) {
+      // Reuse the same key across retries of this same checkout attempt;
+      // only a brand new order (after closePOS/loadOrderIntoCart resets it)
+      // gets a fresh one.
+      if (!idempotencyKeyRef.current) {
+        idempotencyKeyRef.current =
+          typeof crypto !== "undefined" && crypto.randomUUID
+            ? crypto.randomUUID()
+            : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      }
+      payload.idempotency_key = idempotencyKeyRef.current;
+    }
+
     try {
       const res = resumingOrderId
         ? await updateOrderApi(resumingOrderId, payload)
@@ -365,7 +388,7 @@ export function usePOS({
         window.dispatchEvent(new CustomEvent("tables:refresh"));
       }
     } catch (err) {
-      alertError("Order failed", err.response?.data?.message || "Something went wrong!");
+      alertError(t.orderFailedTitle, err.response?.data?.message || t.orderFailedMsg);
     }
   };
 

@@ -14,6 +14,7 @@ export default function ProductPickerModal({
   selectedIds = [],
   onClose,
   onConfirm,
+  t,
 }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -141,12 +142,13 @@ export default function ProductPickerModal({
               <h2
                 style={{ color: "white", fontSize: "1.5rem", fontWeight: 600 }}
               >
-                Select Products
+                {t.selectProductsTitle}
               </h2>
             </div>
             <button
               type="button"
               onClick={onClose}
+              aria-label={t.cancel}
               style={{
                 background: "rgba(255,255,255,0.1)",
                 border: "none",
@@ -173,7 +175,7 @@ export default function ProductPickerModal({
             <SearchNormal1 size={18} color="white" variant="Linear" />
             <input
               type="text"
-              placeholder="Search products..."
+              placeholder={t.searchProductsSimplePlaceholder}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               style={{
@@ -202,7 +204,7 @@ export default function ProductPickerModal({
             {catLoading ? (
               <SkeletonCategoryChips count={5} />
             ) : (
-              [{ id: "all", name: "All" }, ...categories].map((category) => {
+              [{ id: "all", name: t.allChipLabel }, ...categories].map((category) => {
                 const active = categoryFilter === category.id;
                 return (
                   <button
@@ -245,7 +247,7 @@ export default function ProductPickerModal({
             <SkeletonProductPickerList rows={6} />
           ) : filtered.length === 0 ? (
             <p style={{ color: "rgba(255,255,255,0.5)", textAlign: "center" }}>
-              No products found
+              {t.noProductsFoundMsg}
             </p>
           ) : (
             filtered.map((product) => {
@@ -336,7 +338,7 @@ export default function ProductPickerModal({
               fontSize: "0.9rem",
             }}
           >
-            Cancel
+            {t.cancel}
           </button>
           <button
             type="button"
@@ -355,7 +357,7 @@ export default function ProductPickerModal({
             }}
           >
             <TickCircle size={18} color="white" variant="Linear" />
-            Confirm ({picked.size})
+            {t.confirmCountMsg.replace("{n}", picked.size)}
           </button>
           <style>
             {`

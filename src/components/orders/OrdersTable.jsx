@@ -1,60 +1,16 @@
 import { RiEyeLine, RiPrinterLine, RiCloseLine } from "react-icons/ri";
 import { glassCard, colors } from "../../utils/styles";
-import { CloseCircle, Eye, Printer, Edit } from "iconsax-react";
+import { CloseCircle, Eye, Printer, Edit, MoneyRecive } from "iconsax-react";
 import { SkeletonOrdersTable } from "../ui/SkeletonOrder";
+import { getStatusStyle } from "../../utils/orderHelpers";
 import ItemsPopover from "./ItemsPopover";
 
-const getStatusStyle = (status) => {
-  switch (status) {
-    case "completed":
-      return {
-        color: "#2ecc71",
-        bg: "rgba(46,204,113,0.2)",
-        border: "rgba(46,204,113,0.3)",
-      };
-    case "pending":
-      return {
-        color: "#f1c40f",
-        bg: "rgba(241,196,15,0.2)",
-        border: "rgba(241,196,15,0.3)",
-      };
-    case "cancelled":
-      return {
-        color: "#e74c3c",
-        bg: "rgba(192,57,43,0.2)",
-        border: "rgba(192,57,43,0.3)",
-      };
-    case "refunded":
-      return {
-        color: "#9b59b6",
-        bg: "rgba(155,89,182,0.2)",
-        border: "rgba(155,89,182,0.3)",
-      };
-    default:
-      return { color: "white", bg: "transparent", border: "transparent" };
-  }
-};
-
-const HEADERS = [
-  "#",
-  "Order",
-  "Customer",
-  "Table",
-  "Items",
-  "Total",
-  "Payment",
-  "Cashier",
-  "Status",
-  "Date",
-  "Actions",
-];
-
-const getPaymentMethodName = (order) => {
+const getPaymentMethodName = (order, notAvailableLabel) => {
   const directName = order?.payment_method?.name;
   const relationName = order?.paymentMethod?.name;
   const alternateName = order?.payment_method_name || order?.paymentMethodName;
 
-  return directName || relationName || alternateName || "N/A";
+  return directName || relationName || alternateName || notAvailableLabel;
 };
 
 export default function OrdersTable({
@@ -69,9 +25,56 @@ export default function OrdersTable({
   onPrint,
   onCancel,
   cancelLoadingId,
+  onRefund,
+  refundLoadingId,
+  isAdmin = false,
   onPagePrev,
   onPageNext,
+  t,
 }) {
+  // Optional - the admin Orders page doesn't pass a translation table, so
+  // every lookup below falls back to the English default this component
+  // always had.
+  const HEADERS = [
+    t?.colIndex || "#",
+    t?.colOrder || "Order",
+    t?.colCustomer || "Customer",
+    t?.colTable || "Table",
+    t?.colItems || "Items",
+    t?.colTotal || "Total",
+    t?.colPayment || "Payment",
+    t?.colCashier || "Cashier",
+    t?.colStatus || "Status",
+    t?.colDate || "Date",
+    t?.colActions || "Actions",
+  ];
+  const STATUS_LABELS = {
+    completed: t?.statusCompleted || "Completed",
+    pending: t?.statusPending || "Pending",
+    cancelled: t?.statusCancelled || "Cancelled",
+    refunded: t?.statusRefunded || "Refunded",
+  };
+  const noOrdersFound = t?.noOrdersFound || "No orders found";
+  const walkInLabel = t?.walkIn || "Walk-in";
+  const takeawayLabel = t?.takeaway || "Takeaway";
+  const notAvailableLabel = t?.notAvailable || "N/A";
+  const viewLabel = t?.view || "View";
+  const loadingLabel = t?.loadingAction || "Loading...";
+  const editLabel = t?.editAction || "Edit";
+  const printLabel = t?.print || "Print";
+  const cancelLabel = t?.cancelAction || "Cancel";
+  const cancellingLabel = t?.cancellingAction || "Cancelling...";
+  const refundLabel = t?.refundAction || "Refund";
+  const refundingLabel = t?.refundingAction || "Refunding...";
+  const backLabel = t?.back || "Back";
+  const nextLabel = t?.next || "Next";
+  const refundedByOn = (name, date) =>
+    (t?.refundedByOn || "Refunded by {name} on {date}")
+      .replace("{name}", name)
+      .replace("{date}", date);
+  const totalOrdersCount = (n) =>
+    (t?.totalOrdersCount || "Total: {n} orders").replace("{n}", n);
+
   return (
     <>
       <div
@@ -126,7 +129,7 @@ export default function OrdersTable({
                     color: "rgba(255,255,255,0.5)",
                   }}
                 >
-                  No orders found
+                  {noOrdersFound}
                 </td>
               </tr>
             ) : (
@@ -173,7 +176,7 @@ export default function OrdersTable({
                       {order.order_number}
                     </td>
                     <td
-                      title={order.customer_name || "Walk-in"}
+                      title={order.customer_name || walkInLabel}
                       style={{
                         padding: "12px 14px",
                         color: "white",
@@ -184,10 +187,10 @@ export default function OrdersTable({
                         whiteSpace: "nowrap",
                       }}
                     >
-                      {order.customer_name || "Walk-in"}
+                      {order.customer_name || walkInLabel}
                     </td>
                     <td
-                      title={order.table?.name || order.table_name || ""}
+                      title={order.table?.name || order.table_name || undefined}
                       style={{
                         padding: "12px 14px",
                         color: "rgba(255,255,255,0.7)",
@@ -198,8 +201,8 @@ export default function OrdersTable({
                         whiteSpace: "nowrap",
                       }}
                     >
-                      {order.table?.name || order.table_name || "Takeaway" ? (
-                        order.table?.name || order.table_name || "Takeaway"
+                      {order.table?.name || order.table_name || takeawayLabel ? (
+                        order.table?.name || order.table_name || takeawayLabel
                       ) : order.order_type === "takeaway" ? (
                         <span
                           style={{
@@ -214,14 +217,14 @@ export default function OrdersTable({
                             fontSize: "0.8rem",
                           }}
                         >
-                          Takeaway
+                          {takeawayLabel}
                         </span>
                       ) : (
                         "—"
                       )}
                     </td>
                     <td style={{ padding: "12px 14px", whiteSpace: "nowrap" }}>
-                      <ItemsPopover order={order} />
+                      <ItemsPopover order={order} t={t} />
                     </td>
                     <td
                       style={{
@@ -246,7 +249,7 @@ export default function OrdersTable({
                       )}
                     </td>
                     <td
-                      title={getPaymentMethodName(order)}
+                      title={getPaymentMethodName(order, notAvailableLabel)}
                       style={{
                         padding: "12px 14px",
                         color: "rgba(255,255,255,0.7)",
@@ -257,10 +260,10 @@ export default function OrdersTable({
                         whiteSpace: "nowrap",
                       }}
                     >
-                      {getPaymentMethodName(order)}
+                      {getPaymentMethodName(order, notAvailableLabel)}
                     </td>
                     <td
-                      title={order.user?.name || "N/A"}
+                      title={order.user?.name || notAvailableLabel}
                       style={{
                         padding: "12px 14px",
                         color: "rgba(255,255,255,0.6)",
@@ -271,10 +274,18 @@ export default function OrdersTable({
                         whiteSpace: "nowrap",
                       }}
                     >
-                      {order.user?.name || "N/A"}
+                      {order.user?.name || notAvailableLabel}
                     </td>
                     <td style={{ padding: "12px 14px" }}>
                       <span
+                        title={
+                          order.status === "refunded"
+                            ? `${refundedByOn(
+                                order.refundedBy?.name || notAvailableLabel,
+                                order.refunded_at ? new Date(order.refunded_at).toLocaleString() : "",
+                              )}${order.refund_reason ? ` — ${order.refund_reason}` : ""}`
+                            : undefined
+                        }
                         style={{
                           padding: "4px 10px",
                           borderRadius: "20px",
@@ -285,7 +296,7 @@ export default function OrdersTable({
                           border: `2px solid ${st.border}`,
                         }}
                       >
-                        {order.status}
+                        {STATUS_LABELS[order.status] || order.status}
                       </span>
                     </td>
                     <td
@@ -361,7 +372,7 @@ export default function OrdersTable({
                               border: "1px solid rgba(255,255,255,0.1)",
                             }}
                           >
-                            View
+                            {viewLabel}
                           </div>
                         </div>
                         {order.status === "pending" && onEdit && (
@@ -425,7 +436,7 @@ export default function OrdersTable({
                                 border: "1px solid rgba(255,255,255,0.1)",
                               }}
                             >
-                              {editLoadingId === order.id ? "Loading..." : "Edit"}
+                              {editLoadingId === order.id ? loadingLabel : editLabel}
                             </div>
                           </div>
                         )}
@@ -480,7 +491,7 @@ export default function OrdersTable({
                               border: "1px solid rgba(255,255,255,0.1)",
                             }}
                           >
-                            Print
+                            {printLabel}
                           </div>
                         </div>
                         {order.status === "completed" && (
@@ -548,7 +559,72 @@ export default function OrdersTable({
                                 border: "1px solid rgba(255,255,255,0.1)",
                               }}
                             >
-                              {cancelLoadingId === order.id ? "Cancelling..." : "Cancel"}
+                              {cancelLoadingId === order.id ? cancellingLabel : cancelLabel}
+                            </div>
+                          </div>
+                        )}
+                        {isAdmin && order.status === "completed" && onRefund && (
+                          <div
+                            style={{
+                              position: "relative",
+                              display: "inline-block",
+                            }}
+                            onMouseEnter={(e) =>
+                              (e.currentTarget.querySelector(
+                                ".tooltip",
+                              ).style.opacity = 1)
+                            }
+                            onMouseLeave={(e) =>
+                              (e.currentTarget.querySelector(
+                                ".tooltip",
+                              ).style.opacity = 0)
+                            }
+                          >
+                            <button
+                              onClick={() => !(refundLoadingId === order.id) && onRefund(order.id)}
+                              disabled={refundLoadingId === order.id}
+                              style={{
+                                padding: "5px 10px",
+                                borderRadius: "7px",
+                                border: "none",
+                                cursor: refundLoadingId === order.id ? "not-allowed" : "pointer",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "3px",
+                                fontSize: "0.78rem",
+                                opacity: refundLoadingId === order.id ? 0.7 : 1,
+                              }}
+                              className="duration-200 hover:scale-110 transition-transform"
+                            >
+                              {refundLoadingId === order.id ? (
+                                <svg width="18" height="18" viewBox="0 0 24 24" style={{ animation: "spin 1s linear infinite" }}>
+                                  <circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.2)" strokeWidth="3" fill="none" />
+                                  <path d="M22 12a10 10 0 0 1-10 10" stroke="white" strokeWidth="3" strokeLinecap="round" fill="none" />
+                                </svg>
+                              ) : (
+                                <MoneyRecive size={20} color="#9b59b6" variant="TwoTone" />
+                              )}
+                            </button>
+                            <div
+                              className="tooltip"
+                              style={{
+                                position: "absolute",
+                                bottom: "110%",
+                                left: "50%",
+                                transform: "translateX(-50%)",
+                                background: "rgba(20,28,35,0.95)",
+                                color: "white",
+                                padding: "4px 10px",
+                                borderRadius: "6px",
+                                fontSize: "0.75rem",
+                                whiteSpace: "nowrap",
+                                pointerEvents: "none",
+                                opacity: 0,
+                                transition: "opacity 0.2s",
+                                border: "1px solid rgba(255,255,255,0.1)",
+                              }}
+                            >
+                              {refundLoadingId === order.id ? refundingLabel : refundLabel}
                             </div>
                           </div>
                         )}
@@ -572,7 +648,7 @@ export default function OrdersTable({
         }}
       >
         <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.85rem" }}>
-          Total: {total} orders
+          {totalOrdersCount(total)}
         </span>
         <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
           <button
@@ -590,7 +666,7 @@ export default function OrdersTable({
               fontSize: "0.85rem",
             }}
           >
-            Back
+            {backLabel}
           </button>
           <span style={{ color: "white", fontWeight: 600, fontSize: "0.85rem", padding: "0 8px" }}>
             {page} / {lastPage}
@@ -612,7 +688,7 @@ export default function OrdersTable({
               fontSize: "0.85rem",
             }}
           >
-            Next
+            {nextLabel}
           </button>
         </div>
       </div>

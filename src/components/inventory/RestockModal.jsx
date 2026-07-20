@@ -20,7 +20,7 @@ import {
   TickCircle,
 } from "iconsax-react";
 
-function ActionDropdown({ value, onChange }) {
+function ActionDropdown({ value, onChange, t }) {
   const [isOpen, setIsOpen] = useState(false);
   const [focusedOption, setFocusedOption] = useState(null);
   const dropdownRef = useRef(null);
@@ -39,12 +39,12 @@ function ActionDropdown({ value, onChange }) {
   const options = [
     {
       value: "add",
-      label: "Add Stock",
+      label: t.addStockOption,
       icon: <AddCircle size={18} color="#fff" variant="Bold" />,
     },
     {
       value: "remove",
-      label: "Remove Stock",
+      label: t.removeStockOption,
       icon: <MinusCirlce size={18} color="#fff" variant="Bold" />,
     },
   ];
@@ -156,6 +156,7 @@ export default function RestockModal({
   submitting,
   handleRestock,
   closeRestock,
+  t,
 }) {
   const [focusedField, setFocusedField] = useState("");
 
@@ -252,11 +253,12 @@ export default function RestockModal({
                 fontSize: "1.5rem",
               }}
             >
-              Restock Item
+              {t.restockItemTitle}
             </h3>
           </div>
           <button
             onClick={closeRestock}
+            aria-label={t.cancel}
             style={{
               background: "rgba(255,255,255,0.1)",
               border: "none",
@@ -291,7 +293,7 @@ export default function RestockModal({
           ref={restockDropdownRef}
           style={{ marginBottom: "16px", position: "relative" }}
         >
-          <label style={labelStyle}>Select Product *</label>
+          <label style={labelStyle}>{t.selectProductLabel}</label>
           <div style={{ position: "relative" }}>
             <SearchNormal1
               size="20"
@@ -309,7 +311,7 @@ export default function RestockModal({
                     : "1px solid rgba(255,255,255,0.2)",
                 transition: "border 0.2s",
               }}
-              placeholder="Search product by name or SKU..."
+              placeholder={t.searchInventoryPlaceholder}
               value={restockSearch}
               onChange={(e) => {
                 setRestockSearch(e.target.value);
@@ -356,7 +358,7 @@ export default function RestockModal({
                     fontSize: "0.85rem",
                   }}
                 >
-                  No products found
+                  {t.noProductsFoundMsg}
                 </p>
               ) : (
                 filteredProducts.map((p) => (
@@ -420,7 +422,9 @@ export default function RestockModal({
                           color: "rgba(255,255,255,0.5)",
                         }}
                       >
-                        SKU: {p.sku || "N/A"} | QTY: {p.qty}
+                        {t.restockSkuQtyMsg
+                          .replace("{sku}", p.sku || t.naLabel)
+                          .replace("{qty}", p.qty)}
                       </div>
                     </div>
                   </button>
@@ -486,7 +490,7 @@ export default function RestockModal({
               <div
                 style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.82rem" }}
               >
-                SKU: {selectedProduct.sku || "N/A"}
+                {t.restockSkuOnlyMsg.replace("{sku}", selectedProduct.sku || t.naLabel)}
               </div>
               <div style={{ marginTop: "4px" }}>
                 <span
@@ -496,11 +500,11 @@ export default function RestockModal({
                     fontSize: "0.9rem",
                   }}
                 >
-                  Current QTY:{" "}
+                  {t.currentQtyLabel}
                 </span>
                 <span
                   style={{
-                    color: getStockStatus(selectedProduct.qty, threshold).color,
+                    color: getStockStatus(selectedProduct.qty, threshold, t).color,
                     fontWeight: 700,
                     fontSize: "1rem",
                   }}
@@ -521,16 +525,17 @@ export default function RestockModal({
           }}
         >
           <div>
-            <label style={labelStyle}>Action *</label>
+            <label style={labelStyle}>{t.actionLabel}</label>
             <ActionDropdown
               value={restockForm.action}
               onChange={(val) =>
                 setRestockForm({ ...restockForm, action: val })
               }
+              t={t}
             />
           </div>
           <div>
-            <label style={labelStyle}>Quantity *</label>
+            <label style={labelStyle}>{t.quantityLabel}</label>
             <div style={{ position: "relative" }}>
               <Box1
                 size="18"
@@ -563,7 +568,7 @@ export default function RestockModal({
         </div>
 
         <div style={{ marginBottom: "16px" }}>
-          <label style={labelStyle}>Supplier / Source</label>
+          <label style={labelStyle}>{t.supplierLabel}</label>
           <div style={{ position: "relative" }}>
             <Shop
               size="18"
@@ -581,7 +586,7 @@ export default function RestockModal({
                     : "1px solid rgba(255, 255, 255, 0.2)",
                 transition: "border 0.2s",
               }}
-              placeholder="Supplier name..."
+              placeholder={t.supplierPlaceholder}
               value={restockForm.supplier}
               onChange={(e) =>
                 setRestockForm({ ...restockForm, supplier: e.target.value })
@@ -593,7 +598,7 @@ export default function RestockModal({
         </div>
 
         <div style={{ marginBottom: "24px" }}>
-          <label style={labelStyle}>Note</label>
+          <label style={labelStyle}>{t.restockNoteLabel}</label>
           <div style={{ position: "relative" }}>
             <NoteText
               size="18"
@@ -619,7 +624,7 @@ export default function RestockModal({
                     : "1px solid rgba(255, 255, 255, 0.2)",
                 transition: "border 0.2s",
               }}
-              placeholder="Additional notes..."
+              placeholder={t.restockNotePlaceholder}
               value={restockForm.note}
               onChange={(e) =>
                 setRestockForm({ ...restockForm, note: e.target.value })
@@ -645,7 +650,7 @@ export default function RestockModal({
               opacity: submitting ? 0.5 : 1,
             }}
           >
-            Cancel
+            {t.cancel}
           </button>
           <button
             onClick={() => !submitting && handleRestock()}
@@ -692,12 +697,12 @@ export default function RestockModal({
                     strokeLinecap="round"
                   />
                 </svg>
-                Confirming...
+                {t.confirmingAction}
               </>
             ) : (
               <>
               <TickCircle size="22" color="#fff" variant="bulk" />
-              <span>Confirm</span>
+              <span>{t.confirmAction}</span>
               </>
             )}
           </button>

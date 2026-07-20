@@ -11,8 +11,10 @@ import { DEFAULT_METHODS } from "../constants/paymentConstants.js";
 import { Add, Card, Minus } from "iconsax-react";
 import { alertSuccess, alertError } from "../utils/alert.jsx";
 import { PaymentMethodSkeletonCard } from "../components/ui/SkeletonPayment.jsx";
+import { useTranslations } from "../hooks/useTranslations";
 
 function PaymentMethods() {
+  const { t } = useTranslations();
   const {
     methods,
     loading,
@@ -46,7 +48,7 @@ function PaymentMethods() {
 
   const handleSubmit = async () => {
     if (!form.name) {
-      setFormError("Payment method name is required!");
+      setFormError(t.paymentNameRequiredMsg);
       return;
     }
     setSubmitting(true);
@@ -57,15 +59,13 @@ function PaymentMethods() {
 
     if (result.success) {
       alertSuccess(
-        editMethod ? "Updated" : "Created",
-        editMethod
-          ? "Payment method updated successfully"
-          : "Payment method added successfully",
+        editMethod ? t.paymentUpdatedTitle : t.paymentCreatedTitle,
+        editMethod ? t.paymentUpdatedMsg : t.paymentCreatedMsg,
       );
       closeModal();
     } else {
       setFormError(result.error);
-      alertError("Error", result.error);
+      alertError(t.genericErrorTitleShort, result.error);
     }
   };
 
@@ -106,7 +106,7 @@ function PaymentMethods() {
           >
             <Card size={40} color="white" variant="Outline" />
           </div>
-          Payment Methods
+          {t.paymentMethodsTitle}
         </h2>
         <button
           onClick={openModal}
@@ -121,7 +121,7 @@ function PaymentMethods() {
             gap: "8px",
           }}
         >
-          <Add size={18} color="white" variant="Outline" /> Add Method
+          <Add size={18} color="white" variant="Outline" /> {t.addMethodAction}
         </button>
       </div>
 
@@ -150,7 +150,7 @@ function PaymentMethods() {
                 margin: "0 0 6px",
               }}
             >
-              No payment methods yet
+              {t.noPaymentMethodsYetMsg}
             </p>
             <p
               style={{
@@ -159,7 +159,7 @@ function PaymentMethods() {
                 margin: 0,
               }}
             >
-              Add your first method or pick from defaults below
+              {t.addFirstMethodMsg}
             </p>
           </div>
         </div>
@@ -195,6 +195,7 @@ function PaymentMethods() {
               onView={loadMethodForView}
               onDelete={handleDelete}
               onToggleStatus={handleToggleStatus}
+              t={t}
             />
           ))}
         </div>
@@ -210,6 +211,7 @@ function PaymentMethods() {
         onFormChange={updateFormField}
         onSubmit={handleSubmit}
         submitting={submitting}
+        t={t}
       />
     </Layout>
   );

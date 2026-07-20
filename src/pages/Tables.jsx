@@ -15,8 +15,10 @@ import {
   ClipboardText,
 } from "iconsax-react";
 import SkeletonTable from "../components/ui/SkeletonTable";
+import { useTranslations } from "../hooks/useTranslations";
 
 function Tables() {
+  const { t } = useTranslations();
   const { sidebarOpen } = useContext(SidebarContext);
   const SkeletonCount = sidebarOpen ? 10 : 12;
 
@@ -35,7 +37,7 @@ function Tables() {
     handleMove,
     handleDelete,
     setShowModal,
-  } = useTables();
+  } = useTables(t);
 
   const [moveModalOpen, setMoveModalOpen] = useState(false);
   const [isMoveMounted, setIsMoveMounted] = useState(false);
@@ -82,9 +84,9 @@ function Tables() {
     return () => clearTimeout(timeout);
   }, [clearModalOpen]);
 
-  const availableCount = tables.filter((t) => t.status === "available").length;
-  const occupiedCount = tables.filter((t) => t.status === "occupied").length;
-  const reservedCount = tables.filter((t) => t.status === "reserved").length;
+  const availableCount = tables.filter((tbl) => tbl.status === "available").length;
+  const occupiedCount = tables.filter((tbl) => tbl.status === "occupied").length;
+  const reservedCount = tables.filter((tbl) => tbl.status === "reserved").length;
   const availableTargets = moveTable
     ? tables.filter(
         (candidate) =>
@@ -159,19 +161,19 @@ function Tables() {
 
   const stats = [
     {
-      label: "Available",
+      label: t.tableStatAvailable,
       value: availableCount,
       color: "#2ecc71",
       StatIcon: TickCircle,
     },
     {
-      label: "Occupied",
+      label: t.tableStatOccupied,
       value: occupiedCount,
       color: "#e74c3c",
       StatIcon: CloseCircle,
     },
     {
-      label: "Reserved",
+      label: t.tableStatReserved,
       value: reservedCount,
       color: "#f1c40f",
       StatIcon: Clock,
@@ -226,7 +228,7 @@ function Tables() {
           >
             <Grid3 size={40} color="white" variant="Linear" />
           </div>
-          Table Management
+          {t.tablesPageTitle}
         </h2>
         <button
           onClick={openAdd}
@@ -241,7 +243,7 @@ function Tables() {
             gap: "8px",
           }}
         >
-          <AddCircle size={20} color="white" variant="Linear" /> Add Table
+          <AddCircle size={20} color="white" variant="Linear" /> {t.addTableAction}
         </button>
       </div>
 
@@ -296,7 +298,7 @@ function Tables() {
                       fontSize: "0.85rem",
                     }}
                   >
-                    Tables
+                    {t.tableStatUnit}
                   </span>
                 </div>
               </div>
@@ -350,7 +352,7 @@ function Tables() {
             />
           </div>
           <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "1rem" }}>
-            No tables yet. Click "Add Table" to create one!
+            {t.noTablesYetMsg}
           </p>
         </div>
       ) : (
@@ -373,6 +375,7 @@ function Tables() {
               onClear={openClearModal}
               onOpenMove={openMoveModal}
               onDelete={handleDelete}
+              t={t}
             />
           ))}
         </div>
@@ -432,14 +435,15 @@ function Tables() {
                     marginBottom: "6px",
                   }}
                 >
-                  Table transfer
+                  {t.tableTransfer}
                 </div>
                 <h3 style={{ margin: 0, fontSize: "1.3rem", fontWeight: 700 }}>
-                  Move {moveTable?.name}
+                  {t.moveTableModalTitle} {moveTable?.name}
                 </h3>
               </div>
               <button
                 onClick={closeMoveModal}
+                aria-label={t.cancel}
                 style={{
                   background: "rgba(255,255,255,0.1)",
                   border: "1px solid rgba(255,255,255,0.16)",
@@ -462,9 +466,7 @@ function Tables() {
                 lineHeight: 1.6,
               }}
             >
-              Select an available table to swap with this occupied table. The
-              current table will become available and the target will be marked
-              occupied.
+              {t.adminMoveTableDesc}
             </p>
 
             <div
@@ -482,7 +484,7 @@ function Tables() {
                     padding: "10px 4px",
                   }}
                 >
-                  No available tables are ready for a move right now.
+                  {t.noAvailableTablesForMove}
                 </div>
               ) : (
                 <select
@@ -505,7 +507,7 @@ function Tables() {
                       value={String(target.id)}
                       style={{ color: "#0f172a" }}
                     >
-                      {target.name} · {target.capacity} seats
+                      {target.name} · {target.capacity} {t.seats}
                     </option>
                   ))}
                 </select>
@@ -535,7 +537,7 @@ function Tables() {
                 }}
                 disabled={modalLoading}
               >
-                Cancel
+                {t.cancel}
               </button>
               <button
                 onClick={confirmMove}
@@ -579,12 +581,12 @@ function Tables() {
                         strokeLinecap="round"
                       />
                     </svg>
-                    Moving...
+                    {t.moving}
                   </>
                 ) : (
                   <>
                     <TickCircle size="22" color="#fff" variant="Outline" />
-                    Confirm Move
+                    {t.confirmMove}
                   </>
                 )}
               </button>
@@ -647,14 +649,15 @@ function Tables() {
                     marginBottom: "6px",
                   }}
                 >
-                  Check out table
+                  {t.checkoutTable}
                 </div>
                 <h3 style={{ margin: 0, fontSize: "1.3rem", fontWeight: 700 }}>
-                  Clear {clearTable?.name}?
+                  {t.clearTableModalTitle} {clearTable?.name}?
                 </h3>
               </div>
               <button
                 onClick={closeClearModal}
+                aria-label={t.cancel}
                 style={{
                   background: "rgba(255,255,255,0.1)",
                   border: "1px solid rgba(255,255,255,0.16)",
@@ -671,8 +674,7 @@ function Tables() {
             </div>
 
             <p style={{ margin: "0 0 20px", color: "rgba(255,255,255,0.72)", lineHeight: 1.6 }}>
-              This will release the table session and return it to available status.
-              Please confirm only when the customer has finished and left the table.
+              {t.adminClearTableDesc}
             </p>
 
             <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}>
@@ -690,7 +692,7 @@ function Tables() {
                 }}
                 disabled={clearLoading}
               >
-                Cancel
+                {t.cancel}
               </button>
               <button
                 onClick={confirmClear}
@@ -734,12 +736,12 @@ function Tables() {
                         strokeLinecap="round"
                       />
                     </svg>
-                    Clearing...
+                    {t.clearing}
                   </>
                 ) : (
                   <>
                     <TickCircle size="22" color="#fff" variant="Outline" />
-                    Confirm Clear
+                    {t.confirmClear}
                   </>
                 )}
               </button>
@@ -756,6 +758,7 @@ function Tables() {
         modalLoading={modalLoading}
         onClose={() => setShowModal(false)}
         onSave={handleSave}
+        t={t}
       />
     </Layout>
   );

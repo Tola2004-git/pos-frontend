@@ -3,8 +3,10 @@ import { ReceiptItem } from "iconsax-react";
 import { useStockHistory } from "../hooks/useStockHistory";
 import { StockHistoryFilters } from "../components/stockHistory/StockHistoryFilters";
 import { StockHistoryTable } from "../components/stockHistory/StockHistoryTable";
+import { useTranslations } from "../hooks/useTranslations";
 
 function StockHistory() {
+  const { t } = useTranslations();
   const {
     logs,
     loading,
@@ -79,7 +81,7 @@ function StockHistory() {
             variant="bulk"
             style={{ animation: "float 3s ease-in-out infinite" }}
           />
-          Stock History
+          {t.stockHistoryTitle}
         </h2>
       </div>
 
@@ -88,9 +90,10 @@ function StockHistory() {
         onSearch={setSearch}
         actionFilter={actionFilter}
         onActionFilter={handleActionFilter}
+        t={t}
       />
 
-      <StockHistoryTable logs={logs} loading={loading} page={page} />
+      <StockHistoryTable logs={logs} loading={loading} page={page} t={t} />
 
       <div
         style={{
@@ -100,7 +103,7 @@ function StockHistory() {
         }}
       >
         <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.85rem" }}>
-          Total: {total} records
+          {t.totalRecordsCountMsg.replace("{n}", total)}
         </span>
         <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
           <button
@@ -118,7 +121,7 @@ function StockHistory() {
               fontSize: "0.85rem",
             }}
           >
-            Back
+            {t.paginationBackAction}
           </button>
           <span
             style={{
@@ -147,7 +150,7 @@ function StockHistory() {
               fontSize: "0.85rem",
             }}
           >
-            Next
+            {t.paginationNextAction}
           </button>
         </div>
       </div>

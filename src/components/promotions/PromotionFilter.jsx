@@ -1,6 +1,6 @@
 import { SearchNormal1 } from "iconsax-react";
 import { glass, glassCard } from "../../utils/styles";
-import { inputStyle, STATUS_FILTER_OPTIONS } from "../../constants/promotionConstants.js";
+import { inputStyle, getStatusFilterOptions } from "../../constants/promotionConstants.js";
 
 export default function PromotionFilter({
   search,
@@ -10,7 +10,10 @@ export default function PromotionFilter({
   showFilter,
   setShowFilter,
   filterRef,
+  t,
 }) {
+  const STATUS_FILTER_OPTIONS = getStatusFilterOptions(t);
+
   return (
     <div
       style={{
@@ -34,7 +37,7 @@ export default function PromotionFilter({
         <SearchNormal1 size={20} color="#fff" variant="Linear" />
         <input
           type="text"
-          placeholder="Search"
+          placeholder={t.searchPlaceholderGeneric}
           value={search}
           onChange={onSearchChange}
           style={{
@@ -66,7 +69,7 @@ export default function PromotionFilter({
           }}
         >
           {STATUS_FILTER_OPTIONS.find((opt) => opt.value === statusFilter)
-            ?.label || "All Status"}
+            ?.label || t.statusAll}
           <span style={{ fontSize: "0.7rem", opacity: 0.7 }}>
             {showFilter ? "▲" : "▼"}
           </span>

@@ -2,12 +2,6 @@ import { useRef, useEffect, useState } from "react";
 import { SearchNormal1 } from "iconsax-react";
 import { glass, glassCard } from "../../utils/styles";
 
-const ACTION_OPTIONS = [
-  { value: "all", label: "All Actions" },
-  { value: "add", label: "Add Stock" },
-  { value: "remove", label: "Remove Stock" },
-];
-
 const inputStyle = {
   border: "none",
   background: "transparent",
@@ -24,7 +18,13 @@ export function StockHistoryFilters({
   onSearch,
   actionFilter,
   onActionFilter,
+  t,
 }) {
+  const ACTION_OPTIONS = [
+    { value: "all", label: t.actionFilterAll },
+    { value: "add", label: t.addStockOption },
+    { value: "remove", label: t.removeStockOption },
+  ];
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -61,7 +61,7 @@ export function StockHistoryFilters({
         <SearchNormal1 size={18} color="#fff" variant="outline" />
         <input
           type="text"
-          placeholder="Search by product name..."
+          placeholder={t.searchProductNamePlaceholder}
           value={search}
           onChange={(e) => onSearch(e.target.value)}
           style={inputStyle}

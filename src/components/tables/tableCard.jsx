@@ -1,6 +1,12 @@
 import { glassCard } from "../../utils/styles";
 import { ArrowSwapHorizontal, Edit, TickCircle, Trash, PauseCircle } from "iconsax-react";
 
+const STATUS_LABEL_KEYS = {
+  available: "tableStatAvailable",
+  occupied: "tableStatOccupied",
+  reserved: "tableStatReserved",
+};
+
 function TableCard({
   table,
   onEdit,
@@ -10,8 +16,20 @@ function TableCard({
   onSelect,
   statusStyle,
   readOnly = false,
+  t,
 }) {
   const hasHeldOrder = table.current_order?.status === "pending";
+  // t is only passed by the cashier's read-only table grid - the admin
+  // Tables management page renders this same component without it, so every
+  // lookup falls back to the English default already baked into statusStyle
+  // rather than crashing on an undefined t.
+  const statusLabel = t?.[STATUS_LABEL_KEYS[table.status]] || statusStyle.label;
+  const heldLabel = t?.heldLabel || "Held";
+  const moveTableLabel = t?.moveTableAction || "Move Table";
+  const clearTableLabel = t?.clearTableAction || "Clear Table";
+  const editLabel = t?.editAction || "Edit";
+  const deleteLabel = t?.deleteAction || "Delete";
+  const seatsLabel = t?.seats || "seats";
 
   return (
     <div
@@ -48,7 +66,7 @@ function TableCard({
           }}
         >
           <PauseCircle size={12} color="#f39c12" variant="Bold" />
-          Held
+          {heldLabel}
         </div>
       )}
       <div
@@ -95,7 +113,7 @@ function TableCard({
             zIndex: 10,
           }}
         >
-          {table.capacity} seats
+          {table.capacity} {seatsLabel}
         </div>
       </div>
       <div style={{ textAlign: "center", marginBottom: "14px" }}>
@@ -125,7 +143,7 @@ function TableCard({
           }}
         >
           <span style={{ color: statusStyle.color, fontSize: "0.7rem" }}>●</span>
-          {statusStyle.label}
+          {statusLabel}
         </div>
         <h3
           style={{
@@ -200,7 +218,7 @@ function TableCard({
                       margin: "5px"
                     }}
                   >
-                    Move Table
+                    {moveTableLabel}
                   </div>
                 </div>
               )}
@@ -248,7 +266,7 @@ function TableCard({
                       margin: "5px"
                     }}
                   >
-                    Clear Table
+                    {clearTableLabel}
                   </div>
                 </div>
               )}
@@ -298,7 +316,7 @@ function TableCard({
                       margin: "5px"
                     }}
                   >
-                    Move Table
+                    {moveTableLabel}
                   </div>
                 </div>
                 <div
@@ -341,7 +359,7 @@ function TableCard({
                       margin: "5px"
                     }}
                   >
-                    Clear Table
+                    {clearTableLabel}
                   </div>
                 </div>
               </>
@@ -386,7 +404,7 @@ function TableCard({
                   margin: "5px"
                 }}
               >
-                Edit
+                {editLabel}
               </div>
             </div>
             <div
@@ -429,7 +447,7 @@ function TableCard({
                   margin: "5px"
                 }}
               >
-                Delete
+                {deleteLabel}
               </div>
             </div>
           </>

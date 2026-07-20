@@ -15,6 +15,7 @@ export default function PromotionRow({
   onEdit,
   onDelete,
   onToggleStatus,
+  t,
 }) {
   const [showPopover, setShowPopover] = useState(false);
   const [popoverPosition, setPopoverPosition] = useState({ top: 0, left: 0 });
@@ -52,17 +53,17 @@ export default function PromotionRow({
 
   const getApplyToDetails = () => {
     if (promo.apply_to === "all") {
-      return { label: "All Products", items: [] };
+      return { label: t.allProductsLabel, items: [] };
     }
     if (promo.apply_to === "product") {
       return {
-        label: `${promo.products?.length ?? 0} Product(s)`,
+        label: t.productsCountLabel.replace("{n}", promo.products?.length ?? 0),
         items: promo.products?.map((p) => p.name) ?? [],
       };
     }
     if (promo.apply_to === "category") {
       return {
-        label: "Categories",
+        label: t.categoriesLabel,
         items: promo.categories?.map((c) => c.name) ?? [],
       };
     }
@@ -103,7 +104,7 @@ export default function PromotionRow({
         </td>
         <td style={{ padding: "12px 14px", textAlign: "center", whiteSpace: "nowrap" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
-            <span>{formatApplyTo(promo)}</span>
+            <span>{formatApplyTo(promo, t)}</span>
             {showInfoIcon && (
               <button
                 ref={buttonRef}
@@ -164,6 +165,7 @@ export default function PromotionRow({
             borderRadius: 999,
             fontSize: "0.8rem",
             fontWeight: 600,
+            whiteSpace: "nowrap",
             color: isPromotionExpired
               ? "#e74c3c"
               : promo.status
@@ -178,9 +180,9 @@ export default function PromotionRow({
         >
           {promo.status
             ? isPromotionExpired
-              ? "Expired"
-              : "Active"
-            : "Disabled"}
+              ? t.statusExpiredLabel
+              : t.activeLabel
+            : t.statusDisabledLabel}
         </span>
       </td>
       <td style={{ padding: "12px 14px", textAlign: "center" }}>
@@ -237,7 +239,7 @@ export default function PromotionRow({
                 marginBottom: 5,
               }}
             >
-              Edit
+              {t.editAction}
             </div>
           </div>
           <div
@@ -283,7 +285,7 @@ export default function PromotionRow({
                 marginBottom: 5,
               }}
             >
-              Delete
+              {t.deleteAction}
             </div>
           </div>
         </div>
@@ -323,7 +325,7 @@ export default function PromotionRow({
               letterSpacing: "0.5px",
             }}
           >
-            {promo.apply_to === "product" ? "Products" : "Categories"}
+            {promo.apply_to === "product" ? t.productsPopoverTitle : t.categoriesLabel}
           </div>
           <button
             type="button"

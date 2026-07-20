@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { alertSuccess, alertError, alertConfirmDelete } from "../utils/alert.jsx";
+import { useTranslations } from "./useTranslations";
 import api from "../api/productApi.js";
 
 export function useCategories(type = "product") {
+  const { t } = useTranslations();
   const [categories, setCategories] = useState([]);
   const [catLoading, setCatLoading] = useState(false);
   const [editCat, setEditCat] = useState(null);
@@ -29,23 +31,23 @@ export function useCategories(type = "product") {
   const handleCatSubmit = async () => {
     setCatError("");
     if (!catForm.name) {
-      setCatError("Category name is required!");
+      setCatError(t.categoryNameRequiredMsg);
       return;
     }
     setCatSubmitting(true);
     try {
       if (editCat) {
         await api.put(`/categories/${editCat.id}`, { ...catForm, type });
-        alertSuccess("Updated!", "Category has been updated.");
+        alertSuccess(t.productUpdatedTitle, t.categoryUpdatedMsg);
       } else {
         await api.post("/categories", { ...catForm, type });
-        alertSuccess("Created!", "New category has been created.");
+        alertSuccess(t.productCreatedTitle, t.categoryCreatedMsg);
       }
       setEditCat(null);
       setCatForm({ name: "", status: true });
       fetchCategories();
     } catch (err) {
-      alertError("Something went wrong!", err.response?.data?.message || "Please try again.");
+      alertError(t.genericErrorTitle, err.response?.data?.message || t.tryAgainMsg);
     } finally {
       setCatSubmitting(false);
     }
@@ -53,16 +55,18 @@ export function useCategories(type = "product") {
 
   const handleCatDelete = async (id) => {
     const result = await alertConfirmDelete(
-      "Delete this category?",
-      "This cannot be undone."
+      t.categoryDeleteConfirmTitle,
+      t.categoryDeleteConfirmMsg,
+      t.cancel,
+      t.deleteAction,
     );
     if (!result.isConfirmed) return;
     try {
       await api.delete(`/categories/${id}`);
-      alertSuccess("Deleted!", "Category has been removed.");
+      alertSuccess(t.tableDeletedTitle, t.categoryDeletedMsg);
       fetchCategories();
     } catch (err) {
-      alertError("Failed to delete", err.response?.data?.message || "Please try again.");
+      alertError(t.categoryDeleteFailedTitle, err.response?.data?.message || t.tryAgainMsg);
     }
   };
 

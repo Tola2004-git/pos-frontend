@@ -53,6 +53,7 @@ function UserModal({
   handleImageUpload,
   handleSubmit,
   closeModal,
+  t,
 }) {
   const [isMounted, setIsMounted] = useState(showModal);
   const [isVisible, setIsVisible] = useState(showModal);
@@ -155,11 +156,12 @@ function UserModal({
                 fontSize: "1.5rem",
               }}
             >
-              {editUser ? "Edit User" : "Add User"}
+              {editUser ? t.editUserTitle : t.addUserAction}
             </h2>
           </div>
           <button
             onClick={closeModal}
+            aria-label={t.cancel}
             style={{
               background: "rgba(255,255,255,0.1)",
               border: "none",
@@ -256,7 +258,7 @@ function UserModal({
                     }}
                   >
                     <Camera size={30} color="#fff" variant="outline" />
-                    <span>Upload</span>
+                    <span>{t.uploadLabel}</span>
                   </div>
                 )}
                 <p
@@ -266,13 +268,13 @@ function UserModal({
                     marginTop: "6px",
                   }}
                 >
-                  Click to upload photo
+                  {t.clickToUploadPhotoMsg}
                 </p>
               </label>
             </div>
 
             <div style={{ marginBottom: "16px" }}>
-              <label style={labelStyle}>Full Name</label>
+              <label style={labelStyle}>{t.fullNameLabel}</label>
               <div style={{ position: "relative" }}>
                 <User
                   size={18}
@@ -290,7 +292,7 @@ function UserModal({
                         : "1px solid rgba(255,255,255,0.2)",
                     transition: "border 0.2s",
                   }}
-                  placeholder="Enter full name"
+                  placeholder={t.fullNamePlaceholder}
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   onFocus={() => setFocusedField("name")}
@@ -300,7 +302,7 @@ function UserModal({
             </div>
 
             <div style={{ marginBottom: "16px" }}>
-              <label style={labelStyle}>Email</label>
+              <label style={labelStyle}>{t.emailLabel}</label>
               <div style={{ position: "relative" }}>
                 <Sms
                   size={18}
@@ -322,7 +324,7 @@ function UserModal({
                     transition: "border-color 0.2s",
                   }}
                   type="email"
-                  placeholder="email@example.com"
+                  placeholder={t.emailPlaceholder}
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                   onFocus={() => setFocusedField("email")}
@@ -345,12 +347,12 @@ function UserModal({
                   {isValidEmail(form.email) ? (
                     <>
                       <TickCircle size="16" color="#2ecc71" variant="bold" />
-                      <span>Valid email</span>
+                      <span>{t.validEmailMsg}</span>
                     </>
                   ) : (
                     <>
                       <InfoCircle size="16" color="#e74c3c" variant="bold" />
-                      <span>Invalid email format</span>
+                      <span>{t.invalidEmailFormatMsg}</span>
                     </>
                   )}
                 </div>
@@ -359,7 +361,7 @@ function UserModal({
 
             <div style={{ marginBottom: "8px" }}>
               <label style={labelStyle}>
-                {editUser ? "New Password (leave blank to keep)" : "Password"}
+                {editUser ? t.newPasswordLabel : t.passwordLabel}
               </label>
               <div style={{ position: "relative" }}>
                 <Key
@@ -427,7 +429,7 @@ function UserModal({
                       color: "rgba(255,255,255,0.5)",
                     }}
                   >
-                    Password Strength
+                    {t.passwordStrengthLabel}
                   </span>
                   <span
                     style={{
@@ -473,7 +475,7 @@ function UserModal({
                       variant="bold"
                     />
                     <span>
-                      Use uppercase, numbers & symbols to make it stronger
+                      {t.passwordHintMsg}
                     </span>
                   </div>
                 )}
@@ -481,7 +483,7 @@ function UserModal({
             )}
 
             <div style={{ marginBottom: "24px" }}>
-              <label style={labelStyle}>Role</label>
+              <label style={labelStyle}>{t.roleLabel}</label>
               {editUser?.role === "admin" ? (
                 <div
                   style={{
@@ -491,7 +493,7 @@ function UserModal({
                     color: "rgba(255,255,255,0.6)",
                   }}
                 >
-                  Admin (protected role)
+                  {t.adminProtectedRoleMsg}
                 </div>
               ) : (
                 <select
@@ -501,7 +503,7 @@ function UserModal({
                   onChange={(e) => setForm({ ...form, role: e.target.value })}
                 >
                   <option value="cashier" style={{ background: "#2c3e50" }}>
-                    Cashier
+                    {t.roleCashier}
                   </option>
                 </select>
               )}
@@ -522,7 +524,7 @@ function UserModal({
                   opacity: submitting ? 0.5 : 1,
                 }}
               >
-                Cancel
+                {t.cancel}
               </button>
 
               <button
@@ -569,7 +571,7 @@ function UserModal({
                         strokeLinecap="round"
                       />
                     </svg>
-                    {editUser ? "Saving..." : "Creating..."}
+                    {editUser ? t.savingAction : t.creatingAction}
                   </>
                 ) : (
                   <>
@@ -578,7 +580,7 @@ function UserModal({
                     ):(
                       <AddCircle size={22} color="#fff" variant="bold"/>
                     )}
-                    {editUser ? "Save" : "Create"}
+                    {editUser ? t.saveAction : t.createAction}
                   </>
                 )}
               </button>

@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect } from 'react';
 import AppRouter from './routes/AppRouter'
 import { LowStockProvider } from './context/LowStockContext';
+import { LanguageProvider } from './context/LanguageContext';
 import { initRealtimeSync } from './realtime';
 
 export const SidebarContext = createContext({
@@ -31,9 +32,11 @@ function App() {
 
   return (
     <SidebarContext.Provider value={{ sidebarOpen, toggleSidebar: handleToggle }}>
-      <LowStockProvider>
-        <AppRouter />
-      </LowStockProvider>
+      <LanguageProvider>
+        <LowStockProvider>
+          <AppRouter />
+        </LowStockProvider>
+      </LanguageProvider>
     </SidebarContext.Provider>
   )
 }

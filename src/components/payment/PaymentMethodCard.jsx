@@ -10,6 +10,7 @@ function PaymentMethodCard({
   onDelete,
   onToggleStatus,
   onView,
+  t,
 }) {
   const [isToggling, setIsToggling] = useState(false);
 
@@ -20,9 +21,9 @@ function PaymentMethodCard({
     try {
       const result = await onToggleStatus(method);
       if (result?.success) {
-        alertSuccess("Status Changed", nextStatus ? "Payment method activated" : "Payment method deactivated");
+        alertSuccess(t.statusChangedTitle, nextStatus ? t.methodActivatedMsg : t.methodDeactivatedMsg);
       } else {
-        alertError("Toggle Failed", result?.error || "Unable to update payment method status");
+        alertError(t.toggleFailedTitle, result?.error || t.unableToUpdateStatusMsg);
       }
     } finally {
       setIsToggling(false);
@@ -30,14 +31,14 @@ function PaymentMethodCard({
   };
 
   const handleDelete = async () => {
-    const result = await alertConfirmDelete("Delete payment method?", "Do you really want to delete this payment method?");
+    const result = await alertConfirmDelete(t.deletePaymentConfirmTitle, t.deletePaymentConfirmMsg, t.cancel, t.deleteAction);
     if (!result.isConfirmed) return;
 
     const deleteResult = await onDelete(method.id);
     if (deleteResult.success){
-      alertSuccess("Deleted", "Payment method has been deleted");
+      alertSuccess(t.paymentDeletedTitle, t.paymentDeletedMsg);
     }else{
-      alertError("Delete Failed", deleteResult?.error || "Unable to delete payment method" );
+      alertError(t.tableDeleteFailedTitle, deleteResult?.error || t.unableToDeleteMsg );
     }
   };
   return (
@@ -87,7 +88,7 @@ function PaymentMethodCard({
           margin: "0 0 8px",
         }}
       >
-        {method.bank_name || method.name || "Payment Method"}
+        {method.bank_name || method.name || t.paymentMethodFallback}
       </h3>
 
       <div
@@ -121,17 +122,17 @@ function PaymentMethodCard({
           {[
             {
               icon: <Eye size={20} color="white" variant="Outline" />,
-              label: "View",
+              label: t.viewAction,
               action: () => onView?.(method),
             },
             {
               icon: <Edit size={20} color="white" variant="Outline" />,
-              label: "Edit",
+              label: t.editAction,
               action: () => onEdit(method),
             },
             {
               icon: <Trash size={20} color="white" variant="Outline" />,
-              label: "Delete",
+              label: t.deleteAction,
               action: handleDelete,
             },
           ].map(({ icon, label, action }) => (
