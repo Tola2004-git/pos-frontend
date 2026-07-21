@@ -23,7 +23,6 @@ function bucketLabel(dateStr, locale, period) {
   }
   return date.toLocaleDateString(locale, { weekday: "short" });
 }
-
 function CustomTooltip({ active, payload }) {
   if (!active || !payload?.length) return null;
   const { total } = payload[0].payload;
@@ -52,14 +51,21 @@ function makeTodayDot(lastIndex) {
         stroke={LINE_COLOR}
         strokeWidth={2}
         style={
-          isToday ? { filter: `drop-shadow(0 0 5px ${LINE_COLOR}99)` } : undefined
+          isToday
+            ? { filter: `drop-shadow(0 0 5px ${LINE_COLOR}99)` }
+            : undefined
         }
       />
     );
   };
 }
 
-export default function SalesTrendChart({ data, lang, emptyLabel, period = "day" }) {
+export default function SalesTrendChart({
+  data,
+  lang,
+  emptyLabel,
+  period = "day",
+}) {
   const hasSales = data.some((d) => d.total > 0);
   if (!hasSales) {
     return <p className="text-white/50 text-sm m-0">{emptyLabel}</p>;
@@ -73,7 +79,10 @@ export default function SalesTrendChart({ data, lang, emptyLabel, period = "day"
 
   return (
     <ResponsiveContainer width="100%" height={CHART_HEIGHT}>
-      <AreaChart data={chartData} margin={{ top: 12, right: 8, left: 8, bottom: 0 }}>
+      <AreaChart
+        data={chartData}
+        margin={{ top: 12, right: 8, left: 8, bottom: 0 }}
+      >
         <defs>
           <linearGradient id="salesTrendFill" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor={LINE_COLOR} stopOpacity={0.35} />
