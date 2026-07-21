@@ -176,10 +176,6 @@ function Login() {
         password,
       });
       localStorage.setItem("token", res.data.token);
-
-      // Role isn't embedded in the JWT, so fetch it once here and cache it
-      // for PrivateRoute's synchronous role checks. Default to the
-      // least-privileged role if the lookup fails.
       let role = "cashier";
       try {
         const me = await apiClient.get("/me");

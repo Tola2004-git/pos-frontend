@@ -14,6 +14,7 @@ import {
   NoteText,
   BoxTick,
   Edit,
+  Calendar,
 } from "iconsax-react";
 
 function IngredientModal({
@@ -30,6 +31,7 @@ function IngredientModal({
     unit: editIngredient?.unit || "",
     low_stock_threshold: editIngredient?.low_stock_threshold ?? "",
     cost_per_unit: editIngredient?.cost_per_unit ?? "",
+    expiry_date: editIngredient?.expiry_date?.slice(0, 10) || "",
     supplier: editIngredient?.supplier || "",
     note: editIngredient?.note || "",
     status: editIngredient?.status ?? true,
@@ -96,11 +98,14 @@ function IngredientModal({
 
     setSubmitting(true);
     try {
+      // Empty string fails Laravel's `nullable|date` rule (only a real
+      // null is treated as "absent") - normalize before sending.
+      const payload = { ...form, expiry_date: form.expiry_date || null };
       if (editIngredient) {
-        await api.put(`/ingredients/${editIngredient.id}`, form);
+        await api.put(`/ingredients/${editIngredient.id}`, payload);
         alertSuccess(t.productUpdatedTitle, t.ingredientUpdatedMsg);
       } else {
-        await api.post("/ingredients", form);
+        await api.post("/ingredients", payload);
         alertSuccess(t.productCreatedTitle, t.ingredientCreatedMsg);
       }
       onSuccess();
@@ -353,6 +358,34 @@ function IngredientModal({
                       setForm({ ...form, cost_per_unit: e.target.value })
                     }
                     onFocus={() => setFocusedField("cost")}
+                    onBlur={() => setFocusedField("")}
+                  />
+                </div>
+              </div>
+
+              {/* Expiry Date */}
+              <div>
+                <label style={labelStyle}>{t.expiryDateLabel}</label>
+                <div style={{ position: "relative" }}>
+                  <Calendar
+                    size={20}
+                    color="white"
+                    variant="Linear"
+                    style={iconStyle("expiry")}
+                  />
+                  <input
+                    style={{
+                      ...inputStyle,
+                      paddingLeft: "40px",
+                      colorScheme: "dark",
+                      ...borderFor("expiry"),
+                    }}
+                    type="date"
+                    value={form.expiry_date}
+                    onChange={(e) =>
+                      setForm({ ...form, expiry_date: e.target.value })
+                    }
+                    onFocus={() => setFocusedField("expiry")}
                     onBlur={() => setFocusedField("")}
                   />
                 </div>

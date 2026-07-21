@@ -56,6 +56,7 @@ export default function IngredientsTable({
     t.ingColUnit,
     t.ingColQuantity,
     t.ingColCostUnit,
+    t.ingColExpiry,
     t.ingColSupplier,
     t.productColStatus,
     t.productColActions,
@@ -100,7 +101,7 @@ export default function IngredientsTable({
             ) : ingredients.length === 0 ? (
               <tr>
                 <td
-                  colSpan={9}
+                  colSpan={10}
                   style={{
                     padding: "40px",
                     textAlign: "center",
@@ -207,6 +208,40 @@ export default function IngredientsTable({
                       }}
                     >
                       ${Number(ingredient.cost_per_unit).toFixed(2)}
+                    </td>
+                    <td style={{ padding: "12px 14px", textAlign: "center" }}>
+                      {ingredient.expiry_date ? (
+                        <span
+                          style={{
+                            padding: "3px 10px",
+                            borderRadius: "20px",
+                            fontSize: "0.78rem",
+                            fontWeight: 600,
+                            color: ingredient.is_expired
+                              ? "#e74c3c"
+                              : ingredient.is_expiring_soon
+                                ? "#f39c12"
+                                : "rgba(255,255,255,0.7)",
+                            border: `1px solid ${
+                              ingredient.is_expired
+                                ? "#e74c3c"
+                                : ingredient.is_expiring_soon
+                                  ? "#f39c12"
+                                  : "rgba(255,255,255,0.25)"
+                            }`,
+                          }}
+                        >
+                          {ingredient.is_expired
+                            ? t.ingredientExpiredBadge
+                            : ingredient.is_expiring_soon
+                              ? t.ingredientExpiringSoonBadge
+                              : ingredient.expiry_date.slice(0, 10)}
+                        </span>
+                      ) : (
+                        <span style={{ color: "rgba(255,255,255,0.4)" }}>
+                          {t.naLabel}
+                        </span>
+                      )}
                     </td>
                     <td
                       style={{

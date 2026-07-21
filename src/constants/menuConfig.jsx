@@ -12,6 +12,9 @@ import {
   Cake,
   Wallet2,
   DocumentDownload,
+  MoneyRemove,
+  CloudChange,
+  ShieldSecurity,
 } from "iconsax-react";
 
 export const MENU_ITEMS = [
@@ -96,12 +99,30 @@ export const MENU_ITEMS = [
     icon: DocumentDownload,
     roles: ["admin"],
   },
+  {
+    key: "expenses",
+    path: "/expenses",
+    icon: MoneyRemove,
+    roles: ["admin"],
+  },
 
   // System administration - touched least often
   {
     key: "users",
     path: "/users",
     icon: User,
+    roles: ["admin"],
+  },
+  {
+    key: "backups",
+    path: "/backups",
+    icon: CloudChange,
+    roles: ["admin"],
+  },
+  {
+    key: "auditLogs",
+    path: "/audit-logs",
+    icon: ShieldSecurity,
     roles: ["admin"],
   },
 ];

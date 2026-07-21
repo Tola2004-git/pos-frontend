@@ -16,6 +16,9 @@ import CashierHome from "../pages/CashierHome";
 import CashierOrders from "../pages/CashierOrders";
 import ShiftReview from "../pages/ShiftReview";
 import DailyExports from "../pages/DailyExports";
+import Expenses from "../pages/Expenses";
+import Backups from "../pages/Backups";
+import AuditLogs from "../pages/AuditLogs";
 
 // Role isn't embedded in the JWT (see AuthController@login) - it's cached in
 // localStorage right after login (see Login.jsx) so route guards can check
@@ -218,6 +221,30 @@ function AppRouter() {
           element={
             <PrivateRoute roles={["admin"]}>
               <DailyExports />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/expenses"
+          element={
+            <PrivateRoute roles={["admin"]}>
+              <Expenses />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/backups"
+          element={
+            <PrivateRoute roles={["admin"]}>
+              <Backups />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/audit-logs"
+          element={
+            <PrivateRoute roles={["admin"]}>
+              <AuditLogs />
             </PrivateRoute>
           }
         />

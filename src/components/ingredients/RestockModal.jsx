@@ -10,6 +10,7 @@ import {
   AddCircle,
   ArrowDown2,
   Box1,
+  Calendar,
   MinusCirlce,
   NoteText,
   RefreshCircle,
@@ -314,6 +315,39 @@ export default function RestockModal({
             </div>
           </div>
         </div>
+
+        {restockForm.action === "add" && (
+          <div style={{ marginBottom: "16px" }}>
+            <label style={labelStyle}>{t.expiryDateLabel}</label>
+            <div style={{ position: "relative" }}>
+              <Calendar
+                size="18"
+                color="#fff"
+                variant="bulk"
+                style={iconStyle("Expiry", focusedField)}
+              />
+              <input
+                style={{
+                  ...inputStyle,
+                  paddingLeft: "40px",
+                  colorScheme: "dark",
+                  border:
+                    focusedField === "Expiry"
+                      ? "1px solid rgba(255,255,255,0.8)"
+                      : "1px solid rgba(255,255,255,0.2)",
+                  transition: "border 0.2s",
+                }}
+                type="date"
+                value={restockForm.expiry_date}
+                onChange={(e) =>
+                  setRestockForm({ ...restockForm, expiry_date: e.target.value })
+                }
+                onFocus={() => setFocusedField("Expiry")}
+                onBlur={() => setFocusedField("")}
+              />
+            </div>
+          </div>
+        )}
 
         <div style={{ marginBottom: "16px" }}>
           <label style={labelStyle}>{t.supplierLabel}</label>

@@ -22,6 +22,7 @@ export function useIngredients() {
     ingredient_id: "",
     action: "add",
     quantity: "",
+    expiry_date: "",
     supplier: "",
     note: "",
   });
@@ -94,7 +95,7 @@ export function useIngredients() {
     setSelectedIngredient(ingredient);
     setRestockError("");
     setSubmitting(false);
-    setRestockForm({ ingredient_id: ingredient.id, action: "add", quantity: "", supplier: "", note: "" });
+    setRestockForm({ ingredient_id: ingredient.id, action: "add", quantity: "", expiry_date: "", supplier: "", note: "" });
     setShowRestock(true);
   };
 
@@ -113,7 +114,12 @@ export function useIngredients() {
     }
     setSubmitting(true);
     try {
-      await api.post("/ingredients/restock", restockForm);
+      // Empty string fails Laravel's `nullable|date` rule (only a real
+      // null is treated as "absent") - normalize before sending.
+      await api.post("/ingredients/restock", {
+        ...restockForm,
+        expiry_date: restockForm.expiry_date || null,
+      });
       setShowRestock(false);
       setSelectedIngredient(null);
       alertSuccess(

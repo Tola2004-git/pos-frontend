@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslations } from "../../hooks/useTranslations";
 import { useBackgroundChanger } from "../../hooks/useBackgroundChanger";
 import apiClient from "../../api/apiClient";
+import { alertConfirmWarning } from "../../utils/alert.jsx";
 import { SidebarContext } from "../../App";
 import { getCachedUser, setCachedUser, clearCachedUser } from "../../utils/currentUserCache";
 import Sidebar from "./Sidebar";
@@ -56,6 +57,16 @@ function Layout({ children }) {
     navigate("/login");
   };
 
+  const confirmLogout = async () => {
+    const result = await alertConfirmWarning(
+      t.logoutConfirmTitle,
+      t.logoutConfirmMsgAdmin,
+      t.logoutConfirmBtn,
+      t.cancel,
+    );
+    if (result.isConfirmed) handleLogout();
+  };
+
   return (
     <div
       style={bgStyle}
@@ -83,7 +94,7 @@ function Layout({ children }) {
         <Sidebar
           open={sidebarOpen}
           onToggle={handleToggle}
-          onLogout={handleLogout}
+          onLogout={confirmLogout}
           t={t}
         />
         <div

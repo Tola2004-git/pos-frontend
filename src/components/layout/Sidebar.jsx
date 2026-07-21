@@ -1,10 +1,18 @@
 import { Link, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useState, useRef, useLayoutEffect } from "react";
 import { createPortal } from "react-dom";
 import { glassSidebar, colors } from "../../utils/styles";
 import { MENU_ITEMS } from "../../constants/menuConfig.jsx";
 import { HambergerMenu, Logout } from "iconsax-react";
 import logo from "../../assets/logo.png";
+
+// Every page wraps itself in its own <Layout>, so Sidebar remounts on every
+// navigation (see currentUserCache.js for the same issue with user data).
+// A remounted <nav> is a brand-new DOM node with scrollTop reset to 0, which
+// reads as "the sidebar jumped back to the top" right after clicking an item
+// near the bottom. Remembering the last scroll offset at module scope
+// survives the remount so it can be restored before the next paint.
+let lastSidebarScrollTop = 0;
 
 function Tooltip({ label, targetRect }) {
   if (!label || !targetRect) return null;
@@ -41,6 +49,13 @@ function Sidebar({ open, onToggle, onLogout, t }) {
   const visibleMenuItems = MENU_ITEMS.filter(
     (menu) => !menu.roles || menu.roles.includes(role),
   );
+  const navRef = useRef(null);
+
+  // Runs before the browser paints, so the restored offset never flashes at
+  // the top first.
+  useLayoutEffect(() => {
+    if (navRef.current) navRef.current.scrollTop = lastSidebarScrollTop;
+  }, []);
   const handleMouseEnter = (e, label) => {
     if (open) return;
     const rect = e.currentTarget.getBoundingClientRect();
@@ -139,7 +154,11 @@ function Sidebar({ open, onToggle, onLogout, t }) {
             <HambergerMenu size={24} color="white" variant="Linear" />
           </button>
         </div>
-        <nav className={`flex-1 py-[15px] overflow-y-auto overflow-x-hidden ${open ? "sidebar-open" : "sidebar-closed"}`}>
+        <nav
+          ref={navRef}
+          onScroll={(e) => { lastSidebarScrollTop = e.currentTarget.scrollTop; }}
+          className={`flex-1 py-[15px] overflow-y-auto overflow-x-hidden thin-light-scrollbar ${open ? "sidebar-open" : "sidebar-closed"}`}
+        >
           {visibleMenuItems.map((menu) => {
             const active = location.pathname === menu.path;
             const Icon = menu.icon;
