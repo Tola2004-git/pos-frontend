@@ -11,21 +11,45 @@ import {
   TicketDiscount,
   Cake,
   Wallet2,
+  DocumentDownload,
 } from "iconsax-react";
 
 export const MENU_ITEMS = [
+  // Overview
   {
     key: "dashboard",
     path: "/dashboard",
     icon: Element3,
     roles: ["admin", "cashier"],
   },
+
+  // Daily operations - the pages used every shift
   {
     key: "cashierPos",
     path: "/cashier",
     icon: CardPos,
     roles: ["cashier"],
   },
+  {
+    key: "orders",
+    path: "/orders",
+    icon: ShoppingCart,
+    roles: ["admin", "cashier"],
+  },
+  {
+    key: "tables",
+    path: "/tables",
+    icon: Grid3,
+    roles: ["admin", "cashier"],
+  },
+  {
+    key: "shifts",
+    path: "/shifts",
+    icon: Wallet2,
+    roles: ["admin"],
+  },
+
+  // Catalog & inventory - changed less often than daily operations
   {
     key: "products",
     path: "/products",
@@ -50,24 +74,8 @@ export const MENU_ITEMS = [
     icon: Cake,
     roles: ["admin"],
   },
-  {
-    key: "orders",
-    path: "/orders",
-    icon: ShoppingCart,
-    roles: ["admin", "cashier"],
-  },
-  {
-    key: "tables",
-    path: "/tables",
-    icon: Grid3,
-    roles: ["admin", "cashier"],
-  },
-  {
-    key: "paymentMethods",
-    path: "/payment-methods",
-    icon: Card,
-    roles: ["admin"],
-  },
+
+  // Marketing & configuration
   {
     key: "promotions",
     path: "/promotions",
@@ -75,15 +83,25 @@ export const MENU_ITEMS = [
     roles: ["admin"],
   },
   {
+    key: "paymentMethods",
+    path: "/payment-methods",
+    icon: Card,
+    roles: ["admin"],
+  },
+
+  // Reports
+  {
+    key: "dailyExports",
+    path: "/daily-exports",
+    icon: DocumentDownload,
+    roles: ["admin"],
+  },
+
+  // System administration - touched least often
+  {
     key: "users",
     path: "/users",
     icon: User,
-    roles: ["admin"],
-  },
-  {
-    key: "shifts",
-    path: "/shifts",
-    icon: Wallet2,
     roles: ["admin"],
   },
 ];

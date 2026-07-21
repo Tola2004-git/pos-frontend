@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { glassCard } from "../../utils/styles";
 import { SkeletonProductTable } from "../ui/SkeletonProduct";
-import { Edit, Trash, Gallery } from "iconsax-react";
+import { Edit, Trash, Gallery, Cake } from "iconsax-react";
 
 function ProductImagePlaceholder() {
   return (
@@ -53,7 +53,7 @@ function ProductImage({ image, name }) {
   );
 }
 
-function ProductTable({ products, loading, page, onEdit, onDelete, t }) {
+function ProductTable({ products, loading, page, onEdit, onDelete, onRecipe, t }) {
   const COLUMNS = [
     "#",
     t.productColImage,
@@ -331,6 +331,58 @@ function ProductTable({ products, loading, page, onEdit, onDelete, t }) {
                         {t.editAction}
                       </div>
                     </div>
+                    {onRecipe && (
+                      <div
+                        style={{ position: "relative", display: "inline-block" }}
+                        onMouseEnter={(e) =>
+                          (e.currentTarget.querySelector(
+                            ".tooltip",
+                          ).style.opacity = 1)
+                        }
+                        onMouseLeave={(e) =>
+                          (e.currentTarget.querySelector(
+                            ".tooltip",
+                          ).style.opacity = 0)
+                        }
+                      >
+                        <button
+                          type="button"
+                          onClick={() => onRecipe(product)}
+                          className="duration-200 hover:scale-110 transition-transform"
+                          style={{
+                            border: "none",
+                            borderRadius: 8,
+                            cursor: "pointer",
+                            background: "transparent",
+                            display: "inline-flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Cake size={20} color="white" variant="Linear" />
+                        </button>
+                        <div
+                          className="tooltip"
+                          style={{
+                            position: "absolute",
+                            bottom: "110%",
+                            left: "50%",
+                            transform: "translateX(-50%)",
+                            background: "rgba(20,28,35,0.95)",
+                            color: "white",
+                            padding: "4px 10px",
+                            borderRadius: "6px",
+                            fontSize: "0.75rem",
+                            whiteSpace: "nowrap",
+                            pointerEvents: "none",
+                            opacity: 0,
+                            transition: "opacity 0.2s",
+                            marginBottom: 5,
+                          }}
+                        >
+                          {t.recipeAction}
+                        </div>
+                      </div>
+                    )}
                     <div
                       style={{ position: "relative", display: "inline-block" }}
                       onMouseEnter={(e) =>

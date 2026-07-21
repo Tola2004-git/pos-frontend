@@ -10,8 +10,18 @@ import {
 const LINE_COLOR = "#2ecc71";
 const CHART_HEIGHT = 160;
 
-function weekdayLabel(dateStr, locale) {
-  return new Date(dateStr).toLocaleDateString(locale, { weekday: "short" });
+function bucketLabel(dateStr, locale, period) {
+  const date = new Date(dateStr);
+  if (period === "week") {
+    return date.toLocaleDateString(locale, { month: "short", day: "numeric" });
+  }
+  if (period === "month") {
+    return date.toLocaleDateString(locale, { month: "short", year: "2-digit" });
+  }
+  if (period === "year") {
+    return date.toLocaleDateString(locale, { year: "numeric" });
+  }
+  return date.toLocaleDateString(locale, { weekday: "short" });
 }
 
 function CustomTooltip({ active, payload }) {
@@ -49,7 +59,7 @@ function makeTodayDot(lastIndex) {
   };
 }
 
-export default function SalesTrendChart({ data, lang, emptyLabel }) {
+export default function SalesTrendChart({ data, lang, emptyLabel, period = "day" }) {
   const hasSales = data.some((d) => d.total > 0);
   if (!hasSales) {
     return <p className="text-white/50 text-sm m-0">{emptyLabel}</p>;
@@ -58,7 +68,7 @@ export default function SalesTrendChart({ data, lang, emptyLabel }) {
   const locale = lang === "kh" ? "km-KH" : "en-US";
   const chartData = data.map((d) => ({
     ...d,
-    label: weekdayLabel(d.date, locale),
+    label: bucketLabel(d.date, locale, period),
   }));
 
   return (

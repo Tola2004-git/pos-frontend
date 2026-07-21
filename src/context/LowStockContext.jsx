@@ -62,7 +62,7 @@ export function LowStockProvider({ children }) {
   const fetchProducts = useCallback(async () => {
     if (!localStorage.getItem("token")) return;
     try {
-      const res = await apiClient.get("/products?per_page=1000");
+      const res = await apiClient.get("/products?per_page=1000&fields=id,name,qty");
       setProducts(res.data.data || []);
     } catch (err) {
       console.error("Failed to fetch products for low stock tracking", err);

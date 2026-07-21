@@ -4,6 +4,7 @@ import { useTranslations } from "../../hooks/useTranslations";
 import { useBackgroundChanger } from "../../hooks/useBackgroundChanger";
 import apiClient from "../../api/apiClient";
 import { SidebarContext } from "../../App";
+import { getCachedUser, setCachedUser, clearCachedUser } from "../../utils/currentUserCache";
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
 import BackgroundChanger from "../BackgroundChanger";
@@ -33,12 +34,13 @@ function Layout({ children }) {
     () => { },
   );
 
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(getCachedUser());
 
   useEffect(() => {
     const fetchMe = async () => {
       try {
         const res = await apiClient.get("/me");
+        setCachedUser(res.data);
         setUser(res.data);
       } catch (err) {
         console.error("Failed to fetch user:", err);
@@ -50,6 +52,7 @@ function Layout({ children }) {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
+    clearCachedUser();
     navigate("/login");
   };
 

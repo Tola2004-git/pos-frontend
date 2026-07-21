@@ -8,6 +8,7 @@ import passwordIcon from "../assets/icons/password.png";
 import loginIcon from "../assets/icons/login.png";
 import { Sms, Lock, Eye, EyeSlash, Login as LoginIcon } from "iconsax-react";
 import { useTranslations } from "../hooks/useTranslations";
+import { setCachedUser } from "../utils/currentUserCache";
 
 const styles = `
 @keyframes dot-bounce {
@@ -183,6 +184,7 @@ function Login() {
       try {
         const me = await apiClient.get("/me");
         role = me.data?.role || "cashier";
+        setCachedUser(me.data);
       } catch (err) {
         console.error("Failed to fetch user role:", err);
       }

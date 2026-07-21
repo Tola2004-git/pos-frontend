@@ -22,8 +22,17 @@ export const fetchSalesByCashierApi = ({
     `/orders/sales-by-cashier?date_from=${dateFrom}&date_to=${dateTo}&current_shift=${currentShiftOnly}`,
   );
 
-export const fetchSalesTrendApi = ({ dateFrom = "", dateTo = "" } = {}) =>
-  apiClient.get(`/orders/sales-trend?date_from=${dateFrom}&date_to=${dateTo}`);
+export const fetchSalesSummaryApi = ({ period = "day" } = {}) =>
+  apiClient.get(`/orders/sales-summary?period=${period}`);
+
+export const fetchTopProductsApi = ({ period = "day" } = {}) =>
+  apiClient.get(`/orders/top-products?period=${period}`);
+
+export const fetchCategorySalesApi = ({ period = "day" } = {}) =>
+  apiClient.get(`/orders/category-sales?period=${period}`);
+
+export const fetchProfitSummaryApi = ({ period = "day" } = {}) =>
+  apiClient.get(`/orders/profit-summary?period=${period}`);
 
 export const fetchProductsApi = () =>
   apiClient.get("/products?per_page=1000&status=1");

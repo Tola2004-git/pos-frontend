@@ -19,3 +19,8 @@ export const reviewShiftApi = (id, payload) =>
 
 export const addCashMovementApi = (id, payload) =>
   apiClient.post(`/cashier-shifts/${id}/cash-movements`, payload);
+
+export const fetchCashMovementsSummaryApi = ({ dateFrom = "", dateTo = "" } = {}) =>
+  apiClient.get(
+    `/cashier-shifts/cash-movements-summary?date_from=${dateFrom}&date_to=${dateTo}`,
+  );

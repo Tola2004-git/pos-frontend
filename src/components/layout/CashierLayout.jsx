@@ -9,6 +9,7 @@ import { glass, glassCard, colors } from "../../utils/styles";
 import LangDropdown from "./LangDropdown";
 import UserProfile from "./UserProfile";
 import BackgroundChanger from "../BackgroundChanger";
+import { getCachedUser, setCachedUser, clearCachedUser } from "../../utils/currentUserCache";
 import {
   Logout,
   Grid3,
@@ -30,7 +31,6 @@ const NAV_TABS = [
 ];
 
 let hasCheckedShiftThisSession = false;
-let cachedUser = null;
 
 const fieldStyle = {
   width: "100%",
@@ -864,7 +864,7 @@ function CashierLayout({ children }) {
   const navigate = useNavigate();
   const location = useLocation();
   const { t, lang, setLang } = useTranslations();
-  const [user, setUser] = useState(cachedUser);
+  const [user, setUser] = useState(getCachedUser());
   const [showCloseModal, setShowCloseModal] = useState(false);
   const [isCloseModalMounted, setIsCloseModalMounted] = useState(false);
   const [isCloseModalVisible, setIsCloseModalVisible] = useState(false);
@@ -937,7 +937,7 @@ function CashierLayout({ children }) {
     apiClient
       .get("/me")
       .then((res) => {
-        cachedUser = res.data;
+        setCachedUser(res.data);
         if (active) setUser(res.data);
       })
       .catch((err) => console.error("Failed to fetch user:", err));
@@ -950,7 +950,7 @@ function CashierLayout({ children }) {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     hasCheckedShiftThisSession = false;
-    cachedUser = null;
+    clearCachedUser();
     resetCashierShiftCache();
     navigate("/login");
   };

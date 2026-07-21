@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Layout from "../components/layout/Layout";
 import { glassCard, colors } from "../utils/styles";
 import { useProducts } from "../hooks/useProducts";
@@ -7,8 +7,10 @@ import ProductSearch from "../components/products/ProductSearch";
 import ProductTable from "../components/products/ProductTable";
 import ProductModal from "../components/products/ProductModal";
 import CategoryModal from "../components/products/CategoryModal";
+import RecipeModal from "../components/products/RecipeModal";
 import { Add, Box, Category } from "iconsax-react";
 import { useTranslations } from "../hooks/useTranslations";
+import { fetchIngredients } from "../api/ingredientApi";
 
 function Products() {
   const { t } = useTranslations();
@@ -48,6 +50,15 @@ function Products() {
 
   const [showCatModal, setShowCatModal] = useState(false);
   const [catModalLoading, setCatModalLoading] = useState(false);
+
+  const [recipeProduct, setRecipeProduct] = useState(null);
+  const [allIngredients, setAllIngredients] = useState([]);
+
+  useEffect(() => {
+    fetchIngredients("?per_page=1000&status=1")
+      .then((res) => setAllIngredients(res.data.data || []))
+      .catch((err) => console.error("Failed to load ingredients for recipes:", err));
+  }, []);
 
   const handleAddProduct = () => {
     setEditProduct(null);
@@ -176,6 +187,7 @@ function Products() {
         page={page}
         onEdit={handleEdit}
         onDelete={handleDelete}
+        onRecipe={setRecipeProduct}
         t={t}
       />
 
@@ -271,6 +283,15 @@ function Products() {
           onToggleStatus={toggleCatStatus}
           onClose={handleCloseCatModal}
           resetCatForm={resetCatForm}
+          t={t}
+        />
+      )}
+
+      {recipeProduct && (
+        <RecipeModal
+          product={recipeProduct}
+          ingredients={allIngredients}
+          onClose={() => setRecipeProduct(null)}
           t={t}
         />
       )}
