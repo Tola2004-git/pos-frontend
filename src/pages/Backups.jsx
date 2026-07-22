@@ -139,6 +139,15 @@ function Backups() {
                     </td>
                     <td className="px-4 py-3.5 whitespace-nowrap">
                       {(b.disks || []).join(", ") || "—"}
+                      {b.error_message && (
+                        <span
+                          title={b.error_message}
+                          className="ml-1.5 cursor-help"
+                          style={{ color: "#f39c12" }}
+                        >
+                          ⚠
+                        </span>
+                      )}
                     </td>
                     <td className="px-4 py-3.5 whitespace-nowrap">
                       {fmtDateTime(b.created_at)}
