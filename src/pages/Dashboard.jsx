@@ -30,6 +30,7 @@ import { getStatusStyle } from "../utils/orderHelpers";
 import { formatDiscount, formatDate } from "../constants/promotionConstants";
 import { Skeleton } from "../components/ui/Skeleton";
 import SalesTrendChart from "../components/dashboard/SalesTrendChart";
+import DateRangePicker from "../components/common/DateRangePicker";
 import apiClient from "../api/apiClient";
 import { fetchTables } from "../api/tableApi";
 import {
@@ -51,9 +52,10 @@ function StatCard({ label, value, color, StatIcon, onClick, loading, badge }) {
           onClick?.();
         }
       }}
-      className="p-5 rounded-2xl flex items-center gap-4 cursor-pointer transition-transform hover:scale-[1.02]"
+      className="relative p-5 rounded-2xl flex items-center gap-4 cursor-pointer transition-transform hover:scale-[1.02] overflow-hidden"
       style={glassCard}
     >
+      {!loading && badge}
       <div
         className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
         // style={{ background: `${color}22` }}
@@ -65,15 +67,12 @@ function StatCard({ label, value, color, StatIcon, onClick, loading, badge }) {
           style={{ animation: "float 3s ease-in-out infinite" }}
         />
       </div>
-      <div className="min-w-0">
+      <div className="min-w-0 flex-1">
         <p className="text-white/60 text-xs m-0 mb-1 truncate">{label}</p>
         {loading ? (
           <Skeleton width={70} height={22} />
         ) : (
-          <div className="flex items-center gap-2">
-            <p className="text-2xl font-bold text-white m-0">{value}</p>
-            {badge}
-          </div>
+          <p className="text-2xl font-bold text-white m-0">{value}</p>
         )}
       </div>
     </div>
@@ -145,20 +144,30 @@ function WidgetCard({ icon, title, action, children }) {
   );
 }
 
-const PERIODS = ["day", "week", "month", "year"];
-const TREND_POINT_COUNTS = { day: 7, week: 8, month: 6, year: 5 };
+const PERIODS = ["day", "week", "month", "year", "custom"];
+const TREND_POINT_COUNTS = { day: 7, week: 8, month: 6, year: 5, custom: 7 };
+
+function defaultCustomRange() {
+  const fmt = (d) => d.toISOString().slice(0, 10);
+  const to = new Date();
+  const from = new Date();
+  from.setDate(from.getDate() - 6);
+  return { from: fmt(from), to: fmt(to) };
+}
 
 function Dashboard() {
   const { t, lang } = useTranslations();
   const navigate = useNavigate();
   const [user, setUser] = useState(getCachedUser());
   const [period, setPeriod] = useState("day");
+  const [customRange, setCustomRange] = useState(defaultCustomRange);
   const [tableCounts, setTableCounts] = useState({
     available: 0,
     occupied: 0,
     reserved: 0,
   });
   const [tableLoading, setTableLoading] = useState(true);
+  const isAdmin = user?.role === "admin";
   const {
     lowStockProducts,
     loading: lowStockLoading,
@@ -183,41 +192,45 @@ function Dashboard() {
     cashMovements,
     profit,
     refetch,
-  } = useDashboard(period);
+  } = useDashboard(period, isAdmin, customRange);
 
   const [exporting, setExporting] = useState(false);
   const [exportError, setExportError] = useState(false);
-  const isAdmin = user?.role === "admin";
 
   const PERIOD_LABELS = {
     day: t.periodDayLabel,
     week: t.periodWeekLabel,
     month: t.periodMonthLabel,
     year: t.periodYearLabel,
+    custom: t.periodCustomLabel,
   };
   const SALES_LABELS = {
     day: t.dashboardTodaySalesLabel,
     week: t.dashboardWeekSalesLabel,
     month: t.dashboardMonthSalesLabel,
     year: t.dashboardYearSalesLabel,
+    custom: t.dashboardCustomSalesLabel,
   };
   const ORDERS_LABELS = {
     day: t.dashboardTodayOrdersLabel,
     week: t.dashboardWeekOrdersLabel,
     month: t.dashboardMonthOrdersLabel,
     year: t.dashboardYearOrdersLabel,
+    custom: t.dashboardCustomOrdersLabel,
   };
   const VS_PREVIOUS_LABELS = {
     day: t.dashboardVsYesterdayLabel,
     week: t.dashboardVsLastWeekLabel,
     month: t.dashboardVsLastMonthLabel,
     year: t.dashboardVsLastYearLabel,
+    custom: t.dashboardVsCustomLabel,
   };
   const TREND_TITLES = {
     day: t.dashboardTrendTitleDay,
     week: t.dashboardTrendTitleWeek,
     month: t.dashboardTrendTitleMonth,
     year: t.dashboardTrendTitleYear,
+    custom: t.dashboardTrendTitleCustom,
   };
 
   const STATUS_LABELS = {
@@ -255,7 +268,15 @@ function Dashboard() {
 
     loadTableCounts();
     const interval = setInterval(loadTableCounts, 30000);
-    return () => clearInterval(interval);
+
+    window.addEventListener("tables:refresh", loadTableCounts);
+    window.addEventListener("orders:refresh", loadTableCounts);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("tables:refresh", loadTableCounts);
+      window.removeEventListener("orders:refresh", loadTableCounts);
+    };
   }, []);
 
   const handleGenerateAndDownloadExport = async () => {
@@ -289,24 +310,23 @@ function Dashboard() {
   const trendUp = trendPct >= 0;
   const TrendIcon = trendUp ? TrendUp : TrendDown;
   const trendColor = isNewTrend ? "#3498db" : trendUp ? "#2ecc71" : "#e74c3c";
+  const trendPctDisplay =
+    Math.abs(trendPct) > 999 ? "999%+" : `${Math.abs(trendPct).toFixed(0)}%`;
   const trendBadge = !loading && hasTrendData && (
-    <span
-      className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[0.7rem] font-semibold"
-      style={{
-        color: trendColor,
-        background: `${trendColor}26`,
-      }}
+    <div
+      className="absolute -left-10 top-3 w-36 -rotate-45 flex items-center justify-center gap-1 py-0.5 text-[0.62rem] font-bold text-white shadow-md"
+      style={{ background: trendColor }}
       title={VS_PREVIOUS_LABELS[period]}
     >
       {isNewTrend ? (
         t.dashboardNewLabel
       ) : (
         <>
-          <TrendIcon size={12} color={trendColor} variant="Linear" />
-          {Math.abs(trendPct).toFixed(0)}%
+          <TrendIcon size={10} color="#fff" variant="Linear" />
+          {trendPctDisplay}
         </>
       )}
-    </span>
+    </div>
   );
 
   const STAT_CARDS = [
@@ -401,6 +421,19 @@ function Dashboard() {
           ))}
         </div>
       </div>
+
+      {period === "custom" && (
+        <div className="mb-5 -mt-3" style={{glassCard}}>
+          <DateRangePicker
+            dateFrom={customRange.from}
+            dateTo={customRange.to}
+            onDateFromChange={(from) => setCustomRange((r) => ({ ...r, from }))}
+            onDateToChange={(to) => setCustomRange((r) => ({ ...r, to }))}
+            maxDate={new Date()}
+            placeholder={t.selectDateRange}
+          />
+        </div>
+      )}
 
       {error && (
         <div
@@ -690,6 +723,7 @@ function Dashboard() {
         </WidgetCard>
       </div>
 
+      {isAdmin && (
       <div style={glassCard} className="rounded-[20px] p-5 mt-4">
         <h3 className="text-white font-bold text-base m-0 mb-4 flex items-center gap-2">
           <Chart21
@@ -761,6 +795,40 @@ function Dashboard() {
                   {Number(profit.marginPct || 0).toFixed(1)}%
                 </div>
               </div>
+              <div
+                className="rounded-[14px] px-4 py-3 flex-1"
+                style={{
+                  minWidth: "140px",
+                  background: "rgba(255,255,255,0.06)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                }}
+              >
+                <div className="text-white/60 text-xs mb-1">{t.dashboardExpensesLabel}</div>
+                <div className="text-[#e74c3c] font-bold text-lg">
+                  ${Number(profit.expensesUsd || 0).toFixed(2)}
+                </div>
+                {profit.expensesKhr > 0 && (
+                  <div className="text-white/40 text-[0.72rem] mt-1">
+                    ៛{Number(profit.expensesKhr || 0).toFixed(0)}
+                  </div>
+                )}
+              </div>
+              <div
+                className="rounded-[14px] px-4 py-3 flex-1"
+                style={{
+                  minWidth: "140px",
+                  background: "rgba(255,255,255,0.06)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                }}
+              >
+                <div className="text-white/60 text-xs mb-1">{t.dashboardNetProfitLabel}</div>
+                <div
+                  className="font-bold text-lg"
+                  style={{ color: profit.netProfit >= 0 ? "#2ecc71" : "#e74c3c" }}
+                >
+                  ${Number(profit.netProfit || 0).toFixed(2)}
+                </div>
+              </div>
             </div>
             {profit.productsWithoutRecipeCount > 0 && (
               <div className="flex items-center gap-2 mt-3">
@@ -776,6 +844,7 @@ function Dashboard() {
           </>
         )}
       </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
         <WidgetCard
@@ -844,17 +913,22 @@ function Dashboard() {
           ) : categorySales.length === 0 ? (
             <p className="text-white/50 text-sm m-0">{t.dashboardNoCategorySalesMsg}</p>
           ) : (
-            <div className="flex flex-col gap-2">
+            <div
+              className="flex flex-col gap-2 overflow-y-auto pr-1"
+              style={{ maxHeight: "17rem" }}
+            >
               {categorySales.map((c) => (
                 <div
-                  key={c.category_id}
+                  key={c.category_id ?? "uncategorized"}
                   className="flex items-center justify-between gap-3 rounded-[12px] px-3 py-2.5"
                   style={{
                     background: "rgba(255,255,255,0.05)",
                     border: "1px solid rgba(255,255,255,0.08)",
                   }}
                 >
-                  <span className="text-white text-sm truncate">{c.category_name}</span>
+                  <span className="text-white text-sm truncate">
+                    {c.category_name || t.dashboardUncategorizedLabel}
+                  </span>
                   <div className="flex items-center gap-2 flex-shrink-0">
                     <span className="text-white/40 text-xs whitespace-nowrap">
                       {c.quantity_sold} {t.itemsUnitLabel}

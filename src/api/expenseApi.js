@@ -18,8 +18,10 @@ export const fetchExpensesApi = ({
     },
   });
 
-export const fetchExpenseSummaryApi = (period = "day") =>
-  apiClient.get(`/expenses/summary?period=${period}`);
+export const fetchExpenseSummaryApi = (period = "day", dateFrom = "", dateTo = "") =>
+  apiClient.get(
+    `/expenses/summary?period=${period}&date_from=${dateFrom}&date_to=${dateTo}`,
+  );
 
 export const createExpenseApi = (payload) => apiClient.post("/expenses", payload);
 

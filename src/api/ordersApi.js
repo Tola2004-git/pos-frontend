@@ -8,9 +8,10 @@ export const fetchOrdersApi = ({
   page,
   cashierId = "",
   currentShiftOnly = false,
+  perPage = 15,
 }) =>
   apiClient.get(
-    `/orders?search=${search}&status=${statusFilter}&date_from=${dateFrom}&date_to=${dateTo}&page=${page}&per_page=15&cashier_id=${cashierId}&current_shift=${currentShiftOnly}`,
+    `/orders?search=${search}&status=${statusFilter}&date_from=${dateFrom}&date_to=${dateTo}&page=${page}&per_page=${perPage}&cashier_id=${cashierId}&current_shift=${currentShiftOnly}`,
   );
 
 export const fetchSalesByCashierApi = ({
@@ -22,17 +23,25 @@ export const fetchSalesByCashierApi = ({
     `/orders/sales-by-cashier?date_from=${dateFrom}&date_to=${dateTo}&current_shift=${currentShiftOnly}`,
   );
 
-export const fetchSalesSummaryApi = ({ period = "day" } = {}) =>
-  apiClient.get(`/orders/sales-summary?period=${period}`);
+export const fetchSalesSummaryApi = ({ period = "day", dateFrom = "", dateTo = "" } = {}) =>
+  apiClient.get(
+    `/orders/sales-summary?period=${period}&date_from=${dateFrom}&date_to=${dateTo}`,
+  );
 
-export const fetchTopProductsApi = ({ period = "day" } = {}) =>
-  apiClient.get(`/orders/top-products?period=${period}`);
+export const fetchTopProductsApi = ({ period = "day", dateFrom = "", dateTo = "" } = {}) =>
+  apiClient.get(
+    `/orders/top-products?period=${period}&date_from=${dateFrom}&date_to=${dateTo}`,
+  );
 
-export const fetchCategorySalesApi = ({ period = "day" } = {}) =>
-  apiClient.get(`/orders/category-sales?period=${period}`);
+export const fetchCategorySalesApi = ({ period = "day", dateFrom = "", dateTo = "" } = {}) =>
+  apiClient.get(
+    `/orders/category-sales?period=${period}&date_from=${dateFrom}&date_to=${dateTo}`,
+  );
 
-export const fetchProfitSummaryApi = ({ period = "day" } = {}) =>
-  apiClient.get(`/orders/profit-summary?period=${period}`);
+export const fetchProfitSummaryApi = ({ period = "day", dateFrom = "", dateTo = "" } = {}) =>
+  apiClient.get(
+    `/orders/profit-summary?period=${period}&date_from=${dateFrom}&date_to=${dateTo}`,
+  );
 
 export const fetchProductsApi = () =>
   apiClient.get("/products?per_page=1000&status=1");

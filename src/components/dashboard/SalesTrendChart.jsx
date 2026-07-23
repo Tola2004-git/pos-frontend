@@ -12,7 +12,7 @@ const CHART_HEIGHT = 160;
 
 function bucketLabel(dateStr, locale, period) {
   const date = new Date(dateStr);
-  if (period === "week") {
+  if (period === "week" || period === "custom") {
     return date.toLocaleDateString(locale, { month: "short", day: "numeric" });
   }
   if (period === "month") {

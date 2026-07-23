@@ -10,6 +10,10 @@ import {
 import { fetchShiftsApi, fetchCashMovementsSummaryApi } from "../api/shiftApi";
 import { fetchProducts } from "../api/productApi";
 import { promotionService } from "../api/promotionService";
+import { fetchExpenseSummaryApi } from "../api/expenseApi";
+import apiClient from "../api/apiClient";
+
+const DEFAULT_EXCHANGE_RATE = 4100;
 
 function dateStr(offsetDays = 0) {
   const d = new Date();
@@ -20,13 +24,10 @@ function dateStr(offsetDays = 0) {
 
 const REFRESH_INTERVAL_MS = 60000;
 
-// Bucket keys expected back from the sales-summary trend series, one per
-// period granularity - must mirror the backend's grouping windows
-// (OrderController::resolvePeriodRanges) so every bucket gets a point even
-// when it had zero sales, keeping the chart's x-axis evenly spaced.
 function trendBucketDates(period) {
   const pad = (n) => String(n).padStart(2, "0");
-  const toStr = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  const toStr = (d) =>
+    `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 
   if (period === "week") {
     const monday = new Date();
@@ -59,14 +60,80 @@ function trendBucketDates(period) {
   return Array.from({ length: 7 }, (_, i) => dateStr(6 - i));
 }
 
-// Unwraps a Promise.allSettled() result, falling back to `fallback` on
-// rejection so one failing endpoint degrades its own widget instead of
-// blanking the whole dashboard.
+// Mirrors OrderController::MAX_CUSTOM_RANGE_DAYS - keeps the frontend's
+// bucket list in sync with what the backend actually queries, so a range
+// wider than this never renders empty trailing buckets the API didn't return.
+const MAX_CUSTOM_RANGE_DAYS = 366;
+
+function toDateKey(d) {
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+function mondayOf(date) {
+  const d = new Date(date);
+  const day = d.getDay();
+  d.setDate(d.getDate() - (day === 0 ? 6 : day - 1));
+  return d;
+}
+
+// Clamps a custom range to MAX_CUSTOM_RANGE_DAYS (anchored to dateTo), same
+// as OrderController::resolveRange does server-side.
+function clampCustomRange(dateFrom, dateTo) {
+  const from = new Date(`${dateFrom}T00:00:00`);
+  const to = new Date(`${dateTo}T00:00:00`);
+  const spanDays = Math.round((to - from) / 86400000) + 1;
+  if (spanDays <= MAX_CUSTOM_RANGE_DAYS) {
+    return { from: dateFrom, to: dateTo };
+  }
+  const clampedFrom = new Date(to);
+  clampedFrom.setDate(clampedFrom.getDate() - (MAX_CUSTOM_RANGE_DAYS - 1));
+  return { from: toDateKey(clampedFrom), to: dateTo };
+}
+
+// Custom-range trend buckets scale their granularity with the span - day
+// buckets for <=35 days, week buckets (Monday-keyed) for <=180 days, month
+// buckets beyond that - mirroring OrderController::resolveRange's groupExpr
+// selection so the frontend's bucket keys line up with the backend's rows.
+function customBucketDates(dateFrom, dateTo) {
+  const from = new Date(`${dateFrom}T00:00:00`);
+  const to = new Date(`${dateTo}T00:00:00`);
+  const spanDays = Math.round((to - from) / 86400000) + 1;
+
+  if (spanDays <= 35) {
+    const dates = [];
+    const cur = new Date(from);
+    while (cur <= to) {
+      dates.push(toDateKey(cur));
+      cur.setDate(cur.getDate() + 1);
+    }
+    return dates;
+  }
+
+  if (spanDays <= 180) {
+    const dates = [];
+    const cur = mondayOf(from);
+    while (cur <= to) {
+      dates.push(toDateKey(cur));
+      cur.setDate(cur.getDate() + 7);
+    }
+    return dates;
+  }
+
+  const dates = [];
+  const cur = new Date(from.getFullYear(), from.getMonth(), 1);
+  while (cur <= to) {
+    dates.push(toDateKey(cur));
+    cur.setMonth(cur.getMonth() + 1);
+  }
+  return dates;
+}
+
 function settledValue(result, fallback) {
   return result.status === "fulfilled" ? result.value : fallback;
 }
 
-export function useDashboard(period = "day") {
+export function useDashboard(period = "day", isAdmin = false, customRange = null) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [salesByCashier, setSalesByCashier] = useState([]);
@@ -92,6 +159,9 @@ export function useDashboard(period = "day") {
     profit: 0,
     marginPct: 0,
     productsWithoutRecipeCount: 0,
+    expensesUsd: 0,
+    expensesKhr: 0,
+    netProfit: 0,
   });
   const [cashMovements, setCashMovements] = useState({
     cashInUsd: 0,
@@ -104,16 +174,26 @@ export function useDashboard(period = "day") {
   const isFirstLoad = useRef(true);
 
   const fetchDashboard = useCallback(async () => {
-    // Only show the full-page skeleton on the very first load - background
-    // refreshes and period switches shouldn't wipe already-visible data off
-    // the screen.
     if (isFirstLoad.current) setLoading(true);
-    const buckets = trendBucketDates(period);
-    const periodStart = period === "day" ? dateStr(0) : buckets[buckets.length - 1];
-    const today = dateStr(0);
+    const isCustom = period === "custom" && customRange?.from && customRange?.to;
+    const clampedCustom = isCustom
+      ? clampCustomRange(customRange.from, customRange.to)
+      : null;
+    const buckets = isCustom
+      ? customBucketDates(clampedCustom.from, clampedCustom.to)
+      : trendBucketDates(period);
+    const periodStart = isCustom
+      ? clampedCustom.from
+      : period === "day"
+        ? dateStr(0)
+        : buckets[buckets.length - 1];
+    const today = isCustom ? clampedCustom.to : dateStr(0);
+    const rangeParams = isCustom
+      ? { dateFrom: clampedCustom.from, dateTo: clampedCustom.to }
+      : {};
 
     const results = await Promise.allSettled([
-      fetchSalesSummaryApi({ period }),
+      fetchSalesSummaryApi({ period, ...rangeParams }),
       fetchSalesByCashierApi({ dateFrom: periodStart, dateTo: today }),
       fetchShiftsApi({ status: "pending_review", page: 1 }),
       fetchOrdersApi({
@@ -122,13 +202,24 @@ export function useDashboard(period = "day") {
         dateFrom: periodStart,
         dateTo: today,
         page: 1,
+        perPage: 5,
       }),
       fetchProducts("?per_page=1"),
       promotionService.fetchPromotions(),
-      fetchTopProductsApi({ period }),
-      fetchCategorySalesApi({ period }),
+      fetchTopProductsApi({ period, ...rangeParams }),
+      fetchCategorySalesApi({ period, ...rangeParams }),
       fetchCashMovementsSummaryApi({ dateFrom: periodStart, dateTo: today }),
-      fetchProfitSummaryApi({ period }),
+      // Profit/COGS/margin and expense totals are admin-only on the backend -
+      // skip them for cashiers so they don't generate a guaranteed 403 on
+      // every refresh.
+      isAdmin ? fetchProfitSummaryApi({ period, ...rangeParams }) : Promise.resolve(null),
+      isAdmin
+        ? fetchExpenseSummaryApi(period, rangeParams.dateFrom || "", rangeParams.dateTo || "")
+        : Promise.resolve(null),
+      // Cambodia runs on both USD and KHR side by side - expenses can be
+      // recorded in either currency, so KHR expenses need this rate to fold
+      // into a single USD net profit figure.
+      isAdmin ? apiClient.get("/exchange-rates") : Promise.resolve(null),
     ]);
 
     const [
@@ -142,11 +233,16 @@ export function useDashboard(period = "day") {
       categorySalesRes,
       cashMovementsRes,
       profitRes,
+      expensesRes,
+      exchangeRateRes,
     ] = results;
 
     const summary = settledValue(summaryRes, null)?.data;
     const byBucket = new Map(
-      (summary?.trend || []).map((row) => [row.bucket, Number(row.total_sales || 0)]),
+      (summary?.trend || []).map((row) => [
+        row.bucket,
+        Number(row.total_sales || 0),
+      ]),
     );
     const trendData = buckets.map((bucket) => ({
       date: bucket,
@@ -176,21 +272,37 @@ export function useDashboard(period = "day") {
     );
 
     setPendingReviewsCount(settledValue(shiftsRes, null)?.data.total || 0);
-    setRecentOrders((settledValue(ordersRes, null)?.data.data || []).slice(0, 5));
+    setRecentOrders(settledValue(ordersRes, null)?.data.data || []);
     setTotalProducts(settledValue(productsRes, null)?.data.total || 0);
     setActivePromotions(
-      (settledValue(promotions, []) || []).filter((p) => p.status && !p.is_expired).slice(0, 5),
+      (settledValue(promotions, []) || [])
+        .filter((p) => p.status && !p.is_expired)
+        .slice(0, 5),
     );
     setTopProducts(settledValue(topProductsRes, null)?.data || []);
     setCategorySales(settledValue(categorySalesRes, null)?.data || []);
 
-    const profitData = settledValue(profitRes, null)?.data;
+    const profitData = isAdmin ? settledValue(profitRes, null)?.data : null;
+    const expensesData = isAdmin ? settledValue(expensesRes, null)?.data : null;
+    const exchangeRate = isAdmin
+      ? settledValue(exchangeRateRes, null)?.data?.usd_to_khr || DEFAULT_EXCHANGE_RATE
+      : DEFAULT_EXCHANGE_RATE;
+    const grossProfit = profitData?.profit || 0;
+    const expensesUsd = expensesData?.total_usd || 0;
+    const expensesKhr = expensesData?.total_khr || 0;
+    const netProfit = isAdmin
+      ? grossProfit - (expensesUsd + expensesKhr / exchangeRate)
+      : 0;
     setProfit({
       revenue: profitData?.revenue || 0,
       cogs: profitData?.cogs || 0,
-      profit: profitData?.profit || 0,
+      profit: grossProfit,
       marginPct: profitData?.margin_pct || 0,
-      productsWithoutRecipeCount: profitData?.products_without_recipe_count || 0,
+      productsWithoutRecipeCount:
+        profitData?.products_without_recipe_count || 0,
+      expensesUsd,
+      expensesKhr,
+      netProfit,
     });
 
     const movements = settledValue(cashMovementsRes, null)?.data;
@@ -208,18 +320,25 @@ export function useDashboard(period = "day") {
     // failed to load - a single secondary widget failing degrades quietly.
     const failures = results.filter((r) => r.status === "rejected");
     if (failures.length) {
-      failures.forEach((f) => console.error("Failed to load dashboard data", f.reason));
+      failures.forEach((f) =>
+        console.error("Failed to load dashboard data", f.reason),
+      );
     }
     setError(summaryRes.status === "rejected");
 
     setLoading(false);
     isFirstLoad.current = false;
-  }, [period]);
+  }, [period, isAdmin, customRange]);
 
   useEffect(() => {
     fetchDashboard();
     const interval = setInterval(fetchDashboard, REFRESH_INTERVAL_MS);
-    return () => clearInterval(interval);
+    window.addEventListener("orders:refresh", fetchDashboard);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("orders:refresh", fetchDashboard);
+    };
   }, [fetchDashboard]);
 
   return {
