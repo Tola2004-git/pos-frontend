@@ -70,9 +70,9 @@ function Layout({ children }) {
   return (
     <div
       style={bgStyle}
-      className="min-h-screen bg-cover bg-center bg-no-repeat transition-all duration-500"
+      className="app-shell min-h-screen bg-cover bg-center bg-no-repeat transition-all duration-500"
     >
-      <div className="fixed inset-0 bg-black/50 pointer-events-none z-0" />
+      <div className="no-print fixed inset-0 bg-black/50 pointer-events-none z-0" />
       {isBgChangerMounted && (
         <BackgroundChanger
           visible={isBgChangerVisible}
@@ -91,23 +91,27 @@ function Layout({ children }) {
         />
       )}
       <div className="relative z-10 flex min-h-screen">
-        <Sidebar
-          open={sidebarOpen}
-          onToggle={handleToggle}
-          onLogout={confirmLogout}
-          t={t}
-        />
+        <div className="no-print">
+          <Sidebar
+            open={sidebarOpen}
+            onToggle={handleToggle}
+            onLogout={confirmLogout}
+            t={t}
+          />
+        </div>
         <div
-          className={`flex-1 min-w-0 overflow-x-hidden p-[30px] min-h-screen transition-all duration-400 ease-[cubic-bezier(0.175,0.885,0.32,1)] ${sidebarOpen ? "ml-[230px]" : "ml-[60px]"
+          className={`layout-content flex-1 min-w-0 overflow-x-hidden p-[30px] min-h-screen transition-all duration-400 ease-[cubic-bezier(0.175,0.885,0.32,1)] ${sidebarOpen ? "ml-[230px]" : "ml-[60px]"
             }`}
         >
-          <Navbar
-            t={t}
-            lang={lang}
-            setLang={setLang}
-            user={user}
-            onOpenBgChanger={openBgChanger}
-          />
+          <div className="no-print">
+            <Navbar
+              t={t}
+              lang={lang}
+              setLang={setLang}
+              user={user}
+              onOpenBgChanger={openBgChanger}
+            />
+          </div>
           <main className="mt-4">{children}</main>
         </div>
       </div>

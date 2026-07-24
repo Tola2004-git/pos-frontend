@@ -14,11 +14,12 @@ window.Pusher = Pusher;
 let sharedEcho = null;
 
 // Subscribes once, app-wide, to the backend's public "pos-updates" channel
-// (see App\Events\OrderChanged / TableChanged) and re-dispatches the exact
-// same window events that useOrders.js / useTables.js already listen for
-// after a local Hold/Move/Clear action. That means every page built on
-// those hooks - admin and cashier alike - picks up changes made by anyone
-// else in real time, without each page needing its own Echo wiring.
+// (see App\Events\OrderChanged / TableChanged / ShiftChanged) and
+// re-dispatches the exact same window events that useOrders.js / useTables.js
+// / useDashboard.js already listen for after a local Hold/Move/Clear/Shift
+// action. That means every page built on those hooks - admin and cashier
+// alike - picks up changes made by anyone else in real time, without each
+// page needing its own Echo wiring.
 export function initRealtimeSync() {
   if (sharedEcho) return sharedEcho;
 
@@ -39,6 +40,9 @@ export function initRealtimeSync() {
     })
     .listen(".table.changed", () => {
       window.dispatchEvent(new CustomEvent("tables:refresh"));
+    })
+    .listen(".shift.changed", () => {
+      window.dispatchEvent(new CustomEvent("shifts:refresh"));
     });
 
   return sharedEcho;

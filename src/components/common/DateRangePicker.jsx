@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { Calendar } from "iconsax-react";
+import { Calendar, CloseCircle } from "iconsax-react";
 
 function toDateObj(str) {
   return str ? new Date(`${str}T00:00:00`) : null;
@@ -19,14 +19,13 @@ function formatDisplayDate(date) {
   return `${pad(date.getMonth() + 1)}/${pad(date.getDate())}/${date.getFullYear()}`;
 }
 
+// A single outer <button> couldn't also host a nested "clear" button (invalid
+// HTML - button-in-button), so the clickable-to-open area and the clear
+// button are two separate buttons inside a plain styled wrapper instead.
 const DateRangeTrigger = forwardRef(
-  ({ value, onClick, disabled, placeholder, title }, ref) => (
-    <button
-      type="button"
+  ({ value, onClick, onClear, disabled, placeholder, title }, ref) => (
+    <div
       ref={ref}
-      onClick={onClick}
-      disabled={disabled}
-      title={title}
       style={{
         width: "auto",
         padding: "12px 14px",
@@ -37,18 +36,59 @@ const DateRangeTrigger = forwardRef(
         WebkitBackdropFilter: "blur(25px)",
         color: "white",
         fontSize: "0.9rem",
-        outline: "none",
         display: "flex",
         alignItems: "center",
         gap: "8px",
-        cursor: disabled ? "not-allowed" : "pointer",
         opacity: disabled ? 0.45 : 1,
         whiteSpace: "nowrap",
       }}
     >
-      <Calendar size={16} color="#fff" variant="Outline" />
-      {value || placeholder}
-    </button>
+      <button
+        type="button"
+        onClick={onClick}
+        disabled={disabled}
+        title={title}
+        style={{
+          background: "none",
+          border: "none",
+          padding: 0,
+          margin: 0,
+          color: "inherit",
+          font: "inherit",
+          outline: "none",
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          cursor: disabled ? "not-allowed" : "pointer",
+        }}
+      >
+        <Calendar size={16} color="#fff" variant="Outline" />
+        {value || placeholder}
+      </button>
+      {value && !disabled && (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onClear();
+          }}
+          aria-label="Clear date range"
+          style={{
+            background: "none",
+            border: "none",
+            padding: 0,
+            margin: 0,
+            outline: "none",
+            display: "flex",
+            alignItems: "center",
+            cursor: "pointer",
+            color: "rgba(255,255,255,0.5)",
+          }}
+        >
+          <CloseCircle size={16} color="currentColor" variant="Linear" />
+        </button>
+      )}
+    </div>
   ),
 );
 DateRangeTrigger.displayName = "DateRangeTrigger";
@@ -156,6 +196,10 @@ export default function DateRangePicker({
             placeholder={placeholder}
             title={tooltip}
             disabled={disabled}
+            onClear={() => {
+              onDateFromChange("");
+              onDateToChange("");
+            }}
           />
         }
       />

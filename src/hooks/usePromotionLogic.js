@@ -1,10 +1,15 @@
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 
 /**
  * Custom hook for promotion discount calculations and matching logic
  * This separates business logic from UI components
  */
 export function usePromotionLogic(promotions = [], cart = []) {
+  // Needed up front so matching can gate on it below - mirrors the backend's
+  // OrderController::store()/update() and usePOS.js's getPromotionDiscount(),
+  // which both check min_purchase against the whole cart, not per item.
+  const cartSubtotal = cart.reduce((sum, item) => sum + item.subtotal, 0);
+
   /**
    * Check if a promotion is currently active based on dates and status
    */
@@ -43,26 +48,30 @@ export function usePromotionLogic(promotions = [], cart = []) {
     return false;
   };
 
+  const meetsMinPurchase = (promotion) =>
+    !promotion.min_purchase || cartSubtotal >= Number(promotion.min_purchase);
+
   /**
    * Find all applicable promotions for a cart item
    */
   const findItemPromotions = (item) =>
     promotions.filter(
       (promotion) =>
-        matchesPromotion(item, promotion) && isPromotionValid(promotion)
+        matchesPromotion(item, promotion) &&
+        isPromotionValid(promotion) &&
+        meetsMinPurchase(promotion)
     );
 
   /**
    * Find all applicable promotions for a product
    */
-  const findProductPromotions = useCallback(
-    (product) =>
-      promotions.filter(
-        (promotion) =>
-          matchesPromotion(product, promotion) && isPromotionValid(promotion)
-      ),
-    [promotions]
-  );
+  const findProductPromotions = (product) =>
+    promotions.filter(
+      (promotion) =>
+        matchesPromotion(product, promotion) &&
+        isPromotionValid(promotion) &&
+        meetsMinPurchase(promotion)
+    );
 
   /**
    * Calculate discount amount for a cart item
@@ -105,27 +114,20 @@ export function usePromotionLogic(promotions = [], cart = []) {
   /**
    * Calculate total discount across all cart items
    */
-  const totalDiscountAmount = useMemo(
-    () =>
-      cart.reduce((sum, item) => sum + getItemDiscount(item), 0),
-    [cart, promotions]
+  const totalDiscountAmount = cart.reduce(
+    (sum, item) => sum + getItemDiscount(item),
+    0,
   );
 
   /**
    * Calculate subtotal before any discounts
    */
-  const subtotalBeforeDiscount = useMemo(
-    () => cart.reduce((sum, item) => sum + item.subtotal, 0),
-    [cart]
-  );
+  const subtotalBeforeDiscount = cartSubtotal;
 
   /**
    * Calculate total after all discounts
    */
-  const totalAfterDiscount = useMemo(
-    () => subtotalBeforeDiscount - totalDiscountAmount,
-    [subtotalBeforeDiscount, totalDiscountAmount]
-  );
+  const totalAfterDiscount = subtotalBeforeDiscount - totalDiscountAmount;
 
   return {
     isPromotionValid,

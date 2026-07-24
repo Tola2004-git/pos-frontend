@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useLocation } from "react-router-dom";
 import {
   fetchOrdersApi,
   fetchProductsApi,
@@ -25,10 +26,13 @@ function todayStr() {
 
 export function useOrders({ defaultToday = false } = {}) {
   const { t } = useTranslations();
+  const location = useLocation();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState(
+    location.state?.statusFilter || "all",
+  );
   const [dateFrom, setDateFrom] = useState(defaultToday ? todayStr() : "");
   const [dateTo, setDateTo] = useState(defaultToday ? todayStr() : "");
   const [cashierFilter, setCashierFilter] = useState("");

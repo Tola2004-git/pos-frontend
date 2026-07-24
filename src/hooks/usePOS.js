@@ -18,7 +18,6 @@ export function usePOS({
   const [customerPhone, setCustomerPhone] = useState("");
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [amountPaid, setAmountPaid] = useState("");
-  const [pagerNumber, setPagerNumber] = useState("");
   const [orderType, setOrderType] = useState("dine-in");
   const [note, setPosNote] = useState("");
   const [posStep, setPosStep] = useState(1);
@@ -230,7 +229,6 @@ export function usePOS({
     setCustomerPhone("");
     setSelectedPayment(null);
     setAmountPaid("");
-    setPagerNumber("");
     setOrderType("takeaway");
     setPosNote("");
     setPosStep(1);
@@ -270,7 +268,6 @@ export function usePOS({
     setCart(items);
     setCustomerName(order.customer_name || "");
     setCustomerPhone(order.customer_phone || "");
-    setPagerNumber(order.pager_number || "");
     setPosNote(order.note || "");
     setOrderType(order.order_type || "dine-in");
     setPosStep(1);
@@ -345,7 +342,6 @@ export function usePOS({
       })),
       customer_name: customerName || null,
       customer_phone: customerPhone || null,
-      pager_number: pagerNumber || null,
       order_type: orderType,
       tax: 0,
       payment_method_id: selectedPaymentMethodId,
@@ -420,8 +416,6 @@ export function usePOS({
     removeFromCart,
     closePOS,
     handleCreateOrder,
-    pagerNumber,
-    setPagerNumber,
     resumingOrderId,
     loadOrderIntoCart,
   };

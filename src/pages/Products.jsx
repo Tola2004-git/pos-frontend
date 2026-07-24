@@ -55,7 +55,7 @@ function Products() {
   const [allIngredients, setAllIngredients] = useState([]);
 
   useEffect(() => {
-    fetchIngredients("?per_page=1000&status=1")
+    fetchIngredients("?per_page=1000")
       .then((res) => setAllIngredients(res.data.data || []))
       .catch((err) => console.error("Failed to load ingredients for recipes:", err));
   }, []);
@@ -292,6 +292,7 @@ function Products() {
           product={recipeProduct}
           ingredients={allIngredients}
           onClose={() => setRecipeProduct(null)}
+          onSuccess={fetchProducts}
           t={t}
         />
       )}

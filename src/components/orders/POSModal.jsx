@@ -45,16 +45,12 @@ export default function POSModal({
   setSelectedPayment,
   amountPaid,
   setAmountPaid,
-  pagerNumber,
-  setPagerNumber,
   orderType,
   setOrderType,
   note,
   setPosNote,
   posStep,
   setPosStep,
-  subtotal,
-  totalAmount,
   addToCart,
   updateQty,
   removeFromCart,
@@ -99,7 +95,10 @@ export default function POSModal({
     table?.tableNumber ||
     `Table ${table?.id}`;
 
-  // Custom hooks for business logic
+  // Custom hooks for business logic - promo/discount totals are derived
+  // here from usePromotionLogic (not from usePOS's own subtotal/discount/
+  // totalAmount), since this is the one place that also needs per-item
+  // and per-product promo breakdowns for the cart/product-grid UI.
   const promotionLogic = usePromotionLogic(promotions, cart);
   const currency = useCurrencyConversion(exchangeRate);
   const tableSelection = useTableSelection(
@@ -114,9 +113,6 @@ export default function POSModal({
   const discountAmount = promotionLogic.totalDiscountAmount;
   const totalDue = Number(totalAmountWithDiscount || 0);
   const safeAmountPaid = Number(amountPaid) || 0;
-  const changeAmount = safeAmountPaid
-    ? safeAmountPaid - totalAmountWithDiscount
-    : 0;
   const isAmountValid = isEditMode || safeAmountPaid >= totalDue;
   const requiresTableSelection = orderType === "dine-in";
   const hasValidTableSelection =
@@ -536,8 +532,14 @@ export default function POSModal({
                 className="overflow-y-auto flex-1 pr-1 pb-8 space-y-3 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-white/15 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent"
               >
                 <div className="grid grid-cols-12 gap-2 lg:gap-3">
-                  {/* Payment Method Selection */}
-                  <div className="col-span-12 lg:col-span-4 xl:col-span-4 lg:pr-1">
+                  {/* Payment Method Selection - sticks in place on desktop
+                      (lg:) while the table/amount/summary column beside it
+                      scrolls, since that side is usually much taller once a
+                      dine-in table grid or validation message is showing.
+                      self-start stops the grid row from stretching this
+                      column to match the taller sibling's height, which
+                      would otherwise leave nothing for it to stick past. */}
+                  <div className="col-span-12 lg:col-span-4 xl:col-span-4 lg:pr-1 lg:sticky lg:top-0 lg:self-start">
                     <h4 className="flex items-center gap-2 text-white mb-[8px] text-lg font-medium">
                       {t.selectPaymentMethod}
                     </h4>
@@ -792,8 +794,6 @@ export default function POSModal({
                       selectedTableId={tableSelection.selectedTableId}
                       onTableSelect={tableSelection.setSelectedTableId}
                       tableLoading={tableSelection.tableLoading}
-                      pagerNumber={pagerNumber}
-                      onPagerNumberChange={setPagerNumber}
                       note={note}
                       onNoteChange={setPosNote}
                       focusedField={focusedField}

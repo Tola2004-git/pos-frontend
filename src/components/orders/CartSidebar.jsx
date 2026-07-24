@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { ArrowRight2, Bag2, Call, NoteText, User } from "iconsax-react";
 import { CartItem } from "./CartItem";
 
@@ -37,6 +38,14 @@ export function CartSidebar({
   t,
 }) {
   const tr = (key, fallback) => t?.[key] || fallback;
+  // Starts open if a held/edited order already carries a name, phone, or
+  // note (so existing data is never hidden behind a collapsed toggle) -
+  // otherwise closed by default, since most orders are anonymous walk-ins
+  // and this space is worth more to the cashier as extra cart-item room.
+  const [showCustomerDetails, setShowCustomerDetails] = useState(
+    () => Boolean(customerName || customerPhone || note),
+  );
+  const hasCustomerDetails = Boolean(customerName || customerPhone || note);
   const iconStyle = (field) => ({
     position: "absolute",
     left: "12px",
@@ -82,57 +91,107 @@ export function CartSidebar({
         )}
       </div>
 
-      {/* Customer Name */}
-      <div className="relative mb-[5px]">
-        <User
-          size={18}
-          variant="Linear"
-          color="white"
-          style={iconStyle("name")}
-        />
-        <input
-          style={{
-            ...inputStyle,
-            paddingLeft: "40px",
-            border:
-              focusedField === "name"
-                ? "1px solid rgba(255,255,255,0.8)"
-                : "1px solid rgba(255,255,255,0.2)",
-            transition: "border 0.2s",
-          }}
-          placeholder={tr("customerNamePlaceholder", "Customer name (optional)")}
-          value={customerName}
-          onChange={(e) => onCustomerNameChange(e.target.value)}
-          onFocus={() => setFocusedField("name")}
-          onBlur={() => setFocusedField("")}
-        />
-      </div>
+      {/* Customer Details Toggle */}
+      <button
+        type="button"
+        onClick={() => setShowCustomerDetails((v) => !v)}
+        className="mb-[8px] flex w-full items-center justify-between rounded-lg bg-white/5 px-3 py-2 text-left transition-colors hover:bg-white/10"
+      >
+        <span className="flex items-center gap-2 text-[0.8rem] text-white/70">
+          <User size={16} color="white" variant="Linear" />
+          {tr("customerDetailsOptional", "Customer details (optional)")}
+          {hasCustomerDetails && (
+            <span className="h-1.5 w-1.5 rounded-full bg-[#2ecc71]" />
+          )}
+        </span>
+        <span className="text-[0.7rem] text-white/50">
+          {showCustomerDetails ? "▲" : "▼"}
+        </span>
+      </button>
 
-      {/* Customer Phone */}
-      <div className="relative mb-[5px]">
-        <Call
-          size={18}
-          color="white"
-          variant="Linear"
-          style={iconStyle("phone")}
-        />
-        <input
-          style={{
-            ...inputStyle,
-            paddingLeft: "40px",
-            border:
-              focusedField === "phone"
-                ? "1px solid rgba(255,255,255,0.8)"
-                : "1px solid rgba(255,255,255,0.2)",
-            transition: "border 0.2s",
-          }}
-          placeholder={tr("phoneNumberPlaceholder", "Phone number")}
-          value={customerPhone}
-          onChange={(e) => onCustomerPhoneChange(e.target.value)}
-          onFocus={() => setFocusedField("phone")}
-          onBlur={() => setFocusedField("")}
-        />
-      </div>
+      {showCustomerDetails && (
+        <>
+          {/* Customer Name */}
+          <div className="relative mb-[5px]">
+            <User
+              size={18}
+              variant="Linear"
+              color="white"
+              style={iconStyle("name")}
+            />
+            <input
+              style={{
+                ...inputStyle,
+                paddingLeft: "40px",
+                border:
+                  focusedField === "name"
+                    ? "1px solid rgba(255,255,255,0.8)"
+                    : "1px solid rgba(255,255,255,0.2)",
+                transition: "border 0.2s",
+              }}
+              placeholder={tr("customerNamePlaceholder", "Customer name (optional)")}
+              value={customerName}
+              onChange={(e) => onCustomerNameChange(e.target.value)}
+              onFocus={() => setFocusedField("name")}
+              onBlur={() => setFocusedField("")}
+            />
+          </div>
+
+          {/* Customer Phone */}
+          <div className="relative mb-[5px]">
+            <Call
+              size={18}
+              color="white"
+              variant="Linear"
+              style={iconStyle("phone")}
+            />
+            <input
+              style={{
+                ...inputStyle,
+                paddingLeft: "40px",
+                border:
+                  focusedField === "phone"
+                    ? "1px solid rgba(255,255,255,0.8)"
+                    : "1px solid rgba(255,255,255,0.2)",
+                transition: "border 0.2s",
+              }}
+              placeholder={tr("phoneNumberPlaceholder", "Phone number")}
+              value={customerPhone}
+              onChange={(e) => onCustomerPhoneChange(e.target.value)}
+              onFocus={() => setFocusedField("phone")}
+              onBlur={() => setFocusedField("")}
+            />
+          </div>
+
+          {/* Order Note */}
+          <div className="relative mb-[10px]">
+            <NoteText
+              size={18}
+              color="white"
+              variant="Linear"
+              style={{ ...iconStyle("note"), top: "16px", transform: "none" }}
+            />
+            <textarea
+              style={{
+                ...inputStyle,
+                paddingLeft: "40px",
+                minHeight: "52px",
+                resize: "vertical",
+                border:
+                  focusedField === "note"
+                    ? "1px solid rgba(255,255,255,0.8)"
+                    : "1px solid rgba(255,255,255,0.2)",
+                transition: "border 0.2s",
+              }}
+              placeholder={tr("noteOptional", "Note (optional)")}
+              value={note}
+              onChange={(e) => onNoteChange(e.target.value)}
+              onFocus={() => setFocusedField("note")}
+              onBlur={() => setFocusedField("")}
+            />
+          </div>
+        </>
+      )}
 
       {/* Pricing Summary */}
       <div className="p-3 rounded-[10px] bg-white/5 mb-[10px]">

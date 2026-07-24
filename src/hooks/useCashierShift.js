@@ -21,9 +21,13 @@ export function resetCashierShiftCache() {
 // cashier must open one (with a starting cash float) before selling, and
 // closing one records a counted-cash total that the backend reconciles
 // against actual cash sales rung up during the shift window.
-export function useCashierShift() {
+//
+// `enabled` (default true) lets a caller that only wants this for one role -
+// e.g. the admin dashboard's read-only shift banner, hidden for admins - skip
+// the status request entirely instead of firing it and discarding the result.
+export function useCashierShift(enabled = true) {
   const [shift, setShift] = useState(cachedShift);
-  const [loading, setLoading] = useState(!cachedShiftChecked);
+  const [loading, setLoading] = useState(enabled && !cachedShiftChecked);
   // Distinguishes "confirmed no open shift" from "couldn't check" - without
   // this, a transient network/auth failure on the status check would look
   // identical to "no shift" and wrongly prompt to open a duplicate one even
@@ -35,7 +39,7 @@ export function useCashierShift() {
   const [recordingMovement, setRecordingMovement] = useState(false);
 
   const fetchCurrent = useCallback(async () => {
-    if (!localStorage.getItem("token")) {
+    if (!enabled || !localStorage.getItem("token")) {
       setLoading(false);
       return;
     }
@@ -51,7 +55,7 @@ export function useCashierShift() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [enabled]);
 
   useEffect(() => {
     fetchCurrent();

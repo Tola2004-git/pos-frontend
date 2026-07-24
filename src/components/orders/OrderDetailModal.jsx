@@ -12,6 +12,7 @@ import {
   DollarCircle,
   MoneyRecive,
   Danger,
+  NoteText,
 } from "iconsax-react";
 import { glassCard, colors } from "../../utils/styles";
 
@@ -227,7 +228,7 @@ export default function OrderDetailModal({
             <Row
               icon={User}
               label={tr("refundedByLabel", "Refunded by")}
-              value={order.refundedBy?.name || tr("notAvailable", "N/A")}
+              value={order.refunded_by?.name || tr("notAvailable", "N/A")}
             />
             {order.refunded_at && (
               <Row
@@ -279,6 +280,25 @@ export default function OrderDetailModal({
             value={new Date(order.created_at).toLocaleString()}
           />
         </div>
+
+        {order.note && (
+          <div
+            style={{
+              ...glassCard,
+              marginBottom: "16px",
+              padding: "14px",
+              borderRadius: "12px",
+            }}
+          >
+            <div className="flex items-center gap-1.5 mb-1.5">
+              <NoteText size={14} color="rgba(255,255,255,0.5)" variant="Linear" />
+              <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.85rem" }}>
+                {tr("noteOptional", "Note (optional)")}
+              </span>
+            </div>
+            <div style={{ color: "white", fontSize: "0.85rem" }}>{order.note}</div>
+          </div>
+        )}
 
         {/* Items */}
         <h4

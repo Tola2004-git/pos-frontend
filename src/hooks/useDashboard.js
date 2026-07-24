@@ -60,10 +60,7 @@ function trendBucketDates(period) {
   return Array.from({ length: 7 }, (_, i) => dateStr(6 - i));
 }
 
-// Mirrors OrderController::MAX_CUSTOM_RANGE_DAYS - keeps the frontend's
-// bucket list in sync with what the backend actually queries, so a range
-// wider than this never renders empty trailing buckets the API didn't return.
-const MAX_CUSTOM_RANGE_DAYS = 366;
+export const MAX_CUSTOM_RANGE_DAYS = 366;
 
 function toDateKey(d) {
   const pad = (n) => String(n).padStart(2, "0");
@@ -77,8 +74,6 @@ function mondayOf(date) {
   return d;
 }
 
-// Clamps a custom range to MAX_CUSTOM_RANGE_DAYS (anchored to dateTo), same
-// as OrderController::resolveRange does server-side.
 function clampCustomRange(dateFrom, dateTo) {
   const from = new Date(`${dateFrom}T00:00:00`);
   const to = new Date(`${dateTo}T00:00:00`);
@@ -91,10 +86,6 @@ function clampCustomRange(dateFrom, dateTo) {
   return { from: toDateKey(clampedFrom), to: dateTo };
 }
 
-// Custom-range trend buckets scale their granularity with the span - day
-// buckets for <=35 days, week buckets (Monday-keyed) for <=180 days, month
-// buckets beyond that - mirroring OrderController::resolveRange's groupExpr
-// selection so the frontend's bucket keys line up with the backend's rows.
 function customBucketDates(dateFrom, dateTo) {
   const from = new Date(`${dateFrom}T00:00:00`);
   const to = new Date(`${dateTo}T00:00:00`);
@@ -133,7 +124,11 @@ function settledValue(result, fallback) {
   return result.status === "fulfilled" ? result.value : fallback;
 }
 
-export function useDashboard(period = "day", isAdmin = false, customRange = null) {
+export function useDashboard(
+  period = "day",
+  isAdmin = false,
+  customRange = null,
+) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [salesByCashier, setSalesByCashier] = useState([]);
@@ -148,7 +143,9 @@ export function useDashboard(period = "day", isAdmin = false, customRange = null
   const [salesCurrent, setSalesCurrent] = useState(0);
   const [salesPrevious, setSalesPrevious] = useState(0);
   const [ordersCurrent, setOrdersCurrent] = useState(0);
-  const [refunds, setRefunds] = useState({ count: 0, total: 0 });
+  const [ordersPrevious, setOrdersPrevious] = useState(0);
+  const [refunds, setRefunds] = useState({ count: 0, total: 0, previousTotal: 0 });
+  const [cancelledOrdersCount, setCancelledOrdersCount] = useState(0);
   const [totalProducts, setTotalProducts] = useState(0);
   const [activePromotions, setActivePromotions] = useState([]);
   const [topProducts, setTopProducts] = useState([]);
@@ -171,14 +168,35 @@ export function useDashboard(period = "day", isAdmin = false, customRange = null
     netUsd: 0,
     netKhr: 0,
   });
+  const [exchangeRate, setExchangeRate] = useState(DEFAULT_EXCHANGE_RATE);
+  const [lastUpdated, setLastUpdated] = useState(null);
+  const [customRangeClamped, setCustomRangeClamped] = useState(false);
   const isFirstLoad = useRef(true);
+  // Guards against out-of-order responses: if the user switches period (or a
+  // poll/refetch overlaps an in-flight request), only the most recently
+  // started call is allowed to commit its results to state.
+  const requestIdRef = useRef(0);
+  // Tracks the in-flight request's controller so a newer call (or unmount)
+  // can cancel it outright instead of letting an already-superseded fetch
+  // run to completion on the network for no reason.
+  const abortControllerRef = useRef(null);
 
   const fetchDashboard = useCallback(async () => {
+    abortControllerRef.current?.abort();
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+    const { signal } = controller;
+
+    const requestId = ++requestIdRef.current;
     if (isFirstLoad.current) setLoading(true);
-    const isCustom = period === "custom" && customRange?.from && customRange?.to;
+    const isCustom =
+      period === "custom" && customRange?.from && customRange?.to;
     const clampedCustom = isCustom
       ? clampCustomRange(customRange.from, customRange.to)
       : null;
+    setCustomRangeClamped(
+      isCustom ? clampedCustom.from !== customRange.from : false,
+    );
     const buckets = isCustom
       ? customBucketDates(clampedCustom.from, clampedCustom.to)
       : trendBucketDates(period);
@@ -193,9 +211,9 @@ export function useDashboard(period = "day", isAdmin = false, customRange = null
       : {};
 
     const results = await Promise.allSettled([
-      fetchSalesSummaryApi({ period, ...rangeParams }),
-      fetchSalesByCashierApi({ dateFrom: periodStart, dateTo: today }),
-      fetchShiftsApi({ status: "pending_review", page: 1 }),
+      fetchSalesSummaryApi({ period, ...rangeParams, signal }),
+      fetchSalesByCashierApi({ dateFrom: periodStart, dateTo: today, signal }),
+      fetchShiftsApi({ status: "pending_review", page: 1, signal }),
       fetchOrdersApi({
         search: "",
         statusFilter: "all",
@@ -203,30 +221,53 @@ export function useDashboard(period = "day", isAdmin = false, customRange = null
         dateTo: today,
         page: 1,
         perPage: 5,
+        signal,
       }),
-      fetchProducts("?per_page=1"),
-      promotionService.fetchPromotions(),
-      fetchTopProductsApi({ period, ...rangeParams }),
-      fetchCategorySalesApi({ period, ...rangeParams }),
-      fetchCashMovementsSummaryApi({ dateFrom: periodStart, dateTo: today }),
-      // Profit/COGS/margin and expense totals are admin-only on the backend -
-      // skip them for cashiers so they don't generate a guaranteed 403 on
-      // every refresh.
-      isAdmin ? fetchProfitSummaryApi({ period, ...rangeParams }) : Promise.resolve(null),
+      fetchOrdersApi({
+        search: "",
+        statusFilter: "cancelled",
+        dateFrom: periodStart,
+        dateTo: today,
+        page: 1,
+        perPage: 1,
+        signal,
+      }),
+
+      fetchProducts("?per_page=1&status=1", signal),
+      promotionService.fetchPromotions(signal),
+      fetchTopProductsApi({ period, ...rangeParams, signal }),
+      fetchCategorySalesApi({ period, ...rangeParams, signal }),
+      fetchCashMovementsSummaryApi({ dateFrom: periodStart, dateTo: today, signal }),
+
       isAdmin
-        ? fetchExpenseSummaryApi(period, rangeParams.dateFrom || "", rangeParams.dateTo || "")
+        ? fetchProfitSummaryApi({ period, ...rangeParams, signal })
         : Promise.resolve(null),
-      // Cambodia runs on both USD and KHR side by side - expenses can be
-      // recorded in either currency, so KHR expenses need this rate to fold
-      // into a single USD net profit figure.
-      isAdmin ? apiClient.get("/exchange-rates") : Promise.resolve(null),
+      isAdmin
+        ? fetchExpenseSummaryApi(
+            period,
+            rangeParams.dateFrom || "",
+            rangeParams.dateTo || "",
+            signal,
+          )
+        : Promise.resolve(null),
+      // Not admin-gated on the backend - needed by every role now, since the
+      // Payment Mix widget (cash vs digital split) folds KHR cash into a USD
+      // equivalent for both admin and cashier views, not just for the
+      // admin-only net profit calc below.
+      apiClient.get("/exchange-rates", { signal }),
     ]);
+
+    // A newer fetch (from a period change, manual refetch, or the next poll
+    // tick) started and finished after this one - drop these results rather
+    // than clobbering the fresher state.
+    if (requestId !== requestIdRef.current) return;
 
     const [
       summaryRes,
       cashierRes,
       shiftsRes,
       ordersRes,
+      cancelledOrdersRes,
       productsRes,
       promotions,
       topProductsRes,
@@ -253,9 +294,11 @@ export function useDashboard(period = "day", isAdmin = false, customRange = null
     setSalesCurrent(summary?.current?.total_sales || 0);
     setSalesPrevious(summary?.previous?.total_sales || 0);
     setOrdersCurrent(summary?.current?.orders_count || 0);
+    setOrdersPrevious(summary?.previous?.orders_count || 0);
     setRefunds({
       count: summary?.refunds?.count || 0,
       total: summary?.refunds?.total || 0,
+      previousTotal: summary?.refunds?.previous_total || 0,
     });
 
     const cashierRows = settledValue(cashierRes, null)?.data || [];
@@ -273,6 +316,7 @@ export function useDashboard(period = "day", isAdmin = false, customRange = null
 
     setPendingReviewsCount(settledValue(shiftsRes, null)?.data.total || 0);
     setRecentOrders(settledValue(ordersRes, null)?.data.data || []);
+    setCancelledOrdersCount(settledValue(cancelledOrdersRes, null)?.data.total || 0);
     setTotalProducts(settledValue(productsRes, null)?.data.total || 0);
     setActivePromotions(
       (settledValue(promotions, []) || [])
@@ -284,14 +328,15 @@ export function useDashboard(period = "day", isAdmin = false, customRange = null
 
     const profitData = isAdmin ? settledValue(profitRes, null)?.data : null;
     const expensesData = isAdmin ? settledValue(expensesRes, null)?.data : null;
-    const exchangeRate = isAdmin
-      ? settledValue(exchangeRateRes, null)?.data?.usd_to_khr || DEFAULT_EXCHANGE_RATE
-      : DEFAULT_EXCHANGE_RATE;
+    const currentExchangeRate =
+      settledValue(exchangeRateRes, null)?.data?.usd_to_khr ||
+      DEFAULT_EXCHANGE_RATE;
+    setExchangeRate(currentExchangeRate);
     const grossProfit = profitData?.profit || 0;
     const expensesUsd = expensesData?.total_usd || 0;
     const expensesKhr = expensesData?.total_khr || 0;
     const netProfit = isAdmin
-      ? grossProfit - (expensesUsd + expensesKhr / exchangeRate)
+      ? grossProfit - (expensesUsd + expensesKhr / currentExchangeRate)
       : 0;
     setProfit({
       revenue: profitData?.revenue || 0,
@@ -315,41 +360,64 @@ export function useDashboard(period = "day", isAdmin = false, customRange = null
       netKhr: movements?.net_khr || 0,
     });
 
-    // Only surface the page-level error banner when the core sales summary
-    // (the widget every other stat card derives its "today" number from)
-    // failed to load - a single secondary widget failing degrades quietly.
     const failures = results.filter((r) => r.status === "rejected");
     if (failures.length) {
       failures.forEach((f) =>
         console.error("Failed to load dashboard data", f.reason),
       );
     }
-    setError(summaryRes.status === "rejected");
+    // Any failed request means some section is showing a stale/zeroed
+    // fallback rather than real data, not just when the summary itself fails.
+    setError(failures.length > 0);
 
     setLoading(false);
+    setLastUpdated(new Date());
     isFirstLoad.current = false;
   }, [period, isAdmin, customRange]);
 
   useEffect(() => {
     fetchDashboard();
-    const interval = setInterval(fetchDashboard, REFRESH_INTERVAL_MS);
+    // Skip poll ticks while the tab is backgrounded - a hidden dashboard
+    // doesn't need fresh data every 60s, and refetching on every tab that's
+    // just sitting in the background wastes requests. Catch up immediately
+    // once the tab is visible again instead.
+    const interval = setInterval(() => {
+      if (!document.hidden) fetchDashboard();
+    }, REFRESH_INTERVAL_MS);
+    const handleVisibility = () => {
+      if (!document.hidden) fetchDashboard();
+    };
     window.addEventListener("orders:refresh", fetchDashboard);
+    // Shift open/close/cash-movement/review events - covers Pending Reviews
+    // and Cash Movements, which otherwise only updated on the 60s poll.
+    window.addEventListener("shifts:refresh", fetchDashboard);
+    document.addEventListener("visibilitychange", handleVisibility);
 
     return () => {
       clearInterval(interval);
       window.removeEventListener("orders:refresh", fetchDashboard);
+      window.removeEventListener("shifts:refresh", fetchDashboard);
+      document.removeEventListener("visibilitychange", handleVisibility);
+      // True unmount (as opposed to a period change re-running this effect,
+      // which immediately starts its own fetch and aborts this one anyway):
+      // cancel whatever's still in flight instead of letting it finish
+      // pointlessly against a torn-down component.
+      abortControllerRef.current?.abort();
     };
   }, [fetchDashboard]);
 
   return {
     loading,
     error,
+    customRangeClamped,
     salesByCashier,
     paymentMix,
     salesCurrent,
     salesPrevious,
     ordersCurrent,
+    ordersPrevious,
     refunds,
+    cancelledOrdersCount,
     pendingReviewsCount,
     recentOrders,
     trend,
@@ -359,6 +427,8 @@ export function useDashboard(period = "day", isAdmin = false, customRange = null
     categorySales,
     cashMovements,
     profit,
+    exchangeRate,
+    lastUpdated,
     refetch: fetchDashboard,
   };
 }

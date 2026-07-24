@@ -18,6 +18,7 @@ import { getAllCashiers } from "../api/usersApi";
 import { alertWarning, alertError } from "../utils/alert.jsx";
 import { printReceipt } from "../components/receipt/ReceiptTemplate";
 import { useTranslations } from "../hooks/useTranslations";
+import { Skeleton } from "../components/ui/Skeleton";
 
 function Orders() {
   const { t } = useTranslations();
@@ -85,7 +86,6 @@ function Orders() {
   const [editPosStep, setEditPosStep] = useState(1);
   const [editSelectedPayment, setEditSelectedPayment] = useState(null);
   const [editAmountPaid, setEditAmountPaid] = useState("");
-  const [editPagerNumber, setEditPagerNumber] = useState("");
 
   useEffect(() => {
     const handleRefreshOrders = () => {
@@ -137,41 +137,28 @@ function Orders() {
     });
   }, [editCart, products]);
 
-  const { subtotalBeforeDiscount, totalDiscountAmount, totalAfterDiscount } = usePromotionLogic(promotions, editCartItems);
+  const {
+    subtotalBeforeDiscount,
+    totalDiscountAmount,
+    totalAfterDiscount,
+    isPromotionValid,
+    matchesPromotion,
+  } = usePromotionLogic(promotions, editCartItems);
 
-  const selectedEditPromotion = useMemo(() => {
-    return (
-      promotions.find((promotion) => {
-        if (!promotion || !promotion.status) return false;
-
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-
-        if (promotion.start_date) {
-          const startDate = new Date(promotion.start_date);
-          startDate.setHours(0, 0, 0, 0);
-          if (today < startDate) return false;
-        }
-
-        if (promotion.end_date) {
-          const endDate = new Date(promotion.end_date);
-          endDate.setHours(0, 0, 0, 0);
-          if (today > endDate) return false;
-        }
-
-        if (promotion.apply_to === "all") return true;
-        if (promotion.apply_to === "product") {
-          return promotion.products?.some((p) => editCartItems.some((item) => item.product_id === p.id));
-        }
-        if (promotion.apply_to === "category") {
-          return editCartItems.some((item) => item.category_id && promotion.categories?.some((c) => c.id === item.category_id));
-        }
-        return false;
-      }) ||
-      promotions.find((promotion) => String(promotion.id) === String(editOrder?.promotion_id)) ||
-      null
-    );
-  }, [editCartItems, editOrder?.promotion_id, promotions]);
+  // Reuses usePromotionLogic's own validity/matching rules (date range,
+  // status, min_purchase, apply_to) instead of a third hand-rolled copy of
+  // them - this used to duplicate (and drift from) the same checks in
+  // usePOS.js and usePromotionLogic.js itself.
+  const selectedEditPromotion =
+    promotions.find(
+      (promotion) =>
+        isPromotionValid(promotion) &&
+        editCartItems.some((item) => matchesPromotion(item, promotion)),
+    ) ||
+    promotions.find(
+      (promotion) => String(promotion.id) === String(editOrder?.promotion_id),
+    ) ||
+    null;
 
   const addToEditCart = (product) => {
     setEditCart((prev) => {
@@ -234,7 +221,6 @@ function Orders() {
     setEditPosStep(1);
     setEditSelectedPayment(null);
     setEditAmountPaid("");
-    setEditPagerNumber("");
   };
 
   const openEditModal = async (order) => {
@@ -280,7 +266,6 @@ function Orders() {
     setEditPosStep(1);
     setEditSelectedPayment(null);
     setEditAmountPaid(order.amount_paid || "");
-    setEditPagerNumber(order.pager_number || "");
     setShowEditModal(true);
   };
 
@@ -461,18 +446,35 @@ function Orders() {
         t={t}
       />
 
-      {!salesSummaryLoading && (
-        <div
-          style={{ ...glassCard }}
-          className="rounded-[20px] p-5 mb-5"
-        >
-          <h3 className="text-white font-bold text-base m-0 mb-4 flex items-center gap-2">
-            <Chart2 size={20} color="#fff" variant="Bold" />
-            {t.salesByCashierTitle}
-          </h3>
-          {salesSummary.length === 0 ? (
-            <p className="text-white/50 text-sm m-0">{t.noSalesInRangeMsg}</p>
-          ) : (
+      <div
+        style={{ ...glassCard }}
+        className="rounded-[20px] p-5 mb-5"
+      >
+        <h3 className="text-white font-bold text-base m-0 mb-4 flex items-center gap-2">
+          <Chart2 size={20} color="#fff" variant="Bold" />
+          {t.salesByCashierTitle}
+        </h3>
+        {salesSummaryLoading ? (
+          <div className="flex gap-3 flex-wrap">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div
+                key={i}
+                className="rounded-[14px] px-4 py-3 flex-1"
+                style={{
+                  minWidth: "180px",
+                  background: "rgba(255,255,255,0.06)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                }}
+              >
+                <Skeleton width="50%" height={10} style={{ marginBottom: 8 }} />
+                <Skeleton width="70%" height={20} style={{ marginBottom: 8 }} />
+                <Skeleton width="40%" height={9} />
+              </div>
+            ))}
+          </div>
+        ) : salesSummary.length === 0 ? (
+          <p className="text-white/50 text-sm m-0">{t.noSalesInRangeMsg}</p>
+        ) : (
           <div className="flex gap-3 flex-wrap">
             {salesSummary.map((row) => (
               <div
@@ -495,9 +497,8 @@ function Orders() {
               </div>
             ))}
           </div>
-          )}
-        </div>
-      )}
+        )}
+      </div>
 
       <OrdersTable
         orders={orders}
@@ -553,8 +554,6 @@ function Orders() {
           setSelectedPayment={setEditSelectedPayment}
           amountPaid={editAmountPaid}
           setAmountPaid={setEditAmountPaid}
-          pagerNumber={editPagerNumber}
-          setPagerNumber={setEditPagerNumber}
           orderType={editOrderType}
           setOrderType={setEditOrderType}
           note={editNote}

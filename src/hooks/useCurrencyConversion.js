@@ -1,5 +1,3 @@
-import { useMemo } from "react";
-
 /**
  * Custom hook for currency conversion logic
  * Isolates all exchange rate and currency display calculations

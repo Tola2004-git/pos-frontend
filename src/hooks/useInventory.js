@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import { alertSuccess, alertError } from "../utils/alert.jsx";
 import { useLowStock } from "../context/LowStockContext";
 import { useTranslations } from "./useTranslations";
@@ -6,10 +7,13 @@ import api from "../api/apiClient";
 
 export function useInventory() {
   const { t } = useTranslations();
+  const location = useLocation();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
-  const [stockFilter, setStockFilter] = useState("all");
+  const [stockFilter, setStockFilter] = useState(
+    location.state?.stockFilter || "all",
+  );
   const [page, setPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [total, setTotal] = useState(0);
@@ -158,7 +162,6 @@ export function useInventory() {
   };
 
   return {
-    // state
     products, loading, search, setSearch,
     stockFilter, setStockFilter,
     page, setPage, lastPage, total,

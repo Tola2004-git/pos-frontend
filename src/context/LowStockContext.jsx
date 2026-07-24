@@ -59,13 +59,17 @@ export function LowStockProvider({ children }) {
     [applyThreshold],
   );
 
+  // Dedicated endpoint (active products only, already filtered to <= the
+  // saved threshold server-side) instead of paging through the full catalog
+  // client-side - keeps this app-wide 30s poll cheap regardless of how many
+  // products the store has.
   const fetchProducts = useCallback(async () => {
     if (!localStorage.getItem("token")) return;
     try {
-      const res = await apiClient.get("/products?per_page=1000&fields=id,name,qty");
-      setProducts(res.data.data || []);
+      const res = await apiClient.get("/products/low-stock");
+      setProducts(res.data || []);
     } catch (err) {
-      console.error("Failed to fetch products for low stock tracking", err);
+      console.error("Failed to fetch low stock products", err);
     } finally {
       setLoading(false);
     }
@@ -81,10 +85,9 @@ export function LowStockProvider({ children }) {
     return () => clearInterval(interval);
   }, [fetchThreshold, fetchProducts]);
 
-  const lowStockProducts = useMemo(
-    () => products.filter((p) => Number(p.qty) <= threshold),
-    [products, threshold],
-  );
+  // The backend already returns only active products at/under the saved
+  // threshold - no client-side re-filtering needed.
+  const lowStockProducts = products;
 
   useEffect(() => {
     const lowStockIds = new Set(lowStockProducts.map((p) => p.id));

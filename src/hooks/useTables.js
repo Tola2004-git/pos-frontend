@@ -87,10 +87,17 @@ export function useTables(t) {
 
     setModalLoading(true);
     try {
-      const payload = {
-        ...form,
-        status: form.status || "available",
-      };
+      const payload = { ...form };
+      // Only forward a status change when the admin actually touched the
+      // dropdown. The form's status was snapshotted when the modal opened
+      // and can go stale - e.g. a cashier seats/clears this same table on
+      // another terminal while this modal is still open - so resending it
+      // unconditionally would silently revert that live change. Omitting it
+      // lets the backend keep whatever the table's status actually is right
+      // now instead of the snapshot.
+      if (!editTable || form.status === editTable.status) {
+        delete payload.status;
+      }
 
       if (editTable) {
         await updateTable(editTable.id, payload);

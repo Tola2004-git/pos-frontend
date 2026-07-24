@@ -1,8 +1,8 @@
 import apiClient from "./apiClient";
 
 export const promotionService = {
-  fetchPromotions: async () => {
-    const res = await apiClient.get("/promotions");
+  fetchPromotions: async (signal) => {
+    const res = await apiClient.get("/promotions", { signal });
     return res.data;
   },
 

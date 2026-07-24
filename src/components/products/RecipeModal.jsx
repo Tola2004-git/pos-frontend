@@ -226,11 +226,12 @@ function RecipeModal({ product, ingredients, onClose, onSuccess, t }) {
                       .filter(
                         (ing) =>
                           String(ing.id) === row.ingredient_id ||
-                          !usedIngredientIds.has(String(ing.id)),
+                          (ing.status && !usedIngredientIds.has(String(ing.id))),
                       )
                       .map((ing) => (
                         <option key={ing.id} value={ing.id} style={{ background: "#2c3e50" }}>
                           {ing.name} ({ing.unit})
+                          {!ing.status ? ` - ${t.inactiveLabel}` : ""}
                         </option>
                       ))}
                   </select>

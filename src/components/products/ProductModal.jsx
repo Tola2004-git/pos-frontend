@@ -106,13 +106,24 @@ function ProductModal({
       return;
     }
 
+    // Blank optional fields must go out as null, not "" - an empty string
+    // still passes Laravel's `nullable` rule (it only skips null), so
+    // category_id="" would hit the category foreign key, and two products
+    // both left blank would collide on the sku/barcode uniqueness check.
+    const payload = {
+      ...form,
+      category_id: form.category_id || null,
+      sku: form.sku.trim() || null,
+      barcode: form.barcode.trim() || null,
+    };
+
     setSubmitting(true);
     try {
       if (editProduct) {
-        await api.put(`/products/${editProduct.id}`, form);
+        await api.put(`/products/${editProduct.id}`, payload);
         alertSuccess(t.productUpdatedTitle, t.productUpdatedMsg);
       } else {
-        await api.post("/products", form);
+        await api.post("/products", payload);
         alertSuccess(t.productCreatedTitle, t.productCreatedMsg);
       }
       onSuccess();
@@ -368,7 +379,7 @@ function ProductModal({
                       {t.selectCategoryOption}
                     </option>
                     {categories
-                      .filter((c) => c.status)
+                      .filter((c) => c.status || c.id == form.category_id)
                       .map((c) => (
                         <option
                           key={c.id}
@@ -376,6 +387,7 @@ function ProductModal({
                           style={{ background: "#2c3e50" }}
                         >
                           {c.name}
+                          {!c.status ? ` - ${t.inactiveLabel}` : ""}
                         </option>
                       ))}
                   </select>

@@ -24,24 +24,22 @@ export const ProductGrid = memo(function ProductGrid({
   t,
 }) {
   const tr = (key, fallback) => t?.[key] || fallback;
-  console.time("⚡ ProductGrid Total Render Time");
 
   const { threshold } = useLowStock();
   const [activeCategory, setActiveCategory] = useState("all");
   const [page, setPage] = useState(1);
 
   // Filter products based on search
-  const filteredProducts = useMemo(() => {
-    console.time("⏱️ Category Filter Time");
-    const result = products.filter(
-      (p) =>
-        (p.name.toLowerCase().includes(search.toLowerCase()) ||
-          (p.sku && p.sku.toLowerCase().includes(search.toLowerCase()))) &&
-        (activeCategory === "all" || p.category_id === activeCategory),
-    );
-    console.timeEnd("⏱️ Category Filter Time");
-    return result;
-  }, [products, search, activeCategory]);
+  const filteredProducts = useMemo(
+    () =>
+      products.filter(
+        (p) =>
+          (p.name.toLowerCase().includes(search.toLowerCase()) ||
+            (p.sku && p.sku.toLowerCase().includes(search.toLowerCase()))) &&
+          (activeCategory === "all" || p.category_id === activeCategory),
+      ),
+    [products, search, activeCategory],
+  );
 
   const totalPages = Math.max(
     1,
@@ -60,8 +58,6 @@ export const ProductGrid = memo(function ProductGrid({
   useEffect(() => {
     setPage(1);
   }, [search, activeCategory]);
-
-  console.timeEnd("⚡ ProductGrid Total Render Time");
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden border-r border-white/10">

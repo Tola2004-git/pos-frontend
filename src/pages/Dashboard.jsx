@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import {
   MoneyRecive,
@@ -20,39 +21,48 @@ import {
   ReceiptDiscount,
   Chart21,
   InfoCircle,
+  Refresh2,
+  CloseCircle,
+  Printer,
 } from "iconsax-react";
 import Layout from "../components/layout/Layout";
 import { glassCard, colors } from "../utils/styles";
 import { useTranslations } from "../hooks/useTranslations";
 import { useLowStock } from "../context/LowStockContext";
-import { useDashboard } from "../hooks/useDashboard";
+import { useDashboard, MAX_CUSTOM_RANGE_DAYS } from "../hooks/useDashboard";
+import { useCashierShift } from "../hooks/useCashierShift";
 import { getStatusStyle } from "../utils/orderHelpers";
 import { formatDiscount, formatDate } from "../constants/promotionConstants";
 import { Skeleton } from "../components/ui/Skeleton";
 import SalesTrendChart from "../components/dashboard/SalesTrendChart";
 import DateRangePicker from "../components/common/DateRangePicker";
 import apiClient from "../api/apiClient";
-import { fetchTables } from "../api/tableApi";
+import { fetchTableCounts } from "../api/tableApi";
 import {
   generateDailyExportApi,
   downloadDailyExportApi,
 } from "../api/dailyExportApi";
 import { getCachedUser, setCachedUser } from "../utils/currentUserCache";
 
-function StatCard({ label, value, color, StatIcon, onClick, loading, badge }) {
+function StatCard({ label, value, sub, color, StatIcon, onClick, loading, badge }) {
   const IconComponent = StatIcon;
+  const clickable = !!onClick;
   return (
     <div
       onClick={onClick}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          onClick?.();
-        }
-      }}
-      className="relative p-5 rounded-2xl flex items-center gap-4 cursor-pointer transition-transform hover:scale-[1.02] overflow-hidden"
+      role={clickable ? "button" : undefined}
+      tabIndex={clickable ? 0 : undefined}
+      onKeyDown={
+        clickable
+          ? (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onClick();
+              }
+            }
+          : undefined
+      }
+      className={`relative p-5 rounded-2xl flex items-center gap-4 overflow-hidden transition-transform ${clickable ? "cursor-pointer hover:scale-[1.02]" : ""}`}
       style={glassCard}
     >
       {!loading && badge}
@@ -72,7 +82,14 @@ function StatCard({ label, value, color, StatIcon, onClick, loading, badge }) {
         {loading ? (
           <Skeleton width={70} height={22} />
         ) : (
-          <p className="text-2xl font-bold text-white m-0">{value}</p>
+          <>
+            <p className="text-2xl font-bold text-white m-0">{value}</p>
+            {sub && (
+              <p className="text-white/40 text-[0.68rem] m-0 mt-0.5 truncate">
+                {sub}
+              </p>
+            )}
+          </>
         )}
       </div>
     </div>
@@ -144,6 +161,43 @@ function WidgetCard({ icon, title, action, children }) {
   );
 }
 
+function TrendBadge({ current, previous, title, t, invert = false }) {
+  const hasTrendData = current > 0 || previous > 0;
+  if (!hasTrendData) return null;
+
+  const isNewTrend = previous === 0 && current > 0;
+  const trendPct = previous > 0 ? ((current - previous) / previous) * 100 : 0;
+  const trendUp = trendPct >= 0;
+  const TrendIcon = trendUp ? TrendUp : TrendDown;
+  const isGood = invert ? !trendUp : trendUp;
+  const trendColor = isNewTrend
+    ? invert
+      ? "#e74c3c"
+      : "#3498db"
+    : isGood
+      ? "#2ecc71"
+      : "#e74c3c";
+  const trendPctDisplay =
+    Math.abs(trendPct) > 999 ? "999%+" : `${Math.abs(trendPct).toFixed(0)}%`;
+
+  return (
+    <div
+      className="absolute -left-10 top-3 w-36 -rotate-45 flex items-center justify-center gap-1 py-0.5 text-[0.62rem] font-bold text-white shadow-md"
+      style={{ background: trendColor }}
+      title={title}
+    >
+      {isNewTrend ? (
+        t.dashboardNewLabel
+      ) : (
+        <>
+          <TrendIcon size={10} color="#fff" variant="Linear" />
+          {trendPctDisplay}
+        </>
+      )}
+    </div>
+  );
+}
+
 const PERIODS = ["day", "week", "month", "year", "custom"];
 const TREND_POINT_COUNTS = { day: 7, week: 8, month: 6, year: 5, custom: 7 };
 
@@ -173,15 +227,19 @@ function Dashboard() {
     loading: lowStockLoading,
     refreshLowStockProducts,
   } = useLowStock();
+  const { shift: currentShift, loading: shiftLoading } = useCashierShift(!isAdmin);
   const {
     loading,
     error,
+    customRangeClamped,
     salesByCashier,
     paymentMix,
     salesCurrent,
     salesPrevious,
     ordersCurrent,
+    ordersPrevious,
     refunds,
+    cancelledOrdersCount,
     pendingReviewsCount,
     recentOrders,
     trend,
@@ -191,11 +249,27 @@ function Dashboard() {
     categorySales,
     cashMovements,
     profit,
+    exchangeRate,
+    lastUpdated,
     refetch,
   } = useDashboard(period, isAdmin, customRange);
 
   const [exporting, setExporting] = useState(false);
   const [exportError, setExportError] = useState(false);
+
+  const [showRateEditor, setShowRateEditor] = useState(false);
+  const [tempRate, setTempRate] = useState("");
+  const [savingRate, setSavingRate] = useState(false);
+
+  const [refreshing, setRefreshing] = useState(false);
+  const handleManualRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await refetch();
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   const PERIOD_LABELS = {
     day: t.periodDayLabel,
@@ -253,29 +327,35 @@ function Dashboard() {
 
   useEffect(() => {
     const loadTableCounts = () => {
-      fetchTables()
+      fetchTableCounts()
         .then((res) => {
-          const tables = res.data || [];
           setTableCounts({
-            available: tables.filter((tb) => tb.status === "available").length,
-            occupied: tables.filter((tb) => tb.status === "occupied").length,
-            reserved: tables.filter((tb) => tb.status === "reserved").length,
+            available: res.data.available || 0,
+            occupied: res.data.occupied || 0,
+            reserved: res.data.reserved || 0,
           });
         })
-        .catch((err) => console.error("Failed to fetch tables:", err))
+        .catch((err) => console.error("Failed to fetch table counts:", err))
         .finally(() => setTableLoading(false));
     };
 
     loadTableCounts();
-    const interval = setInterval(loadTableCounts, 30000);
+    const interval = setInterval(() => {
+      if (!document.hidden) loadTableCounts();
+    }, 30000);
+    const handleVisibility = () => {
+      if (!document.hidden) loadTableCounts();
+    };
 
     window.addEventListener("tables:refresh", loadTableCounts);
     window.addEventListener("orders:refresh", loadTableCounts);
+    document.addEventListener("visibilitychange", handleVisibility);
 
     return () => {
       clearInterval(interval);
       window.removeEventListener("tables:refresh", loadTableCounts);
       window.removeEventListener("orders:refresh", loadTableCounts);
+      document.removeEventListener("visibilitychange", handleVisibility);
     };
   }, []);
 
@@ -302,31 +382,45 @@ function Dashboard() {
     }
   };
 
-  const hasTrendData = salesCurrent > 0 || salesPrevious > 0;
-  const isNewTrend = salesPrevious === 0 && salesCurrent > 0;
-  const trendPct = salesPrevious > 0
-    ? ((salesCurrent - salesPrevious) / salesPrevious) * 100
-    : 0;
-  const trendUp = trendPct >= 0;
-  const TrendIcon = trendUp ? TrendUp : TrendDown;
-  const trendColor = isNewTrend ? "#3498db" : trendUp ? "#2ecc71" : "#e74c3c";
-  const trendPctDisplay =
-    Math.abs(trendPct) > 999 ? "999%+" : `${Math.abs(trendPct).toFixed(0)}%`;
-  const trendBadge = !loading && hasTrendData && (
-    <div
-      className="absolute -left-10 top-3 w-36 -rotate-45 flex items-center justify-center gap-1 py-0.5 text-[0.62rem] font-bold text-white shadow-md"
-      style={{ background: trendColor }}
+  const saveExchangeRate = async () => {
+    const value = Number(tempRate);
+    if (!value || value <= 0) return;
+    setSavingRate(true);
+    try {
+      await apiClient.put("/exchange-rates", { rate: value });
+      setShowRateEditor(false);
+      refetch();
+    } catch (err) {
+      console.error("Failed to update exchange rate:", err);
+    } finally {
+      setSavingRate(false);
+    }
+  };
+
+  const salesTrendBadge = !loading && (
+    <TrendBadge
+      current={salesCurrent}
+      previous={salesPrevious}
       title={VS_PREVIOUS_LABELS[period]}
-    >
-      {isNewTrend ? (
-        t.dashboardNewLabel
-      ) : (
-        <>
-          <TrendIcon size={10} color="#fff" variant="Linear" />
-          {trendPctDisplay}
-        </>
-      )}
-    </div>
+      t={t}
+    />
+  );
+  const ordersTrendBadge = !loading && (
+    <TrendBadge
+      current={ordersCurrent}
+      previous={ordersPrevious}
+      title={VS_PREVIOUS_LABELS[period]}
+      t={t}
+    />
+  );
+  const refundsTrendBadge = !loading && (
+    <TrendBadge
+      current={refunds.total}
+      previous={refunds.previousTotal}
+      title={VS_PREVIOUS_LABELS[period]}
+      t={t}
+      invert
+    />
   );
 
   const STAT_CARDS = [
@@ -337,7 +431,7 @@ function Dashboard() {
       color: "#2ecc71",
       StatIcon: MoneyRecive,
       onClick: () => navigate("/orders"),
-      badge: trendBadge,
+      badge: salesTrendBadge,
     },
     {
       key: "orders",
@@ -346,6 +440,15 @@ function Dashboard() {
       color: "#3498db",
       StatIcon: ReceiptText,
       onClick: () => navigate("/orders"),
+      badge: ordersTrendBadge,
+    },
+    {
+      key: "cancelled_orders",
+      label: t.dashboardCancelledOrdersLabel,
+      value: cancelledOrdersCount,
+      color: "#e67e22",
+      StatIcon: CloseCircle,
+      onClick: () => navigate("/orders", { state: { statusFilter: "cancelled" } }),
     },
     {
       key: "low_stock",
@@ -353,7 +456,9 @@ function Dashboard() {
       value: lowStockProducts.length,
       color: "#f1c40f",
       StatIcon: BoxSearch,
-      onClick: () => navigate("/inventory"),
+      onClick: isAdmin
+        ? () => navigate("/inventory", { state: { stockFilter: "low_stock" } })
+        : undefined,
     },
     {
       key: "pending_reviews",
@@ -361,7 +466,7 @@ function Dashboard() {
       value: pendingReviewsCount,
       color: "#8b5cf6",
       StatIcon: Wallet2,
-      onClick: () => navigate("/shifts"),
+      onClick: isAdmin ? () => navigate("/shifts") : undefined,
     },
     {
       key: "total_products",
@@ -369,20 +474,26 @@ function Dashboard() {
       value: totalProducts,
       color: "#1abc9c",
       StatIcon: Box,
-      onClick: () => navigate("/products"),
+      onClick: isAdmin ? () => navigate("/products") : undefined,
     },
     {
       key: "refunds",
       label: t.dashboardRefundsLabel,
       value: `$${refunds.total.toFixed(2)}`,
+      sub:
+        refunds.count > 0
+          ? t.dashboardRefundsCountMsg.replace("{n}", refunds.count)
+          : null,
       color: "#e74c3c",
       StatIcon: ReceiptDiscount,
       onClick: () => navigate("/orders"),
+      badge: refundsTrendBadge,
     },
   ];
 
   return (
     <Layout>
+      <div className="print-area">
       <div className="flex items-center justify-between flex-wrap gap-3 mb-6">
         <div className="flex items-center gap-3 flex-wrap">
           <h2 className="text-white font-bold text-2xl m-0">
@@ -402,28 +513,103 @@ function Dashboard() {
             </span>
           )}
         </div>
-        <div
-          className="flex items-center gap-1 p-1 rounded-full"
-          style={glassCard}
-        >
-          {PERIODS.map((p) => (
-            <button
-              key={p}
-              onClick={() => setPeriod(p)}
-              className="px-3 py-1.5 rounded-full text-xs font-semibold transition-colors"
-              style={{
-                background: period === p ? "rgba(255,255,255,0.15)" : "transparent",
-                color: period === p ? "#fff" : "rgba(255,255,255,0.5)",
-              }}
-            >
-              {PERIOD_LABELS[p]}
-            </button>
-          ))}
+        <div className="flex items-center gap-3 flex-wrap">
+          {lastUpdated && (
+            <span className="text-white/40 text-xs whitespace-nowrap">
+              {t.dashboardLastUpdatedMsg.replace(
+                "{time}",
+                lastUpdated.toLocaleTimeString(lang === "kh" ? "km-KH" : "en-US", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                }),
+              )}
+            </span>
+          )}
+          <button
+            onClick={() => window.print()}
+            title={t.dashboardPrintAction}
+            className="no-print w-8 h-8 rounded-full flex items-center justify-center transition-colors"
+            style={glassCard}
+          >
+            <Printer size={15} color="#fff" variant="Linear" />
+          </button>
+          <button
+            onClick={handleManualRefresh}
+            disabled={refreshing || loading}
+            title={t.dashboardRefreshAction}
+            className="no-print w-8 h-8 rounded-full flex items-center justify-center transition-colors disabled:opacity-50"
+            style={glassCard}
+          >
+            <Refresh2
+              size={15}
+              color="#fff"
+              variant="Linear"
+              className={refreshing ? "animate-spin" : ""}
+            />
+          </button>
+          <div
+            className="no-print flex items-center gap-1 p-1 rounded-full"
+            style={glassCard}
+          >
+            {PERIODS.map((p) => (
+              <button
+                key={p}
+                onClick={() => setPeriod(p)}
+                className="px-3 py-1.5 rounded-full text-xs font-semibold transition-colors"
+                style={{
+                  background: period === p ? "rgba(255,255,255,0.15)" : "transparent",
+                  color: period === p ? "#fff" : "rgba(255,255,255,0.5)",
+                }}
+              >
+                {PERIOD_LABELS[p]}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
+      {!isAdmin && !shiftLoading && (
+        <div
+          className="rounded-2xl px-4 py-3 mb-5 flex items-center justify-between gap-3 flex-wrap"
+          style={glassCard}
+        >
+          <div className="flex items-center gap-2">
+            <Wallet2
+              size={18}
+              color={currentShift ? "#2ecc71" : "#f1c40f"}
+              variant="Linear"
+            />
+            <span className="text-sm text-white/80">
+              {currentShift
+                ? t.dashboardShiftOpenSinceMsg
+                    .replace(
+                      "{time}",
+                      new Date(currentShift.opened_at).toLocaleTimeString(
+                        lang === "kh" ? "km-KH" : "en-US",
+                        { hour: "2-digit", minute: "2-digit" },
+                      ),
+                    )
+                    .replace(
+                      "{usd}",
+                      Number(currentShift.opening_cash_usd || 0).toFixed(2),
+                    )
+                : t.dashboardNoOpenShiftMsg}
+            </span>
+          </div>
+          {!currentShift && (
+            <button
+              onClick={() => navigate("/cashier")}
+              className="no-print text-xs font-semibold px-3 py-1.5 rounded-full transition-colors"
+              style={{ color: "#f1c40f", background: "rgba(241,196,15,0.15)" }}
+            >
+              {t.dashboardGoToPosAction}
+            </button>
+          )}
+        </div>
+      )}
+
       {period === "custom" && (
-        <div className="mb-5 -mt-3" style={{glassCard}}>
+        <div className="no-print mb-5 -mt-3" style={{glassCard}}>
           <DateRangePicker
             dateFrom={customRange.from}
             dateTo={customRange.to}
@@ -432,12 +618,20 @@ function Dashboard() {
             maxDate={new Date()}
             placeholder={t.selectDateRange}
           />
+          {customRangeClamped && (
+            <p className="text-[#f1c40f] text-xs mt-2 mb-0">
+              {t.dashboardCustomRangeClampedMsg.replaceAll(
+                "{days}",
+                MAX_CUSTOM_RANGE_DAYS,
+              )}
+            </p>
+          )}
         </div>
       )}
 
       {error && (
         <div
-          className="rounded-2xl p-4 mb-5 flex items-center justify-between gap-3 flex-wrap"
+          className="no-print rounded-2xl p-4 mb-5 flex items-center justify-between gap-3 flex-wrap"
           style={{
             background: "rgba(231,76,60,0.12)",
             border: "1px solid rgba(231,76,60,0.3)",
@@ -465,12 +659,13 @@ function Dashboard() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4 mb-5">
         {STAT_CARDS.map((s) => (
           <StatCard
             key={s.key}
             label={s.label}
             value={s.value}
+            sub={s.sub}
             color={s.color}
             StatIcon={s.StatIcon}
             onClick={s.onClick}
@@ -563,6 +758,16 @@ function Dashboard() {
               style={{ animation: "float 3s ease-in-out infinite" }}
             />}
           title={t.dashboardTableStatusTitle}
+          action={
+            !tableLoading && (
+              <span className="text-xs font-semibold text-white/50">
+                {t.dashboardTableTotalMsg.replace(
+                  "{n}",
+                  tableCounts.available + tableCounts.occupied + tableCounts.reserved,
+                )}
+              </span>
+            )
+          }
         >
           <div className="grid grid-cols-3 gap-3">
             {tableLoading
@@ -616,7 +821,7 @@ function Dashboard() {
           action={
             <button
               onClick={() => navigate("/orders")}
-              className="text-xs font-semibold text-white/60 hover:text-white transition-colors"
+              className="no-print text-xs font-semibold text-white/60 hover:text-white transition-colors"
             >
               {t.dashboardViewAllAction}
             </button>
@@ -678,12 +883,16 @@ function Dashboard() {
             />}
           title={t.dashboardLowStockTitle}
           action={
-            <button
-              onClick={() => navigate("/inventory")}
-              className="text-xs font-semibold text-white/60 hover:text-white transition-colors"
-            >
-              {t.dashboardViewAllAction}
-            </button>
+            isAdmin && (
+              <button
+                onClick={() =>
+                  navigate("/inventory", { state: { stockFilter: "low_stock" } })
+                }
+                className="no-print text-xs font-semibold text-white/60 hover:text-white transition-colors"
+              >
+                {t.dashboardViewAllAction}
+              </button>
+            )
           }
         >
           {lowStockLoading ? (
@@ -698,26 +907,34 @@ function Dashboard() {
             </p>
           ) : (
             <div className="flex flex-col gap-2">
-              {lowStockProducts.slice(0, 5).map((p) => (
-                <div
-                  key={p.id}
-                  className="flex items-center justify-between gap-3 rounded-[12px] px-3 py-2.5"
-                  style={{
-                    background: "rgba(255,255,255,0.05)",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                  }}
-                >
-                  <span
-                    className="text-white text-sm truncate"
-                    style={{ color: colors.whiteFull }}
+              {lowStockProducts.slice(0, 5).map((p) => {
+                const isOutOfStock = Number(p.qty) <= 0;
+                return (
+                  <div
+                    key={p.id}
+                    className="flex items-center justify-between gap-3 rounded-[12px] px-3 py-2.5"
+                    style={{
+                      background: "rgba(255,255,255,0.05)",
+                      border: `1px solid ${isOutOfStock ? "rgba(231,76,60,0.3)" : "rgba(255,255,255,0.08)"}`,
+                    }}
                   >
-                    {p.name}
-                  </span>
-                  <span className="text-[#f1c40f] font-semibold text-sm whitespace-nowrap">
-                    {p.qty} {t.itemsUnitLabel}
-                  </span>
-                </div>
-              ))}
+                    <span
+                      className="text-white text-sm truncate"
+                      style={{ color: colors.whiteFull }}
+                    >
+                      {p.name}
+                    </span>
+                    <span
+                      className="font-semibold text-sm whitespace-nowrap"
+                      style={{ color: isOutOfStock ? "#e74c3c" : "#f1c40f" }}
+                    >
+                      {isOutOfStock
+                        ? t.stockFilterOutOfStock
+                        : `${p.qty} ${t.itemsUnitLabel}`}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           )}
         </WidgetCard>
@@ -725,15 +942,73 @@ function Dashboard() {
 
       {isAdmin && (
       <div style={glassCard} className="rounded-[20px] p-5 mt-4">
-        <h3 className="text-white font-bold text-base m-0 mb-4 flex items-center gap-2">
-          <Chart21
-            size={20}
-            color="#fff"
-            variant="Linear"
-            style={{ animation: "float 3s ease-in-out infinite" }}
-          />
-          {t.dashboardProfitTitle}
-        </h3>
+        <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <h3 className="text-white font-bold text-base m-0 flex items-center gap-2">
+            <Chart21
+              size={20}
+              color="#fff"
+              variant="Linear"
+              style={{ animation: "float 3s ease-in-out infinite" }}
+            />
+            {t.dashboardProfitTitle}
+          </h3>
+          <button
+            onClick={() => {
+              setTempRate(String(exchangeRate));
+              setShowRateEditor(true);
+            }}
+            className="no-print text-xs font-semibold text-white/60 hover:text-white transition-colors"
+          >
+            {t.dashboardExchangeRateMsg.replace(
+              "{n}",
+              Number(exchangeRate).toLocaleString(
+                lang === "kh" ? "km-KH" : "en-US",
+              ),
+            )}
+          </button>
+          {showRateEditor &&
+            createPortal(
+              <div
+                className="no-print fixed inset-0 z-[10000] flex items-center justify-center p-6"
+                style={{...glassCard }}
+                onClick={() => setShowRateEditor(false)}
+              >
+                <div
+                  style={glassCard}
+                  className="w-full max-w-[320px] rounded-2xl p-5 text-white border border-white/15"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <h3 className="text-sm font-bold m-0 mb-3">
+                    {t.dashboardSetExchangeRateMsg}
+                  </h3>
+                  <input
+                    type="number"
+                    min="1"
+                    autoFocus
+                    value={tempRate}
+                    onChange={(e) => setTempRate(e.target.value)}
+                    className="w-full rounded-lg px-3 py-2 mb-3 text-sm text-white bg-white/10 border border-white/20 outline-none"
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setShowRateEditor(false)}
+                      className="flex-1 py-2 rounded-lg text-sm font-semibold bg-white/10 text-white hover:bg-white/15 transition-colors"
+                    >
+                      {t.closeAction}
+                    </button>
+                    <button
+                      onClick={saveExchangeRate}
+                      disabled={savingRate}
+                      className="btn-shine-blue flex-1 py-2 rounded-lg text-sm font-semibold disabled:opacity-60"
+                    >
+                      {savingRate ? t.savingAction : t.saveAction}
+                    </button>
+                  </div>
+                </div>
+              </div>,
+              document.body,
+            )}
+        </div>
         {loading ? (
           <div className="flex gap-3 flex-wrap">
             {Array.from({ length: 4 }).map((_, i) => (
@@ -809,7 +1084,10 @@ function Dashboard() {
                 </div>
                 {profit.expensesKhr > 0 && (
                   <div className="text-white/40 text-[0.72rem] mt-1">
-                    ៛{Number(profit.expensesKhr || 0).toFixed(0)}
+                    ៛
+                    {Number(profit.expensesKhr || 0).toLocaleString(
+                      lang === "kh" ? "km-KH" : "en-US",
+                    )}
                   </div>
                 )}
               </div>
@@ -914,31 +1192,45 @@ function Dashboard() {
             <p className="text-white/50 text-sm m-0">{t.dashboardNoCategorySalesMsg}</p>
           ) : (
             <div
-              className="flex flex-col gap-2 overflow-y-auto pr-1"
+              className="flex flex-col gap-3 overflow-y-auto pr-1"
               style={{ maxHeight: "17rem" }}
             >
-              {categorySales.map((c) => (
-                <div
-                  key={c.category_id ?? "uncategorized"}
-                  className="flex items-center justify-between gap-3 rounded-[12px] px-3 py-2.5"
-                  style={{
-                    background: "rgba(255,255,255,0.05)",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                  }}
-                >
-                  <span className="text-white text-sm truncate">
-                    {c.category_name || t.dashboardUncategorizedLabel}
-                  </span>
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <span className="text-white/40 text-xs whitespace-nowrap">
-                      {c.quantity_sold} {t.itemsUnitLabel}
-                    </span>
-                    <span className="text-[#2ecc71] font-semibold text-sm whitespace-nowrap">
-                      ${Number(c.revenue || 0).toFixed(2)}
-                    </span>
-                  </div>
-                </div>
-              ))}
+              {(() => {
+                const maxRevenue = Number(categorySales[0]?.revenue) || 0;
+                return categorySales.map((c) => {
+                  const revenue = Number(c.revenue) || 0;
+                  const pct = maxRevenue > 0 ? (revenue / maxRevenue) * 100 : 0;
+                  return (
+                    <div key={c.category_id ?? "uncategorized"}>
+                      <div className="flex items-center justify-between gap-3 mb-1.5">
+                        <span className="text-white text-sm truncate">
+                          {c.category_name || t.dashboardUncategorizedLabel}
+                        </span>
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          <span className="text-white/40 text-xs whitespace-nowrap">
+                            {c.quantity_sold} {t.itemsUnitLabel}
+                          </span>
+                          <span className="text-[#2ecc71] font-semibold text-sm whitespace-nowrap">
+                            ${revenue.toFixed(2)}
+                          </span>
+                        </div>
+                      </div>
+                      <div
+                        className="h-2 rounded-full overflow-hidden"
+                        style={{ background: "rgba(255,255,255,0.08)" }}
+                      >
+                        <div
+                          className="h-full rounded-full"
+                          style={{
+                            width: `${Math.max(pct, revenue > 0 ? 2 : 0)}%`,
+                            background: "#3498db",
+                          }}
+                        />
+                      </div>
+                    </div>
+                  );
+                });
+              })()}
             </div>
           )}
         </WidgetCard>
@@ -963,39 +1255,92 @@ function Dashboard() {
           ) : paymentMix.cashUsd === 0 && paymentMix.cashKhr === 0 && paymentMix.digital === 0 ? (
             <p className="text-white/50 text-sm m-0">{t.noSalesInRangeMsg}</p>
           ) : (
-            <div className="flex gap-3 flex-wrap">
-              <div
-                className="rounded-[14px] px-4 py-3 flex-1"
-                style={{
-                  minWidth: "160px",
-                  background: "rgba(255,255,255,0.06)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                }}
-              >
-                <div className="text-white/60 text-xs mb-1">{t.dashboardCashLabel}</div>
-                <div className="text-white font-bold text-lg">
-                  ${Number(paymentMix.cashUsd || 0).toFixed(2)}
-                </div>
-                {paymentMix.cashKhr > 0 && (
-                  <div className="text-white/40 text-[0.72rem] mt-1">
-                    ៛{Number(paymentMix.cashKhr || 0).toFixed(0)}
+            <>
+              {(() => {
+                const cashUsdEquiv =
+                  Number(paymentMix.cashUsd || 0) +
+                  Number(paymentMix.cashKhr || 0) / exchangeRate;
+                const digitalUsdEquiv = Number(paymentMix.digital || 0);
+                const mixTotal = cashUsdEquiv + digitalUsdEquiv;
+                const cashPct = mixTotal > 0 ? (cashUsdEquiv / mixTotal) * 100 : 50;
+                const digitalPct = 100 - cashPct;
+                return (
+                  <div className="mb-3">
+                    <div
+                      className="h-3 rounded-full overflow-hidden flex"
+                      style={{ background: "rgba(255,255,255,0.08)" }}
+                    >
+                      {cashPct > 0 && (
+                        <div
+                          style={{
+                            width: `${cashPct}%`,
+                            background: "#3498db",
+                            marginRight: digitalPct > 0 ? "2px" : 0,
+                          }}
+                        />
+                      )}
+                      {digitalPct > 0 && (
+                        <div
+                          style={{ width: `${digitalPct}%`, background: "#1abc9c" }}
+                        />
+                      )}
+                    </div>
+                    <div className="flex items-center gap-4 mt-2 flex-wrap">
+                      <span className="flex items-center gap-1.5 text-white/60 text-xs">
+                        <span
+                          className="w-2 h-2 rounded-full flex-shrink-0"
+                          style={{ background: "#3498db" }}
+                        />
+                        {t.dashboardCashLabel} · {cashPct.toFixed(0)}%
+                      </span>
+                      <span className="flex items-center gap-1.5 text-white/60 text-xs">
+                        <span
+                          className="w-2 h-2 rounded-full flex-shrink-0"
+                          style={{ background: "#1abc9c" }}
+                        />
+                        {t.dashboardDigitalLabel} · {digitalPct.toFixed(0)}%
+                      </span>
+                    </div>
                   </div>
-                )}
-              </div>
-              <div
-                className="rounded-[14px] px-4 py-3 flex-1"
-                style={{
-                  minWidth: "160px",
-                  background: "rgba(255,255,255,0.06)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                }}
-              >
-                <div className="text-white/60 text-xs mb-1">{t.dashboardDigitalLabel}</div>
-                <div className="text-white font-bold text-lg">
-                  ${Number(paymentMix.digital || 0).toFixed(2)}
+                );
+              })()}
+              <div className="flex gap-3 flex-wrap">
+                <div
+                  className="rounded-[14px] px-4 py-3 flex-1"
+                  style={{
+                    minWidth: "160px",
+                    background: "rgba(255,255,255,0.06)",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                  }}
+                >
+                  <div className="text-white/60 text-xs mb-1">{t.dashboardCashLabel}</div>
+                  <div className="text-white font-bold text-lg">
+                    ${Number(paymentMix.cashUsd || 0).toFixed(2)}
+                  </div>
+                  {paymentMix.cashKhr > 0 && (
+                    <div className="text-white/40 text-[0.72rem] mt-1">
+                      ៛
+                      {Number(paymentMix.cashKhr || 0).toLocaleString(
+                        lang === "kh" ? "km-KH" : "en-US",
+                      )}
+                    </div>
+                  )}
+                </div>
+                <div
+                  className="rounded-[14px] px-4 py-3 flex-1"
+                  style={{
+                    minWidth: "160px",
+                    background: "rgba(255,255,255,0.06)",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                  }}
+                >
+                  <div className="text-white/60 text-xs mb-1">{t.dashboardDigitalLabel}</div>
+                  <div className="text-white font-bold text-lg">
+                    ${Number(paymentMix.digital || 0).toFixed(2)}
+                  </div>
                 </div>
               </div>
-            </div>
+            </>
           )}
         </WidgetCard>
 
@@ -1063,7 +1408,7 @@ function Dashboard() {
       </div>
 
       {isAdmin && (
-        <div style={glassCard} className="rounded-[20px] p-5 mt-4">
+        <div style={glassCard} className="no-print rounded-[20px] p-5 mt-4">
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <div className="flex items-center gap-2">
               <DocumentDownload
@@ -1084,7 +1429,7 @@ function Dashboard() {
             <div className="flex items-center gap-2 flex-shrink-0">
               <button
                 onClick={() => navigate("/daily-exports")}
-                className="text-xs font-semibold text-white/60 hover:text-white transition-colors"
+                className="no-print text-xs font-semibold text-white/60 hover:text-white transition-colors"
               >
                 {t.dashboardViewAllAction}
               </button>
@@ -1124,7 +1469,7 @@ function Dashboard() {
           </h3>
           <button
             onClick={() => navigate("/promotions")}
-            className="text-xs font-semibold text-white/60 hover:text-white transition-colors"
+            className="no-print text-xs font-semibold text-white/60 hover:text-white transition-colors"
           >
             {t.dashboardViewAllAction}
           </button>
@@ -1164,6 +1509,7 @@ function Dashboard() {
             ))}
           </div>
         )}
+      </div>
       </div>
     </Layout>
   );
