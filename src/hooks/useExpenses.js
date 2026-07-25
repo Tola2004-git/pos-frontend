@@ -17,6 +17,7 @@ export function useExpenses() {
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
+  const [deletingId, setDeletingId] = useState(null);
 
   const fetchExpenses = useCallback(async () => {
     setLoading(true);
@@ -72,12 +73,15 @@ export function useExpenses() {
     );
     if (!result.isConfirmed) return;
 
+    setDeletingId(id);
     try {
       await deleteExpenseApi(id);
       alertSuccess(t.successTitle, t.expenseDeletedMsg);
       await fetchExpenses();
     } catch (err) {
       alertError(t.genericErrorTitleShort, err.response?.data?.message || t.tryAgainMsg);
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -92,6 +96,7 @@ export function useExpenses() {
     setSearch,
     categoryFilter,
     setCategoryFilter,
+    deletingId,
     createExpense,
     updateExpense,
     deleteExpense,

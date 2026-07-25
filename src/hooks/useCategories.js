@@ -11,6 +11,7 @@ export function useCategories(type = "product") {
   const [catForm, setCatForm] = useState({ name: "", status: true });
   const [catError, setCatError] = useState("");
   const [catSubmitting, setCatSubmitting] = useState(false);
+  const [deletingCatId, setDeletingCatId] = useState(null);
 
   useEffect(() => {
     fetchCategories();
@@ -61,12 +62,15 @@ export function useCategories(type = "product") {
       t.deleteAction,
     );
     if (!result.isConfirmed) return;
+    setDeletingCatId(id);
     try {
       await api.delete(`/categories/${id}`);
       alertSuccess(t.tableDeletedTitle, t.categoryDeletedMsg);
       fetchCategories();
     } catch (err) {
       alertError(t.categoryDeleteFailedTitle, err.response?.data?.message || t.tryAgainMsg);
+    } finally {
+      setDeletingCatId(null);
     }
   };
 
@@ -93,6 +97,7 @@ export function useCategories(type = "product") {
     setCatForm,
     catError,
     catSubmitting,
+    deletingCatId,
     fetchCategories,
     handleCatSubmit,
     handleCatDelete,

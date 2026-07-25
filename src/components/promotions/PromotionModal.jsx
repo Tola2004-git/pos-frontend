@@ -17,6 +17,7 @@ import {
   getPromotionTypes,
 } from "../../constants/promotionConstants";
 import ProductPickerModal from "./ProductPickerModal";
+import CategoryPickerModal from "./CategoryPickerModal";
 
 export default function PromotionModal({
   show,
@@ -37,6 +38,7 @@ export default function PromotionModal({
       value: editPromotion.value ?? "",
       apply_to: editPromotion.apply_to ?? "all",
       product_ids: editPromotion.products?.map((p) => p.id) ?? [],
+      category_ids: editPromotion.categories?.map((c) => c.id) ?? [],
       min_purchase: editPromotion.min_purchase ?? "",
       start_date: editPromotion.start_date?.slice(0, 10) ?? "",
       end_date: editPromotion.end_date?.slice(0, 10) ?? "",
@@ -44,6 +46,7 @@ export default function PromotionModal({
     };
   });
   const [showPicker, setShowPicker] = useState(false);
+  const [showCategoryPicker, setShowCategoryPicker] = useState(false);
   const [error, setError] = useState("");
   const [focusedField, setFocusedField] = useState("");
 
@@ -75,6 +78,7 @@ export default function PromotionModal({
       value: editPromotion.value ?? "",
       apply_to: editPromotion.apply_to ?? "all",
       product_ids: editPromotion.products?.map((p) => p.id) ?? [],
+      category_ids: editPromotion.categories?.map((c) => c.id) ?? [],
       min_purchase: editPromotion.min_purchase ?? "",
       start_date: editPromotion.start_date?.slice(0, 10) ?? "",
       end_date: editPromotion.end_date?.slice(0, 10) ?? "",
@@ -88,14 +92,13 @@ export default function PromotionModal({
 
   const handleProductConfirm = (ids) => {
     set("product_ids", ids);
-    set("apply_to", ids.length > 0 ? "product" : "all");
     setShowPicker(false);
   };
 
-  const applyToLabel =
-    form.product_ids.length > 0
-      ? t.productsSelectedMsg.replace("{n}", form.product_ids.length)
-      : t.allProductsTapMsg;
+  const handleCategoryConfirm = (ids) => {
+    set("category_ids", ids);
+    setShowCategoryPicker(false);
+  };
 
   const handleSubmit = () => {
     setError("");
@@ -105,13 +108,18 @@ export default function PromotionModal({
       return setError(t.discountValueRequiredMsg);
     if (form.type === "percentage" && Number(form.value) > 100)
       return setError(t.percentageExceedMsg);
+    if (form.apply_to === "product" && form.product_ids.length === 0)
+      return setError(t.selectAtLeastOneProductMsg);
+    if (form.apply_to === "category" && form.category_ids.length === 0)
+      return setError(t.selectAtLeastOneCategoryMsg);
 
     onSubmit({
       name: form.name.trim(),
       type: form.type,
       value: Number(form.value),
-      apply_to: form.product_ids.length > 0 ? "product" : "all",
-      product_ids: form.product_ids,
+      apply_to: form.apply_to,
+      product_ids: form.apply_to === "product" ? form.product_ids : [],
+      category_ids: form.apply_to === "category" ? form.category_ids : [],
       min_purchase: form.min_purchase ? Number(form.min_purchase) : null,
       start_date: form.start_date || null,
       end_date: form.end_date || null,
@@ -379,34 +387,110 @@ export default function PromotionModal({
 
           <div style={{ marginBottom: 16 }}>
             <label style={labelStyle}>{t.applyToFieldLabel}</label>
-            <div style={{ position: "relative" }}>
-              <Box
-                size={20}
-                color="white"
-                variant="Linear"
-                style={iconStyle("Apply To")}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPicker(true)}
-                style={{
-                  ...inputStyle,
-                  paddingLeft: "40px",
-                  display: "flex",
-                  border:
-                    focusedField === "Apply To"
-                      ? "1px solid rgba(255,255,255,0.8)"
-                      : "1px solid rgba(255,255,255,0.2)",
-                  transition: "border 0.2s",
-                }}
-                onFocus={() => setFocusedField("Apply To")}
-                onBlur={() => setFocusedField("")}
-              >
-                <span style={{ color: "rgba(255,255,255,0.85)" }}>
-                  {applyToLabel}
-                </span>
-              </button>
+            <div
+              style={{
+                display: "flex",
+                gap: 8,
+                marginBottom: form.apply_to === "all" ? 0 : 10,
+              }}
+            >
+              {[
+                { value: "all", label: t.applyScopeAllOption },
+                { value: "product", label: t.applyScopeProductOption },
+                { value: "category", label: t.applyScopeCategoryOption },
+              ].map((scope) => (
+                <button
+                  key={scope.value}
+                  type="button"
+                  onClick={() => set("apply_to", scope.value)}
+                  style={{
+                    flex: 1,
+                    padding: "9px 12px",
+                    borderRadius: 10,
+                    cursor: "pointer",
+                    fontSize: "0.85rem",
+                    fontWeight: 600,
+                    border:
+                      form.apply_to === scope.value
+                        ? "1px solid rgba(255,255,255,0.8)"
+                        : "1px solid rgba(255,255,255,0.2)",
+                    background:
+                      form.apply_to === scope.value
+                        ? "rgba(255,255,255,0.15)"
+                        : "rgba(255,255,255,0.05)",
+                    color: "white",
+                  }}
+                >
+                  {scope.label}
+                </button>
+              ))}
             </div>
+
+            {form.apply_to === "product" && (
+              <div style={{ position: "relative" }}>
+                <Box
+                  size={20}
+                  color="white"
+                  variant="Linear"
+                  style={iconStyle("Apply To")}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPicker(true)}
+                  style={{
+                    ...inputStyle,
+                    paddingLeft: "40px",
+                    display: "flex",
+                    border:
+                      focusedField === "Apply To"
+                        ? "1px solid rgba(255,255,255,0.8)"
+                        : "1px solid rgba(255,255,255,0.2)",
+                    transition: "border 0.2s",
+                  }}
+                  onFocus={() => setFocusedField("Apply To")}
+                  onBlur={() => setFocusedField("")}
+                >
+                  <span style={{ color: "rgba(255,255,255,0.85)" }}>
+                    {form.product_ids.length > 0
+                      ? t.productsSelectedMsg.replace("{n}", form.product_ids.length)
+                      : t.allProductsTapMsg}
+                  </span>
+                </button>
+              </div>
+            )}
+
+            {form.apply_to === "category" && (
+              <div style={{ position: "relative" }}>
+                <Box
+                  size={20}
+                  color="white"
+                  variant="Linear"
+                  style={iconStyle("Apply To")}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowCategoryPicker(true)}
+                  style={{
+                    ...inputStyle,
+                    paddingLeft: "40px",
+                    display: "flex",
+                    border:
+                      focusedField === "Apply To"
+                        ? "1px solid rgba(255,255,255,0.8)"
+                        : "1px solid rgba(255,255,255,0.2)",
+                    transition: "border 0.2s",
+                  }}
+                  onFocus={() => setFocusedField("Apply To")}
+                  onBlur={() => setFocusedField("")}
+                >
+                  <span style={{ color: "rgba(255,255,255,0.85)" }}>
+                    {form.category_ids.length > 0
+                      ? t.categoriesSelectedMsg.replace("{n}", form.category_ids.length)
+                      : t.tapToSelectCategoriesMsg}
+                  </span>
+                </button>
+              </div>
+            )}
           </div>
 
           <div
@@ -603,6 +687,14 @@ export default function PromotionModal({
         selectedIds={form.product_ids}
         onClose={() => setShowPicker(false)}
         onConfirm={handleProductConfirm}
+        t={t}
+      />
+
+      <CategoryPickerModal
+        open={showCategoryPicker}
+        selectedIds={form.category_ids}
+        onClose={() => setShowCategoryPicker(false)}
+        onConfirm={handleCategoryConfirm}
         t={t}
       />
     </div>

@@ -280,7 +280,7 @@ function IngredientModal({
                       {t.selectCategoryOption}
                     </option>
                     {categories
-                      .filter((c) => c.status)
+                      .filter((c) => c.status || c.id == form.category_id)
                       .map((c) => (
                         <option
                           key={c.id}
@@ -288,6 +288,7 @@ function IngredientModal({
                           style={{ background: "#2c3e50" }}
                         >
                           {c.name}
+                          {!c.status ? ` - ${t.inactiveLabel}` : ""}
                         </option>
                       ))}
                   </select>

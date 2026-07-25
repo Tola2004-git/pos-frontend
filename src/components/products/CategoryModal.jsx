@@ -5,7 +5,7 @@ import { glassCard, glass, colors } from "../../utils/styles";
 import { SkeletonCategoryList } from "../ui/SkeletonProduct";
 import { Edit, Trash, AddCircle, TickCircle, Category2, Tag } from "iconsax-react";
 
-function IconButtonWithTooltip({ icon, label, onClick }) {
+function IconButtonWithTooltip({ icon, label, onClick, disabled = false }) {
   const [show, setShow] = useState(false);
   const [pos, setPos] = useState({ top: 0, left: 0 });
   const btnRef = useRef(null);
@@ -22,6 +22,7 @@ function IconButtonWithTooltip({ icon, label, onClick }) {
         ref={btnRef}
         type="button"
         onClick={onClick}
+        disabled={disabled}
         onMouseEnter={handleEnter}
         onMouseLeave={() => setShow(false)}
         style={{
@@ -30,12 +31,13 @@ function IconButtonWithTooltip({ icon, label, onClick }) {
           borderRadius: "8px",
           border: "none",
           background: "transparent",
-          cursor: "pointer",
+          cursor: disabled ? "not-allowed" : "pointer",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          opacity: disabled ? 0.6 : 1,
         }}
-        className="duration-200 hover:scale-110 transition-transform"
+        className={disabled ? "" : "duration-200 hover:scale-110 transition-transform"}
       >
         {icon}
       </button>
@@ -75,6 +77,7 @@ function CategoryModal({
   setCatForm,
   catError,
   catSubmitting,
+  deletingCatId,
   onSubmit,
   onDelete,
   onToggleStatus,
@@ -351,9 +354,19 @@ function CategoryModal({
                   />
                   {/* Delete */}
                   <IconButtonWithTooltip
-                    icon={<Trash size={20} color="white" variant="Linear" />}
+                    icon={
+                      deletingCatId === cat.id ? (
+                        <svg className="animate-spin" width="20" height="20" viewBox="0 0 18 18" fill="none">
+                          <circle cx="9" cy="9" r="7" stroke="rgba(255,255,255,0.3)" strokeWidth="2" />
+                          <path d="M9 2 A7 7 0 0 1 16 9" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                        </svg>
+                      ) : (
+                        <Trash size={20} color="white" variant="Linear" />
+                      )
+                    }
                     label={t.deleteAction}
                     onClick={() => onDelete(cat.id)}
+                    disabled={deletingCatId === cat.id}
                   />
                 </div>
               </div>

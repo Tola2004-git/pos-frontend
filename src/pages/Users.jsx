@@ -11,6 +11,7 @@ function Users() {
   const {
     users,
     currentUser,
+    deletingId,
     search,
     loading,
     roleFilter,
@@ -137,6 +138,7 @@ function Users() {
         onEdit={handleEdit}
         onDelete={handleDelete}
         currentUser={currentUser}
+        deletingId={deletingId}
         t={t}
       />
 

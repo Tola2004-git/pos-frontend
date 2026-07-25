@@ -17,6 +17,7 @@ import {
   Hashtag,
   NoteText,
   Personalcard,
+  Tag,
   TickCircle,
   Wallet,
 } from "iconsax-react";
@@ -120,7 +121,7 @@ function PaymentMethodModal({
 
   return (
     <div style={overlayStyle}>
-      <div style={modalStyle}>
+      <div className="thin-light-scrollbar" style={modalStyle}>
         <div
           style={{
             display: "flex",
@@ -307,6 +308,34 @@ function PaymentMethodModal({
           </div>
         ) : (
           <>
+            <div style={{ marginBottom: "16px" }}>
+              <label style={labelStyle}>{t.paymentMethodNameLabel}</label>
+              <div style={{ position: "relative" }}>
+                <Tag
+                  size={18}
+                  color="white"
+                  variant="Outline"
+                  style={iconStyle("Name")}
+                />
+                <input
+                  style={{
+                    ...inputStyle,
+                    paddingLeft: "40px",
+                    border:
+                      focusedField === "Name"
+                        ? "1px solid rgba(255,255,255,0.8)"
+                        : "1px solid rgba(255,255,255,0.2)",
+                    transition: "border 0.2s",
+                  }}
+                  placeholder={t.paymentMethodNamePlaceholder}
+                  value={form.name}
+                  onChange={(e) => onFormChange("name", e.target.value)}
+                  onFocus={() => setFocusedField("Name")}
+                  onBlur={() => setFocusedField("")}
+                />
+              </div>
+            </div>
+
             <div style={{ marginBottom: "16px" }}>
               <label style={labelStyle}>{t.bankLabel}</label>
               <div

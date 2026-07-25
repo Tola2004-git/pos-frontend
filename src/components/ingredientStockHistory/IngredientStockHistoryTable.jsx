@@ -3,8 +3,9 @@ import { glassCard } from "../../utils/styles";
 import { SkeletonStockTable } from "../ui/SkeletonInventory";
 
 const INCREASE_ACTIONS = ["add", "cancel_restore", "refund_restore"];
+const NO_SUPPLIER_ACTIONS = ["sale", "cancel_restore", "refund_restore"];
 
-export function StockHistoryTable({ logs, loading, page, t }) {
+export function IngredientStockHistoryTable({ logs, loading, page, t }) {
   const ACTION_LABELS = {
     add: t.actionLabelAdd,
     remove: t.actionLabelRemove,
@@ -15,7 +16,7 @@ export function StockHistoryTable({ logs, loading, page, t }) {
 
   const HEADERS = [
     "#",
-    t.shColProduct,
+    t.shColIngredient,
     t.shColAction,
     t.shColQty,
     t.shColBefore,
@@ -106,7 +107,7 @@ export function StockHistoryTable({ logs, loading, page, t }) {
                     fontWeight: 500,
                   }}
                 >
-                  {log.product?.name || t.naLabel}
+                  {log.ingredient?.name || t.naLabel}
                 </td>
                 <td style={{ padding: "12px 14px" }}>
                   <span
@@ -142,7 +143,7 @@ export function StockHistoryTable({ logs, loading, page, t }) {
                   }}
                 >
                   {isIncrease ? "+" : "-"}
-                  {log.quantity}
+                  {Number(log.quantity)} {log.ingredient?.unit || ""}
                 </td>
                 <td
                   style={{
@@ -150,7 +151,7 @@ export function StockHistoryTable({ logs, loading, page, t }) {
                     color: "rgba(255,255,255,0.6)",
                   }}
                 >
-                  {log.qty_before}
+                  {Number(log.qty_before)}
                 </td>
                 <td
                   style={{
@@ -159,7 +160,7 @@ export function StockHistoryTable({ logs, loading, page, t }) {
                     fontWeight: 600,
                   }}
                 >
-                  {log.qty_after}
+                  {Number(log.qty_after)}
                 </td>
                 <td
                   style={{
@@ -168,7 +169,7 @@ export function StockHistoryTable({ logs, loading, page, t }) {
                     fontSize: "0.85rem",
                   }}
                 >
-                  {["sale", "cancel_restore", "refund_restore"].includes(log.action)
+                  {NO_SUPPLIER_ACTIONS.includes(log.action)
                     ? "—"
                     : log.supplier || t.naLabel}
                 </td>

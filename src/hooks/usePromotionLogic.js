@@ -74,15 +74,41 @@ export function usePromotionLogic(promotions = [], cart = []) {
     );
 
   /**
-   * Calculate discount amount for a cart item
+   * The order backend applies exactly one promotion (see
+   * OrderController::store()/update() and usePOS.js's
+   * getSelectedPromotionForOrder - same "first applicable" pick), not every
+   * promotion that happens to match. Summing every matching promotion here
+   * would show the cashier a bigger discount than what the order is
+   * actually charged for once only one of them is applied server-side.
    */
-  const getItemDiscount = (item) =>
-    findItemPromotions(item).reduce((sum, promotion) => {
-      if (promotion.type === "percentage") {
-        return sum + (item.subtotal * Number(promotion.value)) / 100;
-      }
-      return sum + Number(promotion.value) * item.quantity;
-    }, 0);
+  const getSelectedPromotion = () => {
+    const applicable = promotions.filter(
+      (promotion) =>
+        isPromotionValid(promotion) &&
+        cart.some((item) => matchesPromotion(item, promotion)),
+    );
+    return applicable[0] || null;
+  };
+
+  /**
+   * Calculate discount amount for a cart item, from the single promotion
+   * that will actually be applied to the order (see getSelectedPromotion).
+   * An "all"-scoped promotion discounts the whole order once, not per line
+   * item, so it's excluded here and folded into totalDiscountAmount instead
+   * - attributing it to individual items would both double-count it and
+   * multiply it by quantity.
+   */
+  const getItemDiscount = (item) => {
+    const promotion = getSelectedPromotion();
+    if (!promotion || !meetsMinPurchase(promotion)) return 0;
+    if (promotion.apply_to === "all") return 0;
+    if (!matchesPromotion(item, promotion)) return 0;
+
+    if (promotion.type === "percentage") {
+      return (item.subtotal * Number(promotion.value)) / 100;
+    }
+    return Number(promotion.value) * item.quantity;
+  };
 
   /**
    * Calculate final total for item after discount
@@ -112,12 +138,23 @@ export function usePromotionLogic(promotions = [], cart = []) {
   );
 
   /**
-   * Calculate total discount across all cart items
+   * Calculate total discount for the order - the per-item sum for
+   * product/category-scoped promotions, or the single flat/percentage-of-
+   * subtotal amount for an "all"-scoped one (see getItemDiscount).
    */
-  const totalDiscountAmount = cart.reduce(
-    (sum, item) => sum + getItemDiscount(item),
-    0,
-  );
+  const totalDiscountAmount = (() => {
+    const promotion = getSelectedPromotion();
+    if (!promotion || !meetsMinPurchase(promotion)) return 0;
+
+    if (promotion.apply_to === "all") {
+      if (promotion.type === "percentage") {
+        return (cartSubtotal * Number(promotion.value)) / 100;
+      }
+      return Number(promotion.value);
+    }
+
+    return cart.reduce((sum, item) => sum + getItemDiscount(item), 0);
+  })();
 
   /**
    * Calculate subtotal before any discounts

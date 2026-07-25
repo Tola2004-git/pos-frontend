@@ -37,6 +37,7 @@ export const defaultPromotionForm = {
   value: "",
   apply_to: "all",
   product_ids: [],
+  category_ids: [],
   min_purchase: "",
   start_date: "",
   end_date: "",

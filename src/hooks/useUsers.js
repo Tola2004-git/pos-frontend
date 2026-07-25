@@ -44,6 +44,7 @@ export function useUsers() {
   const [focusedField, setFocusedField] = useState("");
 
   const [currentUser, setCurrentUser] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
 
   const dropdownRef = useRef(null);
 
@@ -161,6 +162,7 @@ export function useUsers() {
       t.deleteAction,
     );
     if (!result.isConfirmed) return;
+    setDeletingId(id);
     try {
       await deleteUser(id);
       alertSuccess(t.tableDeletedTitle, t.userDeletedMsg);
@@ -170,6 +172,8 @@ export function useUsers() {
         t.ingredientDeleteFailedTitle,
         err.response?.data?.message || t.tryAgainMsg,
       );
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -189,6 +193,7 @@ export function useUsers() {
   return {
     users,
     currentUser,
+    deletingId,
     search,
     loading,
     page,

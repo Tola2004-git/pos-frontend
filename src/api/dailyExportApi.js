@@ -8,3 +8,6 @@ export const generateDailyExportApi = (date) =>
 
 export const downloadDailyExportApi = (date) =>
   apiClient.get(`/daily-exports/${date}/download`, { responseType: "blob" });
+
+export const deleteDailyExportApi = (date) =>
+  apiClient.delete(`/daily-exports/${date}`);

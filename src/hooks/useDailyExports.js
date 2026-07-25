@@ -1,16 +1,29 @@
 import { useState, useEffect, useCallback } from "react";
-import { alertSuccess, alertError } from "../utils/alert.jsx";
+import { alertSuccess, alertError, alertConfirmDelete } from "../utils/alert.jsx";
 import { useTranslations } from "./useTranslations";
 import {
   fetchDailyExportsApi,
   generateDailyExportApi,
   downloadDailyExportApi,
+  deleteDailyExportApi,
 } from "../api/dailyExportApi";
 
 function todayStr() {
   const d = new Date();
   const pad = (n) => String(n).padStart(2, "0");
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+async function extractErrorMessage(err) {
+  const data = err.response?.data;
+  if (data instanceof Blob) {
+    try {
+      return JSON.parse(await data.text())?.message;
+    } catch {
+      return null;
+    }
+  }
+  return data?.message;
 }
 
 export function useDailyExports() {
@@ -23,6 +36,7 @@ export function useDailyExports() {
   const [generateDate, setGenerateDate] = useState(todayStr());
   const [generating, setGenerating] = useState(false);
   const [downloadingDate, setDownloadingDate] = useState(null);
+  const [deletingDate, setDeletingDate] = useState(null);
 
   const fetchExports = useCallback(async () => {
     setLoading(true);
@@ -69,9 +83,34 @@ export function useDailyExports() {
       link.remove();
       window.URL.revokeObjectURL(url);
     } catch (err) {
-      alertError(t.genericErrorTitle, err.response?.data?.message || t.tryAgainMsg);
+      alertError(t.genericErrorTitle, (await extractErrorMessage(err)) || t.tryAgainMsg);
     } finally {
       setDownloadingDate(null);
+    }
+  };
+
+  const handleDelete = async (exportDate) => {
+    const result = await alertConfirmDelete(
+      t.dailyExportDeleteConfirmTitle,
+      t.dailyExportDeleteConfirmMsg,
+      t.cancel,
+      t.deleteAction,
+    );
+    if (!result.isConfirmed) return;
+
+    setDeletingDate(exportDate);
+    try {
+      await deleteDailyExportApi(exportDate);
+      alertSuccess(t.dailyExportDeletedTitle, t.dailyExportDeletedMsg);
+      if (exports.length === 1 && page > 1) {
+        setPage((p) => p - 1);
+      } else {
+        await fetchExports();
+      }
+    } catch (err) {
+      alertError(t.genericErrorTitle, (await extractErrorMessage(err)) || t.tryAgainMsg);
+    } finally {
+      setDeletingDate(null);
     }
   };
 
@@ -86,8 +125,10 @@ export function useDailyExports() {
     setGenerateDate,
     generating,
     downloadingDate,
+    deletingDate,
     handleGenerate,
     handleDownload,
+    handleDelete,
   };
 }
 

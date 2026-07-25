@@ -50,6 +50,7 @@ function Ingredients() {
     setCatForm,
     catError,
     catSubmitting,
+    deletingCatId,
     handleCatSubmit,
     handleCatDelete,
     toggleCatStatus,
@@ -316,6 +317,7 @@ function Ingredients() {
         onEdit={handleEdit}
         onDelete={ing.handleDelete}
         onRestock={ing.openRestock}
+        deletingId={ing.deletingId}
         t={t}
       />
 
@@ -425,6 +427,7 @@ function Ingredients() {
           setCatForm={setCatForm}
           catError={catError}
           catSubmitting={catSubmitting}
+          deletingCatId={deletingCatId}
           onSubmit={handleCatSubmit}
           onDelete={handleCatDelete}
           onToggleStatus={toggleCatStatus}

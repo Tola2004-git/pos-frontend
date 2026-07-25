@@ -28,6 +28,7 @@ export function useTables(t) {
   const [editTable, setEditTable] = useState(null);
   const [form, setForm] = useState(initialForm);
   const [modalLoading, setModalLoading] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
 
   const loadTables = useCallback(async () => {
     setLoading(true);
@@ -203,6 +204,7 @@ export function useTables(t) {
     );
     if (!result.isConfirmed) return;
 
+    setDeletingId(id);
     try {
       await deleteTable(id);
       alertSuccess(
@@ -215,6 +217,8 @@ export function useTables(t) {
         tr("tableDeleteFailedTitle", "Delete Failed"),
         err.response?.data?.message || tr("tableDeleteFailedMsg", "Cannot delete this table!"),
       );
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -225,6 +229,7 @@ export function useTables(t) {
     editTable,
     form,
     modalLoading,
+    deletingId,
     setForm,
     openAdd,
     openEdit,

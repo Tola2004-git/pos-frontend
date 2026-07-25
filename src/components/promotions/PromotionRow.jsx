@@ -15,6 +15,7 @@ export default function PromotionRow({
   onEdit,
   onDelete,
   onToggleStatus,
+  isDeleting = false,
   t,
 }) {
   const [showPopover, setShowPopover] = useState(false);
@@ -255,16 +256,25 @@ export default function PromotionRow({
               className="duration-200 hover:scale-110 transition-transform"
               type="button"
               onClick={() => onDelete(promo.id)}
+              disabled={isDeleting}
               style={{
                 border: "none",
                 borderRadius: 8,
-                cursor: "pointer",
+                cursor: isDeleting ? "not-allowed" : "pointer",
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 4,
+                opacity: isDeleting ? 0.6 : 1,
               }}
             >
-              <Trash size={20} color="white" variant="Linear" />
+              {isDeleting ? (
+                <svg className="animate-spin" width="20" height="20" viewBox="0 0 18 18" fill="none">
+                  <circle cx="9" cy="9" r="7" stroke="rgba(255,255,255,0.3)" strokeWidth="2" />
+                  <path d="M9 2 A7 7 0 0 1 16 9" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+              ) : (
+                <Trash size={20} color="white" variant="Linear" />
+              )}
             </button>
             <div
               className="tooltip"

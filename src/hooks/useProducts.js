@@ -12,6 +12,7 @@ export function useProducts() {
   const [page, setPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [total, setTotal] = useState(0);
+  const [deletingId, setDeletingId] = useState(null);
 
   useEffect(() => {
     fetchProducts();
@@ -41,12 +42,15 @@ export function useProducts() {
       t.deleteAction,
     );
     if (!result.isConfirmed) return;
+    setDeletingId(id);
     try {
       await api.delete(`/products/${id}`);
       alertSuccess(t.tableDeletedTitle, t.productDeletedMsg);
       fetchProducts();
     } catch (err) {
       alertError(t.productDeleteFailedTitle, err.response?.data?.message || t.tryAgainMsg);
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -61,6 +65,7 @@ export function useProducts() {
     setPage,
     lastPage,
     total,
+    deletingId,
     fetchProducts,
     handleDelete,
   };

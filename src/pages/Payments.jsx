@@ -2,13 +2,11 @@ import { useState, useContext } from "react";
 import Layout from "../components/layout/Layout.jsx";
 import { SidebarContext } from "../App.jsx";
 import { glass } from "../utils/styles.js";
-import { RiAddLine } from "react-icons/ri";
 import PaymentMethodCard from "../components/payment/PaymentMethodCard.jsx";
 import PaymentMethodModal from "../components/payment/PaymentMethodModal.jsx";
 import { usePaymentMethods } from "../hooks/usePaymentMethods.js";
 import { usePaymentForm } from "../hooks/usePaymentForm.js";
-import { DEFAULT_METHODS } from "../constants/paymentConstants.js";
-import { Add, Card, Minus } from "iconsax-react";
+import { Add, Card } from "iconsax-react";
 import { alertSuccess, alertError } from "../utils/alert.jsx";
 import { PaymentMethodSkeletonCard } from "../components/ui/SkeletonPayment.jsx";
 import { useTranslations } from "../hooks/useTranslations";
@@ -18,7 +16,6 @@ function PaymentMethods() {
   const {
     methods,
     loading,
-    fetchMethods,
     createMethod,
     updateMethod,
     toggleStatus: toggleStatusHook,
@@ -41,10 +38,9 @@ function PaymentMethods() {
   const { sidebarOpen } = useContext(SidebarContext);
   const [submitting, setSubmitting] = useState(false);
   const SkeletonCount = sidebarOpen ? 6 : 8;
-  const visibleMethods = methods.filter((method) => {
-    const methodName = method?.name?.toLowerCase();
-    return methodName !== "cash";
-  });
+  // Cash is locked from renaming/deletion (see PaymentMethodController) and
+  // has no settings here worth surfacing, so it's kept out of this list.
+  const visibleMethods = methods.filter((method) => !method.is_cash);
 
   const handleSubmit = async () => {
     if (!form.name) {
@@ -72,8 +68,6 @@ function PaymentMethods() {
   const handleDelete = async (id) => await deleteMethod(id);
 
   const handleToggleStatus = async (method) => await toggleStatusHook(method);
-
-  const handleAddDefault = async (method) => await createMethod(method);
 
   return (
     <Layout>
@@ -125,7 +119,7 @@ function PaymentMethods() {
         </button>
       </div>
 
-      {methods.length === 0 && !loading && (
+      {visibleMethods.length === 0 && !loading && (
         <div
           style={{
             ...glass,

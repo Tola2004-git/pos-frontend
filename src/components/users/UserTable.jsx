@@ -2,23 +2,25 @@ import { glassCard } from "../../utils/styles";
 import { SkeletonTable } from "../ui/SkeletonUser";
 import { Trash, Edit2, Edit } from "iconsax-react";
 
-function TooltipButton({ onClick, tooltip, children }) {
+function TooltipButton({ onClick, tooltip, disabled = false, children }) {
   return (
     <div className="tooltip-wrapper">
       <button
         onClick={onClick}
+        disabled={disabled}
         style={{
           padding: "8px",
           borderRadius: "8px",
           border: "none",
-          cursor: "pointer",
+          cursor: disabled ? "not-allowed" : "pointer",
           background: "transparent",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           transition: "transform 0.2s",
+          opacity: disabled ? 0.6 : 1,
         }}
-        className="hover:scale-110"
+        className={disabled ? "" : "hover:scale-110"}
       >
         {children}
       </button>
@@ -57,7 +59,7 @@ function TooltipButton({ onClick, tooltip, children }) {
   );
 }
 
-function UserTable({ users = [], loading, onEdit, onDelete, currentUser, t }) {
+function UserTable({ users = [], loading, onEdit, onDelete, currentUser, deletingId, t }) {
   return (
     <div style={{ ...glassCard, borderRadius: "20px", overflow: "hidden" }}>
       <div className="w-full overflow-x-auto table-scroll-x">
@@ -246,8 +248,16 @@ function UserTable({ users = [], loading, onEdit, onDelete, currentUser, t }) {
                         <TooltipButton
                           onClick={() => onDelete(user.id)}
                           tooltip={t.deleteAction}
+                          disabled={deletingId === user.id}
                         >
-                          <Trash size={18} color="#fff" variant="linear" />
+                          {deletingId === user.id ? (
+                            <svg className="animate-spin" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                              <circle cx="9" cy="9" r="7" stroke="rgba(255,255,255,0.3)" strokeWidth="2" />
+                              <path d="M9 2 A7 7 0 0 1 16 9" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                            </svg>
+                          ) : (
+                            <Trash size={18} color="#fff" variant="linear" />
+                          )}
                         </TooltipButton>
                       </div>
                     )}

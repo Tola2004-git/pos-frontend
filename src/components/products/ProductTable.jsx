@@ -53,7 +53,7 @@ function ProductImage({ image, name }) {
   );
 }
 
-function ProductTable({ products, loading, page, onEdit, onDelete, onRecipe, t }) {
+function ProductTable({ products, loading, page, onEdit, onDelete, onRecipe, deletingId, t }) {
   const COLUMNS = [
     "#",
     t.productColImage,
@@ -399,17 +399,26 @@ function ProductTable({ products, loading, page, onEdit, onDelete, onRecipe, t }
                       <button
                         type="button"
                         onClick={() => onDelete(product.id)}
+                        disabled={deletingId === product.id}
                         className="duration-200 hover:scale-110 transition-transform"
                         style={{
                           border: "none",
                           borderRadius: 8,
-                          cursor: "pointer",
+                          cursor: deletingId === product.id ? "not-allowed" : "pointer",
                           background: "transparent",
                           display: "inline-flex",
                           alignItems: "center",
+                          opacity: deletingId === product.id ? 0.6 : 1,
                         }}
                       >
-                        <Trash size={20} color="white" variant="Linear" />
+                        {deletingId === product.id ? (
+                          <svg className="animate-spin" width="20" height="20" viewBox="0 0 18 18" fill="none">
+                            <circle cx="9" cy="9" r="7" stroke="rgba(255,255,255,0.3)" strokeWidth="2" />
+                            <path d="M9 2 A7 7 0 0 1 16 9" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                          </svg>
+                        ) : (
+                          <Trash size={20} color="white" variant="Linear" />
+                        )}
                       </button>
                       <div
                         className="tooltip"

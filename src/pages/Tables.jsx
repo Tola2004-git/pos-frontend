@@ -29,6 +29,7 @@ function Tables() {
     editTable,
     form,
     modalLoading,
+    deletingId,
     setForm,
     openAdd,
     openEdit,
@@ -375,6 +376,7 @@ function Tables() {
               onClear={openClearModal}
               onOpenMove={openMoveModal}
               onDelete={handleDelete}
+              isDeleting={deletingId === table.id}
               t={t}
             />
           ))}

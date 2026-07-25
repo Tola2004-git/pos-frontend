@@ -29,6 +29,7 @@ export function useIngredients() {
   const [restockError, setRestockError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
   const stockDropdownRef = useRef();
 
   useEffect(() => {
@@ -81,6 +82,7 @@ export function useIngredients() {
       t.deleteAction,
     );
     if (!result.isConfirmed) return;
+    setDeletingId(id);
     try {
       await api.delete(`/ingredients/${id}`);
       alertSuccess(t.tableDeletedTitle, t.ingredientDeletedMsg);
@@ -88,6 +90,8 @@ export function useIngredients() {
       fetchAllIngredients();
     } catch (err) {
       alertError(t.ingredientDeleteFailedTitle, err.response?.data?.message || t.tryAgainMsg);
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -141,7 +145,7 @@ export function useIngredients() {
     stockFilter, setStockFilter,
     page, setPage, lastPage, total,
     allIngredients, fetchIngredients, fetchAllIngredients,
-    handleDelete,
+    handleDelete, deletingId,
 
     showRestock, selectedIngredient, restockForm, setRestockForm,
     restockError, submitting,

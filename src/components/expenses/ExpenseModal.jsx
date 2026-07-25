@@ -10,6 +10,7 @@ import {
   TickCircle,
   AddCircle,
   Edit,
+  Wallet2,
 } from "iconsax-react";
 
 const CATEGORIES = ["rent", "utilities", "salary", "supplies", "maintenance", "other"];
@@ -31,6 +32,22 @@ export default function ExpenseModal({ show, onClose, editExpense, submitting, o
   });
   const [error, setError] = useState("");
   const [focusedField, setFocusedField] = useState("");
+  const [isMounted, setIsMounted] = useState(show);
+  const [isVisible, setIsVisible] = useState(show);
+
+  useEffect(() => {
+    let timeout;
+
+    if (show) {
+      setIsMounted(true);
+      requestAnimationFrame(() => setIsVisible(true));
+    } else {
+      setIsVisible(false);
+      timeout = setTimeout(() => setIsMounted(false), 300);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [show]);
 
   useEffect(() => {
     if (!show) return;
@@ -56,7 +73,7 @@ export default function ExpenseModal({ show, onClose, editExpense, submitting, o
     setError("");
   }, [show, editExpense]);
 
-  if (!show) return null;
+  if (!isMounted) return null;
 
   const inputStyle = {
     width: "100%",
@@ -123,6 +140,10 @@ export default function ExpenseModal({ show, onClose, editExpense, submitting, o
         alignItems: "center",
         justifyContent: "center",
         padding: 20,
+        opacity: isVisible ? 1 : 0,
+        animation: isVisible ? "confirm-fade-in 0.2s ease forwards" : "none",
+        transition: "opacity 220ms ease",
+        pointerEvents: show ? "auto" : "none",
       }}
     >
       <div
@@ -134,14 +155,42 @@ export default function ExpenseModal({ show, onClose, editExpense, submitting, o
           maxWidth: 520,
           maxHeight: "90vh",
           overflowY: "auto",
+          transform: isVisible ? "translateY(0)" : "translateY(24px)",
+          opacity: isVisible ? 1 : 0,
+          animation: isVisible
+            ? "confirm-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards"
+            : "none",
+          transition: "transform 220ms ease, opacity 220ms ease",
         }}
       >
+        <style>
+          {`
+            @keyframes confirm-fade-in {
+              from { opacity: 0; }
+              to   { opacity: 1; }
+            }
+            @keyframes confirm-pop {
+              from { opacity: 0; transform: scale(0.95) translateY(20px); }
+              to   { opacity: 1; transform: scale(1) translateY(0); }
+            }
+          `}
+        </style>
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center gap-2.5">
             {editExpense ? (
-              <Edit size={28} color="white" variant="Linear" />
+              <Edit
+                size={28}
+                color="white"
+                variant="Linear"
+                style={{ animation: "float 2s ease-in-out infinite" }}
+              />
             ) : (
-              <MoneyRemove size={28} color="white" variant="Linear" />
+              <MoneyRemove
+                size={28}
+                color="white"
+                variant="Linear"
+                style={{ animation: "float 2s ease-in-out infinite" }}
+              />
             )}
             <h2 style={{ color: colors.whiteFull, margin: 0, fontSize: "1.4rem", fontWeight: 600 }}>
               {editExpense ? t.editExpenseTitle : t.newExpenseAction}
@@ -251,17 +300,20 @@ export default function ExpenseModal({ show, onClose, editExpense, submitting, o
           </div>
           <div>
             <label style={labelStyle}>{t.expenseAmountKhrLabel}</label>
-            <input
-              type="number"
-              min="0"
-              step="1"
-              style={{ ...inputStyle, ...borderFor("khr") }}
-              placeholder="0"
-              value={form.amount_khr}
-              onChange={(e) => setForm({ ...form, amount_khr: e.target.value })}
-              onFocus={() => setFocusedField("khr")}
-              onBlur={() => setFocusedField("")}
-            />
+            <div style={{ position: "relative" }}>
+              <Wallet2 size={20} color="white" variant="Linear" style={iconStyle("khr")} />
+              <input
+                type="number"
+                min="0"
+                step="1"
+                style={{ ...inputStyle, paddingLeft: 40, ...borderFor("khr") }}
+                placeholder="0"
+                value={form.amount_khr}
+                onChange={(e) => setForm({ ...form, amount_khr: e.target.value })}
+                onFocus={() => setFocusedField("khr")}
+                onBlur={() => setFocusedField("")}
+              />
+            </div>
           </div>
         </div>
 
@@ -320,7 +372,12 @@ export default function ExpenseModal({ show, onClose, editExpense, submitting, o
               border: "none",
             }}
           >
-            {editExpense ? (
+            {submitting ? (
+              <svg className="animate-spin" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <circle cx="9" cy="9" r="7" stroke="rgba(255,255,255,0.3)" strokeWidth="2" />
+                <path d="M9 2 A7 7 0 0 1 16 9" stroke="white" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+            ) : editExpense ? (
               <TickCircle size="20" color="#fff" variant="outline" />
             ) : (
               <AddCircle size="20" color="#fff" variant="outline" />

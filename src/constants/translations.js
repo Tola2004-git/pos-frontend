@@ -255,6 +255,7 @@ export const translations = {
     actionLabelRemove: "Remove",
     actionLabelSale: "Sale",
     actionLabelRestored: "Restored",
+    actionLabelRefundRestore: "Refunded",
 
     // Ingredients (admin page)
     ingredientsManagementTitle: "Ingredients Management",
@@ -298,6 +299,12 @@ export const translations = {
     ingredientDeleteFailedTitle: "Failed to delete",
     ingredientStockUpdatedTitle: "Stock updated!",
 
+    // IngredientStockHistory (admin page)
+    ingredientStockHistory: "Ingredient Stock History",
+    ingredientStockHistoryTitle: "Ingredient Stock History",
+    searchIngredientNamePlaceholder: "Search by ingredient name...",
+    shColIngredient: "Ingredient",
+
     // Payments (admin page)
     paymentMethodsTitle: "Payment Methods",
     addMethodAction: "Add Method",
@@ -328,6 +335,8 @@ export const translations = {
     viewPaymentMethodTitle: "View Payment Method",
     editPaymentMethodTitle: "Edit Payment Method",
     addPaymentMethodTitle: "Add Payment Method",
+    paymentMethodNameLabel: "Payment Method Name *",
+    paymentMethodNamePlaceholder: "e.g. PayPal, Store Credit...",
     accountNameLabel: "Account Name",
     accountNumberLabel: "Account Number",
     bankLabel: "Bank",
@@ -440,6 +449,13 @@ export const translations = {
     applyToFieldLabel: "Apply To",
     allProductsTapMsg: "All products (tap to select specific)",
     productsSelectedMsg: "{n} product(s) selected",
+    applyScopeAllOption: "All",
+    applyScopeProductOption: "Products",
+    applyScopeCategoryOption: "Categories",
+    categoriesSelectedMsg: "{n} categor(ies) selected",
+    tapToSelectCategoriesMsg: "Tap to select categories",
+    selectAtLeastOneProductMsg: "Please select at least one product",
+    selectAtLeastOneCategoryMsg: "Please select at least one category",
     startDateLabel: "Start Date",
     endDateLabel: "End Date",
     minPurchaseLabel: "Minimum Purchase ($)",
@@ -450,6 +466,11 @@ export const translations = {
     searchProductsSimplePlaceholder: "Search products...",
     allChipLabel: "All",
     confirmCountMsg: "Confirm ({n})",
+
+    // CategoryPickerModal
+    selectCategoriesTitle: "Select Categories",
+    searchCategoriesSimplePlaceholder: "Search categories...",
+    noCategoriesFoundMsg: "No categories found",
 
     // Login page
     signInToAccountMsg: "Sign in to your account",
@@ -510,6 +531,10 @@ export const translations = {
     dailyExportDownloadAction: "Download",
     dailyExportDownloadingAction: "Downloading...",
     dailyExportTotalCountMsg: "Total: {n} exports",
+    dailyExportDeleteConfirmTitle: "Delete this export?",
+    dailyExportDeleteConfirmMsg: "This removes the file from Google Drive too. This cannot be undone.",
+    dailyExportDeletedTitle: "Export deleted",
+    dailyExportDeletedMsg: "The export has been removed.",
 
     // Backups
     backups: "Backups",
@@ -1227,6 +1252,7 @@ export const translations = {
     actionLabelRemove: "ដក",
     actionLabelSale: "លក់",
     actionLabelRestored: "សង្គ្រោះមកវិញ",
+    actionLabelRefundRestore: "សង្គ្រោះពីការសង",
 
     // Ingredients (admin page)
     ingredientsManagementTitle: "គ្រប់គ្រងគ្រឿងផ្សំ",
@@ -1270,6 +1296,12 @@ export const translations = {
     ingredientDeleteFailedTitle: "លុបមិនបានសម្រេច",
     ingredientStockUpdatedTitle: "បានធ្វើបច្ចុប្បន្នភាពស្តុក!",
 
+    // IngredientStockHistory (admin page)
+    ingredientStockHistory: "ប្រវត្តិស្តុកគ្រឿងផ្សំ",
+    ingredientStockHistoryTitle: "ប្រវត្តិស្តុកគ្រឿងផ្សំ",
+    searchIngredientNamePlaceholder: "ស្វែងរកតាមឈ្មោះគ្រឿងផ្សំ...",
+    shColIngredient: "គ្រឿងផ្សំ",
+
     // Payments (admin page)
     paymentMethodsTitle: "វិធីសាស្ត្រទូទាត់",
     addMethodAction: "បន្ថែមវិធីទូទាត់",
@@ -1300,6 +1332,8 @@ export const translations = {
     viewPaymentMethodTitle: "មើលវិធីទូទាត់",
     editPaymentMethodTitle: "កែសម្រួលវិធីទូទាត់",
     addPaymentMethodTitle: "បន្ថែមវិធីទូទាត់",
+    paymentMethodNameLabel: "ឈ្មោះវិធីទូទាត់ *",
+    paymentMethodNamePlaceholder: "ឧ. PayPal, ឥណទានហាង...",
     accountNameLabel: "ឈ្មោះគណនី",
     accountNumberLabel: "លេខគណនី",
     bankLabel: "ធនាគារ",
@@ -1412,6 +1446,13 @@ export const translations = {
     applyToFieldLabel: "អនុវត្តលើ",
     allProductsTapMsg: "ផលិតផលទាំងអស់ (ចុចដើម្បីជ្រើសរើសជាក់លាក់)",
     productsSelectedMsg: "បានជ្រើសរើស {n} ផលិតផល",
+    applyScopeAllOption: "ទាំងអស់",
+    applyScopeProductOption: "ផលិតផល",
+    applyScopeCategoryOption: "ប្រភេទ",
+    categoriesSelectedMsg: "បានជ្រើសរើស {n} ប្រភេទ",
+    tapToSelectCategoriesMsg: "ចុចដើម្បីជ្រើសរើសប្រភេទ",
+    selectAtLeastOneProductMsg: "សូមជ្រើសរើសផលិតផលយ៉ាងហោចណាស់មួយ",
+    selectAtLeastOneCategoryMsg: "សូមជ្រើសរើសប្រភេទយ៉ាងហោចណាស់មួយ",
     startDateLabel: "ថ្ងៃចាប់ផ្តើម",
     endDateLabel: "ថ្ងៃបញ្ចប់",
     minPurchaseLabel: "ការទិញអប្បបរមា ($)",
@@ -1422,6 +1463,11 @@ export const translations = {
     searchProductsSimplePlaceholder: "ស្វែងរកផលិតផល...",
     allChipLabel: "ទាំងអស់",
     confirmCountMsg: "បញ្ជាក់ ({n})",
+
+    // CategoryPickerModal
+    selectCategoriesTitle: "ជ្រើសរើសប្រភេទ",
+    searchCategoriesSimplePlaceholder: "ស្វែងរកប្រភេទ...",
+    noCategoriesFoundMsg: "រកមិនឃើញប្រភេទទេ",
 
     // Login page
     signInToAccountMsg: "ចូលទៅគណនីរបស់អ្នក",
@@ -1482,6 +1528,10 @@ export const translations = {
     dailyExportDownloadAction: "ទាញយក",
     dailyExportDownloadingAction: "កំពុងទាញយក...",
     dailyExportTotalCountMsg: "សរុប៖ {n} របាយការណ៍",
+    dailyExportDeleteConfirmTitle: "លុបរបាយការណ៍នេះ?",
+    dailyExportDeleteConfirmMsg: "ការនេះនឹងលុបឯកសារចេញពី Google Drive ផងដែរ។ សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។",
+    dailyExportDeletedTitle: "លុបរបាយការណ៍រួច",
+    dailyExportDeletedMsg: "របាយការណ៍ត្រូវបានលុបចេញ។",
 
     // Backups
     backups: "បម្រុងទុកទិន្នន័យ",

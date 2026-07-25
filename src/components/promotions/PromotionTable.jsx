@@ -10,6 +10,7 @@ export default function PromotionTable({
   onEdit,
   onDelete,
   onToggleStatus,
+  deletingId,
   t,
 }) {
   const COLUMNS = [
@@ -139,6 +140,7 @@ export default function PromotionTable({
                 onEdit={onEdit}
                 onDelete={onDelete}
                 onToggleStatus={onToggleStatus}
+                isDeleting={deletingId === promo.id}
                 t={t}
               />
             ))}

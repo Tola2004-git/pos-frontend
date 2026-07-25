@@ -13,6 +13,7 @@ function PaymentMethodCard({
   t,
 }) {
   const [isToggling, setIsToggling] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleToggleStatus = async () => {
     if (isToggling) return;
@@ -34,11 +35,16 @@ function PaymentMethodCard({
     const result = await alertConfirmDelete(t.deletePaymentConfirmTitle, t.deletePaymentConfirmMsg, t.cancel, t.deleteAction);
     if (!result.isConfirmed) return;
 
-    const deleteResult = await onDelete(method.id);
-    if (deleteResult.success){
-      alertSuccess(t.paymentDeletedTitle, t.paymentDeletedMsg);
-    }else{
-      alertError(t.tableDeleteFailedTitle, deleteResult?.error || t.unableToDeleteMsg );
+    setIsDeleting(true);
+    try {
+      const deleteResult = await onDelete(method.id);
+      if (deleteResult.success){
+        alertSuccess(t.paymentDeletedTitle, t.paymentDeletedMsg);
+      }else{
+        alertError(t.tableDeleteFailedTitle, deleteResult?.error || t.unableToDeleteMsg );
+      }
+    } finally {
+      setIsDeleting(false);
     }
   };
   return (
@@ -131,11 +137,19 @@ function PaymentMethodCard({
               action: () => onEdit(method),
             },
             {
-              icon: <Trash size={20} color="white" variant="Outline" />,
+              icon: isDeleting ? (
+                <svg className="animate-spin" width="20" height="20" viewBox="0 0 18 18" fill="none">
+                  <circle cx="9" cy="9" r="7" stroke="rgba(255,255,255,0.3)" strokeWidth="2" />
+                  <path d="M9 2 A7 7 0 0 1 16 9" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+              ) : (
+                <Trash size={20} color="white" variant="Outline" />
+              ),
               label: t.deleteAction,
               action: handleDelete,
+              disabled: isDeleting,
             },
-          ].map(({ icon, label, action }) => (
+          ].map(({ icon, label, action, disabled }) => (
             <div
               key={label}
               style={{ position: "relative", display: "inline-block" }}
@@ -148,14 +162,16 @@ function PaymentMethodCard({
             >
               <button
                 onClick={action}
-                className="duration-200 hover:scale-110 transition-transform"
+                disabled={disabled}
+                className={disabled ? "" : "duration-200 hover:scale-110 transition-transform"}
                 style={{
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  cursor: "pointer",
+                  cursor: disabled ? "not-allowed" : "pointer",
                   padding: "5px",
                   fontSize: "0.9rem",
+                  opacity: disabled ? 0.6 : 1,
                 }}
               >
                 {icon}

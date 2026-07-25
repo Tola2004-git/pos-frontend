@@ -13,7 +13,7 @@ const inputStyle = {
   outline: "none",
 };
 
-export function StockHistoryFilters({
+export function IngredientStockHistoryFilters({
   search,
   onSearch,
   actionFilter,
@@ -64,7 +64,7 @@ export function StockHistoryFilters({
         <SearchNormal1 size={18} color="#fff" variant="outline" />
         <input
           type="text"
-          placeholder={t.searchProductNamePlaceholder}
+          placeholder={t.searchIngredientNamePlaceholder}
           value={search}
           onChange={(e) => onSearch(e.target.value)}
           style={inputStyle}

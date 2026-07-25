@@ -22,6 +22,7 @@ function Promotions() {
   const [editPromotion, setEditPromotion] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [showFilter, setShowFilter] = useState(false);
@@ -97,7 +98,9 @@ function Promotions() {
     );
     if (!result.isConfirmed) return;
 
+    setDeletingId(id);
     const response = await deletePromotion(id);
+    setDeletingId(null);
     if (response.success){
       alertSuccess(t.paymentDeletedTitle, t.promotionDeletedMsg);
     } else {
@@ -116,6 +119,7 @@ function Promotions() {
       end_date: promo.end_date,
       status: !promo.status,
       product_ids: promo.products?.map((p) => p.id) ?? [],
+      category_ids: promo.categories?.map((c) => c.id) ?? [],
     });
     if (result.success) {
       alertSuccess(t.successTitle, t.promotionStatusUpdatedMsg);
@@ -212,6 +216,7 @@ function Promotions() {
         onEdit={openEdit}
         onDelete={handleDelete}
         onToggleStatus={handleToggleStatus}
+        deletingId={deletingId}
         t={t}
       />
 

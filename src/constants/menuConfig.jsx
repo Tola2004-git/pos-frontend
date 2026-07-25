@@ -77,6 +77,12 @@ export const MENU_ITEMS = [
     icon: Cake,
     roles: ["admin"],
   },
+  {
+    key: "ingredientStockHistory",
+    path: "/ingredients/history",
+    icon: ReceiptSearch,
+    roles: ["admin"],
+  },
 
   // Marketing & configuration
   {

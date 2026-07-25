@@ -25,6 +25,7 @@ function Products() {
     setPage,
     lastPage,
     total,
+    deletingId,
     fetchProducts,
     handleDelete,
   } = useProducts();
@@ -38,6 +39,7 @@ function Products() {
     setCatForm,
     catError,
     catSubmitting,
+    deletingCatId,
     handleCatSubmit,
     handleCatDelete,
     toggleCatStatus,
@@ -188,6 +190,7 @@ function Products() {
         onEdit={handleEdit}
         onDelete={handleDelete}
         onRecipe={setRecipeProduct}
+        deletingId={deletingId}
         t={t}
       />
 
@@ -278,6 +281,7 @@ function Products() {
           setCatForm={setCatForm}
           catError={catError}
           catSubmitting={catSubmitting}
+          deletingCatId={deletingCatId}
           onSubmit={handleCatSubmit}
           onDelete={handleCatDelete}
           onToggleStatus={toggleCatStatus}

@@ -47,6 +47,7 @@ export default function IngredientsTable({
   onEdit,
   onDelete,
   onRestock,
+  deletingId,
   t,
 }) {
   const COLUMNS = [
@@ -311,18 +312,27 @@ export default function IngredientsTable({
                         <Tooltip label={t.deleteAction}>
                           <button
                             onClick={() => onDelete(ingredient.id)}
+                            disabled={deletingId === ingredient.id}
                             className="duration-200 hover:scale-110 transition-transform"
                             style={{
                               padding: "6px",
                               borderRadius: "8px",
                               border: "none",
-                              cursor: "pointer",
+                              cursor: deletingId === ingredient.id ? "not-allowed" : "pointer",
                               background: "transparent",
                               display: "flex",
                               alignItems: "center",
+                              opacity: deletingId === ingredient.id ? 0.6 : 1,
                             }}
                           >
-                            <Trash size="20" color="#fff" variant="Linear" />
+                            {deletingId === ingredient.id ? (
+                              <svg className="animate-spin" width="20" height="20" viewBox="0 0 18 18" fill="none">
+                                <circle cx="9" cy="9" r="7" stroke="rgba(255,255,255,0.3)" strokeWidth="2" />
+                                <path d="M9 2 A7 7 0 0 1 16 9" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                              </svg>
+                            ) : (
+                              <Trash size="20" color="#fff" variant="Linear" />
+                            )}
                           </button>
                         </Tooltip>
                       </div>
