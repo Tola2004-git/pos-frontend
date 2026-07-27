@@ -1,10 +1,9 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import {
   fetchOrdersApi,
   fetchProductsApi,
   fetchPaymentMethodsApi,
-  fetchLatestOrderApi,
   cancelOrderApi,
   refundOrderApi,
 } from "../api/ordersApi";
@@ -44,7 +43,6 @@ export function useOrders({ defaultToday = false } = {}) {
   const [lastPage, setLastPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [toasts, setToasts] = useState([]);
-  const lastOrderId = useRef(null);
   const [focusedField, setFocusedField] = useState("");
   const [cancelLoadingId, setCancelLoadingId] = useState(null);
   const [refundLoadingId, setRefundLoadingId] = useState(null);
@@ -83,17 +81,14 @@ export function useOrders({ defaultToday = false } = {}) {
     setTimeout(() => removeToast(id), duration);
   }, [removeToast]);
 
+  // Keeps this list in sync when an order changes anywhere - another
+  // terminal, a table action, this same session's own POS flow - via the
+  // app-wide real-time broadcast (see realtime.js), instead of the fixed
+  // 5s poll this used to run that had no visible effect on its own.
   useEffect(() => {
-    const interval = setInterval(async () => {
-      try {
-        const res = await fetchLatestOrderApi();
-        if (res.data.order && res.data.order.id !== lastOrderId.current) {
-          lastOrderId.current = res.data.order.id;
-        }
-      } catch {}
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [addToast]);
+    window.addEventListener("orders:refresh", fetchOrders);
+    return () => window.removeEventListener("orders:refresh", fetchOrders);
+  }, [fetchOrders]);
 
   const handleCancel = async (id) => {
     const result = await alertConfirmWarning(
@@ -150,7 +145,6 @@ export function useOrders({ defaultToday = false } = {}) {
     toasts,
     addToast,
     removeToast,
-    lastOrderId,
     fetchOrders,
     handleCancel,
     cancelLoadingId,
@@ -172,8 +166,14 @@ export function useProducts() {
 
   const refetch = () =>
     fetchProductsApi()
-      .then((res) => setProducts(res.data.data))
-      .catch(console.error);
+      .then((res) => {
+        setProducts(res.data.data);
+        return res.data.data;
+      })
+      .catch((err) => {
+        console.error(err);
+        return null;
+      });
 
   return { products, refetchProducts: refetch };
 }

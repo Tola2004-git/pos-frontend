@@ -5,7 +5,7 @@ import { useTranslations } from "../../hooks/useTranslations";
 import { useCashierShift, resetCashierShiftCache } from "../../hooks/useCashierShift";
 import { useBackgroundChanger } from "../../hooks/useBackgroundChanger";
 import { alertSuccess, alertConfirmWarning } from "../../utils/alert.jsx";
-import { glass, glassCard, colors } from "../../utils/styles";
+import { glass, glassCard } from "../../utils/styles";
 import LangDropdown from "./LangDropdown";
 import UserProfile from "./UserProfile";
 import BackgroundChanger from "../BackgroundChanger";

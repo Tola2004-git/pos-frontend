@@ -18,6 +18,7 @@ export function CartSidebar({
   onUpdateQty,
   onRemove,
   onProceedToPayment,
+  proceedLoading = false,
   customerName,
   onCustomerNameChange,
   customerPhone,
@@ -218,13 +219,22 @@ export function CartSidebar({
       {/* Proceed to Payment Button */}
       <button
         onClick={onProceedToPayment}
-        disabled={!canProceed}
+        disabled={!canProceed || proceedLoading}
         className={`btn-shine-blue w-full p-3 rounded-[12px] font-bold text-sm flex items-center justify-center gap-2 transition-opacity duration-200 ${
-          !canProceed ? "opacity-50 cursor-not-allowed" : "opacity-100"
+          !canProceed || proceedLoading ? "opacity-50 cursor-not-allowed" : "opacity-100"
         }`}
       >
-        {tr("nextPayment", "Next: Payment")}
-        <ArrowRight2 size={20} color="white" variant="Linear" />
+        {proceedLoading ? (
+          <svg className="animate-spin" width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <circle cx="9" cy="9" r="7" stroke="rgba(255,255,255,0.3)" strokeWidth="2" />
+            <path d="M9 2 A7 7 0 0 1 16 9" stroke="white" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+        ) : (
+          <>
+            {tr("nextPayment", "Next: Payment")}
+            <ArrowRight2 size={20} color="white" variant="Linear" />
+          </>
+        )}
       </button>
     </div>
   );

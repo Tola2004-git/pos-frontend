@@ -1,14 +1,15 @@
 import { useCallback, useRef, useState } from "react";
 import { createOrderApi, updateOrderApi } from "../api/ordersApi";
 import { alertWarning, alertError } from "../utils/alert.jsx";
+import { isCashLike, findRealCashMethod } from "../utils/cashPaymentMethod";
 import { useTranslations } from "./useTranslations";
 
 export function usePOS({
   onOrderCreated,
   addToast,
-  lastOrderId,
   promotions = [],
   paymentMethods = [],
+  refetchProducts,
 }) {
   const { t } = useTranslations();
   const [showPOS, setShowPOS] = useState(false);
@@ -81,7 +82,7 @@ export function usePOS({
         stock: availableStock,
       },
     ]);
-  }, [cart]);
+  }, [cart, t.outOfStockMsg, t.outOfStockTitle, t.stockLimitMsg, t.stockLimitTitle]);
 
   const updateQty = (product_id, qty) => {
     if (qty <= 0) {
@@ -122,6 +123,69 @@ export function usePOS({
   const removeFromCart = (product_id) => {
     setCart((prev) => prev.filter((i) => i.product_id !== product_id));
   };
+
+  // Cart quantities are validated against whatever stock number was on the
+  // product when it was added - possibly minutes ago, and possibly stale if
+  // another terminal sold the same item meanwhile. The backend re-validates
+  // for real inside the checkout transaction (so nothing ever oversells),
+  // but that error only surfaces after the cashier has already filled out
+  // the whole payment step. Refetching here and clamping/warning before
+  // moving to step 2 catches it earlier, while it's still cheap to fix.
+  const proceedToPayment = useCallback(async () => {
+    if (cart.length === 0) return;
+
+    if (typeof refetchProducts !== "function") {
+      setPosStep(2);
+      return;
+    }
+
+    const freshProducts = await refetchProducts();
+    if (!Array.isArray(freshProducts)) {
+      // Refetch failed (e.g. network hiccup) - don't block the cashier over
+      // it, the backend still re-validates stock for real at checkout.
+      setPosStep(2);
+      return;
+    }
+
+    const shortages = [];
+    const adjustedCart = cart
+      .map((item) => {
+        const fresh = freshProducts.find((p) => p.id === item.product_id);
+        const freshStock = Number(fresh?.qty) || 0;
+
+        if (freshStock < item.quantity) {
+          shortages.push({ name: item.product_name, available: freshStock });
+          if (freshStock <= 0) return null;
+          return {
+            ...item,
+            quantity: freshStock,
+            subtotal: freshStock * item.price,
+            stock: freshStock,
+          };
+        }
+
+        return { ...item, stock: freshStock };
+      })
+      .filter(Boolean);
+
+    if (shortages.length > 0) {
+      setCart(adjustedCart);
+      alertWarning(
+        t.stockChangedTitle,
+        shortages
+          .map((s) =>
+            s.available > 0
+              ? t.stockLimitMsg.replace("{n}", s.available).replace("{name}", s.name)
+              : t.outOfStockMsg.replace("{name}", s.name),
+          )
+          .join("\n"),
+      );
+      return;
+    }
+
+    setPosStep(2);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cart, refetchProducts]);
 
   const isPromotionValid = (promotion) => {
     if (!promotion || !promotion.status) return false;
@@ -190,17 +254,6 @@ export function usePOS({
 
     return discount;
   };
-
-  const getItemPromotions = (item) =>
-    promotions.filter((promotion) => matchesPromotion(item, promotion) && isPromotionValid(promotion));
-
-  const getItemDiscount = (item) =>
-    getItemPromotions(item).reduce((sum, promotion) => {
-      if (promotion.type === "percentage") {
-        return sum + (item.subtotal * Number(promotion.value)) / 100;
-      }
-      return sum + Number(promotion.value) * item.quantity;
-    }, 0);
 
   const computeDiscount = (cart) =>
     promotions.reduce(
@@ -277,21 +330,11 @@ export function usePOS({
   const resolvePaymentMethodId = (paymentMethod) => {
     if (!paymentMethod) return null;
 
-    const isCashMethod =
-      paymentMethod?.is_cash ||
-      paymentMethod?.name?.toLowerCase() === "cash" ||
-      paymentMethod?.type === "cash" ||
-      paymentMethod?.id === "cash";
-
-    if (isCashMethod) {
+    if (isCashLike(paymentMethod)) {
       // Cash's real database id varies per environment (seeded via
       // updateOrInsert, so it isn't guaranteed to be 1) - look it up from
-      // the actual fetched list instead of assuming an id. Prefer the
-      // is_cash flag (survives renaming the method) over the name match.
-      const realCashMethod = paymentMethods.find(
-        (m) => m.is_cash || m.name?.toLowerCase() === "cash" || m.type === "cash",
-      );
-      return realCashMethod?.id ?? null;
+      // the actual fetched list instead of assuming an id.
+      return findRealCashMethod(paymentMethods)?.id ?? null;
     }
 
     const rawId = paymentMethod?.payment_method_id ?? paymentMethod?.id;
@@ -304,7 +347,6 @@ export function usePOS({
   const handleCreateOrder = async ({
     status = "completed",
     table_id = null,
-    totalDue = totalAmount,
     paidAmount = amountPaid,
     selectedCurrency = "USD",
     exchangeRateUsed = 4100,
@@ -326,6 +368,12 @@ export function usePOS({
 
     const normalizedStatus = status === "hold" ? "pending" : status;
     const selectedPaymentMethodId = resolvePaymentMethodId(selectedPayment);
+
+    if (status === "completed" && selectedPayment && selectedPaymentMethodId === null) {
+      alertWarning(t.paymentMethodRequiredTitle, t.paymentMethodUnavailableMsg);
+      return;
+    }
+
     const selectedPromotion = getSelectedPromotionForOrder();
 
     // amountPaid is always normalized to USD internally (see useCurrencyConversion).
@@ -377,7 +425,6 @@ export function usePOS({
         ? await updateOrderApi(resumingOrderId, payload)
         : await createOrderApi(payload);
       addToast(res.data.order, status === "hold" ? "hold" : "payment");
-      lastOrderId.current = res.data.order.id;
       closePOS();
       onOrderCreated();
       if (typeof window !== "undefined") {
@@ -414,6 +461,7 @@ export function usePOS({
     addToCart,
     updateQty,
     removeFromCart,
+    proceedToPayment,
     closePOS,
     handleCreateOrder,
     resumingOrderId,

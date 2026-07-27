@@ -34,8 +34,7 @@ function CashierHome() {
   const { categories } = useCategories();
   const { paymentMethods } = usePaymentMethods();
   const { promotions } = usePromotions();
-  const { toasts, addToast, removeToast, lastOrderId, fetchOrders } =
-    useOrders();
+  const { toasts, addToast, removeToast, fetchOrders } = useOrders();
 
   const [initialTableId, setInitialTableId] = useState(null);
 
@@ -58,9 +57,9 @@ function CashierHome() {
       refetchProducts();
     },
     addToast,
-    lastOrderId,
     promotions,
     paymentMethods,
+    refetchProducts,
   });
 
   const openTableOrder = (table) => {
@@ -70,9 +69,6 @@ function CashierHome() {
       table.current_order?.status === "pending" ? table.current_order : null;
 
     if (heldOrder) {
-      // Resume the existing held order - load its items into the cart so
-      // the cashier can add more or go straight to checkout, instead of
-      // starting a second, unrelated order on the same table.
       pos.loadOrderIntoCart(heldOrder, products);
     } else {
       pos.setOrderType("dine-in");

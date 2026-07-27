@@ -13,7 +13,7 @@ export function SkeletonDailyExportRow({ index = 0 }) {
       <td className="px-4 py-3.5">{s(60)}</td>
       <td className="px-4 py-3.5">{s(110)}</td>
       <td className="px-4 py-3.5">
-        <div className="flex items-center gap-2 justify-end">
+        <div className="flex items-center gap-2 justify-start">
           <Skeleton width={90} height={28} borderRadius={8} style={{ animationDelay: delay }} />
           <Skeleton width={18} height={18} borderRadius={6} style={{ animationDelay: delay }} />
         </div>

@@ -244,7 +244,7 @@ function Expenses() {
           )}
         </div>
       </div>
-
+                  
       <div
         style={{ ...glassCard, borderRadius: "20px", overflow: "hidden" }}
         className="mb-4"
@@ -264,11 +264,8 @@ function Expenses() {
                 ].map((h, i) => (
                   <th
                     key={h || `col-${i}`}
-                    style={{
-                      color: colors.whiteFull,
-                      textAlign: i === 6 ? "right" : "left",
-                    }}
-                    className={`font-semibold py-3.5 text-[0.82rem] whitespace-nowrap ${i === 6 ? "px-4 pr-6" : "px-4"}`}
+                    style={{ color: colors.whiteFull }}
+                    className="font-semibold px-4 py-3.5 text-[0.82rem] whitespace-nowrap"
                   >
                     {h}
                   </th>
@@ -315,9 +312,10 @@ function Expenses() {
                     </td>
                     <td className="px-4 py-3.5 whitespace-nowrap">
                       {Number(exp.amount_usd) > 0 && fmtUsd(exp.amount_usd)}
-                      {Number(exp.amount_usd) > 0 && Number(exp.amount_khr) > 0 && (
-                        <span className="text-white/50"> / </span>
-                      )}
+                      {Number(exp.amount_usd) > 0 &&
+                        Number(exp.amount_khr) > 0 && (
+                          <span className="text-white/50"> / </span>
+                        )}
                       {Number(exp.amount_khr) > 0 && fmtKhr(exp.amount_khr)}
                     </td>
                     <td className="px-4 py-3.5 whitespace-nowrap">
@@ -326,12 +324,12 @@ function Expenses() {
                     <td className="px-4 py-3.5 whitespace-nowrap text-white/70">
                       {exp.user?.name || t.naLabel}
                     </td>
-                    <td className="px-4 pr-6 py-3.5 text-right whitespace-nowrap">
-                      <div className="flex gap-2 justify-end">
+                    <td className="px-4 py-3.5 whitespace-nowrap">
+                      <div className="flex gap-2 justify-start">
                         <Tooltip label={t.editAction}>
                           <button
                             onClick={() => openEdit(exp)}
-                            className="p-1.5 rounded-lg border-none bg-transparent cursor-pointer hover:scale-110 transition-transform"
+                            className="p-1.5 rounded-lg border-none bg-transparent cursor-pointer hover:scale-110 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
                           >
                             <Edit size="18" color="#fff" variant="Linear" />
                           </button>
@@ -340,7 +338,7 @@ function Expenses() {
                           <button
                             onClick={() => deleteExpense(exp.id)}
                             disabled={deletingId === exp.id}
-                            className="p-1.5 rounded-lg border-none bg-transparent cursor-pointer hover:scale-110 transition-transform disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
+                            className="p-1.5 rounded-lg border-none bg-transparent cursor-pointer hover:scale-110 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
                           >
                             {deletingId === exp.id ? (
                               <svg

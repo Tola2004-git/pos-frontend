@@ -197,11 +197,13 @@ export const ProductGrid = memo(function ProductGrid({
                   </div>
                 )}
 
-                {/* Low Stock Badge */}
+                {/* Low Stock Ribbon */}
                 {isLowStock && (
-                  <span className="absolute left-1.5 top-1.5 z-10 rounded-full bg-amber-500/95 px-2 py-0.5 text-[0.6rem] font-bold uppercase tracking-wide text-[#1a1a2e] shadow-sm">
-                    {tr("lowStock", "Low Stock")}
-                  </span>
+                  <div className="pointer-events-none absolute right-0 top-0 z-10 h-16 w-16 overflow-hidden">
+                    <span className="absolute right-[-30px] top-[13px] block w-[110px] rotate-45 bg-amber-500/95 py-[3px] text-center text-[0.56rem] font-bold uppercase tracking-wide text-white shadow-sm">
+                      {tr("lowStock", "Low Stock")}
+                    </span>
+                  </div>
                 )}
 
                 {/* Product Image */}

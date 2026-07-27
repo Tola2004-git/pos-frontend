@@ -1,8 +1,16 @@
-import { CloudChange, DocumentDownload, Refresh, Trash } from "iconsax-react";
+import {
+  CloudChange,
+  DocumentDownload,
+  Refresh,
+  Trash,
+  ArrowRotateLeft,
+} from "iconsax-react";
 import Layout from "../components/layout/Layout";
 import { glassCard, colors } from "../utils/styles";
 import { useBackups } from "../hooks/useBackups";
 import { useTranslations } from "../hooks/useTranslations";
+import { Tooltip } from "../components/ui/Tooltip";
+import { SkeletonBackupTable } from "../components/ui/SkeletonBackup";
 
 function fmtDateTime(v) {
   return v ? new Date(v).toLocaleString() : "—";
@@ -68,11 +76,13 @@ function Backups() {
         <h2 className="text-white font-bold text-2xl m-0">{t.backups}</h2>
       </div>
 
-      <div style={glassCard} className="rounded-[20px] p-5 mb-5">
+      <div style={glassCard} className="rounded-[20px] p-5 mb-5 w-fit">
         <h3 className="text-white font-bold text-base m-0 mb-2">
           {t.backupGenerateTitle}
         </h3>
-        <p className="text-white/50 text-sm m-0 mb-3">{t.backupGenerateSubtitle}</p>
+        <p className="text-white/50 text-sm m-0 mb-3">
+          {t.backupGenerateSubtitle}
+        </p>
         <button
           onClick={handleGenerate}
           disabled={generating}
@@ -102,7 +112,7 @@ function Backups() {
                   t.backupColSize,
                   t.backupColDisks,
                   t.backupColCreatedAt,
-                  "",
+                  t.productColActions,
                 ].map((h) => (
                   <th
                     key={h}
@@ -116,20 +126,22 @@ function Backups() {
             </thead>
             <tbody>
               {loading ? (
-                <tr>
-                  <td colSpan={6} className="px-4 py-10 text-center text-white/50">
-                    {t.loadingMsg}
-                  </td>
-                </tr>
+                <SkeletonBackupTable rows={6} />
               ) : backups.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-4 py-10 text-center text-white/50">
+                  <td
+                    colSpan={6}
+                    className="px-4 py-10 text-center text-white/50"
+                  >
                     {t.backupNoneFoundMsg}
                   </td>
                 </tr>
               ) : (
                 backups.map((b) => (
-                  <tr key={b.id} className="border-b border-white/5 text-white/85">
+                  <tr
+                    key={b.id}
+                    className="border-b border-white/5 text-white/85"
+                  >
                     <td className="px-4 py-3.5 font-medium text-white whitespace-nowrap">
                       {b.filename}
                     </td>
@@ -154,52 +166,112 @@ function Backups() {
                     <td className="px-4 py-3.5 whitespace-nowrap">
                       {fmtDateTime(b.created_at)}
                     </td>
-                    <td className="px-4 py-3.5 text-right whitespace-nowrap">
-                      <div className="flex gap-2 justify-end">
+                    <td className="px-4 py-3.5 whitespace-nowrap">
+                      <div className="flex gap-2 justify-start">
                         <button
                           onClick={() => handleDownload(b)}
-                          disabled={b.status !== "success" || downloadingId === b.id}
+                          disabled={
+                            b.status !== "success" || downloadingId === b.id
+                          }
                           className="btn-shine-blue px-3 py-1.5 rounded-[8px] text-xs font-semibold flex items-center gap-1.5 disabled:opacity-40"
                         >
-                          <DocumentDownload size={14} color="#fff" variant="Linear" />
+                          <DocumentDownload
+                            size={14}
+                            color="#fff"
+                            variant="Linear"
+                          />
                           {downloadingId === b.id
                             ? t.dailyExportDownloadingAction
                             : t.dailyExportDownloadAction}
                         </button>
-                        <button
-                          onClick={() => handleRestore(b)}
-                          disabled={b.status !== "success" || restoringId === b.id}
-                          className="px-3 py-1.5 rounded-[8px] text-xs font-semibold flex items-center gap-1.5 disabled:opacity-40"
-                          style={{
-                            background: "rgba(231,76,60,0.2)",
-                            border: "1px solid rgba(231,76,60,0.4)",
-                            color: "#ff6b6b",
-                          }}
+                        <Tooltip
+                          label={
+                            restoringId === b.id
+                              ? t.backupRestoringAction
+                              : t.backupRestoreAction
+                          }
                         >
-                          {restoringId === b.id
-                            ? t.backupRestoringAction
-                            : t.backupRestoreAction}
-                        </button>
-                        <button
-                          onClick={() => handleDelete(b)}
-                          disabled={deletingId === b.id}
-                          className="px-3 py-1.5 rounded-[8px] text-xs font-semibold flex items-center gap-1.5 disabled:opacity-40"
-                          style={{
-                            background: "rgba(255,255,255,0.08)",
-                            border: "1px solid rgba(255,255,255,0.15)",
-                            color: "rgba(255,255,255,0.85)",
-                          }}
+                          <button
+                            onClick={() => handleRestore(b)}
+                            disabled={
+                              b.status !== "success" || restoringId === b.id
+                            }
+                            className="p-1.5 rounded-[8px] flex items-center justify-center disabled:opacity-60 hover:scale-110 transition-all duration-200 disabled:hover:scale-100"
+                          >
+                            {restoringId === b.id ? (
+                              <svg
+                                className="animate-spin"
+                                width="16"
+                                height="16"
+                                viewBox="0 0 18 18"
+                                fill="none"
+                              >
+                                <circle
+                                  cx="9"
+                                  cy="9"
+                                  r="7"
+                                  stroke="rgba(255,255,255,0.3)"
+                                  strokeWidth="2"
+                                />
+                                <path
+                                  d="M9 2 A7 7 0 0 1 16 9"
+                                  stroke="#ff6b6b"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                />
+                              </svg>
+                            ) : (
+                              <ArrowRotateLeft
+                                size={18}
+                                color="currentColor"
+                                variant="Linear"
+                              />
+                            )}
+                          </button>
+                        </Tooltip>
+                        <Tooltip
+                          label={
+                            deletingId === b.id
+                              ? t.deletingAction
+                              : t.deleteAction
+                          }
                         >
-                          {deletingId === b.id ? (
-                            <svg className="animate-spin" width="14" height="14" viewBox="0 0 18 18" fill="none">
-                              <circle cx="9" cy="9" r="7" stroke="rgba(255,255,255,0.3)" strokeWidth="2" />
-                              <path d="M9 2 A7 7 0 0 1 16 9" stroke="white" strokeWidth="2" strokeLinecap="round" />
-                            </svg>
-                          ) : (
-                            <Trash size={14} color="currentColor" variant="Linear" />
-                          )}
-                          {deletingId === b.id ? t.deletingAction : t.deleteAction}
-                        </button>
+                          <button
+                            onClick={() => handleDelete(b)}
+                            disabled={deletingId === b.id}
+                            className="p-1.5 rounded-[8px] flex items-center justify-center disabled:opacity-60 hover:scale-110 transition-all duration-200 disabled:hover:scale-100"
+                          >
+                            {deletingId === b.id ? (
+                              <svg
+                                className="animate-spin"
+                                width="16"
+                                height="16"
+                                viewBox="0 0 18 18"
+                                fill="none"
+                              >
+                                <circle
+                                  cx="9"
+                                  cy="9"
+                                  r="7"
+                                  stroke="rgba(255,255,255,0.3)"
+                                  strokeWidth="2"
+                                />
+                                <path
+                                  d="M9 2 A7 7 0 0 1 16 9"
+                                  stroke="white"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                />
+                              </svg>
+                            ) : (
+                              <Trash
+                                size={18}
+                                color="currentColor"
+                                variant="Linear"
+                              />
+                            )}
+                          </button>
+                        </Tooltip>
                       </div>
                     </td>
                   </tr>

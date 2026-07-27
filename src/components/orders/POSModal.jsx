@@ -10,6 +10,7 @@ import { glassCard } from "../../utils/styles";
 import apiClient from "../../api/apiClient";
 import { changeTableApi } from "../../api/ordersApi";
 import { alertConfirmWarning } from "../../utils/alert.jsx";
+import { isCashLike, findRealCashMethod } from "../../utils/cashPaymentMethod";
 import { useTranslations } from "../../hooks/useTranslations";
 
 // Import custom hooks
@@ -54,6 +55,7 @@ export default function POSModal({
   addToCart,
   updateQty,
   removeFromCart,
+  proceedToPayment,
   closePOS,
   handleCreateOrder,
   promotions = [],
@@ -65,15 +67,13 @@ export default function POSModal({
   // Cash's real database id varies per environment (seeded via
   // updateOrInsert, so it isn't guaranteed to be 1) - resolve it from the
   // actual fetched list, falling back to the "cash" placeholder id.
-  const cashPaymentMethodId =
-    paymentMethods.find(
-      (m) => m.name?.toLowerCase() === "cash" || m.type === "cash",
-    )?.id ?? "cash";
+  const cashPaymentMethodId = findRealCashMethod(paymentMethods)?.id ?? "cash";
 
   // Local UI state
   const [focusedField, setFocusedField] = useState("");
   const [isHolding, setIsHolding] = useState(false);
   const [isConfirming, setIsConfirming] = useState(false);
+  const [isProceeding, setIsProceeding] = useState(false);
   const [exchangeRate, setExchangeRate] = useState(4100);
   const [selectedCurrency, setSelectedCurrency] = useState("USD");
   const [amountPaidInput, setAmountPaidInput] = useState("");
@@ -222,10 +222,7 @@ export default function POSModal({
   const resolvePaymentMethod = (method) => {
     if (!method) return null;
 
-    const isCashMethod =
-      method?.name?.toLowerCase() === "cash" || method?.type === "cash";
-
-    if (!isCashMethod) return method;
+    if (!isCashLike(method)) return method;
 
     return {
       ...(method || {}),
@@ -245,10 +242,7 @@ export default function POSModal({
     }
 
     setSelectedPayment(normalizedMethod);
-    if (
-      normalizedMethod?.name?.toLowerCase() !== "cash" &&
-      normalizedMethod?.type !== "cash"
-    ) {
+    if (!isCashLike(normalizedMethod)) {
       setAmountPaid(totalAmountWithDiscount);
     } else {
       setAmountPaid(0);
@@ -366,6 +360,26 @@ export default function POSModal({
     }
     const usdValue = currency.parseInputAmount(inputValue, selectedCurrency);
     setAmountPaid(usdValue);
+  };
+
+  const handleProceedToPayment = async () => {
+    if (cart.length === 0 || isProceeding) return;
+
+    // The admin "Edit Order" flow (Orders.jsx) manages its own cart state
+    // instead of going through usePOS(), so it doesn't have a
+    // proceedToPayment to call - fall back to the plain step change it used
+    // before this existed.
+    if (typeof proceedToPayment !== "function") {
+      setPosStep(2);
+      return;
+    }
+
+    setIsProceeding(true);
+    try {
+      await proceedToPayment();
+    } finally {
+      setIsProceeding(false);
+    }
   };
 
   if (!isMounted) return null;
@@ -492,7 +506,8 @@ export default function POSModal({
                 cart={cart}
                 onUpdateQty={updateQty}
                 onRemove={removeFromCart}
-                onProceedToPayment={() => cart.length > 0 && setPosStep(2)}
+                onProceedToPayment={handleProceedToPayment}
+                proceedLoading={isProceeding}
                 customerName={customerName}
                 onCustomerNameChange={setCustomerName}
                 customerPhone={customerPhone}

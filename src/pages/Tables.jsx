@@ -1,7 +1,7 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import Layout from "../components/layout/Layout";
 import { SidebarContext } from "../App";
-import { glass, glassCard, colors } from "../utils/styles";
+import { glassCard } from "../utils/styles";
 import { TABLE_STATUS_STYLES } from "../constants/tableStatus";
 import useTables from "../hooks/useTables";
 import TableCard from "../components/tables/tableCard";
@@ -88,12 +88,16 @@ function Tables() {
   const availableCount = tables.filter((tbl) => tbl.status === "available").length;
   const occupiedCount = tables.filter((tbl) => tbl.status === "occupied").length;
   const reservedCount = tables.filter((tbl) => tbl.status === "reserved").length;
-  const availableTargets = moveTable
-    ? tables.filter(
-        (candidate) =>
-          candidate.id !== moveTable.id && candidate.status === "available",
-      )
-    : [];
+  const availableTargets = useMemo(
+    () =>
+      moveTable
+        ? tables.filter(
+            (candidate) =>
+              candidate.id !== moveTable.id && candidate.status === "available",
+          )
+        : [],
+    [tables, moveTable],
+  );
 
   useEffect(() => {
     if (!moveModalOpen || !moveTable) return;

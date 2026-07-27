@@ -120,11 +120,8 @@ function DailyExports() {
                 ].map((h, i) => (
                   <th
                     key={h || `col-${i}`}
-                    style={{
-                      color: colors.whiteFull,
-                      textAlign: i === 4 ? "right" : "left",
-                    }}
-                    className={`font-semibold py-3.5 text-[0.82rem] whitespace-nowrap ${i === 4 ? "px-4 pr-6" : "px-4"}`}
+                    style={{ color: colors.whiteFull }}
+                    className="font-semibold px-4 py-3.5 text-[0.82rem] whitespace-nowrap"
                   >
                     {h}
                   </th>
@@ -161,8 +158,8 @@ function DailyExports() {
                     <td className="px-4 py-3.5 whitespace-nowrap">
                       {fmtDateTime(exp.generated_at)}
                     </td>
-                    <td className="px-4 pr-6 py-3.5 text-right">
-                      <div className="flex items-center gap-2 justify-end">
+                    <td className="px-4 py-3.5">
+                      <div className="flex items-center gap-2 justify-start">
                         <button
                           onClick={() => handleDownload(exp.export_date)}
                           disabled={downloadingDate === exp.export_date}

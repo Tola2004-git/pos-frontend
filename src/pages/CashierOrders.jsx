@@ -15,28 +15,9 @@ import { fetchSalesByCashierApi } from "../api/ordersApi";
 import { glassCard } from "../utils/styles";
 import { useTranslations } from "../hooks/useTranslations";
 
-// This whole page remounts every time the cashier switches to the "My
-// Sales" tab (CashierHome and CashierOrders each mount their own route, they
-// don't share state). Without caching the last fetched totals, `mySales`
-// would reset to null on every visit, so the card would only pop in after
-// the orders table (which has its own skeleton) had already finished
-// loading - a jarring "appears late" flash. Cache by the query params it
-// depends on so a same-day revisit shows the last known totals immediately
-// while a background refetch keeps them fresh.
 let cachedMySales = null;
 let cachedMySalesKey = null;
 
-// Sales history for the logged-in cashier. The backend
-// (OrderController::index) automatically scopes results to the
-// authenticated cashier's own orders - this page never asks for or trusts
-// a "mine only" flag from the client, so it can't be widened by tampering
-// with the request.
-//
-// Editing a still-pending order reuses the exact same resume-into-cart
-// mechanism as tapping a held table on the Cashier home grid (usePOS's
-// loadOrderIntoCart + resumingOrderId) - this is what lets a cashier edit a
-// takeaway/self-seating pending order too, not just a dine-in one tied to a
-// table card.
 function CashierOrders() {
   const { t } = useTranslations();
   const {
@@ -59,7 +40,6 @@ function CashierOrders() {
     toasts,
     addToast,
     removeToast,
-    lastOrderId,
     fetchOrders,
     handleCancel,
     cancelLoadingId,
@@ -76,9 +56,9 @@ function CashierOrders() {
       refetchProducts();
     },
     addToast,
-    lastOrderId,
     promotions,
     paymentMethods,
+    refetchProducts,
   });
 
   const [initialTableId, setInitialTableId] = useState(null);
@@ -110,7 +90,7 @@ function CashierOrders() {
     return () => {
       active = false;
     };
-  }, [dateFrom, dateTo, currentShiftOnly, orders]);
+  }, [dateFrom, dateTo, currentShiftOnly, orders, salesKey]);
 
   const openOrderForEdit = (order) => {
     setInitialTableId(order.table_id ?? null);

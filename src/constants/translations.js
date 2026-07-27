@@ -613,6 +613,7 @@ export const translations = {
     auditColDate: "Date",
     auditNoneFoundMsg: "No audit activity recorded yet.",
     auditTotalCountMsg: "Total: {n} entries",
+    auditFilterAllActions: "All Actions",
 
     // Ingredient expiry / quality
     expiryDateLabel: "Expiry Date",
@@ -994,10 +995,12 @@ export const translations = {
     outOfStockMsg: "{name} is currently out of stock.",
     stockLimitTitle: "Stock Limit Reached",
     stockLimitMsg: "Only {n} unit(s) of {name} available.",
+    stockChangedTitle: "Stock changed",
     cartEmptyTitle: "Cart is empty",
     cartEmptyMsg: "Please add products to cart!",
     paymentMethodRequiredTitle: "Payment method required",
     paymentMethodRequiredMsg: "Please select a payment method!",
+    paymentMethodUnavailableMsg: "Payment methods are still loading - please wait a moment and try again.",
     tableRequiredTitle: "Table required",
     tableRequiredMsg: "Please select a table before saving this order.",
     orderFailedTitle: "Order failed",
@@ -1617,6 +1620,7 @@ export const translations = {
     auditColDate: "កាលបរិច្ឆេទ",
     auditNoneFoundMsg: "មិនទាន់មានសកម្មភាពត្រូវបានកត់ត្រាទេ។",
     auditTotalCountMsg: "សរុប៖ {n} កំណត់ត្រា",
+    auditFilterAllActions: "គ្រប់សកម្មភាព",
 
     // Ingredient expiry / quality
     expiryDateLabel: "ថ្ងៃផុតកំណត់",
@@ -1999,10 +2003,12 @@ export const translations = {
     outOfStockMsg: "ផលិតផល {name} គឺអស់ពីស្តុកហើយនាពេលនេះ។",
     stockLimitTitle: "កម្រិតស្តុកមិនគ្រប់គ្រាន់",
     stockLimitMsg: "មានសល់ត្រឹមតែ {n} ឯកតាប៉ុណ្ណោះសម្រាប់ {name}។",
+    stockChangedTitle: "ស្តុកបានផ្លាស់ប្តូរ",
     cartEmptyTitle: "កន្ត្រកកម្ម៉ង់ទំនេរ",
     cartEmptyMsg: "សូមជ្រើសរើសផលិតផលចូលទៅក្នុងកន្ត្រកជាមុនសិន!",
     paymentMethodRequiredTitle: "មិនទាន់ជ្រើសរើសវិធីទូទាត់",
     paymentMethodRequiredMsg: "សូមជ្រើសរើសវិធីសាស្ត្រទូទាត់ប្រាក់សម្រាប់ភ្ញៀវ!",
+    paymentMethodUnavailableMsg: "វិធីទូទាត់កំពុងផ្ទុក សូមរង់ចាំបន្តិច ហើយសាកល្បងម្ដងទៀត។",
     tableRequiredTitle: "មិនទាន់បានជ្រើសរើសតុ",
     tableRequiredMsg: "សូមជ្រើសរើសតុអង្គុយ មុនពេលរក្សាទុកការកម្ម៉ង់នេះ។",
     orderFailedTitle: "ដំណើរការកម្ម៉ង់បរាជ័យ",

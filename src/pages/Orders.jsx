@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { RiAddLine } from "react-icons/ri";
 import { ClipboardText, ReceiptAdd, ReceiptItem, ShoppingCart, Chart2 } from "iconsax-react";
-import { glassCard, colors } from "../utils/styles";
+import { glassCard } from "../utils/styles";
 import { useOrders, useProducts, usePaymentMethods } from "../hooks/useOrders";
 import { useCategories } from "../hooks/useCategories";
 import { usePOS } from "../hooks/usePOS";
@@ -42,7 +42,6 @@ function Orders() {
     toasts,
     addToast,
     removeToast,
-    lastOrderId,
     fetchOrders,
     handleCancel,
     cancelLoadingId,
@@ -67,9 +66,9 @@ function Orders() {
       refetchProducts();
     },
     addToast,
-    lastOrderId,
     promotions,
     paymentMethods,
+    refetchProducts,
   });
 
   const [showDetail, setShowDetail] = useState(false);
@@ -87,15 +86,12 @@ function Orders() {
   const [editSelectedPayment, setEditSelectedPayment] = useState(null);
   const [editAmountPaid, setEditAmountPaid] = useState("");
 
+  // Orders themselves now refresh on this same event inside useOrders() -
+  // this only needs to keep the product catalog (stock levels) in sync too.
   useEffect(() => {
-    const handleRefreshOrders = () => {
-      fetchOrders();
-      refetchProducts();
-    };
-
-    window.addEventListener("orders:refresh", handleRefreshOrders);
-    return () => window.removeEventListener("orders:refresh", handleRefreshOrders);
-  }, [fetchOrders, refetchProducts]);
+    window.addEventListener("orders:refresh", refetchProducts);
+    return () => window.removeEventListener("orders:refresh", refetchProducts);
+  }, [refetchProducts]);
 
   useEffect(() => {
     getAllCashiers()
@@ -243,7 +239,7 @@ function Orders() {
           category_id: item.product?.category_id ?? null,
         }))
       );
-    } catch (err) {
+    } catch {
       // fallback to original order object if fetch fails
       setEditOrder(order);
       setEditCart(

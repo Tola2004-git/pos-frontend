@@ -103,16 +103,20 @@ function Layout({ children }) {
           className={`layout-content flex-1 min-w-0 overflow-x-hidden p-[30px] min-h-screen transition-all duration-400 ease-[cubic-bezier(0.175,0.885,0.32,1)] ${sidebarOpen ? "ml-[230px]" : "ml-[60px]"
             }`}
         >
-          <div className="no-print">
-            <Navbar
-              t={t}
-              lang={lang}
-              setLang={setLang}
-              user={user}
-              onOpenBgChanger={openBgChanger}
-            />
-          </div>
-          <main className="mt-4">{children}</main>
+          <Navbar
+            t={t}
+            lang={lang}
+            setLang={setLang}
+            user={user}
+            onOpenBgChanger={openBgChanger}
+          />
+          {/* Navbar is `fixed` (see Navbar.jsx), so it no longer pushes this
+              down through normal document flow - reserve the equivalent
+              space using the height it reports itself via --navbar-height,
+              plus a visual gap matching its old mb-[30px]. */}
+          <main style={{ marginTop: "calc(var(--navbar-height, 64px) + 20px)" }}>
+            {children}
+          </main>
         </div>
       </div>
     </div>

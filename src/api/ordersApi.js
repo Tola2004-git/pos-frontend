@@ -11,10 +11,19 @@ export const fetchOrdersApi = ({
   perPage = 15,
   signal,
 }) =>
-  apiClient.get(
-    `/orders?search=${search}&status=${statusFilter}&date_from=${dateFrom}&date_to=${dateTo}&page=${page}&per_page=${perPage}&cashier_id=${cashierId}&current_shift=${currentShiftOnly}`,
-    { signal },
-  );
+  apiClient.get("/orders", {
+    params: {
+      search,
+      status: statusFilter,
+      date_from: dateFrom,
+      date_to: dateTo,
+      page,
+      per_page: perPage,
+      cashier_id: cashierId,
+      current_shift: currentShiftOnly,
+    },
+    signal,
+  });
 
 export const fetchSalesByCashierApi = ({
   dateFrom = "",
@@ -22,34 +31,34 @@ export const fetchSalesByCashierApi = ({
   currentShiftOnly = false,
   signal,
 } = {}) =>
-  apiClient.get(
-    `/orders/sales-by-cashier?date_from=${dateFrom}&date_to=${dateTo}&current_shift=${currentShiftOnly}`,
-    { signal },
-  );
+  apiClient.get("/orders/sales-by-cashier", {
+    params: { date_from: dateFrom, date_to: dateTo, current_shift: currentShiftOnly },
+    signal,
+  });
 
 export const fetchSalesSummaryApi = ({ period = "day", dateFrom = "", dateTo = "", signal } = {}) =>
-  apiClient.get(
-    `/orders/sales-summary?period=${period}&date_from=${dateFrom}&date_to=${dateTo}`,
-    { signal },
-  );
+  apiClient.get("/orders/sales-summary", {
+    params: { period, date_from: dateFrom, date_to: dateTo },
+    signal,
+  });
 
 export const fetchTopProductsApi = ({ period = "day", dateFrom = "", dateTo = "", signal } = {}) =>
-  apiClient.get(
-    `/orders/top-products?period=${period}&date_from=${dateFrom}&date_to=${dateTo}`,
-    { signal },
-  );
+  apiClient.get("/orders/top-products", {
+    params: { period, date_from: dateFrom, date_to: dateTo },
+    signal,
+  });
 
 export const fetchCategorySalesApi = ({ period = "day", dateFrom = "", dateTo = "", signal } = {}) =>
-  apiClient.get(
-    `/orders/category-sales?period=${period}&date_from=${dateFrom}&date_to=${dateTo}`,
-    { signal },
-  );
+  apiClient.get("/orders/category-sales", {
+    params: { period, date_from: dateFrom, date_to: dateTo },
+    signal,
+  });
 
 export const fetchProfitSummaryApi = ({ period = "day", dateFrom = "", dateTo = "", signal } = {}) =>
-  apiClient.get(
-    `/orders/profit-summary?period=${period}&date_from=${dateFrom}&date_to=${dateTo}`,
-    { signal },
-  );
+  apiClient.get("/orders/profit-summary", {
+    params: { period, date_from: dateFrom, date_to: dateTo },
+    signal,
+  });
 
 export const fetchProductsApi = () =>
   apiClient.get("/products?per_page=1000&status=1");

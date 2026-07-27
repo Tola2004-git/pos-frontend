@@ -1,3 +1,5 @@
+import { isCashLike, findRealCashMethod } from "../../utils/cashPaymentMethod";
+
 export function PaymentMethodList({
   paymentMethods,
   paymentMethodsSource = paymentMethods,
@@ -14,15 +16,8 @@ export function PaymentMethodList({
   }
 
   const cashMethod =
-    paymentMethodsSource.find(
-      (m) => m.name?.toLowerCase() === "cash" || m.type === "cash",
-    ) ||
-    paymentMethods.find(
-      (m) => m.name?.toLowerCase() === "cash" || m.type === "cash",
-    );
-  const bankMethods = paymentMethods.filter(
-    (m) => m.name?.toLowerCase() !== "cash" && m.type !== "cash",
-  );
+    findRealCashMethod(paymentMethodsSource) || findRealCashMethod(paymentMethods);
+  const bankMethods = paymentMethods.filter((m) => !isCashLike(m));
   const isCashSelected = cashMethod && selectedPaymentId === cashMethod.id;
 
   return (
@@ -33,12 +28,7 @@ export function PaymentMethodList({
           onClick={() => {
             const normalizedCashMethod = {
               ...cashMethod,
-              id: paymentMethodsSource?.find(
-                (method) =>
-                  (method.name?.toLowerCase() === "cash" || method.type === "cash") &&
-                  method.id &&
-                  method.id !== "cash",
-              )?.id || cashMethod.id,
+              id: findRealCashMethod(paymentMethodsSource)?.id || cashMethod.id,
             };
             onSelectPayment?.(normalizedCashMethod);
           }}

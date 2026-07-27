@@ -17,7 +17,7 @@ export function SkeletonExpenseRow({ index = 0 }) {
       <td className="px-4 py-3.5">{s(80)}</td>
       <td className="px-4 py-3.5">{s(90)}</td>
       <td className="px-4 py-3.5">
-        <div className="flex gap-2 justify-end">
+        <div className="flex gap-2 justify-start">
           <Skeleton width={18} height={18} borderRadius={6} style={{ animationDelay: delay }} />
           <Skeleton width={18} height={18} borderRadius={6} style={{ animationDelay: delay }} />
         </div>

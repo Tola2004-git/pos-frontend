@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { fetchCurrentShiftApi, openShiftApi, closeShiftApi, addCashMovementApi } from "../api/shiftApi";
 
 // CashierHome and CashierOrders each mount their own CashierLayout instance
@@ -92,12 +92,24 @@ export function useCashierShift(enabled = true) {
 
   const dismissCloseSummary = useCallback(() => setCloseSummary(null), []);
 
+  // Stable per-attempt key so a fast double-tap or a network retry resolves
+  // to the same movement server-side instead of recording it twice - same
+  // idempotency_key pattern usePOS.js uses for order creation. Cleared once
+  // the movement is recorded so the next one gets a fresh key.
+  const cashMovementKeyRef = useRef(null);
+
   // Mid-shift cash drop / safe drop / petty-cash disbursement - doesn't
   // change `shift` itself (expected cash is only recomputed at close()), it
   // just records the movement so it factors into that later recalculation.
   const addCashMovement = useCallback(
     async ({ type, amount_usd, amount_khr, reason }) => {
       if (!shift) return null;
+      if (!cashMovementKeyRef.current) {
+        cashMovementKeyRef.current =
+          typeof crypto !== "undefined" && crypto.randomUUID
+            ? crypto.randomUUID()
+            : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      }
       setRecordingMovement(true);
       try {
         const res = await addCashMovementApi(shift.id, {
@@ -105,7 +117,9 @@ export function useCashierShift(enabled = true) {
           amount_usd,
           amount_khr,
           reason,
+          idempotency_key: cashMovementKeyRef.current,
         });
+        cashMovementKeyRef.current = null;
         return res.data.movement;
       } finally {
         setRecordingMovement(false);
