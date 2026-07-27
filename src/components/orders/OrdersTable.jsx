@@ -4,6 +4,7 @@ import { CloseCircle, Eye, Printer, Edit, MoneyRecive } from "iconsax-react";
 import { SkeletonOrdersTable } from "../ui/SkeletonOrder";
 import { getStatusStyle } from "../../utils/orderHelpers";
 import ItemsPopover from "./ItemsPopover";
+import { Tooltip } from "../ui/Tooltip";
 
 const getPaymentMethodName = (order, notAvailableLabel) => {
   const directName = order?.payment_method?.name;
@@ -325,22 +326,7 @@ export default function OrdersTable({
                     </td>
                     <td style={{ padding: "12px 14px" }}>
                       <div style={{ display: "flex", gap: "6px" }}>
-                        <div
-                          style={{
-                            position: "relative",
-                            display: "inline-block",
-                          }}
-                          onMouseEnter={(e) =>
-                            (e.currentTarget.querySelector(
-                              ".tooltip",
-                            ).style.opacity = 1)
-                          }
-                          onMouseLeave={(e) =>
-                            (e.currentTarget.querySelector(
-                              ".tooltip",
-                            ).style.opacity = 0)
-                          }
-                        >
+                        <Tooltip label={viewLabel}>
                           <button
                             onClick={() => onView(order)}
                             style={{
@@ -357,43 +343,13 @@ export default function OrdersTable({
                           >
                             <Eye size={20} color="#fff" variant="TwoTone" />
                           </button>
-                          <div
-                            className="tooltip"
-                            style={{
-                              position: "absolute",
-                              bottom: "110%",
-                              left: "50%",
-                              transform: "translateX(-50%)",
-                              background: "rgba(20,28,35,0.95)",
-                              color: "white",
-                              padding: "4px 10px",
-                              borderRadius: "6px",
-                              fontSize: "0.75rem",
-                              whiteSpace: "nowrap",
-                              pointerEvents: "none",
-                              opacity: 0,
-                              transition: "opacity 0.2s",
-                              border: "1px solid rgba(255,255,255,0.1)",
-                            }}
-                          >
-                            {viewLabel}
-                          </div>
-                        </div>
+                        </Tooltip>
                         {order.status === "pending" && onEdit && (
-                          <div
-                            style={{
-                              position: "relative",
-                              display: "inline-block",
-                            }}
-                            onMouseEnter={(e) =>
-                              (e.currentTarget.querySelector(
-                                ".tooltip",
-                              ).style.opacity = 1)
-                            }
-                            onMouseLeave={(e) =>
-                              (e.currentTarget.querySelector(
-                                ".tooltip",
-                              ).style.opacity = 0)
+                          <Tooltip
+                            label={
+                              editLoadingId === order.id
+                                ? loadingLabel
+                                : editLabel
                             }
                           >
                             <button
@@ -450,47 +406,9 @@ export default function OrdersTable({
                                 />
                               )}
                             </button>
-                            <div
-                              className="tooltip"
-                              style={{
-                                position: "absolute",
-                                bottom: "110%",
-                                left: "50%",
-                                transform: "translateX(-50%)",
-                                background: "rgba(20,28,35,0.95)",
-                                color: "white",
-                                padding: "4px 10px",
-                                borderRadius: "6px",
-                                fontSize: "0.75rem",
-                                whiteSpace: "nowrap",
-                                pointerEvents: "none",
-                                opacity: 0,
-                                transition: "opacity 0.2s",
-                                border: "1px solid rgba(255,255,255,0.1)",
-                              }}
-                            >
-                              {editLoadingId === order.id
-                                ? loadingLabel
-                                : editLabel}
-                            </div>
-                          </div>
+                          </Tooltip>
                         )}
-                        <div
-                          style={{
-                            position: "relative",
-                            display: "inline-block",
-                          }}
-                          onMouseEnter={(e) =>
-                            (e.currentTarget.querySelector(
-                              ".tooltip",
-                            ).style.opacity = 1)
-                          }
-                          onMouseLeave={(e) =>
-                            (e.currentTarget.querySelector(
-                              ".tooltip",
-                            ).style.opacity = 0)
-                          }
-                        >
+                        <Tooltip label={printLabel}>
                           <button
                             onClick={() => onPrint(order)}
                             style={{
@@ -507,43 +425,13 @@ export default function OrdersTable({
                           >
                             <Printer size={20} color="#fff" variant="TwoTone" />
                           </button>
-                          <div
-                            className="tooltip"
-                            style={{
-                              position: "absolute",
-                              bottom: "110%",
-                              left: "50%",
-                              transform: "translateX(-50%)",
-                              background: "rgba(20,28,35,0.95)",
-                              color: "white",
-                              padding: "4px 10px",
-                              borderRadius: "6px",
-                              fontSize: "0.75rem",
-                              whiteSpace: "nowrap",
-                              pointerEvents: "none",
-                              opacity: 0,
-                              transition: "opacity 0.2s",
-                              border: "1px solid rgba(255,255,255,0.1)",
-                            }}
-                          >
-                            {printLabel}
-                          </div>
-                        </div>
+                        </Tooltip>
                         {order.status === "pending" && onCancel && (
-                          <div
-                            style={{
-                              position: "relative",
-                              display: "inline-block",
-                            }}
-                            onMouseEnter={(e) =>
-                              (e.currentTarget.querySelector(
-                                ".tooltip",
-                              ).style.opacity = 1)
-                            }
-                            onMouseLeave={(e) =>
-                              (e.currentTarget.querySelector(
-                                ".tooltip",
-                              ).style.opacity = 0)
+                          <Tooltip
+                            label={
+                              cancelLoadingId === order.id
+                                ? cancellingLabel
+                                : cancelLabel
                             }
                           >
                             <button
@@ -601,48 +489,16 @@ export default function OrdersTable({
                                 />
                               )}
                             </button>
-                            <div
-                              className="tooltip"
-                              style={{
-                                position: "absolute",
-                                bottom: "110%",
-                                left: "50%",
-                                transform: "translateX(-50%)",
-                                background: "rgba(20,28,35,0.95)",
-                                color: "white",
-                                padding: "4px 10px",
-                                borderRadius: "6px",
-                                fontSize: "0.75rem",
-                                whiteSpace: "nowrap",
-                                pointerEvents: "none",
-                                opacity: 0,
-                                transition: "opacity 0.2s",
-                                border: "1px solid rgba(255,255,255,0.1)",
-                              }}
-                            >
-                              {cancelLoadingId === order.id
-                                ? cancellingLabel
-                                : cancelLabel}
-                            </div>
-                          </div>
+                          </Tooltip>
                         )}
                         {isAdmin &&
                           order.status === "completed" &&
                           onRefund && (
-                            <div
-                              style={{
-                                position: "relative",
-                                display: "inline-block",
-                              }}
-                              onMouseEnter={(e) =>
-                                (e.currentTarget.querySelector(
-                                  ".tooltip",
-                                ).style.opacity = 1)
-                              }
-                              onMouseLeave={(e) =>
-                                (e.currentTarget.querySelector(
-                                  ".tooltip",
-                                ).style.opacity = 0)
+                            <Tooltip
+                              label={
+                                refundLoadingId === order.id
+                                  ? refundingLabel
+                                  : refundLabel
                               }
                             >
                               <button
@@ -701,30 +557,7 @@ export default function OrdersTable({
                                   />
                                 )}
                               </button>
-                              <div
-                                className="tooltip"
-                                style={{
-                                  position: "absolute",
-                                  bottom: "110%",
-                                  left: "50%",
-                                  transform: "translateX(-50%)",
-                                  background: "rgba(20,28,35,0.95)",
-                                  color: "white",
-                                  padding: "4px 10px",
-                                  borderRadius: "6px",
-                                  fontSize: "0.75rem",
-                                  whiteSpace: "nowrap",
-                                  pointerEvents: "none",
-                                  opacity: 0,
-                                  transition: "opacity 0.2s",
-                                  border: "1px solid rgba(255,255,255,0.1)",
-                                }}
-                              >
-                                {refundLoadingId === order.id
-                                  ? refundingLabel
-                                  : refundLabel}
-                              </div>
-                            </div>
+                            </Tooltip>
                           )}
                       </div>
                     </td>

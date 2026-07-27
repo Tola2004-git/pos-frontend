@@ -1,4 +1,4 @@
-import { CloudChange, DocumentDownload, Refresh } from "iconsax-react";
+import { CloudChange, DocumentDownload, Refresh, Trash } from "iconsax-react";
 import Layout from "../components/layout/Layout";
 import { glassCard, colors } from "../utils/styles";
 import { useBackups } from "../hooks/useBackups";
@@ -49,9 +49,11 @@ function Backups() {
     generating,
     downloadingId,
     restoringId,
+    deletingId,
     handleGenerate,
     handleDownload,
     handleRestore,
+    handleDelete,
   } = useBackups();
 
   return (
@@ -177,6 +179,26 @@ function Backups() {
                           {restoringId === b.id
                             ? t.backupRestoringAction
                             : t.backupRestoreAction}
+                        </button>
+                        <button
+                          onClick={() => handleDelete(b)}
+                          disabled={deletingId === b.id}
+                          className="px-3 py-1.5 rounded-[8px] text-xs font-semibold flex items-center gap-1.5 disabled:opacity-40"
+                          style={{
+                            background: "rgba(255,255,255,0.08)",
+                            border: "1px solid rgba(255,255,255,0.15)",
+                            color: "rgba(255,255,255,0.85)",
+                          }}
+                        >
+                          {deletingId === b.id ? (
+                            <svg className="animate-spin" width="14" height="14" viewBox="0 0 18 18" fill="none">
+                              <circle cx="9" cy="9" r="7" stroke="rgba(255,255,255,0.3)" strokeWidth="2" />
+                              <path d="M9 2 A7 7 0 0 1 16 9" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                            </svg>
+                          ) : (
+                            <Trash size={14} color="currentColor" variant="Linear" />
+                          )}
+                          {deletingId === b.id ? t.deletingAction : t.deleteAction}
                         </button>
                       </div>
                     </td>

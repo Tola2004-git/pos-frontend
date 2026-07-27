@@ -3,6 +3,7 @@ import { SkeletonInventoryTable } from "../ui/SkeletonInventory";
 import { getStockStatus } from "../../utils/stockHelpers";
 import restockIcon from "../../assets/icons/restock.png";
 import { Gallery, Refresh2 } from "iconsax-react";
+import { Tooltip } from "../ui/Tooltip";
 
 export default function InventoryTable({
   products,
@@ -193,19 +194,7 @@ export default function InventoryTable({
                     </span>
                   </td>
                   <td style={{ padding: "12px 14px" }}>
-                    <div
-                      style={{ position: "relative", display: "inline-block" }}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.querySelector(
-                          ".tooltip",
-                        ).style.opacity = 1)
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.querySelector(
-                          ".tooltip",
-                        ).style.opacity = 0)
-                      }
-                    >
+                    <Tooltip label={t.restockAction}>
                       <button
                         type="button"
                         onClick={() => openRestock(product)}
@@ -222,28 +211,7 @@ export default function InventoryTable({
                       >
                         <Refresh2 size="20" color="#fff" variant="bulk"/>
                       </button>
-                      <div
-                        className="tooltip"
-                        style={{
-                          position: "absolute",
-                          bottom: "110%",
-                          left: "50%",
-                          transform: "translateX(-50%)",
-                          background: "rgba(20,28,35,0.95)",
-                          color: "white",
-                          padding: "4px 10px",
-                          borderRadius: "6px",
-                          fontSize: "0.75rem",
-                          whiteSpace: "nowrap",
-                          pointerEvents: "none",
-                          opacity: 0,
-                          transition: "opacity 0.2s",
-                          border: "1px solid rgba(255,255,255,0.1)",
-                        }}
-                      >
-                        {t.restockAction}
-                      </div>
-                    </div>
+                    </Tooltip>
                   </td>
                 </tr>
               );

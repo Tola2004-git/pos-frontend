@@ -2,6 +2,7 @@ import { useState } from "react";
 import { glassCard } from "../../utils/styles";
 import { SkeletonProductTable } from "../ui/SkeletonProduct";
 import { Edit, Trash, Gallery, Cake } from "iconsax-react";
+import { Tooltip } from "../ui/Tooltip";
 
 function ProductImagePlaceholder() {
   return (
@@ -281,19 +282,7 @@ function ProductTable({ products, loading, page, onEdit, onDelete, onRecipe, del
                 </td>
                 <td style={{ padding: "12px 14px", textAlign: "center" }}>
                   <div style={{ display: "flex", gap: 16, justifyContent: "center" }}>
-                    <div
-                      style={{ position: "relative", display: "inline-block" }}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.querySelector(
-                          ".tooltip",
-                        ).style.opacity = 1)
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.querySelector(
-                          ".tooltip",
-                        ).style.opacity = 0)
-                      }
-                    >
+                    <Tooltip label={t.editAction}>
                       <button
                         type="button"
                         onClick={() => onEdit(product)}
@@ -309,42 +298,9 @@ function ProductTable({ products, loading, page, onEdit, onDelete, onRecipe, del
                       >
                         <Edit size={20} color="white" variant="Linear" />
                       </button>
-                      <div
-                        className="tooltip"
-                        style={{
-                          position: "absolute",
-                          bottom: "110%",
-                          left: "50%",
-                          transform: "translateX(-50%)",
-                          background: "rgba(20,28,35,0.95)",
-                          color: "white",
-                          padding: "4px 10px",
-                          borderRadius: "6px",
-                          fontSize: "0.75rem",
-                          whiteSpace: "nowrap",
-                          pointerEvents: "none",
-                          opacity: 0,
-                          transition: "opacity 0.2s",
-                          marginBottom: 5,
-                        }}
-                      >
-                        {t.editAction}
-                      </div>
-                    </div>
+                    </Tooltip>
                     {onRecipe && (
-                      <div
-                        style={{ position: "relative", display: "inline-block" }}
-                        onMouseEnter={(e) =>
-                          (e.currentTarget.querySelector(
-                            ".tooltip",
-                          ).style.opacity = 1)
-                        }
-                        onMouseLeave={(e) =>
-                          (e.currentTarget.querySelector(
-                            ".tooltip",
-                          ).style.opacity = 0)
-                        }
-                      >
+                      <Tooltip label={t.recipeAction}>
                         <button
                           type="button"
                           onClick={() => onRecipe(product)}
@@ -360,42 +316,9 @@ function ProductTable({ products, loading, page, onEdit, onDelete, onRecipe, del
                         >
                           <Cake size={20} color="white" variant="Linear" />
                         </button>
-                        <div
-                          className="tooltip"
-                          style={{
-                            position: "absolute",
-                            bottom: "110%",
-                            left: "50%",
-                            transform: "translateX(-50%)",
-                            background: "rgba(20,28,35,0.95)",
-                            color: "white",
-                            padding: "4px 10px",
-                            borderRadius: "6px",
-                            fontSize: "0.75rem",
-                            whiteSpace: "nowrap",
-                            pointerEvents: "none",
-                            opacity: 0,
-                            transition: "opacity 0.2s",
-                            marginBottom: 5,
-                          }}
-                        >
-                          {t.recipeAction}
-                        </div>
-                      </div>
+                      </Tooltip>
                     )}
-                    <div
-                      style={{ position: "relative", display: "inline-block" }}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.querySelector(
-                          ".tooltip",
-                        ).style.opacity = 1)
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.querySelector(
-                          ".tooltip",
-                        ).style.opacity = 0)
-                      }
-                    >
+                    <Tooltip label={t.deleteAction}>
                       <button
                         type="button"
                         onClick={() => onDelete(product.id)}
@@ -420,28 +343,7 @@ function ProductTable({ products, loading, page, onEdit, onDelete, onRecipe, del
                           <Trash size={20} color="white" variant="Linear" />
                         )}
                       </button>
-                      <div
-                        className="tooltip"
-                        style={{
-                          position: "absolute",
-                          bottom: "110%",
-                          left: "50%",
-                          transform: "translateX(-50%)",
-                          background: "rgba(20,28,35,0.95)",
-                          color: "white",
-                          padding: "4px 10px",
-                          borderRadius: "6px",
-                          fontSize: "0.75rem",
-                          whiteSpace: "nowrap",
-                          pointerEvents: "none",
-                          opacity: 0,
-                          transition: "opacity 0.2s",
-                          marginBottom: 5,
-                        }}
-                      >
-                        {t.deleteAction}
-                      </div>
-                    </div>
+                    </Tooltip>
                   </div>
                 </td>
               </tr>

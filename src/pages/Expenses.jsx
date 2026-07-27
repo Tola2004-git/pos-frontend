@@ -6,6 +6,7 @@ import { useExpenses } from "../hooks/useExpenses";
 import { useTranslations } from "../hooks/useTranslations";
 import ExpenseModal from "../components/expenses/ExpenseModal";
 import { SkeletonExpenseTable } from "../components/ui/SkeletonExpense";
+import { Tooltip } from "../components/ui/Tooltip";
 
 const CATEGORIES = [
   "all",
@@ -16,43 +17,6 @@ const CATEGORIES = [
   "maintenance",
   "other",
 ];
-
-function Tooltip({ label, children }) {
-  return (
-    <div
-      style={{ position: "relative", display: "inline-block" }}
-      onMouseEnter={(e) =>
-        (e.currentTarget.querySelector(".tooltip").style.opacity = 1)
-      }
-      onMouseLeave={(e) =>
-        (e.currentTarget.querySelector(".tooltip").style.opacity = 0)
-      }
-    >
-      {children}
-      <div
-        className="tooltip"
-        style={{
-          position: "absolute",
-          bottom: "110%",
-          left: "50%",
-          transform: "translateX(-50%)",
-          background: "rgba(20,28,35,0.95)",
-          color: "white",
-          padding: "4px 10px",
-          borderRadius: "6px",
-          fontSize: "0.75rem",
-          whiteSpace: "nowrap",
-          pointerEvents: "none",
-          opacity: 0,
-          transition: "opacity 0.2s",
-          border: "1px solid rgba(255,255,255,0.1)",
-        }}
-      >
-        {label}
-      </div>
-    </div>
-  );
-}
 
 function fmtDate(v) {
   return v ? new Date(v).toLocaleDateString() : "—";

@@ -10,3 +10,5 @@ export const downloadBackupApi = (id) =>
 
 export const restoreBackupApi = (id, confirm) =>
   apiClient.post(`/backups/${id}/restore`, { confirm });
+
+export const deleteBackupApi = (id) => apiClient.delete(`/backups/${id}`);

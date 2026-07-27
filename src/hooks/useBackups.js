@@ -1,11 +1,17 @@
 import { useState, useEffect, useCallback } from "react";
-import { alertSuccess, alertError, alertPromptDanger } from "../utils/alert.jsx";
+import {
+  alertSuccess,
+  alertError,
+  alertPromptDanger,
+  alertConfirmDelete,
+} from "../utils/alert.jsx";
 import { useTranslations } from "./useTranslations";
 import {
   fetchBackupsApi,
   generateBackupApi,
   downloadBackupApi,
   restoreBackupApi,
+  deleteBackupApi,
 } from "../api/backupApi";
 
 export function useBackups() {
@@ -18,6 +24,7 @@ export function useBackups() {
   const [generating, setGenerating] = useState(false);
   const [downloadingId, setDownloadingId] = useState(null);
   const [restoringId, setRestoringId] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
 
   const fetchBackups = useCallback(async () => {
     setLoading(true);
@@ -95,6 +102,27 @@ export function useBackups() {
     }
   };
 
+  const handleDelete = async (backup) => {
+    const result = await alertConfirmDelete(
+      t.backupDeleteConfirmTitle,
+      t.backupDeleteConfirmMsg,
+      t.cancel,
+      t.deleteAction,
+    );
+    if (!result.isConfirmed) return;
+
+    setDeletingId(backup.id);
+    try {
+      await deleteBackupApi(backup.id);
+      alertSuccess(t.backupDeletedTitle, t.backupDeletedMsg);
+      await fetchBackups();
+    } catch (err) {
+      alertError(t.genericErrorTitle, err.response?.data?.message || t.tryAgainMsg);
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   return {
     backups,
     loading,
@@ -105,9 +133,11 @@ export function useBackups() {
     generating,
     downloadingId,
     restoringId,
+    deletingId,
     handleGenerate,
     handleDownload,
     handleRestore,
+    handleDelete,
   };
 }
 

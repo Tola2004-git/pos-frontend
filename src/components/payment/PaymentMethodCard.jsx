@@ -4,6 +4,7 @@ import { glass, colors } from "../../utils/styles";
 import { paymentStyles } from "../../styles/paymentStyles";
 import { Edit, Trash, Eye, Bank } from "iconsax-react";
 import { alertSuccess, alertError, alertWarning, alertConfirmDelete} from "../../utils/alert.jsx";
+import { Tooltip } from "../ui/Tooltip";
 function PaymentMethodCard({
   method,
   onEdit,
@@ -150,16 +151,7 @@ function PaymentMethodCard({
               disabled: isDeleting,
             },
           ].map(({ icon, label, action, disabled }) => (
-            <div
-              key={label}
-              style={{ position: "relative", display: "inline-block" }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.querySelector(".tooltip").style.opacity = 1)
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.querySelector(".tooltip").style.opacity = 0)
-              }
-            >
+            <Tooltip key={label} label={label}>
               <button
                 onClick={action}
                 disabled={disabled}
@@ -176,28 +168,7 @@ function PaymentMethodCard({
               >
                 {icon}
               </button>
-              <div
-                className="tooltip"
-                style={{
-                  position: "absolute",
-                  bottom: "110%",
-                  left: "50%",
-                  transform: "translateX(-50%)",
-                  background: "rgba(20,28,35,0.95)",
-                  color: "white",
-                  padding: "4px 10px",
-                  borderRadius: "6px",
-                  fontSize: "0.75rem",
-                  whiteSpace: "nowrap",
-                  pointerEvents: "none",
-                  opacity: 0,
-                  transition: "opacity 0.2s",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                }}
-              >
-                {label}
-              </div>
-            </div>
+            </Tooltip>
           ))}
         </div>
       </div>

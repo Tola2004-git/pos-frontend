@@ -1,65 +1,17 @@
 import { glassCard } from "../../utils/styles";
 import { SkeletonTable } from "../ui/SkeletonUser";
 import { Trash, Edit2, Edit } from "iconsax-react";
+import { Tooltip } from "../ui/Tooltip";
 
-function TooltipButton({ onClick, tooltip, disabled = false, children }) {
-  return (
-    <div className="tooltip-wrapper">
-      <button
-        onClick={onClick}
-        disabled={disabled}
-        style={{
-          padding: "8px",
-          borderRadius: "8px",
-          border: "none",
-          cursor: disabled ? "not-allowed" : "pointer",
-          background: "transparent",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          transition: "transform 0.2s",
-          opacity: disabled ? 0.6 : 1,
-        }}
-        className={disabled ? "" : "hover:scale-110"}
-      >
-        {children}
-      </button>
-      <div className="tooltip">{tooltip}</div>
-      <style>
-        {`
-          .tooltip-wrapper {
-            position: relative;
-            display: inline-block;
-          }
-
-          .tooltip {
-            position: absolute;
-            bottom: 120%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(20,28,35,0.95);
-            color: white;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            white-space: nowrap;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s;
-            border: 1px solid rgba(255,255,255,0.1);
-            z-index: 10;
-          }
-
-          .tooltip-wrapper:hover .tooltip {
-            opacity: 1;
-          }
-        `}
-      </style>
-    </div>
-  );
-}
-
-function UserTable({ users = [], loading, onEdit, onDelete, currentUser, deletingId, t }) {
+function UserTable({
+  users = [],
+  loading,
+  onEdit,
+  onDelete,
+  currentUser,
+  deletingId,
+  t,
+}) {
   return (
     <div style={{ ...glassCard, borderRadius: "20px", overflow: "hidden" }}>
       <div className="w-full overflow-x-auto table-scroll-x">
@@ -210,7 +162,11 @@ function UserTable({ users = [], loading, onEdit, onDelete, currentUser, deletin
                         border: "1px solid white",
                       }}
                     >
-                      {user.role === "admin" ? t.roleAdmin : t.roleCashier}
+                      {user.is_owner
+                        ? t.roleOwner
+                        : user.role === "admin"
+                          ? t.roleAdmin
+                          : t.roleCashier}
                     </span>
                   </td>
                   <td
@@ -232,33 +188,88 @@ function UserTable({ users = [], loading, onEdit, onDelete, currentUser, deletin
                     {new Date(user.updated_at).toLocaleDateString("en-GB")}
                   </td>
                   <td style={{ padding: "12px 14px" }}>
-                    {user.role === "admin" && user.id !== currentUser?.id ? (
+                    {user.is_owner && user.id !== currentUser?.id ? (
                       <span className="text-white/30 text-xs italic">
-                        {t.protectedLabel}
+                        {t.ownerProtectedMsg}
                       </span>
                     ) : (
                       <div style={{ display: "flex", gap: "10px" }}>
-                        <TooltipButton
-                          onClick={() => onEdit(user)}
-                          tooltip={t.editAction}
-                        >
-                          <Edit size={18} color="#fff" variant="linear" />
-                        </TooltipButton>
+                        <Tooltip label={t.editAction}>
+                          <button
+                            onClick={() => onEdit(user)}
+                            className="duration-200 hover:scale-110 transition-transform"
+                            style={{
+                              padding: "8px",
+                              borderRadius: "8px",
+                              border: "none",
+                              cursor: "pointer",
+                              background: "transparent",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <Edit size={18} color="#fff" variant="linear" />
+                          </button>
+                        </Tooltip>
 
-                        <TooltipButton
-                          onClick={() => onDelete(user.id)}
-                          tooltip={t.deleteAction}
-                          disabled={deletingId === user.id}
-                        >
-                          {deletingId === user.id ? (
-                            <svg className="animate-spin" width="18" height="18" viewBox="0 0 18 18" fill="none">
-                              <circle cx="9" cy="9" r="7" stroke="rgba(255,255,255,0.3)" strokeWidth="2" />
-                              <path d="M9 2 A7 7 0 0 1 16 9" stroke="white" strokeWidth="2" strokeLinecap="round" />
-                            </svg>
-                          ) : (
-                            <Trash size={18} color="#fff" variant="linear" />
-                          )}
-                        </TooltipButton>
+                        {user.id !== currentUser?.id && (
+                          <Tooltip label={t.deleteAction}>
+                            <button
+                              onClick={() => onDelete(user.id)}
+                              disabled={deletingId === user.id}
+                              className={
+                                deletingId === user.id
+                                  ? ""
+                                  : "duration-200 hover:scale-110 transition-transform"
+                              }
+                              style={{
+                                padding: "8px",
+                                borderRadius: "8px",
+                                border: "none",
+                                cursor:
+                                  deletingId === user.id
+                                    ? "not-allowed"
+                                    : "pointer",
+                                background: "transparent",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                opacity: deletingId === user.id ? 0.6 : 1,
+                              }}
+                            >
+                              {deletingId === user.id ? (
+                                <svg
+                                  className="animate-spin"
+                                  width="18"
+                                  height="18"
+                                  viewBox="0 0 18 18"
+                                  fill="none"
+                                >
+                                  <circle
+                                    cx="9"
+                                    cy="9"
+                                    r="7"
+                                    stroke="rgba(255,255,255,0.3)"
+                                    strokeWidth="2"
+                                  />
+                                  <path
+                                    d="M9 2 A7 7 0 0 1 16 9"
+                                    stroke="white"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                  />
+                                </svg>
+                              ) : (
+                                <Trash
+                                  size={18}
+                                  color="#fff"
+                                  variant="linear"
+                                />
+                              )}
+                            </button>
+                          </Tooltip>
+                        )}
                       </div>
                     )}
                   </td>

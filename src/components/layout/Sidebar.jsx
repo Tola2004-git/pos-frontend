@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { useState, useRef, useLayoutEffect } from "react";
+import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { createPortal } from "react-dom";
 import { glassSidebar, colors } from "../../utils/styles";
 import { MENU_ITEMS } from "../../constants/menuConfig.jsx";
@@ -14,29 +14,48 @@ import logo from "../../assets/logo.png";
 // survives the remount so it can be restored before the next paint.
 let lastSidebarScrollTop = 0;
 
-function Tooltip({ label, targetRect }) {
-  if (!label || !targetRect) return null;
+function Tooltip({ tooltip }) {
+  const [mounted, setMounted] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [displayed, setDisplayed] = useState(null);
+
+  useEffect(() => {
+    let timeout;
+    if (tooltip) {
+      setDisplayed(tooltip);
+      setMounted(true);
+      requestAnimationFrame(() => setVisible(true));
+    } else {
+      setVisible(false);
+      timeout = setTimeout(() => setMounted(false), 150);
+    }
+    return () => clearTimeout(timeout);
+  }, [tooltip]);
+
+  if (!mounted || !displayed) return null;
 
   return createPortal(
     <div
       style={{
         position: "fixed",
-        left: targetRect.right + 8,
-        top: targetRect.top + targetRect.height / 2,
-        transform: "translateY(-50%)",
+        left: displayed.rect.right + 8,
+        top: displayed.rect.top + displayed.rect.height / 2,
+        transform: visible
+          ? "translateY(-50%) translateX(0)"
+          : "translateY(-50%) translateX(-4px)",
         background: "rgba(20,28,35,0.95)",
         color: "white",
-        padding: "6px 12px",
+        padding: "4px 10px",
         borderRadius: "6px",
-        fontSize: "0.8rem",
+        fontSize: "0.75rem",
         whiteSpace: "nowrap",
         pointerEvents: "none",
-        border: "1px solid rgba(255,255,255,0.1)",
+        opacity: visible ? 1 : 0,
+        transition: "opacity 0.2s ease, transform 0.2s ease",
         zIndex: 9999,
-        animation: "tooltipFadeIn 0.15s ease",
       }}
     >
-      {label}
+      {displayed.label}
     </div>,
     document.body
   );
@@ -68,11 +87,6 @@ function Sidebar({ open, onToggle, onLogout, t }) {
   return (
     <>
       <style>{`
-        @keyframes tooltipFadeIn {
-          from { opacity: 0; transform: translateY(-50%) translateX(-4px); }
-          to   { opacity: 1; transform: translateY(-50%) translateX(0); }
-        }
-
         .menu-item-link {
           transition: 
             background 300ms ease,
@@ -107,7 +121,7 @@ function Sidebar({ open, onToggle, onLogout, t }) {
           box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.1);
         }
       `}</style>
-      <Tooltip label={tooltip?.label} targetRect={tooltip?.rect} />
+      <Tooltip tooltip={tooltip} />
       <div
         style={{
           ...glassSidebar,

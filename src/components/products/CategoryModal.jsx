@@ -7,8 +7,22 @@ import { Edit, Trash, AddCircle, TickCircle, Category2, Tag } from "iconsax-reac
 
 function IconButtonWithTooltip({ icon, label, onClick, disabled = false }) {
   const [show, setShow] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [visible, setVisible] = useState(false);
   const [pos, setPos] = useState({ top: 0, left: 0 });
   const btnRef = useRef(null);
+
+  useEffect(() => {
+    let timeout;
+    if (show) {
+      setMounted(true);
+      requestAnimationFrame(() => setVisible(true));
+    } else {
+      setVisible(false);
+      timeout = setTimeout(() => setMounted(false), 150);
+    }
+    return () => clearTimeout(timeout);
+  }, [show]);
 
   const handleEnter = () => {
     const rect = btnRef.current.getBoundingClientRect();
@@ -41,14 +55,16 @@ function IconButtonWithTooltip({ icon, label, onClick, disabled = false }) {
       >
         {icon}
       </button>
-      {show &&
+      {mounted &&
         createPortal(
           <div
             style={{
               position: "fixed",
               top: pos.top,
               left: pos.left,
-              transform: "translate(-50%, -100%)",
+              transform: visible
+                ? "translate(-50%, -100%)"
+                : "translate(-50%, calc(-100% + 4px))",
               background: "rgba(20,28,35,0.95)",
               color: "white",
               padding: "4px 10px",
@@ -56,6 +72,8 @@ function IconButtonWithTooltip({ icon, label, onClick, disabled = false }) {
               fontSize: "0.75rem",
               whiteSpace: "nowrap",
               pointerEvents: "none",
+              opacity: visible ? 1 : 0,
+              transition: "opacity 0.2s ease, transform 0.2s ease",
               zIndex: 20000,
             }}
           >

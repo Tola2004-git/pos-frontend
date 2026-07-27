@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { RiEyeLine, RiEyeOffLine } from "react-icons/ri";
 import { glass, colors, glassCard } from "../../utils/styles";
-import { SkeletonModal } from "../ui/SkeletonUser";
 import { isValidEmail } from "../../utils/userHelpers";
 import {
   AddCircle,
@@ -38,8 +37,8 @@ const labelStyle = {
 
 function UserModal({
   showModal,
-  modalLoading,
   editUser,
+  currentUser,
   submitting,
   form,
   setForm,
@@ -189,11 +188,7 @@ function UserModal({
           `}
         </style>
 
-        {modalLoading ? (
-          <SkeletonModal />
-        ) : (
-          <>
-            {error && (
+        {error && (
               <div
                 style={{
                   background: "rgba(192,57,43,0.3)",
@@ -484,7 +479,7 @@ function UserModal({
 
             <div style={{ marginBottom: "24px" }}>
               <label style={labelStyle}>{t.roleLabel}</label>
-              {editUser?.role === "admin" ? (
+              {editUser?.role === "admin" && editUser?.id === currentUser?.id ? (
                 <div
                   style={{
                     ...inputStyle,
@@ -493,8 +488,21 @@ function UserModal({
                     color: "rgba(255,255,255,0.6)",
                   }}
                 >
-                  {t.adminProtectedRoleMsg}
+                  {editUser?.is_owner ? t.ownerProtectedMsg : t.adminProtectedRoleMsg}
                 </div>
+              ) : editUser ? (
+                <select
+                  style={{ ...inputStyle, cursor: "pointer" }}
+                  value={form.role}
+                  onChange={(e) => setForm({ ...form, role: e.target.value })}
+                >
+                  <option value="cashier" style={{ background: "#2c3e50" }}>
+                    {t.roleCashier}
+                  </option>
+                  <option value="admin" style={{ background: "#2c3e50" }}>
+                    {t.roleAdmin}
+                  </option>
+                </select>
               ) : (
                 <select
                   style={{ ...inputStyle, cursor: "pointer" }}
@@ -593,8 +601,6 @@ function UserModal({
                 `}
               </style>
             </div>
-          </>
-        )}
       </div>
     </div>
   );

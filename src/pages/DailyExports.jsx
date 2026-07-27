@@ -4,6 +4,7 @@ import { glassCard, colors } from "../utils/styles";
 import { useDailyExports } from "../hooks/useDailyExports";
 import { useTranslations } from "../hooks/useTranslations";
 import { SkeletonDailyExportTable } from "../components/ui/SkeletonDailyExport";
+import { Tooltip } from "../components/ui/Tooltip";
 
 function fmtDate(v) {
   return v ? new Date(v).toLocaleDateString() : "—";
@@ -46,7 +47,7 @@ function DailyExports() {
         <h2 className="text-white font-bold text-2xl m-0">{t.dailyExports}</h2>
       </div>
 
-      <div style={glassCard} className="rounded-[20px] p-5 mb-5">
+      <div style={glassCard} className="rounded-[20px] p-5 mb-5 w-fit">
         <h3 className="text-white font-bold text-base m-0 mb-3">
           {t.dailyExportGenerateTitle}
         </h3>
@@ -70,7 +71,31 @@ function DailyExports() {
             disabled={generating || !generateDate}
             className="btn-shine-blue px-4 py-2.5 rounded-[10px] text-sm font-semibold flex items-center gap-2 disabled:opacity-60"
           >
-            <ExportCircle size={18} color="#fff" variant="Linear" />
+            {generating ? (
+              <svg
+                className="animate-spin"
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
+                fill="none"
+              >
+                <circle
+                  cx="9"
+                  cy="9"
+                  r="7"
+                  stroke="rgba(255,255,255,0.3)"
+                  strokeWidth="2"
+                />
+                <path
+                  d="M9 2 A7 7 0 0 1 16 9"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
+            ) : (
+              <ExportCircle size={18} color="#fff" variant="Linear" />
+            )}
             {generating
               ? t.dashboardGeneratingExportAction
               : t.dailyExportGenerateAction}
@@ -95,7 +120,10 @@ function DailyExports() {
                 ].map((h, i) => (
                   <th
                     key={h || `col-${i}`}
-                    style={{ color: colors.whiteFull, textAlign: i === 4 ? "right" : "left" }}
+                    style={{
+                      color: colors.whiteFull,
+                      textAlign: i === 4 ? "right" : "left",
+                    }}
                     className={`font-semibold py-3.5 text-[0.82rem] whitespace-nowrap ${i === 4 ? "px-4 pr-6" : "px-4"}`}
                   >
                     {h}
@@ -135,29 +163,21 @@ function DailyExports() {
                     </td>
                     <td className="px-4 pr-6 py-3.5 text-right">
                       <div className="flex items-center gap-2 justify-end">
-                        <div className="relative group">
-                          <button
-                            onClick={() => handleDownload(exp.export_date)}
-                            disabled={downloadingDate === exp.export_date}
-                            className="btn-shine-blue px-3 py-1.5 rounded-[8px] text-xs font-semibold flex items-center gap-1.5 disabled:opacity-60"
-                          >
-                            <DocumentDownload
-                              size={14}
-                              color="#fff"
-                              variant="Linear"
-                            />
-                            {downloadingDate === exp.export_date
-                              ? t.dailyExportDownloadingAction
-                              : t.dailyExportDownloadAction}
-                          </button>
-                          <div
-                            className="pointer-events-none absolute bottom-full left-1/2 mb-1.5 -translate-x-1/2 translate-y-1 whitespace-nowrap rounded-md px-2.5 py-1 text-xs text-white opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100"
-                            style={{ background: "rgba(20,28,35,0.95)" }}
-                          >
-                            {t.dailyExportDownloadAction}
-                          </div>
-                        </div>
-                        <div className="relative group">
+                        <button
+                          onClick={() => handleDownload(exp.export_date)}
+                          disabled={downloadingDate === exp.export_date}
+                          className="btn-shine-blue px-3 py-1.5 rounded-[8px] text-xs font-semibold flex items-center gap-1.5 disabled:opacity-60"
+                        >
+                          <DocumentDownload
+                            size={14}
+                            color="#fff"
+                            variant="Linear"
+                          />
+                          {downloadingDate === exp.export_date
+                            ? t.dailyExportDownloadingAction
+                            : t.dailyExportDownloadAction}
+                        </button>
+                        <Tooltip label={t.deleteAction}>
                           <button
                             onClick={() => handleDelete(exp.export_date)}
                             disabled={deletingDate === exp.export_date}
@@ -190,13 +210,7 @@ function DailyExports() {
                               <Trash size={18} color="#fff" variant="Linear" />
                             )}
                           </button>
-                          <div
-                            className="pointer-events-none absolute bottom-full left-1/2 mb-1.5 -translate-x-1/2 translate-y-1 whitespace-nowrap rounded-md px-2.5 py-1 text-xs text-white opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100"
-                            style={{ background: "rgba(20,28,35,0.95)" }}
-                          >
-                            {t.deleteAction}
-                          </div>
-                        </div>
+                        </Tooltip>
                       </div>
                     </td>
                   </tr>

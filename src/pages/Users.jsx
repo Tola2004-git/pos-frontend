@@ -18,7 +18,6 @@ function Users() {
     showRoleDropdown,
     dropdownRef,
     showModal,
-    modalLoading,
     editUser,
     submitting,
     form,
@@ -206,8 +205,8 @@ function Users() {
 
       <UserModal
         showModal={showModal}
-        modalLoading={modalLoading}
         editUser={editUser}
+        currentUser={currentUser}
         submitting={submitting}
         form={form}
         setForm={setForm}

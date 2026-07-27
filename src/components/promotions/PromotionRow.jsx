@@ -8,6 +8,7 @@ import {
 } from "../../constants/promotionConstants.js";
 import StatusToggle from "./StatusToggle.jsx";
 import { glassCard } from "../../utils/styles.js";
+import { Tooltip } from "../ui/Tooltip";
 
 export default function PromotionRow({
   index,
@@ -19,6 +20,8 @@ export default function PromotionRow({
   t,
 }) {
   const [showPopover, setShowPopover] = useState(false);
+  const [popoverMounted, setPopoverMounted] = useState(false);
+  const [popoverVisible, setPopoverVisible] = useState(false);
   const [popoverPosition, setPopoverPosition] = useState({ top: 0, left: 0 });
   const buttonRef = useRef(null);
   const popoverRef = useRef(null);
@@ -33,6 +36,18 @@ export default function PromotionRow({
   };
 
   const closePopover = () => setShowPopover(false);
+
+  useEffect(() => {
+    let timeout;
+    if (showPopover) {
+      setPopoverMounted(true);
+      requestAnimationFrame(() => setPopoverVisible(true));
+    } else {
+      setPopoverVisible(false);
+      timeout = setTimeout(() => setPopoverMounted(false), 200);
+    }
+    return () => clearTimeout(timeout);
+  }, [showPopover]);
 
   useEffect(() => {
     if (!showPopover) return undefined;
@@ -195,15 +210,7 @@ export default function PromotionRow({
       </td>
       <td style={{ padding: "12px 14px", textAlign: "center" }}>
         <div style={{ display: "flex", gap: 16, justifyContent: "center" }}>
-          <div
-            style={{ position: "relative", display: "inline-block" }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.querySelector(".tooltip").style.opacity = 1)
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.querySelector(".tooltip").style.opacity = 0)
-            }
-          >
+          <Tooltip label={t.editAction}>
             <button
               className="duration-200 hover:scale-110 transition-transform"
               type="button"
@@ -215,43 +222,12 @@ export default function PromotionRow({
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 4,
-                // cursor: "pointer",
               }}
             >
               <Edit size={20} color="white" variant="Linear" />
             </button>
-            <div
-              className="tooltip"
-              style={{
-                position: "absolute",
-                bottom: "110%",
-                left: "50%",
-                transform: "translateX(-50%)",
-                background: "rgba(20,28,35,0.95)",
-                color: "white",
-                padding: "4px 10px",
-                borderRadius: "6px",
-                fontSize: "0.75rem",
-                whiteSpace: "nowrap",
-                pointerEvents: "none",
-                opacity: 0,
-                transition: "opacity 0.2s",
-                // border: "1px solid rgba(255,255,255,0.1)",
-                marginBottom: 5,
-              }}
-            >
-              {t.editAction}
-            </div>
-          </div>
-          <div
-            style={{ position: "relative", display: "inline-block" }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.querySelector(".tooltip").style.opacity = 1)
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.querySelector(".tooltip").style.opacity = 0)
-            }
-          >
+          </Tooltip>
+          <Tooltip label={t.deleteAction}>
             <button
               className="duration-200 hover:scale-110 transition-transform"
               type="button"
@@ -276,33 +252,12 @@ export default function PromotionRow({
                 <Trash size={20} color="white" variant="Linear" />
               )}
             </button>
-            <div
-              className="tooltip"
-              style={{
-                position: "absolute",
-                bottom: "110%",
-                left: "50%",
-                transform: "translateX(-50%)",
-                background: "rgba(20,28,35,0.95)",
-                color: "white",
-                padding: "4px 10px",
-                borderRadius: "6px",
-                fontSize: "0.75rem",
-                whiteSpace: "nowrap",
-                pointerEvents: "none",
-                opacity: 0,
-                transition: "opacity 0.2s",
-                marginBottom: 5,
-              }}
-            >
-              {t.deleteAction}
-            </div>
-          </div>
+          </Tooltip>
         </div>
       </td>
     </tr>
 
-    {showPopover && createPortal(
+    {popoverMounted && createPortal(
       <div
         ref={popoverRef}
         style={{
@@ -310,7 +265,11 @@ export default function PromotionRow({
           position: "fixed",
           top: popoverPosition.top,
           left: popoverPosition.left,
-          transform: "translateX(-50%)",
+          transform: popoverVisible
+            ? "translate(-50%, 0) scale(1)"
+            : "translate(-50%, -6px) scale(0.96)",
+          opacity: popoverVisible ? 1 : 0,
+          transition: "transform 200ms ease, opacity 200ms ease",
           borderRadius: 10,
           padding: "12px 14px",
           width: 280,

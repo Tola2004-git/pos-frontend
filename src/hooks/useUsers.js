@@ -33,7 +33,6 @@ export function useUsers() {
   const [lastPage, setLastPage] = useState(1);
 
   const [showModal, setShowModal] = useState(false);
-  const [modalLoading, setModalLoading] = useState(false);
   const [editUser, setEditUser] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -73,7 +72,6 @@ export function useUsers() {
     setLoading(true);
     try {
       const res = await getUsers(search, roleFilter, page);
-      console.log("Full Response: ", res.data);
       setUsers(res.data.data || res.data);
       setTotal(res.data.total || 0);
       setLastPage(res.data.last_page || 1);
@@ -86,6 +84,11 @@ export function useUsers() {
 
   const handleSearchChange = (value) => {
     setSearch(value);
+    setPage(1);
+  };
+
+  const handleRoleFilterChange = (value) => {
+    setRoleFilter(value);
     setPage(1);
   };
 
@@ -111,7 +114,7 @@ export function useUsers() {
       alertError(t.invalidEmailTitle, t.invalidEmailMsg);
       return;
     }
-    if (!editUser && passwordStrength.score < 3) {
+    if ((!editUser || form.password) && passwordStrength.score < 3) {
       alertError(t.weakPasswordTitle, t.weakPasswordMsg);
       return;
     }
@@ -136,13 +139,9 @@ export function useUsers() {
     }
   };
 
-  const handleEdit = async (user) => {
-    setForm(defaultForm);
+  const handleEdit = (user) => {
     setEditUser(user);
     setError("");
-    setModalLoading(true);
-    setShowModal(true);
-    await new Promise((r) => setTimeout(r, 500));
     setForm({
       name: user.name,
       email: user.email,
@@ -151,7 +150,7 @@ export function useUsers() {
       profile_image: user.profile_image || "",
     });
     setPasswordStrength(defaultStrength);
-    setModalLoading(false);
+    setShowModal(true);
   };
 
   const handleDelete = async (id) => {
@@ -203,7 +202,6 @@ export function useUsers() {
     showRoleDropdown,
     dropdownRef,
     showModal,
-    modalLoading,
     editUser,
     submitting,
     form,
@@ -214,7 +212,7 @@ export function useUsers() {
     focusedField,
     setPage,
     setSearch: handleSearchChange,
-    setRoleFilter,
+    setRoleFilter: handleRoleFilterChange,
     setShowRoleDropdown,
     setShowPassword,
     setFocusedField,

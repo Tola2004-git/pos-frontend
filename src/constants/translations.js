@@ -357,6 +357,7 @@ export const translations = {
     roleFilterAll: "All Roles",
     roleAdmin: "Admin",
     roleCashier: "Cashier",
+    roleOwner: "Owner",
 
     // UserTable
     userColProfile: "Profile",
@@ -367,6 +368,7 @@ export const translations = {
     userColUpdated: "Updated",
     noUsersFoundMsg: "No users found",
     protectedLabel: "Protected",
+    ownerProtectedMsg: "Owner (protected account)",
 
     // UserModal
     editUserTitle: "Edit User",
@@ -563,6 +565,10 @@ export const translations = {
     backupRestoreWrongConfirmMsg: "You must type RESTORE exactly to confirm.",
     backupRestoredTitle: "Database restored",
     backupRestoredMsg: "The database has been restored from the selected backup.",
+    backupDeleteConfirmTitle: "Delete this backup?",
+    backupDeleteConfirmMsg: "This removes the file from local storage and Google Drive too. This cannot be undone.",
+    backupDeletedTitle: "Backup deleted",
+    backupDeletedMsg: "The backup has been removed.",
     backupTotalCountMsg: "Total: {n} backups",
 
     // Expenses
@@ -743,6 +749,7 @@ export const translations = {
     clearTableAction: "Clear Table",
     editAction: "Edit",
     deleteAction: "Delete",
+    deletingAction: "Deleting...",
 
     // useTables hook - toast messages
     tableNameRequiredTitle: "Missing Table Name",
@@ -1354,6 +1361,7 @@ export const translations = {
     roleFilterAll: "តួនាទីទាំងអស់",
     roleAdmin: "អ្នកគ្រប់គ្រង",
     roleCashier: "អ្នកគិតលុយ",
+    roleOwner: "ម្ចាស់",
 
     // UserTable
     userColProfile: "រូបភាព",
@@ -1364,6 +1372,7 @@ export const translations = {
     userColUpdated: "បានកែសម្រួល",
     noUsersFoundMsg: "រកមិនឃើញអ្នកប្រើប្រាស់ទេ",
     protectedLabel: "ត្រូវបានការពារ",
+    ownerProtectedMsg: "ម្ចាស់ (គណនីត្រូវបានការពារ)",
 
     // UserModal
     editUserTitle: "កែសម្រួលអ្នកប្រើប្រាស់",
@@ -1560,6 +1569,10 @@ export const translations = {
     backupRestoreWrongConfirmMsg: "អ្នកត្រូវវាយពាក្យ RESTORE ឲ្យត្រឹមត្រូវដើម្បីបញ្ជាក់។",
     backupRestoredTitle: "ស្តារទិន្នន័យរួចរាល់",
     backupRestoredMsg: "ទិន្នន័យត្រូវបានស្តារពីការបម្រុងទុកដែលបានជ្រើសរើស។",
+    backupDeleteConfirmTitle: "លុបការបម្រុងទុកនេះ?",
+    backupDeleteConfirmMsg: "ការនេះនឹងលុបឯកសារចេញពី local storage និង Google Drive ផងដែរ។ សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។",
+    backupDeletedTitle: "លុបការបម្រុងទុករួច",
+    backupDeletedMsg: "ការបម្រុងទុកត្រូវបានលុបចេញ។",
     backupTotalCountMsg: "សរុប៖ {n} ការបម្រុងទុក",
 
     // Expenses
@@ -1741,6 +1754,7 @@ export const translations = {
     clearTableAction: "ជម្រះតុ",
     editAction: "កែសម្រួល",
     deleteAction: "លុប",
+    deletingAction: "កំពុងលុប...",
 
     // useTables hook - toast messages
     tableNameRequiredTitle: "សូមបញ្ចូលឈ្មោះតុ",
