@@ -2,6 +2,17 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <!-- style-src needs 'unsafe-inline' because the app renders styling via
+         inline style={} attributes throughout (glassCard/glass/colors style
+         objects) rather than external stylesheets - CSS-in-JS via inline
+         attributes can't be allowlisted by hash/nonce like <style> tags can.
+         connect-src is pinned to this deployment's actual Railway backend +
+         Reverb WebSocket host; update both if either is ever redeployed to a
+         new domain. -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://pos-backend-production-a8e6.up.railway.app wss://pos-backend-reverb-production.up.railway.app https://pos-backend-reverb-production.up.railway.app; object-src 'none'; base-uri 'self';"
+    />
     <link rel="icon" type="image/png" href="/logo.png" />
     <link rel="apple-touch-icon" href="/logo.png" />
     <link rel="manifest" href="/manifest.json" />

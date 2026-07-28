@@ -11,7 +11,7 @@ function UserProfile({ user, t }) {
         <img
           src={user.profile_image}
           alt="profile"
-          style={{ borderColor: colors.white }}
+          style={{ borderColor: colors.white, objectPosition: "center top" }}
           className="w-9 h-9 rounded-full object-cover border-2"
         />
       ) : (
