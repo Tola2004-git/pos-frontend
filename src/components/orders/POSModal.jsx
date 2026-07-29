@@ -1,31 +1,23 @@
 import { useState, useEffect } from "react";
-import {
-  ArrowLeft2,
-  ArrowRight2,
-  Edit2,
-  ShoppingBag,
-  TickCircle,
-} from "iconsax-react";
+import { ShoppingBag } from "iconsax-react";
 import { glassCard } from "../../utils/styles";
 import apiClient from "../../api/apiClient";
 import { changeTableApi } from "../../api/ordersApi";
-import { alertConfirmWarning } from "../../utils/alert.jsx";
 import { isCashLike, findRealCashMethod } from "../../utils/cashPaymentMethod";
 import { useTranslations } from "../../hooks/useTranslations";
 
-// Import custom hooks
 import { usePromotionLogic } from "../../hooks/usePromotionLogic";
 import { useCurrencyConversion } from "../../hooks/useCurrencyConversion";
 import { useTableSelection } from "../../hooks/useTableSelection";
 import { usePaymentMethodValidation } from "../../hooks/usePaymentMethodValidation";
 
-// Import atomic components
 import { ProductGrid } from "./ProductGrid";
 import { CartSidebar } from "./CartSidebar";
 import { PaymentMethodList } from "../payment/PaymentMethodList";
 import { PaymentDetailsForm } from "../payment/PaymentDetailsForm";
-import { HoldOrderAction } from "../payment/HoldOrderAction";
 import { CheckoutSummary } from "../payment/CheckoutSummary";
+import { TableSelectionPanel } from "./pos/TableSelectionPanel";
+import { PaymentStepFooter } from "./pos/PaymentStepFooter";
 
 export default function POSModal({
   showPOS,
@@ -69,7 +61,6 @@ export default function POSModal({
   // actual fetched list, falling back to the "cash" placeholder id.
   const cashPaymentMethodId = findRealCashMethod(paymentMethods)?.id ?? "cash";
 
-  // Local UI state
   const [focusedField, setFocusedField] = useState("");
   const [isHolding, setIsHolding] = useState(false);
   const [isConfirming, setIsConfirming] = useState(false);
@@ -107,7 +98,6 @@ export default function POSModal({
   );
   const paymentMethodsValidation = usePaymentMethodValidation(paymentMethods);
 
-  // Computed values
   const totalAmountWithDiscount = promotionLogic.totalAfterDiscount;
   const subtotalBeforeDiscount = promotionLogic.subtotalBeforeDiscount;
   const discountAmount = promotionLogic.totalDiscountAmount;
@@ -172,7 +162,6 @@ export default function POSModal({
       ? tableSelection.getSelectedTable()
       : null;
 
-  // Fetch exchange rate on mount
   useEffect(() => {
     const fetchExchangeRate = async () => {
       try {
@@ -186,7 +175,6 @@ export default function POSModal({
     fetchExchangeRate();
   }, []);
 
-  // Handle modal show/hide animation
   useEffect(() => {
     let timeout;
     if (showPOS) {
@@ -199,7 +187,6 @@ export default function POSModal({
     return () => clearTimeout(timeout);
   }, [showPOS]);
 
-  // Lock background page scroll while the modal is open
   useEffect(() => {
     if (!showPOS) return;
 
@@ -210,15 +197,12 @@ export default function POSModal({
     };
   }, [showPOS]);
 
-  // Set default payment method
-  // Clear table selection when order type changes
   useEffect(() => {
     if (orderType !== "dine-in") {
       tableSelection.clearSelection();
     }
   }, [orderType, tableSelection]);
 
-  // Handle payment method selection with auto-fill and toggle/deselect support
   const resolvePaymentMethod = (method) => {
     if (!method) return null;
 
@@ -284,7 +268,6 @@ export default function POSModal({
     }
   };
 
-  // Handle confirm order
   const handleConfirmOrder = async ({
     status = isEditMode ? "pending" : "completed",
     tableId = null,
@@ -351,7 +334,6 @@ export default function POSModal({
     });
   };
 
-  // Handle amount paid input
   const handleAmountPaidChange = (inputValue) => {
     setAmountPaidInput(inputValue);
     if (inputValue === "") {
@@ -459,7 +441,6 @@ export default function POSModal({
         </div>
         {posStep === 1 ? (
           <div className="flex flex-1 overflow-hidden">
-            {/* Product Grid */}
             <ProductGrid
               products={products}
               categories={categories}
@@ -472,7 +453,6 @@ export default function POSModal({
               t={t}
             />
 
-            {/* Cart Sidebar */}
             <div className="flex flex-col min-w-[320px] border-l border-white/10 bg-white/5">
               <div className="px-4 py-3 border-b border-white/10">
                 <div className="text-[0.8rem] text-white/70 mb-2">
@@ -569,232 +549,23 @@ export default function POSModal({
                     />
                   </div>
 
-                  {/* Payment Details + Summary + Footer */}
                   <div className="col-span-12 lg:col-span-8 xl:col-span-8 flex flex-col lg:pl-1">
                     {requiresTableSelection && (
-                      <div className="mb-4 rounded-[14px] border border-white/10 bg-white/5 p-3">
-                        {currentSessionTable && !showTablePicker ? (
-                          // Compact view: current table badge + a small icon to open the switcher.
-                          <div className="flex items-center justify-between gap-2">
-                            <div className="flex min-w-0 items-center gap-2">
-                              <span className="text-[0.72rem] uppercase tracking-[0.2em] text-white/45">
-                                {t.tableLabel}
-                              </span>
-                              <span className="truncate rounded-[10px] border border-white/10 bg-white/10 px-3 py-1.5 text-sm font-medium text-white">
-                                {getTableLabel(currentSessionTable)}
-                              </span>
-                            </div>
-                            {canChangeTable && (
-                              <button
-                                type="button"
-                                onClick={() => setShowTablePicker(true)}
-                                title={t.switchTable}
-                                aria-label={t.switchTable}
-                                className="flex-shrink-0 rounded-full border border-white/10 bg-white/10 p-2 text-white transition-all hover:bg-white/20"
-                              >
-                                <Edit2
-                                  size={16}
-                                  color="white"
-                                  variant="Outline"
-                                />
-                              </button>
-                            )}
-                          </div>
-                        ) : (
-                          <>
-                            <div className="mb-2 flex items-center justify-between">
-                              <h5 className="text-white font-medium">
-                                {t.selectTable}
-                              </h5>
-                              {currentSessionTable ? (
-                                <button
-                                  type="button"
-                                  onClick={() => setShowTablePicker(false)}
-                                  className="text-[0.8rem] text-white/60 transition-all hover:text-white"
-                                >
-                                  {t.cancel}
-                                </button>
-                              ) : (
-                                <span className="text-[0.8rem] text-white/60">
-                                  {tableSelection.selectedTableId
-                                    ? t.selected
-                                    : t.required}
-                                </span>
-                              )}
-                            </div>
-
-                            {tableSelection.tableLoading ? (
-                              <div className="text-sm text-white/60">
-                                {t.loadingTables}
-                              </div>
-                            ) : currentSessionTable ? (
-                              // Switching an already-seated order: a compact dropdown beats a
-                              // full grid + separate confirm button for this quick action.
-                              <div className="space-y-2">
-                                <select
-                                  value={
-                                    tableSelection.selectedTableId ??
-                                    currentSessionTable.id
-                                  }
-                                  disabled={isChangingTable}
-                                  onChange={(e) => {
-                                    const nextTableId = Number(e.target.value);
-                                    if (nextTableId === currentSessionTable.id)
-                                      return;
-                                    handleChangeTable(nextTableId);
-                                  }}
-                                  className="w-full rounded-[10px] border border-white/10 bg-white/10 px-3 py-2 text-sm font-medium text-white transition-all focus:border-white/40 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
-                                >
-                                  <option
-                                    value={currentSessionTable.id}
-                                    className="bg-[#1a1a2e]"
-                                  >
-                                    {getTableLabel(currentSessionTable)}{" "}
-                                    {t.currentSuffix}
-                                  </option>
-                                  {availableTables.map((table) => (
-                                    <option
-                                      key={table.id}
-                                      value={table.id}
-                                      className="bg-[#1a1a2e]"
-                                    >
-                                      {getTableLabel(table)}
-                                    </option>
-                                  ))}
-                                </select>
-                                {isChangingTable && (
-                                  <div className="text-sm text-white/60">
-                                    {t.switchingTable}
-                                  </div>
-                                )}
-                              </div>
-                            ) : (
-                              <div className="space-y-2">
-                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                                  {availableTables.length > 0 ? (
-                                    availableTables.map((table) => {
-                                      const isSelected =
-                                        tableSelection.selectedTableId ===
-                                        table.id;
-
-                                      return (
-                                        <button
-                                          key={table.id}
-                                          type="button"
-                                          onClick={() =>
-                                            tableSelection.setSelectedTableId(
-                                              table.id,
-                                            )
-                                          }
-                                          className={`rounded-[10px] border px-3 py-2 text-sm font-medium transition-all ${
-                                            isSelected
-                                              ? "border-white bg-white text-[#1a1a2e]"
-                                              : "border-white/10 bg-white/10 text-white hover:bg-white/20"
-                                          }`}
-                                        >
-                                          {getTableLabel(table)}
-                                        </button>
-                                      );
-                                    })
-                                  ) : (
-                                    <div className="col-span-full text-sm text-white/60">
-                                      {t.noAvailableTables}
-                                    </div>
-                                  )}
-                                </div>
-
-                                {!isEditMode && (
-                                  <div className="rounded-[10px] border border-amber-400/20 bg-amber-500/10 px-3 py-2 text-sm text-amber-100">
-                                    {t.onlyAvailableTablesNote}
-                                  </div>
-                                )}
-
-                                {blockedTables.length > 0 && (
-                                  <div className="space-y-2">
-                                    <div className="text-[0.72rem] uppercase tracking-[0.2em] text-white/45">
-                                      {t.inUseTables}
-                                    </div>
-                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                                      {blockedTables.map((table) => {
-                                        const statusLabel =
-                                          table.status === "reserved"
-                                            ? t.reservedStatus
-                                            : t.occupiedStatus;
-
-                                        if (isEditMode) {
-                                          return (
-                                            <button
-                                              key={table.id}
-                                              type="button"
-                                              disabled
-                                              className="cursor-not-allowed rounded-[10px] border border-white/10 bg-white/5 px-3 py-2 text-left text-sm font-medium text-white/60"
-                                            >
-                                              <div>{getTableLabel(table)}</div>
-                                              <div className="text-[0.7rem] uppercase tracking-[0.2em] text-white/45">
-                                                {statusLabel}
-                                              </div>
-                                            </button>
-                                          );
-                                        }
-
-                                        const isSelected =
-                                          tableSelection.selectedTableId ===
-                                          table.id;
-
-                                        const handleOccupiedTableClick =
-                                          async () => {
-                                            const result =
-                                              await alertConfirmWarning(
-                                                t.tableOccupiedConfirmTitle,
-                                                t.tableOccupiedConfirmMsg,
-                                                t.yesAddOrder,
-                                                t.cancel,
-                                              );
-                                            if (!result.isConfirmed) return;
-                                            tableSelection.setSelectedTableId(
-                                              table.id,
-                                              true,
-                                            );
-                                          };
-
-                                        return (
-                                          <button
-                                            key={table.id}
-                                            type="button"
-                                            onClick={handleOccupiedTableClick}
-                                            className={`rounded-[10px] border px-3 py-2 text-left text-sm font-medium transition-all ${
-                                              isSelected
-                                                ? "border-white bg-white text-[#1a1a2e]"
-                                                : "border-white/10 bg-white/5 text-white/60 hover:bg-white/10"
-                                            }`}
-                                          >
-                                            <div>{getTableLabel(table)}</div>
-                                            <div
-                                              className={`text-[0.7rem] uppercase tracking-[0.2em] ${
-                                                isSelected
-                                                  ? "text-[#1a1a2e]/60"
-                                                  : "text-white/45"
-                                              }`}
-                                            >
-                                              {statusLabel}
-                                            </div>
-                                          </button>
-                                        );
-                                      })}
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-                            )}
-
-                            {tableActionMessage && (
-                              <div className="mt-2 rounded-[10px] border border-emerald-400/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-200">
-                                {tableActionMessage}
-                              </div>
-                            )}
-                          </>
-                        )}
-                      </div>
+                      <TableSelectionPanel
+                        t={t}
+                        currentSessionTable={currentSessionTable}
+                        showTablePicker={showTablePicker}
+                        setShowTablePicker={setShowTablePicker}
+                        canChangeTable={canChangeTable}
+                        getTableLabel={getTableLabel}
+                        tableSelection={tableSelection}
+                        availableTables={availableTables}
+                        blockedTables={blockedTables}
+                        isEditMode={isEditMode}
+                        isChangingTable={isChangingTable}
+                        handleChangeTable={handleChangeTable}
+                        tableActionMessage={tableActionMessage}
+                      />
                     )}
 
                     <PaymentDetailsForm
@@ -835,253 +606,26 @@ export default function POSModal({
                       </div>
                     )}
 
-                    <div className="mt-2 grid grid-cols-3 gap-3 pb-2">
-                      <button
-                        onClick={() => setPosStep(1)}
-                        className="btn-cancel-glass flex-1 flex items-center justify-center gap-2 whitespace-nowrap text-sm transition-all active:scale-95"
-                        style={{
-                          borderRadius: "12px",
-                          color: "white",
-                          cursor: "pointer",
-                          fontWeight: 500,
-                        }}
-                      >
-                        <ArrowLeft2 size={18} color="white" variant="Linear" />
-                        {t.back2}
-                      </button>
-
-                      {!isEditMode && (
-                        <HoldOrderAction
-                          onHold={handleHoldOrder}
-                          loading={isHolding}
-                          disabled={
-                            isConfirming ||
-                            (orderType === "dine-in" &&
-                              (!tableSelection.selectedTableId ||
-                                tableSelection.tableLoading))
-                          }
-                          t={t}
-                        />
-                      )}
-
-                      {isEditMode ? (
-                        <>
-                          <button
-                            onClick={handleUpdateOrder}
-                            disabled={
-                              isConfirming ||
-                              (orderType === "dine-in" &&
-                                (!tableSelection.selectedTableId ||
-                                  tableSelection.tableLoading))
-                            }
-                            className="btn-shine-blue p-3 flex-1 flex items-center justify-center gap-2 whitespace-nowrap text-sm transition-transform active:scale-95"
-                            style={{
-                              borderRadius: "12px",
-                              fontWeight: 500,
-                              opacity:
-                                isConfirming ||
-                                (orderType === "dine-in" &&
-                                  (!tableSelection.selectedTableId ||
-                                    tableSelection.tableLoading))
-                                  ? 0.5
-                                  : 1,
-                              cursor:
-                                isConfirming ||
-                                (orderType === "dine-in" &&
-                                  (!tableSelection.selectedTableId ||
-                                    tableSelection.tableLoading))
-                                  ? "not-allowed"
-                                  : "pointer",
-                            }}
-                          >
-                            {isConfirming ? (
-                              <>
-                                <svg
-                                  width="18"
-                                  height="18"
-                                  viewBox="0 0 18 18"
-                                  style={{
-                                    animation: "spin 0.8s linear infinite",
-                                  }}
-                                >
-                                  <circle
-                                    cx="9"
-                                    cy="9"
-                                    r="7"
-                                    fill="none"
-                                    stroke="rgba(255,255,255,0.3)"
-                                    strokeWidth="2"
-                                  />
-                                  <path
-                                    d="M9 2 A7 7 0 0 1 16 9"
-                                    fill="none"
-                                    stroke="white"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                  />
-                                </svg>
-                                {t.updating}
-                              </>
-                            ) : (
-                              <>
-                                <Edit2
-                                  size={18}
-                                  color="white"
-                                  variant="Outline"
-                                />
-                                {t.update}
-                              </>
-                            )}
-                          </button>
-
-                          <button
-                            onClick={handleCompletePayment}
-                            disabled={
-                              isConfirming ||
-                              (orderType === "dine-in" &&
-                                (!tableSelection.selectedTableId ||
-                                  tableSelection.tableLoading)) ||
-                              !selectedPayment ||
-                              safeAmountPaid < totalAmountWithDiscount
-                            }
-                            className="btn-shine-blue p-3 flex-1 flex items-center justify-center gap-2 whitespace-nowrap text-sm transition-transform active:scale-95"
-                            style={{
-                              borderRadius: "12px",
-                              fontWeight: 500,
-                              opacity:
-                                isConfirming ||
-                                (orderType === "dine-in" &&
-                                  (!tableSelection.selectedTableId ||
-                                    tableSelection.tableLoading)) ||
-                                !selectedPayment ||
-                                safeAmountPaid < totalAmountWithDiscount
-                                  ? 0.5
-                                  : 1,
-                              cursor:
-                                isConfirming ||
-                                (orderType === "dine-in" &&
-                                  (!tableSelection.selectedTableId ||
-                                    tableSelection.tableLoading)) ||
-                                !selectedPayment ||
-                                safeAmountPaid < totalAmountWithDiscount
-                                  ? "not-allowed"
-                                  : "pointer",
-                            }}
-                          >
-                            {isConfirming ? (
-                              <>
-                                <svg
-                                  width="18"
-                                  height="18"
-                                  viewBox="0 0 18 18"
-                                  style={{
-                                    animation: "spin 0.8s linear infinite",
-                                  }}
-                                >
-                                  <circle
-                                    cx="9"
-                                    cy="9"
-                                    r="7"
-                                    fill="none"
-                                    stroke="rgba(255,255,255,0.3)"
-                                    strokeWidth="2"
-                                  />
-                                  <path
-                                    d="M9 2 A7 7 0 0 1 16 9"
-                                    fill="none"
-                                    stroke="white"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                  />
-                                </svg>
-                                {t.completing}
-                              </>
-                            ) : (
-                              <>
-                                <TickCircle
-                                  size={18}
-                                  color="white"
-                                  variant="Outline"
-                                />
-                                {t.payNow}
-                              </>
-                            )}
-                          </button>
-                        </>
-                      ) : (
-                        <button
-                          onClick={() =>
-                            handleConfirmOrder({
-                              status:
-                                orderType === "dine-in"
-                                  ? "completed"
-                                  : "completed",
-                              tableId:
-                                orderType === "dine-in"
-                                  ? tableSelection.selectedTableId
-                                  : null,
-                            })
-                          }
-                          disabled={confirmDisabled}
-                          className="btn-shine-blue p-3 flex-1 flex items-center justify-center gap-2 whitespace-nowrap text-sm transition-transform active:scale-95"
-                          style={{
-                            borderRadius: "12px",
-                            fontWeight: 500,
-                            opacity: confirmDisabled ? 0.5 : 1,
-                            cursor: confirmDisabled ? "not-allowed" : "pointer",
-                          }}
-                        >
-                          {isConfirming ? (
-                            <>
-                              <svg
-                                width="18"
-                                height="18"
-                                viewBox="0 0 18 18"
-                                style={{
-                                  animation: "spin 0.8s linear infinite",
-                                }}
-                              >
-                                <circle
-                                  cx="9"
-                                  cy="9"
-                                  r="7"
-                                  fill="none"
-                                  stroke="rgba(255,255,255,0.3)"
-                                  strokeWidth="2"
-                                />
-                                <path
-                                  d="M9 2 A7 7 0 0 1 16 9"
-                                  fill="none"
-                                  stroke="white"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                />
-                              </svg>
-                              {t.confirming}
-                            </>
-                          ) : (
-                            <>
-                              <TickCircle
-                                size={18}
-                                color="white"
-                                variant="Outline"
-                              />
-                              {t.confirm}
-                            </>
-                          )}
-                        </button>
-                      )}
-                    </div>
+                    <PaymentStepFooter
+                      t={t}
+                      setPosStep={setPosStep}
+                      isEditMode={isEditMode}
+                      isConfirming={isConfirming}
+                      isHolding={isHolding}
+                      orderType={orderType}
+                      tableSelection={tableSelection}
+                      handleHoldOrder={handleHoldOrder}
+                      handleUpdateOrder={handleUpdateOrder}
+                      handleCompletePayment={handleCompletePayment}
+                      handleConfirmOrder={handleConfirmOrder}
+                      confirmDisabled={confirmDisabled}
+                      selectedPayment={selectedPayment}
+                      safeAmountPaid={safeAmountPaid}
+                      totalAmountWithDiscount={totalAmountWithDiscount}
+                    />
                   </div>
                 </div>
               </div>
-
-              <style>{`
-                @keyframes spin {
-                  from { transform: rotate(0deg); }
-                  to { transform: rotate(360deg); }
-                }
-              `}</style>
             </div>
           </>
         )}
