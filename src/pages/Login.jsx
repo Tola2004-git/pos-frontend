@@ -6,6 +6,7 @@ import logo from "../assets/logo.png";
 import { Sms, Lock, Eye, EyeSlash, Login as LoginIcon } from "iconsax-react";
 import { useTranslations } from "../hooks/useTranslations";
 import { setCachedUser } from "../utils/currentUserCache";
+import { markActivity } from "../utils/sessionActivity";
 
 const styles = `
 @keyframes dot-bounce {
@@ -173,6 +174,7 @@ function Login() {
         password,
       });
       localStorage.setItem("token", res.data.token);
+      markActivity();
       let role = "cashier";
       try {
         const me = await apiClient.get("/me");

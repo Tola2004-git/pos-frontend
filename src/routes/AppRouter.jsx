@@ -1,6 +1,14 @@
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { useState } from "react";
+import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 import Login from "../pages/Login";
 import LowStockToastStack from "../components/notifications/LowStockToastStack";
+import LockScreen from "../components/LockScreen";
+import { useIdleLogout } from "../hooks/useIdleLogout";
+import { useTranslations } from "../hooks/useTranslations";
+import { alertWarning } from "../utils/alert.jsx";
+import { clearCachedUser } from "../utils/currentUserCache";
+import { resetCashierShiftCache } from "../hooks/useCashierShift";
+import { isSessionStale, clearActivity } from "../utils/sessionActivity";
 import Dashboard from "../pages/Dashboard";
 import Users from "../pages/Users";
 import Products from "../pages/Products";
@@ -36,6 +44,7 @@ function getHomePathForRole(role) {
 function clearSession() {
   localStorage.removeItem("token");
   localStorage.removeItem("role");
+  clearActivity();
 }
 
 function PrivateRoute({ children, roles }) {
@@ -51,24 +60,33 @@ function PrivateRoute({ children, roles }) {
   // itself comes back 401 and apiClient.js's own redirect kicks in.
   if (!token) return <Navigate to="/login" replace />;
 
-  if (roles && roles.length > 0) {
-    const role = getStoredRole();
+  const role = getStoredRole();
 
-    // A missing/unrecognized role can't be trusted to compute a safe home
-    // path - getHomePathForRole would default it to "/cashier", which can
-    // equal the very route being blocked and cause an infinite redirect
-    // loop (React's "Maximum update depth exceeded", seen as a blank
-    // white screen). Treat an untrustworthy role as an invalid session.
-    if (!role || !KNOWN_ROLES.includes(role)) {
-      clearSession();
-      return <Navigate to="/login" replace />;
-    }
+  // A missing/unrecognized role can't be trusted to compute a safe home
+  // path - getHomePathForRole would default it to "/cashier", which can
+  // equal the very route being blocked and cause an infinite redirect
+  // loop (React's "Maximum update depth exceeded", seen as a blank
+  // white screen). Treat an untrustworthy role as an invalid session.
+  if (!role || !KNOWN_ROLES.includes(role)) {
+    clearSession();
+    return <Navigate to="/login" replace />;
+  }
 
-    if (!roles.includes(role)) {
-      // Authenticated with a known role, just not allowed on this route -
-      // send them back to whichever home page actually matches their role.
-      return <Navigate to={getHomePathForRole(role)} replace />;
-    }
+  // The in-tab idle lock (useIdleLogout) can't catch a tab that was closed
+  // outright - nothing runs to lock it. This is the equivalent check for
+  // that case: if the tab (or the OS) was gone longer than this role's idle
+  // timeout, the reopened tab still has a valid token, but the session
+  // shouldn't be trusted anymore - require a real login, same as if the
+  // lock screen's password check had failed.
+  if (isSessionStale(role)) {
+    clearSession();
+    return <Navigate to="/login" replace />;
+  }
+
+  if (roles && roles.length > 0 && !roles.includes(role)) {
+    // Authenticated with a known role, just not allowed on this route -
+    // send them back to whichever home page actually matches their role.
+    return <Navigate to={getHomePathForRole(role)} replace />;
   }
 
   return children;
@@ -80,20 +98,59 @@ function GlobalLowStockAlerts() {
   return <LowStockToastStack />;
 }
 
+function IdleLockGuard() {
+  const { t } = useTranslations();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [locked, setLocked] = useState(false);
+  const token = localStorage.getItem("token");
+  const enabled = Boolean(token) && location.pathname !== "/login" && !locked;
+
+  useIdleLogout({
+    enabled,
+    onWarning: () => alertWarning(t.idleWarningTitle, t.idleWarningMsg),
+    // Idle timeout locks the screen in place rather than logging out, so an
+    // order/cart the cashier had open isn't lost - unlocking re-enters the
+    // same password through /login and resumes exactly where they left off.
+    onTimeout: () => setLocked(true),
+  });
+
+  // Derived rather than synced via effect: nothing inside the lock screen
+  // itself can navigate to /login (it has no route link, and the "not you?
+  // log out" button clears `locked` before navigating), so this only
+  // matters as a fallback in case the route ever changes out from under it.
+  if (!locked || location.pathname === "/login") return null;
+
+  return (
+    <LockScreen
+      onUnlock={() => setLocked(false)}
+      onFullLogout={() => {
+        clearSession();
+        clearCachedUser();
+        resetCashierShiftCache();
+        setLocked(false);
+        navigate("/login", { replace: true });
+      }}
+    />
+  );
+}
+
 function AppRouter() {
   return (
     <BrowserRouter>
       <GlobalLowStockAlerts />
+      <IdleLockGuard />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route
           path="/"
           element={(() => {
-            // See PrivateRoute for why this doesn't check token expiry.
+            // See PrivateRoute for why this doesn't check token expiry, and
+            // for the same closed-tab staleness check.
             const token = localStorage.getItem("token");
             if (!token) return <Navigate to="/login" replace />;
             const role = getStoredRole();
-            if (!role || !KNOWN_ROLES.includes(role)) {
+            if (!role || !KNOWN_ROLES.includes(role) || isSessionStale(role)) {
               clearSession();
               return <Navigate to="/login" replace />;
             }

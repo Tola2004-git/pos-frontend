@@ -4,4 +4,11 @@ export default {
   "activeLabel": "Active",
   "inactiveLabel": "Inactive",
   "naLabel": "N/A",
+  "idleWarningTitle": "You're about to be locked out",
+  "idleWarningMsg": "No activity detected. Your session will lock in 1 minute.",
+  "lockScreenTitle": "Session Locked",
+  "lockScreenSubtitle": "Enter your password to continue where you left off.",
+  "unlockAction": "Unlock",
+  "unlockingMsg": "Unlocking...",
+  "notYouLogoutAction": "Not you? Log out",
 };
