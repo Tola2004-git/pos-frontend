@@ -103,7 +103,6 @@ function CategoryModal({
   resetCatForm,
   t,
 }) {
-  // Lock background page scroll while the modal is open
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
@@ -151,7 +150,6 @@ function CategoryModal({
           overflow: "hidden",
         }}
       >
-        {/* Header */}
         <div
           style={{
             display: "flex",
@@ -201,7 +199,6 @@ function CategoryModal({
           </button>
         </div>
 
-        {/* Add / Edit Form */}
         <div style={{ marginBottom: "24px", flexShrink: 0 }}>
           {catError && (
             <div
@@ -298,7 +295,6 @@ function CategoryModal({
           </div>
         </div>
 
-        {/* Category List */}
         <div className="hide-scrollbar" style={{ flex: 1, overflowY: "auto" }}>
         {catModalLoading || catLoading ? (
           <SkeletonCategoryList rows={5} />
@@ -333,7 +329,6 @@ function CategoryModal({
                 <div
                   style={{ display: "flex", alignItems: "center", gap: "10px" }}
                 >
-                  {/* Toggle Status */}
                   <div
                     onClick={() => onToggleStatus(cat)}
                     style={{
@@ -361,7 +356,6 @@ function CategoryModal({
                       }}
                     />
                   </div>
-                  {/* Edit */}
                   <IconButtonWithTooltip
                     icon={<Edit size={20} color="white" variant="Linear" />}
                     label={t.editAction}
@@ -370,7 +364,6 @@ function CategoryModal({
                       setCatForm({ name: cat.name, status: cat.status });
                     }}
                   />
-                  {/* Delete */}
                   <IconButtonWithTooltip
                     icon={
                       deletingCatId === cat.id ? (

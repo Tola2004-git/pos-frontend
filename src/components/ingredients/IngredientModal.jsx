@@ -227,7 +227,6 @@ function IngredientModal({
                 marginBottom: "16px",
               }}
             >
-              {/* Name */}
               <div style={{ gridColumn: "1 / -1" }}>
                 <label style={labelStyle}>{t.ingredientNameLabel}</label>
                 <div style={{ position: "relative" }}>
@@ -252,7 +251,6 @@ function IngredientModal({
                 </div>
               </div>
 
-              {/* Category */}
               <div>
                 <label style={labelStyle}>{t.categoryLabel}</label>
                 <div style={{ position: "relative" }}>
@@ -295,7 +293,6 @@ function IngredientModal({
                 </div>
               </div>
 
-              {/* Unit */}
               <div>
                 <label style={labelStyle}>{t.unitLabel}</label>
                 <div style={{ position: "relative" }}>
@@ -320,7 +317,6 @@ function IngredientModal({
                 </div>
               </div>
 
-              {/* Low Stock Threshold */}
               <div>
                 <label style={labelStyle}>{t.lowStockThresholdLabel}</label>
                 <input
@@ -336,7 +332,6 @@ function IngredientModal({
                 />
               </div>
 
-              {/* Cost Per Unit */}
               <div>
                 <label style={labelStyle}>{t.costPerUnitLabel}</label>
                 <div style={{ position: "relative" }}>
@@ -364,7 +359,6 @@ function IngredientModal({
                 </div>
               </div>
 
-              {/* Expiry Date */}
               <div>
                 <label style={labelStyle}>{t.expiryDateLabel}</label>
                 <div style={{ position: "relative" }}>
@@ -392,7 +386,6 @@ function IngredientModal({
                 </div>
               </div>
 
-              {/* Supplier */}
               <div>
                 <label style={labelStyle}>{t.ingColSupplier}</label>
                 <div style={{ position: "relative" }}>
@@ -419,7 +412,6 @@ function IngredientModal({
                 </div>
               </div>
 
-              {/* Status Toggle */}
               <div
                 style={{
                   display: "flex",
@@ -468,7 +460,6 @@ function IngredientModal({
                 </span>
               </div>
 
-              {/* Note */}
               <div style={{ gridColumn: "1 / -1" }}>
                 <label style={labelStyle}>{t.restockNoteLabel}</label>
                 <div style={{ position: "relative" }}>
@@ -500,7 +491,6 @@ function IngredientModal({
               </div>
             </div>
 
-            {/* Action Buttons */}
             <div style={{ display: "flex", gap: "12px" }}>
               <button
                 onClick={() => !submitting && onClose()}

@@ -49,7 +49,6 @@ export function StockHistoryFilters({
         marginBottom: "20px",
       }}
     >
-      {/* Search */}
       <div
         style={{
           ...glass,

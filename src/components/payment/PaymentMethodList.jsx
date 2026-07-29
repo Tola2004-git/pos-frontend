@@ -22,7 +22,6 @@ export function PaymentMethodList({
 
   return (
     <div className="flex flex-col gap-3">
-      {/* Cash Card */}
       {cashMethod && (
         <div
           onClick={() => {
@@ -49,7 +48,6 @@ export function PaymentMethodList({
         </div>
       )}
 
-      {/* Bank Cards */}
       {bankMethods.map((method) => {
         const bankName = method.name || "Bank";
         const accountNumber =

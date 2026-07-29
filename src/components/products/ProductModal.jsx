@@ -38,7 +38,6 @@ function ProductModal({
   const [submitting, setSubmitting] = useState(false);
   const [focusedField, setFocusedField] = useState("");
 
-  // Lock background page scroll while the modal is open
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
@@ -310,7 +309,6 @@ function ProductModal({
               </label>
             </div>
 
-            {/* Form Grid */}
             <div
               style={{
                 display: "grid",
@@ -319,7 +317,6 @@ function ProductModal({
                 marginBottom: "16px",
               }}
             >
-              {/* Product Name */}
               <div style={{ gridColumn: "1 / -1" }}>
                 <label style={labelStyle}>{t.productNameLabel}</label>
                 <div style={{ position: "relative" }}>
@@ -347,7 +344,6 @@ function ProductModal({
                   />
                 </div>
               </div>
-              {/* Category */}
               <div>
                 <label style={labelStyle}>{t.categoryLabel}</label>
                 <div style={{ position: "relative" }}>
@@ -450,7 +446,6 @@ function ProductModal({
                   />
                 </div>
               </div>
-              {/* Barcode */}
               <div>
                 <label style={labelStyle}>{t.barcodeLabel}</label>
                 <div style={{ position: "relative" }}>
@@ -480,7 +475,6 @@ function ProductModal({
                   />
                 </div>
               </div>
-              {/* Status Toggle */}
               <div
                 style={{
                   display: "flex",
@@ -528,7 +522,6 @@ function ProductModal({
               </div>
             </div>
 
-            {/* Action Buttons */}
             <div style={{ display: "flex", gap: "12px" }}>
               <button
                 onClick={() => !submitting && onClose()}

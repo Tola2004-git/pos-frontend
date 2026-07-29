@@ -106,7 +106,6 @@ function Ingredients() {
         `}
       </style>
 
-      {/* Header */}
       <div
         style={{
           display: "flex",
@@ -179,7 +178,6 @@ function Ingredients() {
         </div>
       </div>
 
-      {/* Stat Cards */}
       <div style={{ display: "flex", gap: "16px", marginBottom: "16px" }}>
         {STAT_CARDS.map((s) => {
           const IconComponent = s.StatIcon;
@@ -258,7 +256,6 @@ function Ingredients() {
         })}
       </div>
 
-      {/* Search + Filter */}
       <div
         style={{
           display: "flex",
@@ -309,7 +306,6 @@ function Ingredients() {
         />
       </div>
 
-      {/* Table */}
       <IngredientsTable
         ingredients={ing.ingredients}
         loading={ing.loading}
@@ -321,7 +317,6 @@ function Ingredients() {
         t={t}
       />
 
-      {/* Pagination */}
       <div
         style={{
           display: "flex",

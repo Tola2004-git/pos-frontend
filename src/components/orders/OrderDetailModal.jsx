@@ -111,7 +111,6 @@ export default function OrderDetailModal({
         }}
         className="[&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-white/15 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent"
       >
-        {/* Header */}
         <div
           style={{
             display: "flex",
@@ -199,7 +198,6 @@ export default function OrderDetailModal({
           </div>
         </div>
 
-        {/* Refund info */}
         {order.status === "refunded" && (
           <div
             style={{
@@ -250,7 +248,6 @@ export default function OrderDetailModal({
           </div>
         )}
 
-        {/* Order info */}
         <div
           style={{
             ...glassCard,
@@ -300,7 +297,6 @@ export default function OrderDetailModal({
           </div>
         )}
 
-        {/* Items */}
         <h4
           style={{
             color: "white",
@@ -348,7 +344,6 @@ export default function OrderDetailModal({
           ))}
         </div>
 
-        {/* Totals */}
         <div
           style={{
             ...glassCard,

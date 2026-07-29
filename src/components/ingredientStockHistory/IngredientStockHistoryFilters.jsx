@@ -49,7 +49,6 @@ export function IngredientStockHistoryFilters({
         marginBottom: "20px",
       }}
     >
-      {/* Search */}
       <div
         style={{
           ...glass,

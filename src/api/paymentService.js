@@ -16,7 +16,6 @@ export const paymentService = {
     return res.data;
   },
 
-  // Delete payment method
   deleteMethod: async (id) => {
     const res = await apiClient.delete(`/payment-methods/${id}`);
     return res.data;

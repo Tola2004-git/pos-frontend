@@ -15,8 +15,6 @@ import {
 //   const result = await alertConfirmDelete("Title", "Message")
 //   → result.isConfirmed = true / false
 
-// ─── Inject Global Styles Once ───────────────────────────────────────────────
-
 function injectAlertStyles() {
   if (document.getElementById("custom-alert-styles")) return;
   const style = document.createElement("style");

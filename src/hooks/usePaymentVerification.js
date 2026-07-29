@@ -9,9 +9,6 @@ export function usePaymentVerification(selectedPaymentId) {
   const [isPaymentVerified, setIsPaymentVerified] = useState(true); // Start as verified for cash
   const [verificationLoading, setVerificationLoading] = useState(false);
 
-  /**
-   * Reset verification state when payment method changes
-   */
   useEffect(() => {
     if (selectedPaymentId && selectedPaymentId !== "cash") {
       // Non-cash methods need verification
@@ -50,9 +47,6 @@ export function usePaymentVerification(selectedPaymentId) {
     }
   };
 
-  /**
-   * Check if payment is ready to proceed
-   */
   const isPaymentReady = (isCash = false) => {
     if (isCash) return true;
     return isPaymentVerified;

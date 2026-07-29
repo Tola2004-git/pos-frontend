@@ -42,13 +42,11 @@ export function PaymentDetailsForm({
 
   return (
     <div className="">
-      {/* Header */}
       <h4 className="flex items-center gap-2 text-white mb-[14px] text-lg font-semibold">
         <ReceiptItem size={24} color="white" variant="Outline" />
         {tr("paymentDetails", "Payment Details")}
       </h4>
 
-      {/* Currency Selector */}
       <div className="flex items-center justify-between mb-4">
         <h4 className="flex items-center gap-2 text-white text-lg font-medium">
           <Card size={24} color="white" variant="Outline" />
@@ -71,7 +69,6 @@ export function PaymentDetailsForm({
         </div>
       </div>
 
-      {/* Amount Paid Input */}
       <div className="mb-4">
         <label style={labelStyle}>{tr("amountPaidRequired", "Amount Paid *")}</label>
         <div className="relative">

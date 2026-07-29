@@ -78,7 +78,6 @@ function Inventory() {
         `}
       </style>
 
-      {/* Header */}
       <div
         style={{
           display: "flex",
@@ -217,7 +216,6 @@ function Inventory() {
         })}
       </div>
 
-      {/* Search + Filter */}
       <div
         style={{
           display: "flex",
@@ -268,7 +266,6 @@ function Inventory() {
         />
       </div>
 
-      {/* Table */}
       <InventoryTable
         products={inv.products}
         loading={inv.loading}
@@ -278,7 +275,6 @@ function Inventory() {
         t={t}
       />
 
-      {/* Pagination */}
       <div
         style={{
           display: "flex",
@@ -342,7 +338,6 @@ function Inventory() {
         </div>
       </div>
 
-      {/* Restock Modal */}
       <RestockModal
         loadingRestock={inv.loadingRestock}
         showRestock={inv.showRestock}

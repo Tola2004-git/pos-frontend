@@ -240,7 +240,6 @@ function Orders() {
         }))
       );
     } catch {
-      // fallback to original order object if fetch fails
       setEditOrder(order);
       setEditCart(
         (order.items || []).map((item) => ({

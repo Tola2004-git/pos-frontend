@@ -29,7 +29,6 @@ export const ProductGrid = memo(function ProductGrid({
   const [activeCategory, setActiveCategory] = useState("all");
   const [page, setPage] = useState(1);
 
-  // Filter products based on search
   const filteredProducts = useMemo(
     () =>
       products.filter(
@@ -62,7 +61,6 @@ export const ProductGrid = memo(function ProductGrid({
   return (
     <div className="flex-1 flex flex-col overflow-hidden border-r border-white/10">
       <div className="p-4 pb-0">
-        {/* Search Input */}
         <div className="flex items-center bg-white/5 px-3 py-2 rounded-lg border border-white/10 mb-[14px]">
           <SearchNormal1
             size={20}
@@ -79,7 +77,6 @@ export const ProductGrid = memo(function ProductGrid({
           />
         </div>
 
-        {/* Categories Filter Bar */}
         <div
           style={{
             overflowX: "auto",
@@ -125,7 +122,6 @@ export const ProductGrid = memo(function ProductGrid({
         </div>
       </div>
 
-      {/* Product Grid */}
       <div
         style={{
           overflowY: "auto",
@@ -188,7 +184,6 @@ export const ProductGrid = memo(function ProductGrid({
                     : "cursor-pointer hover:scale-105"
                 } ${isLowStock ? "border border-amber-500/50 bg-amber-500/5" : ""}`}
               >
-                {/* Out of Stock Badge */}
                 {isOutOfStock && (
                   <div className="absolute inset-0 z-10 flex items-center justify-center rounded-[12px] bg-black/50">
                     <span className="rounded-full bg-red-600/90 px-2 py-1 text-[0.68rem] font-bold uppercase tracking-wide text-white">
@@ -197,7 +192,6 @@ export const ProductGrid = memo(function ProductGrid({
                   </div>
                 )}
 
-                {/* Low Stock Ribbon */}
                 {isLowStock && (
                   <div className="pointer-events-none absolute right-0 top-0 z-10 h-16 w-16 overflow-hidden">
                     <span className="absolute right-[-30px] top-[13px] block w-[110px] rotate-45 bg-amber-500/95 py-[3px] text-center text-[0.56rem] font-bold uppercase tracking-wide text-white shadow-sm">
@@ -206,7 +200,6 @@ export const ProductGrid = memo(function ProductGrid({
                   </div>
                 )}
 
-                {/* Product Image */}
                 {p.image ? (
                   <div
                     className="w-20 h-20 mx-auto mb-2"
@@ -229,7 +222,6 @@ export const ProductGrid = memo(function ProductGrid({
                   </div>
                 )}
 
-                {/* Product Name */}
                 <div
                   className="text-white text-[0.82rem] font-semibold mb-1 overflow-hidden text-ellipsis whitespace-nowrap"
                   title={p.name}
@@ -237,7 +229,6 @@ export const ProductGrid = memo(function ProductGrid({
                   {p.name}
                 </div>
 
-                {/* Promotion Badges */}
                 {promotions.length > 0 && (
                   <div className="text-[#d7f5ff] text-[0.72rem] mb-1">
                     {promotions.map((promo) => (
@@ -256,7 +247,6 @@ export const ProductGrid = memo(function ProductGrid({
                   </div>
                 )}
 
-                {/* Price and Stock */}
                 <div className="text-white font-bold text-[0.88rem]">
                   ${Number(p.price).toFixed(2)}
                 </div>
@@ -278,7 +268,6 @@ export const ProductGrid = memo(function ProductGrid({
         </div>
       </div>
 
-      {/* Pagination */}
       <div className="flex items-center justify-center gap-3 p-4">
         <button
           type="button"

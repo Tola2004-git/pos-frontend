@@ -189,8 +189,7 @@ export function usePOS({
 
   const isPromotionValid = (promotion) => {
     if (!promotion || !promotion.status) return false;
-    
-    // Use Date object for accurate day-level comparison
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     

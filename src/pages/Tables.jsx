@@ -532,7 +532,6 @@ function Tables() {
                 onClick={closeMoveModal}
                 className="btn-cancel-glass"
                 style={{
-                  // flex: 1,
                   padding: "12px",
                   borderRadius: "12px",
                   color: "white",

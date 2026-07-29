@@ -29,13 +29,9 @@ export function usePaymentMethodValidation(paymentMethods = []) {
   const isValidQrImage = (qrImage) => {
     if (!qrImage || typeof qrImage !== "string") return false;
     const trimmed = qrImage.trim();
-    // Filter out placeholder paths
     return trimmed.length > 0 && !trimmed.includes("/assets/banks/");
   };
 
-  /**
-   * Get payment method image/QR from various possible field names
-   */
   const getPaymentMethodImage = (method) =>
     method.image_url_or_path ||
     method.image ||
@@ -51,10 +47,8 @@ export function usePaymentMethodValidation(paymentMethods = []) {
   const isCompletePaymentMethod = (method) => {
     if (!method) return false;
 
-    // Cash is always valid if active
     if (method.name?.toLowerCase() === "cash") return true;
 
-    // For other methods, check required fields
     const accountName = (method.account_name || method.accountName || "").trim();
     const accountNumber =
       (method.account_number || method.accountNumber || "").trim();
@@ -81,15 +75,9 @@ export function usePaymentMethodValidation(paymentMethods = []) {
     return filtered;
   }, [paymentMethods, defaultCashMethod]);
 
-  /**
-   * Get payment method by ID
-   */
   const getPaymentMethodById = (methodId) =>
     paymentMethodsToRender.find((m) => m.id === methodId);
 
-  /**
-   * Check if payment method needs verification
-   */
   const needsVerification = (method) => {
     if (!method || method.id === "cash") return false;
     return isCompletePaymentMethod(method);

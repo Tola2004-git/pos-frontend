@@ -10,9 +10,6 @@ export function usePromotionLogic(promotions = [], cart = []) {
   // which both check min_purchase against the whole cart, not per item.
   const cartSubtotal = cart.reduce((sum, item) => sum + item.subtotal, 0);
 
-  /**
-   * Check if a promotion is currently active based on dates and status
-   */
   const isPromotionValid = (promotion) => {
     if (!promotion || !promotion.status) return false;
 
@@ -30,9 +27,6 @@ export function usePromotionLogic(promotions = [], cart = []) {
     return true;
   };
 
-  /**
-   * Check if an item/product matches a promotion's target
-   */
   const matchesPromotion = (item, promotion) => {
     const productId = item.product_id ?? item.id;
     if (promotion.apply_to === "all") return true;
@@ -51,9 +45,6 @@ export function usePromotionLogic(promotions = [], cart = []) {
   const meetsMinPurchase = (promotion) =>
     !promotion.min_purchase || cartSubtotal >= Number(promotion.min_purchase);
 
-  /**
-   * Find all applicable promotions for a cart item
-   */
   const findItemPromotions = (item) =>
     promotions.filter(
       (promotion) =>
@@ -62,9 +53,6 @@ export function usePromotionLogic(promotions = [], cart = []) {
         meetsMinPurchase(promotion)
     );
 
-  /**
-   * Find all applicable promotions for a product
-   */
   const findProductPromotions = (product) =>
     promotions.filter(
       (promotion) =>
@@ -110,14 +98,8 @@ export function usePromotionLogic(promotions = [], cart = []) {
     return Number(promotion.value) * item.quantity;
   };
 
-  /**
-   * Calculate final total for item after discount
-   */
   const getItemTotal = (item) => item.subtotal - getItemDiscount(item);
 
-  /**
-   * Format promotion label for display
-   */
   const formatPromotionLabel = useCallback((promotion) => {
     if (!promotion) return "";
     if (promotion.type === "percentage") {
@@ -126,9 +108,6 @@ export function usePromotionLogic(promotions = [], cart = []) {
     return `$${Number(promotion.value).toFixed(2)} off`;
   }, []);
 
-  /**
-   * Truncate promotion name for display
-   */
   const truncatePromoName = useCallback(
     (name) =>
       typeof name === "string" && name.length > 5
@@ -156,14 +135,8 @@ export function usePromotionLogic(promotions = [], cart = []) {
     return cart.reduce((sum, item) => sum + getItemDiscount(item), 0);
   })();
 
-  /**
-   * Calculate subtotal before any discounts
-   */
   const subtotalBeforeDiscount = cartSubtotal;
 
-  /**
-   * Calculate total after all discounts
-   */
   const totalAfterDiscount = subtotalBeforeDiscount - totalDiscountAmount;
 
   return {

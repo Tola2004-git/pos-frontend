@@ -34,7 +34,6 @@ export default function PromotionTable({
             style={{
               width: "100%",
               borderCollapse: "collapse",
-              // tableLayout: "fixed",
               color: "white",
               fontSize: "0.85rem",
             }}
@@ -103,7 +102,6 @@ export default function PromotionTable({
           style={{
             width: "100%",
             borderCollapse: "collapse",
-            // tableLayout: "fixed",
             color: "white",
             fontSize: "0.85rem",
           }}

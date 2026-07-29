@@ -67,7 +67,6 @@ function PaymentMethodCard({
         style={{
           width: "128px",
           height: "128px",
-          // margin: "0 auto 10px",
           borderRadius: "50%",
           background: "rgba(255,255,255,0.08)",
           border: "1px solid rgba(255,255,255,0.15)",

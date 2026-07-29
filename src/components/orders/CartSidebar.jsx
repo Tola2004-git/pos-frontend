@@ -62,13 +62,11 @@ export function CartSidebar({
 
   return (
     <div className="w-[300px] p-4 flex flex-col overflow-y-auto h-[500px]">
-      {/* Cart Header */}
       <h4 className="text-white mb-3 font-bold flex items-center gap-[10px]">
         <Bag2 size={20} color="white" variant="Linear" />
         {tr("cartCount", "Cart ({n})").replace("{n}", cart.length)}
       </h4>
 
-      {/* Cart Items */}
       <div className="flex-1 overflow-y-auto mb-3 hide-scrollbar">
         {cart.length === 0 ? (
           <p className="text-white/30 text-center p-5">{tr("addProductsPlaceholder", "Add products...")}</p>
@@ -92,7 +90,6 @@ export function CartSidebar({
         )}
       </div>
 
-      {/* Customer Details Toggle */}
       <button
         type="button"
         onClick={() => setShowCustomerDetails((v) => !v)}
@@ -112,7 +109,6 @@ export function CartSidebar({
 
       {showCustomerDetails && (
         <>
-          {/* Customer Name */}
           <div className="relative mb-[5px]">
             <User
               size={18}
@@ -138,7 +134,6 @@ export function CartSidebar({
             />
           </div>
 
-          {/* Customer Phone */}
           <div className="relative mb-[5px]">
             <Call
               size={18}
@@ -164,7 +159,6 @@ export function CartSidebar({
             />
           </div>
 
-          {/* Order Note */}
           <div className="relative mb-[10px]">
             <NoteText
               size={18}
@@ -194,7 +188,6 @@ export function CartSidebar({
         </>
       )}
 
-      {/* Pricing Summary */}
       <div className="p-3 rounded-[10px] bg-white/5 mb-[10px]">
         <div className="flex justify-between mb-1">
           <span className="text-white/60 text-[0.85rem]">{tr("subtotal", "Subtotal")}</span>
@@ -216,7 +209,6 @@ export function CartSidebar({
         </div>
       </div>
 
-      {/* Proceed to Payment Button */}
       <button
         onClick={onProceedToPayment}
         disabled={!canProceed || proceedLoading}
