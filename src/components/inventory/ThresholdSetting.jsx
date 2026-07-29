@@ -1,5 +1,4 @@
 import { glassCard } from "../../utils/styles";
-import LowStockIcon from "../../assets/icons/low-stock.png";
 import { inputStyle, labelStyle } from "../../constants/inventoryStyles";
 import { Notification } from "iconsax-react";
 

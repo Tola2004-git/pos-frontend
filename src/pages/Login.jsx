@@ -3,9 +3,6 @@ import apiClient from "../api/apiClient";
 import { useNavigate } from "react-router-dom";
 import { getGradientBg, glassCard } from "../utils/styles";
 import logo from "../assets/logo.png";
-import emailIcon from "../assets/icons/email.png";
-import passwordIcon from "../assets/icons/password.png";
-import loginIcon from "../assets/icons/login.png";
 import { Sms, Lock, Eye, EyeSlash, Login as LoginIcon } from "iconsax-react";
 import { useTranslations } from "../hooks/useTranslations";
 import { setCachedUser } from "../utils/currentUserCache";
@@ -323,9 +320,7 @@ function Login() {
 
         <form onSubmit={handleLogin}>
           <div style={{ marginBottom: "8px" }}>
-            <label style={labelStyle}>
-              {t.emailLabel}
-            </label>
+            <label style={labelStyle}>{t.emailLabel}</label>
             <div style={{ position: "relative" }}>
               <Sms
                 size={20}
@@ -337,7 +332,10 @@ function Login() {
                 style={{
                   ...inputStyle,
                   paddingLeft: "40px",
-                  border: focusedField === "email" ? "1px solid rgba(255,255,255,0.8)" : "1px solid rgba(255,255,255,0.2)",
+                  border:
+                    focusedField === "email"
+                      ? "1px solid rgba(255,255,255,0.8)"
+                      : "1px solid rgba(255,255,255,0.2)",
                   transition: "border 0.25s",
                 }}
                 type="email"
@@ -352,9 +350,7 @@ function Login() {
           </div>
 
           <div style={{ marginBottom: "8px" }}>
-            <label style={labelStyle}>
-              {t.passwordLabel}
-            </label>
+            <label style={labelStyle}>{t.passwordLabel}</label>
             <div style={{ position: "relative" }}>
               <Lock
                 size={20}
@@ -386,22 +382,26 @@ function Login() {
                 onClick={() => setShowPass(!showPass)}
                 tabIndex={-1}
                 style={{
-                    position: "absolute",
-                    right: "12px",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    background: "none",
-                    border: "none",
-                    display: "flex",
-                    color:
-                      focusedField === "password"
-                        ? "rgba(255,255,255,0.9)"
-                        : "rgba(255,255,255,0.5)",
-                    cursor: "pointer",
-                    transition: "color 0.2s",
-                  }}
+                  position: "absolute",
+                  right: "12px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  background: "none",
+                  border: "none",
+                  display: "flex",
+                  color:
+                    focusedField === "password"
+                      ? "rgba(255,255,255,0.9)"
+                      : "rgba(255,255,255,0.5)",
+                  cursor: "pointer",
+                  transition: "color 0.2s",
+                }}
               >
-                {showPass ? <Eye size={20} color="white" variant="Linear" /> : <EyeSlash size={20} color="white" variant="Linear" />}
+                {showPass ? (
+                  <Eye size={20} color="white" variant="Linear" />
+                ) : (
+                  <EyeSlash size={20} color="white" variant="Linear" />
+                )}
               </button>
             </div>
           </div>
@@ -430,11 +430,7 @@ function Login() {
                 <DotsLoader t={t} />
               ) : (
                 <>
-                  <LoginIcon
-                    size={20}
-                    color="white"
-                    variant="Linear"
-                  />
+                  <LoginIcon size={20} color="white" variant="Linear" />
                   {t.loginAction}
                 </>
               )}

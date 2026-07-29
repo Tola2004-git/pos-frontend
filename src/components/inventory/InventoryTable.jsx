@@ -1,7 +1,6 @@
 import { glassCard, colors } from "../../utils/styles";
 import { SkeletonInventoryTable } from "../ui/SkeletonInventory";
 import { getStockStatus } from "../../utils/stockHelpers";
-import restockIcon from "../../assets/icons/restock.png";
 import { Gallery, Refresh2 } from "iconsax-react";
 import { Tooltip } from "../ui/Tooltip";
 
