@@ -187,8 +187,22 @@ function Login() {
       localStorage.setItem("role", role);
 
       navigate(role === "admin" ? "/dashboard" : "/cashier");
-    } catch {
-      setError(t.loginErrorMsg);
+    } catch (err) {
+      // A bare catch here used to show "wrong password" for every failure -
+      // rate-limiting (429) and a dead/unreachable backend look identical to
+      // the user as a plain 401, even though the credentials were fine and
+      // retrying immediately (or at all) won't help the way it would for an
+      // actual typo.
+      const status = err.response?.status;
+      if (status === 429) {
+        setError(t.loginErrorTooManyMsg);
+      } else if (status === 401) {
+        setError(t.loginErrorMsg);
+      } else if (!err.response) {
+        setError(t.loginErrorNetworkMsg);
+      } else {
+        setError(t.loginErrorServerMsg);
+      }
       triggerShake();
     } finally {
       setLoading(false);

@@ -1,4 +1,3 @@
-import { jwtDecode } from "jwt-decode";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Login from "../pages/Login";
 import LowStockToastStack from "../components/notifications/LowStockToastStack";
@@ -42,18 +41,15 @@ function clearSession() {
 function PrivateRoute({ children, roles }) {
   const token = localStorage.getItem("token");
 
+  // Deliberately not checking the token's own exp here (used to, via
+  // jwt-decode) - an access token past its 60min TTL isn't necessarily a
+  // dead session anymore now that apiClient.js silently refreshes on a 401
+  // and replays the request. Redirecting here on expiry alone would fire
+  // before that refresh ever gets a chance to run, undoing it. A token
+  // that's truly dead (past the 14-day refresh_ttl, or invalid) still ends
+  // up here - just one API round-trip later, once the refresh attempt
+  // itself comes back 401 and apiClient.js's own redirect kicks in.
   if (!token) return <Navigate to="/login" replace />;
-
-  try {
-    const { exp } = jwtDecode(token);
-    if (exp * 1000 < Date.now()) {
-      clearSession();
-      return <Navigate to="/login" replace />;
-    }
-  } catch {
-    clearSession();
-    return <Navigate to="/login" replace />;
-  }
 
   if (roles && roles.length > 0) {
     const role = getStoredRole();
@@ -93,24 +89,15 @@ function AppRouter() {
         <Route
           path="/"
           element={(() => {
+            // See PrivateRoute for why this doesn't check token expiry.
             const token = localStorage.getItem("token");
             if (!token) return <Navigate to="/login" replace />;
-            try {
-              const { exp } = jwtDecode(token);
-              if (exp * 1000 < Date.now()) {
-                clearSession();
-                return <Navigate to="/login" replace />;
-              }
-              const role = getStoredRole();
-              if (!role || !KNOWN_ROLES.includes(role)) {
-                clearSession();
-                return <Navigate to="/login" replace />;
-              }
-              return <Navigate to={getHomePathForRole(role)} replace />;
-            } catch {
+            const role = getStoredRole();
+            if (!role || !KNOWN_ROLES.includes(role)) {
               clearSession();
               return <Navigate to="/login" replace />;
             }
+            return <Navigate to={getHomePathForRole(role)} replace />;
           })()}
         />
         <Route

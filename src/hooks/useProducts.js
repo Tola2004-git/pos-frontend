@@ -21,9 +21,9 @@ export function useProducts() {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const res = await api.get(
-        `/products?search=${search}&category_id=${categoryFilter}&page=${page}&per_page=10`
-      );
+      const res = await api.get("/products", {
+        params: { search, category_id: categoryFilter, page, per_page: 10 },
+      });
       setProducts(res.data.data);
       setLastPage(res.data.last_page);
       setTotal(res.data.total);

@@ -609,7 +609,7 @@ function Dashboard() {
       )}
 
       {period === "custom" && (
-        <div className="no-print mb-5 -mt-3" style={{glassCard}}>
+        <div className="no-print mb-5 -mt-3" style={glassCard}>
           <DateRangePicker
             dateFrom={customRange.from}
             dateTo={customRange.to}

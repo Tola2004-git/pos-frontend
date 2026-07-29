@@ -1,7 +1,7 @@
 import apiClient from "./apiClient";
 
 export const getUsers = (search = "", role = "all", page = 1) =>
-  apiClient.get(`/users?search=${search}&role=${role}&page=${page}`);
+  apiClient.get("/users", { params: { search, role, page } });
 
 export const getAllCashiers = () =>
   apiClient.get(`/users?role=cashier&per_page=200`);

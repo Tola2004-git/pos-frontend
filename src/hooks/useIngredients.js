@@ -52,9 +52,9 @@ export function useIngredients() {
   const fetchIngredients = async () => {
     setLoading(true);
     try {
-      const res = await api.get(
-        `/ingredients?search=${search}&category_id=${categoryFilter}&stock_status=${stockFilter}&page=${page}&per_page=10`
-      );
+      const res = await api.get("/ingredients", {
+        params: { search, category_id: categoryFilter, stock_status: stockFilter, page, per_page: 10 },
+      });
       setIngredients(res.data.data);
       setLastPage(res.data.last_page);
       setTotal(res.data.total);

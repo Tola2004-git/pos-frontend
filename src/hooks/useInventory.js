@@ -66,9 +66,9 @@ export function useInventory() {
   const fetchInventory = async () => {
     setLoading(true);
     try {
-      const res = await api.get(
-        `/inventory?search=${search}&stock_status=${stockFilter}&page=${page}&per_page=10&threshold=${threshold}`
-      );
+      const res = await api.get("/inventory", {
+        params: { search, stock_status: stockFilter, page, per_page: 10, threshold },
+      });
       setProducts(res.data.data);
       setLastPage(res.data.last_page);
       setTotal(res.data.total);
