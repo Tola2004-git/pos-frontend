@@ -1,0 +1,18 @@
+export default {
+  "dailyExportGenerateTitle": "Generate a Report",
+  "dailyExportGenerateAction": "Generate",
+  "dailyExportGeneratedTitle": "Export generated",
+  "dailyExportGeneratedMsg": "The receipts spreadsheet is ready to download.",
+  "dailyExportColDate": "Date",
+  "dailyExportColOrders": "Orders",
+  "dailyExportColTotal": "Total",
+  "dailyExportColGeneratedAt": "Generated At",
+  "dailyExportNoneFoundMsg": "No exports generated yet.",
+  "dailyExportDownloadAction": "Download",
+  "dailyExportDownloadingAction": "Downloading...",
+  "dailyExportTotalCountMsg": "Total: {n} exports",
+  "dailyExportDeleteConfirmTitle": "Delete this export?",
+  "dailyExportDeleteConfirmMsg": "This removes the file from Google Drive too. This cannot be undone.",
+  "dailyExportDeletedTitle": "Export deleted",
+  "dailyExportDeletedMsg": "The export has been removed.",
+};

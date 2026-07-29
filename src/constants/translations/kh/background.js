@@ -1,0 +1,16 @@
+export default {
+  "bgChangerTitle": "ប្តូរផ្ទៃខាងក្រោយ",
+  "bgChangerApply": "អនុវត្ត",
+  "bgChangerOptimizing": "កំពុងបង្រួម...",
+  "bgChangerPresetLabel": "ផ្ទៃខាងក្រោយដែលមានស្រាប់",
+  "bgChangerUploadLabel": "ផ្ទុករូបភាពផ្ទាល់ខ្លួន",
+  "bgChangerOptimizingImage": "កំពុងបង្រួមរូបភាព...",
+  "bgChangerImageSelected": "បានជ្រើសរើសរូបភាព!",
+  "bgChangerClickToUpload": "ចុចដើម្បីផ្ទុករូបភាព",
+  "bgChangerUrlLabel": "ឬបិទភ្ជាប់តំណរូបភាព (URL)",
+  "bgPresetFoodDark": "អាហារ ស្រអាប់",
+  "bgPresetCoffeeShop": "ហាងកាហ្វេ",
+  "bgPresetRestaurant": "ភោជនីយដ្ឋាន",
+  "bgPresetDarkMinimal": "សាមញ្ញ ស្រអាប់",
+  "bgPresetBurger": "ប៊ឺហ្គឺរ",
+};

@@ -1,0 +1,18 @@
+export default {
+  "dailyExportGenerateTitle": "បង្កើតរបាយការណ៍",
+  "dailyExportGenerateAction": "បង្កើត",
+  "dailyExportGeneratedTitle": "បង្កើតរបាយការណ៍រួចរាល់",
+  "dailyExportGeneratedMsg": "សៀវភៅបញ្ជីវិក្កយបត្រត្រៀមរួចរាល់សម្រាប់ទាញយក។",
+  "dailyExportColDate": "កាលបរិច្ឆេទ",
+  "dailyExportColOrders": "កម្ម៉ង់",
+  "dailyExportColTotal": "សរុប",
+  "dailyExportColGeneratedAt": "បង្កើតនៅ",
+  "dailyExportNoneFoundMsg": "មិនទាន់មានរបាយការណ៍ត្រូវបានបង្កើតទេ។",
+  "dailyExportDownloadAction": "ទាញយក",
+  "dailyExportDownloadingAction": "កំពុងទាញយក...",
+  "dailyExportTotalCountMsg": "សរុប៖ {n} របាយការណ៍",
+  "dailyExportDeleteConfirmTitle": "លុបរបាយការណ៍នេះ?",
+  "dailyExportDeleteConfirmMsg": "ការនេះនឹងលុបឯកសារចេញពី Google Drive ផងដែរ។ សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។",
+  "dailyExportDeletedTitle": "លុបរបាយការណ៍រួច",
+  "dailyExportDeletedMsg": "របាយការណ៍ត្រូវបានលុបចេញ។",
+};

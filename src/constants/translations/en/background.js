@@ -1,0 +1,16 @@
+export default {
+  "bgChangerTitle": "Change Background",
+  "bgChangerApply": "Apply",
+  "bgChangerOptimizing": "Optimizing...",
+  "bgChangerPresetLabel": "Preset Backgrounds",
+  "bgChangerUploadLabel": "Upload your own image",
+  "bgChangerOptimizingImage": "Optimizing image...",
+  "bgChangerImageSelected": "Image selected!",
+  "bgChangerClickToUpload": "Click to upload image",
+  "bgChangerUrlLabel": "Or paste image URL",
+  "bgPresetFoodDark": "Food Dark",
+  "bgPresetCoffeeShop": "Coffee Shop",
+  "bgPresetRestaurant": "Restaurant",
+  "bgPresetDarkMinimal": "Dark Minimal",
+  "bgPresetBurger": "Burger",
+};
