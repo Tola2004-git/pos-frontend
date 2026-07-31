@@ -11,4 +11,5 @@ export default {
   "unlockAction": "Unlock",
   "unlockingMsg": "Unlocking...",
   "notYouLogoutAction": "Not you? Log out",
+  "dismiss": "Dismiss",
 };

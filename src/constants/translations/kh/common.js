@@ -11,4 +11,5 @@ export default {
   "unlockAction": "ដោះសោ",
   "unlockingMsg": "កំពុងដោះសោ...",
   "notYouLogoutAction": "មិនមែនអ្នកមែនទេ? ចាកចេញ",
+  "dismiss": "បិទ",
 };
