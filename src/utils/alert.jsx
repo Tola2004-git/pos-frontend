@@ -257,6 +257,22 @@ function injectAlertStyles() {
   document.head.appendChild(style);
 }
 
+// title/message/placeholder passed into these alerts can carry data a user
+// entered elsewhere (product names, table names, backend error messages
+// that echo them back, etc.) - since these all render via innerHTML rather
+// than React's own escaping, that data has to be escaped by hand here or a
+// name like `<img src=x onerror=...>` executes as script for whoever next
+// triggers this alert.
+function escapeHtml(value) {
+  if (value == null) return "";
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 function getContainer() {
   let el = document.getElementById("toast-container");
   if (!el) {
@@ -290,8 +306,8 @@ function showToast(type, title, message, duration = 3500) {
   toast.innerHTML = `
     <span class="toast-icon">${ICONS[type]}</span>
     <div class="toast-body">
-      <p class="toast-title">${title}</p>
-      ${message ? `<p class="toast-message">${message}</p>` : ""}
+      <p class="toast-title">${escapeHtml(title)}</p>
+      ${message ? `<p class="toast-message">${escapeHtml(message)}</p>` : ""}
     </div>
     <button class="toast-close" aria-label="Close">✕</button>
     <div class="toast-progress" style="animation-duration: ${duration}ms;"></div>
@@ -326,11 +342,11 @@ function showConfirm({
     overlay.innerHTML = `
       <div class="confirm-box">
         <span class="confirm-emoji">${icon}</span>
-        <h3 class="confirm-title">${title}</h3>
-        <p class="confirm-message">${message}</p>
+        <h3 class="confirm-title">${escapeHtml(title)}</h3>
+        <p class="confirm-message">${escapeHtml(message)}</p>
         <div class="confirm-buttons">
-          <button class="confirm-btn confirm-btn-cancel">${cancelText}</button>
-          <button class="confirm-btn confirm-btn-${variant}">${confirmText}</button>
+          <button class="confirm-btn confirm-btn-cancel">${escapeHtml(cancelText)}</button>
+          <button class="confirm-btn confirm-btn-${variant}">${escapeHtml(confirmText)}</button>
         </div>
       </div>
     `;
@@ -375,13 +391,13 @@ function showPrompt({
     overlay.innerHTML = `
       <div class="confirm-box">
         <span class="confirm-emoji">${icon}</span>
-        <h3 class="confirm-title">${title}</h3>
-        <p class="confirm-message">${message}</p>
-        <textarea class="confirm-input" placeholder="${placeholder}"></textarea>
-        <p class="confirm-input-error" style="display:none;">${requiredMessage}</p>
+        <h3 class="confirm-title">${escapeHtml(title)}</h3>
+        <p class="confirm-message">${escapeHtml(message)}</p>
+        <textarea class="confirm-input" placeholder="${escapeHtml(placeholder)}"></textarea>
+        <p class="confirm-input-error" style="display:none;">${escapeHtml(requiredMessage)}</p>
         <div class="confirm-buttons">
-          <button class="confirm-btn confirm-btn-cancel">${cancelText}</button>
-          <button class="confirm-btn confirm-btn-${variant}">${confirmText}</button>
+          <button class="confirm-btn confirm-btn-cancel">${escapeHtml(cancelText)}</button>
+          <button class="confirm-btn confirm-btn-${variant}">${escapeHtml(confirmText)}</button>
         </div>
       </div>
     `;
