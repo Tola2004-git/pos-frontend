@@ -33,6 +33,7 @@ import PaymentMixWidget from "../components/dashboard/PaymentMixWidget";
 import CashMovementsWidget from "../components/dashboard/CashMovementsWidget";
 import DailyExportWidget from "../components/dashboard/DailyExportWidget";
 import ActivePromotionsWidget from "../components/dashboard/ActivePromotionsWidget";
+import SecurityAlertBanner from "../components/dashboard/SecurityAlertBanner";
 import DateRangePicker from "../components/common/DateRangePicker";
 import apiClient from "../api/apiClient";
 import { fetchTableCounts } from "../api/tableApi";
@@ -362,6 +363,8 @@ function Dashboard() {
           </div>
         </div>
       </div>
+
+      {isAdmin && <SecurityAlertBanner t={t} />}
 
       {!isAdmin && !shiftLoading && (
         <div

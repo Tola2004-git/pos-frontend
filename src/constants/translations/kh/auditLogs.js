@@ -7,4 +7,7 @@ export default {
   "auditNoneFoundMsg": "មិនទាន់មានសកម្មភាពត្រូវបានកត់ត្រាទេ។",
   "auditTotalCountMsg": "សរុប៖ {n} កំណត់ត្រា",
   "auditFilterAllActions": "គ្រប់សកម្មភាព",
+  "securityAlertTitle": "រកឃើញការវាយប្រហារ Login ដែលអាចកើតមាន",
+  "securityAlertMsg": "មាន login ខុស {n} ដងក្នុងរយៈពេល ១ ម៉ោងចុងក្រោយ។",
+  "securityAlertViewAction": "មើលកំណត់ត្រាសកម្មភាព",
 };

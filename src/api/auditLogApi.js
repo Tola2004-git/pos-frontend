@@ -15,3 +15,6 @@ export const fetchAuditLogsApi = ({
       date_to: date_to || undefined,
     },
   });
+
+export const fetchSecuritySummaryApi = () =>
+  apiClient.get("/audit-logs/security-summary");
