@@ -115,8 +115,8 @@ function Ingredients() {
         }}
       >
         <h2
+          className="text-white"
           style={{
-            color: "white",
             fontWeight: 700,
             fontSize: "1.5rem",
             margin: 0,
@@ -133,27 +133,27 @@ function Ingredients() {
               animation: "float 3s ease-in-out infinite",
             }}
           >
-            <Cake size={40} color="white" variant="Outline" />
+            <Cake size={40} color="currentColor" variant="Outline" className="text-white" />
           </div>
           {t.ingredientsManagementTitle}
         </h2>
         <div style={{ display: "flex", gap: "10px" }}>
           <button
             onClick={handleOpenCatModal}
+            className="text-white"
             style={{
               ...glassCard,
               padding: "10px 18px",
               borderRadius: "12px",
               fontWeight: 600,
               cursor: "pointer",
-              color: "white",
               display: "flex",
               alignItems: "center",
               gap: "8px",
               fontSize: "0.9rem",
             }}
           >
-            <Category size={20} color="white" variant="Linear" />
+            <Category size={20} color="currentColor" variant="Linear" className="text-white" />
             {t.categoriesAction}
           </button>
           <button
@@ -172,7 +172,7 @@ function Ingredients() {
               fontSize: "0.9rem",
             }}
           >
-            <Add size={24} color="white" variant="Linear" />
+            <Add size={24} color="currentColor" variant="Linear" />
             {t.addIngredientAction}
           </button>
         </div>
@@ -233,8 +233,8 @@ function Ingredients() {
                     {count}
                   </span>
                   <span
+                    className="text-white/40"
                     style={{
-                      color: "rgba(255,255,255,0.4)",
                       fontSize: "0.82rem",
                     }}
                   >
@@ -275,7 +275,7 @@ function Ingredients() {
             gap: "12px",
           }}
         >
-          <SearchNormal1 size="20" color="#fff" variant="linear" />
+          <SearchNormal1 size="20" color="currentColor" variant="linear" className="text-white" />
           <input
             type="text"
             placeholder={t.searchIngredientsPlaceholder}
@@ -284,12 +284,12 @@ function Ingredients() {
               ing.setSearch(e.target.value);
               ing.setPage(1);
             }}
+            className="text-white"
             style={{
               border: "none",
               background: "transparent",
               padding: "0",
               flex: 1,
-              color: "white",
               fontSize: "0.9rem",
               outline: "none",
             }}
@@ -326,13 +326,14 @@ function Ingredients() {
           padding: "0 4px",
         }}
       >
-        <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.85rem" }}>
+        <span className="text-white/50" style={{ fontSize: "0.85rem" }}>
           {t.totalIngredientsCountMsg.replace("{n}", ing.total)}
         </span>
         <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
           <button
             onClick={() => ing.setPage((p) => Math.max(1, p - 1))}
             disabled={ing.page === 1}
+            className={ing.page === 1 ? "text-white/30" : "text-white"}
             style={{
               padding: "8px 16px",
               borderRadius: "10px",
@@ -340,9 +341,8 @@ function Ingredients() {
               cursor: ing.page === 1 ? "not-allowed" : "pointer",
               background:
                 ing.page === 1
-                  ? "rgba(255,255,255,0.05)"
-                  : "rgba(255,255,255,0.1)",
-              color: ing.page === 1 ? "rgba(255,255,255,0.3)" : "white",
+                  ? "var(--surface-tint-05)"
+                  : "var(--surface-tint-10)",
               fontWeight: 600,
               fontSize: "0.85rem",
             }}
@@ -350,8 +350,8 @@ function Ingredients() {
             {t.paginationBackAction}
           </button>
           <span
+            className="text-white"
             style={{
-              color: "white",
               fontWeight: 600,
               fontSize: "0.85rem",
               padding: "0 8px",
@@ -362,6 +362,7 @@ function Ingredients() {
           <button
             onClick={() => ing.setPage((p) => Math.min(ing.lastPage, p + 1))}
             disabled={ing.page === ing.lastPage}
+            className={ing.page === ing.lastPage ? "text-white/30" : "text-white"}
             style={{
               padding: "8px 16px",
               borderRadius: "10px",
@@ -369,10 +370,8 @@ function Ingredients() {
               cursor: ing.page === ing.lastPage ? "not-allowed" : "pointer",
               background:
                 ing.page === ing.lastPage
-                  ? "rgba(255,255,255,0.05)"
-                  : "rgba(255,255,255,0.1)",
-              color:
-                ing.page === ing.lastPage ? "rgba(255,255,255,0.3)" : "white",
+                  ? "var(--surface-tint-05)"
+                  : "var(--surface-tint-10)",
               fontWeight: 600,
               fontSize: "0.85rem",
             }}

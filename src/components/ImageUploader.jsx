@@ -1,4 +1,5 @@
 import { Folder, TickCircle } from "iconsax-react";
+import { accentBorder } from "../utils/styles";
 
 function ImageUploader({
   previewUpload,
@@ -34,8 +35,8 @@ function ImageUploader({
             <span
               className="w-[18px] h-[18px] rounded-full flex-none animate-spin"
               style={{
-                border: "2.5px solid rgba(255,255,255,0.3)",
-                borderTopColor: "#fff",
+                border: "2.5px solid var(--surface-border)",
+                borderTopColor: accentBorder.full,
               }}
             />
             <span className="text-[0.85rem]">{t.bgChangerOptimizingImage}</span>

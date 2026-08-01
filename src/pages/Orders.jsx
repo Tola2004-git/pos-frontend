@@ -371,8 +371,8 @@ function Orders() {
         }}
       >
         <h2
+          className="text-white"
           style={{
-            color: "white",
             fontWeight: 700,
             fontSize: "1.5rem",
             margin: 0,
@@ -389,7 +389,7 @@ function Orders() {
               animation: "float 3s ease-in-out infinite",
             }}
           >
-            <ShoppingCart size={40} color="#fff" variant="Outline" />
+            <ShoppingCart size={40} color="currentColor" variant="Outline" />
           </div>
           {t.ordersManagementTitle}
         </h2>
@@ -406,7 +406,7 @@ function Orders() {
             gap: "8px",
           }}
         >
-          <ReceiptAdd size={25} color="#fff" variant="bulk"/>
+          <ReceiptAdd size={25} color="currentColor" variant="bulk"/>
           {t.newOrderTitle}
         </button>
       </div>
@@ -446,7 +446,7 @@ function Orders() {
         className="rounded-[20px] p-5 mb-5"
       >
         <h3 className="text-white font-bold text-base m-0 mb-4 flex items-center gap-2">
-          <Chart2 size={20} color="#fff" variant="Bold" />
+          <Chart2 size={20} color="currentColor" variant="Bold" />
           {t.salesByCashierTitle}
         </h3>
         {salesSummaryLoading ? (
@@ -457,8 +457,8 @@ function Orders() {
                 className="rounded-[14px] px-4 py-3 flex-1"
                 style={{
                   minWidth: "180px",
-                  background: "rgba(255,255,255,0.06)",
-                  border: "1px solid rgba(255,255,255,0.1)",
+                  background: "var(--surface-tint-06)",
+                  border: "1px solid var(--surface-tint-10)",
                 }}
               >
                 <Skeleton width="50%" height={10} style={{ marginBottom: 8 }} />
@@ -477,8 +477,8 @@ function Orders() {
                 className="rounded-[14px] px-4 py-3 flex-1"
                 style={{
                   minWidth: "180px",
-                  background: "rgba(255,255,255,0.06)",
-                  border: "1px solid rgba(255,255,255,0.1)",
+                  background: "var(--surface-tint-06)",
+                  border: "1px solid var(--surface-tint-10)",
                 }}
               >
                 <div className="text-white/60 text-xs mb-1">{row.name}</div>

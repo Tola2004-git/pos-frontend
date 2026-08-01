@@ -87,7 +87,7 @@ export default function ItemsPopover({ order, t }) {
               boxShadow: "0 15px 40px rgba(0,0,0,0.5)",
               overflow: "hidden",
               color: "white",
-              border: "1px solid rgba(255, 255, 255, 0.12)",
+              border: "1px solid var(--surface-tint-12)",
             }}
           >
             <ul

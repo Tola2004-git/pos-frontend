@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { RiSearchLine } from "react-icons/ri";
-import { glass, glassCard, colors } from "../../utils/styles";
+import { glass, glassCard, accentBorder } from "../../utils/styles";
 import { SearchNormal1 } from "iconsax-react";
 import DateRangePicker from "../common/DateRangePicker";
 
@@ -188,31 +188,31 @@ export default function OrdersFilter({
                   padding: "11px 16px",
                   background:
                     statusFilter === s
-                      ? "rgba(255,255,255,0.15)"
+                      ? "var(--surface-tint-15)"
                       : "transparent",
                   border: "none",
                   cursor: "pointer",
                   color:
                     statusFilter === s
-                      ? colors.white
+                      ? accentBorder.soft
                       : "rgba(255,255,255,0.85)",
                   fontSize: "0.88rem",
                   fontWeight: statusFilter === s ? 700 : 400,
                   textAlign: "left",
                   borderLeft:
                     statusFilter === s
-                      ? `3px solid ${colors.white}`
+                      ? `3px solid ${accentBorder.soft}`
                       : "3px solid transparent",
                   transition: "all 0.25s ease",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "rgba(255,255,255,0.12)";
+                  e.currentTarget.style.background = "var(--surface-tint-12)";
                   e.currentTarget.style.transform = "scale(1.02)";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background =
                     statusFilter === s
-                      ? "rgba(255,255,255,0.15)"
+                      ? "var(--surface-tint-15)"
                       : "transparent";
                   e.currentTarget.style.transform = "scale(1)";
                 }}
@@ -272,14 +272,14 @@ export default function OrdersFilter({
                   display: "flex",
                   width: "100%",
                   padding: "11px 16px",
-                  background: !cashierFilter ? "rgba(255,255,255,0.15)" : "transparent",
+                  background: !cashierFilter ? "var(--surface-tint-15)" : "transparent",
                   border: "none",
                   cursor: "pointer",
-                  color: !cashierFilter ? colors.white : "rgba(255,255,255,0.85)",
+                  color: !cashierFilter ? accentBorder.soft : "rgba(255,255,255,0.85)",
                   fontSize: "0.88rem",
                   fontWeight: !cashierFilter ? 700 : 400,
                   textAlign: "left",
-                  borderLeft: !cashierFilter ? `3px solid ${colors.white}` : "3px solid transparent",
+                  borderLeft: !cashierFilter ? `3px solid ${accentBorder.soft}` : "3px solid transparent",
                 }}
               >
                 {allCashiersLabel}
@@ -296,16 +296,16 @@ export default function OrdersFilter({
                     width: "100%",
                     padding: "11px 16px",
                     background:
-                      String(cashierFilter) === String(c.id) ? "rgba(255,255,255,0.15)" : "transparent",
+                      String(cashierFilter) === String(c.id) ? "var(--surface-tint-15)" : "transparent",
                     border: "none",
                     cursor: "pointer",
-                    color: String(cashierFilter) === String(c.id) ? colors.white : "rgba(255,255,255,0.85)",
+                    color: String(cashierFilter) === String(c.id) ? accentBorder.soft : "rgba(255,255,255,0.85)",
                     fontSize: "0.88rem",
                     fontWeight: String(cashierFilter) === String(c.id) ? 700 : 400,
                     textAlign: "left",
                     borderLeft:
                       String(cashierFilter) === String(c.id)
-                        ? `3px solid ${colors.white}`
+                        ? `3px solid ${accentBorder.soft}`
                         : "3px solid transparent",
                   }}
                 >

@@ -192,7 +192,7 @@ function CategoryModal({
               height: "36px",
               borderRadius: "50%",
               cursor: "pointer",
-              background: "rgba(255,255,255,0.1)",
+              background: "var(--surface-tint-10)",
             }}
           >
             ✕
@@ -319,8 +319,8 @@ function CategoryModal({
                   justifyContent: "space-between",
                   padding: "12px 16px",
                   borderRadius: "12px",
-                  background: "rgba(255,255,255,0.05)",
-                  border: "1px solid rgba(255,255,255,0.08)",
+                  background: "var(--surface-tint-05)",
+                  border: "1px solid var(--surface-tint-08)",
                 }}
               >
                 <span style={{ color: "white", fontWeight: 500 }}>
@@ -337,7 +337,7 @@ function CategoryModal({
                       borderRadius: "10px",
                       background: cat.status
                         ? "#2ecc71"
-                        : "rgba(255,255,255,0.2)",
+                        : "var(--surface-tint-15)",
                       cursor: "pointer",
                       position: "relative",
                       transition: "background 0.3s",

@@ -95,7 +95,7 @@ export default function OrdersTable({
           }}
         >
           <thead>
-            <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
+            <tr style={{ borderBottom: "1px solid var(--surface-tint-10)" }}>
               {HEADERS.map((h) => (
                 <th
                   key={h}
@@ -137,12 +137,12 @@ export default function OrdersTable({
                   <tr
                     key={order.id}
                     style={{
-                      borderBottom: "1px solid rgba(255,255,255,0.05)",
+                      borderBottom: "1px solid var(--surface-tint-05)",
                       transition: "background 0.2s",
                     }}
                     onMouseEnter={(e) =>
                       (e.currentTarget.style.background =
-                        "rgba(255,255,255,0.05)")
+                        "var(--surface-tint-05)")
                     }
                     onMouseLeave={(e) =>
                       (e.currentTarget.style.background = "transparent")
@@ -211,7 +211,7 @@ export default function OrdersTable({
                             justifyContent: "center",
                             padding: "4px 10px",
                             borderRadius: "999px",
-                            background: "rgba(255,255,255,0.08)",
+                            background: "var(--surface-tint-08)",
                             color: "rgba(255,255,255,0.85)",
                             fontWeight: 600,
                             fontSize: "0.8rem",
@@ -591,7 +591,7 @@ export default function OrdersTable({
               border: "none",
               cursor: page === 1 ? "not-allowed" : "pointer",
               background:
-                page === 1 ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.1)",
+                page === 1 ? "var(--surface-tint-05)" : "var(--surface-tint-10)",
               color: page === 1 ? "rgba(255,255,255,0.3)" : "white",
               fontWeight: 600,
               fontSize: "0.85rem",
@@ -619,8 +619,8 @@ export default function OrdersTable({
               cursor: page === lastPage ? "not-allowed" : "pointer",
               background:
                 page === lastPage
-                  ? "rgba(255,255,255,0.05)"
-                  : "rgba(255,255,255,0.1)",
+                  ? "var(--surface-tint-05)"
+                  : "var(--surface-tint-10)",
               color: page === lastPage ? "rgba(255,255,255,0.3)" : "white",
               fontWeight: 600,
               fontSize: "0.85rem",

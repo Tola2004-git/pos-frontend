@@ -54,7 +54,7 @@ function PaymentMethodCard({
         ...glass,
         borderRadius: "20px",
         padding: "28px 24px 20px",
-        border: `1px solid ${method.status ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.06)"}`,
+        border: `1px solid ${method.status ? "var(--surface-border)" : "var(--surface-tint-06)"}`,
         opacity: method.status ? 1 : 0.6,
         transition: "all 0.2s",
         display: "flex",
@@ -68,8 +68,8 @@ function PaymentMethodCard({
           width: "128px",
           height: "128px",
           borderRadius: "50%",
-          background: "rgba(255,255,255,0.08)",
-          border: "1px solid rgba(255,255,255,0.15)",
+          background: "var(--surface-tint-08)",
+          border: "1px solid var(--surface-border)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -110,7 +110,7 @@ function PaymentMethodCard({
           onClick={isToggling ? undefined : handleToggleStatus}
           style={{
             ...paymentStyles.statusToggle,
-            background: method.status ? "#2ecc71" : "rgba(255,255,255,0.2)",
+            background: method.status ? "#2ecc71" : "var(--surface-tint-15)",
             opacity: isToggling ? 0.5 : 1,
             cursor: isToggling ? "not-allowed" : "pointer",
             pointerEvents: isToggling ? "none" : "auto",

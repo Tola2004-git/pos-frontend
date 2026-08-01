@@ -13,7 +13,7 @@ export function SkeletonOrdersRow({ index = 0 }) {
   );
 
   return (
-    <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+    <tr style={{ borderBottom: "1px solid var(--surface-tint-05)" }}>
       <td style={{ padding: "12px 14px" }}>{s(20)}</td>
       <td style={{ padding: "12px 14px" }}>{s(100)}</td>
       <td style={{ padding: "12px 14px" }}>{s(110)}</td>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ArrowRight2, Bag2, Call, NoteText, User } from "iconsax-react";
 import { CartItem } from "./CartItem";
+import { accentBorder } from "../../utils/styles";
 
 const inputStyle = {
   width: "100%",
@@ -122,8 +123,8 @@ export function CartSidebar({
                 paddingLeft: "40px",
                 border:
                   focusedField === "name"
-                    ? "1px solid rgba(255,255,255,0.8)"
-                    : "1px solid rgba(255,255,255,0.2)",
+                    ? `1px solid ${accentBorder.soft}`
+                    : "1px solid var(--surface-border)",
                 transition: "border 0.2s",
               }}
               placeholder={tr("customerNamePlaceholder", "Customer name (optional)")}
@@ -147,8 +148,8 @@ export function CartSidebar({
                 paddingLeft: "40px",
                 border:
                   focusedField === "phone"
-                    ? "1px solid rgba(255,255,255,0.8)"
-                    : "1px solid rgba(255,255,255,0.2)",
+                    ? `1px solid ${accentBorder.soft}`
+                    : "1px solid var(--surface-border)",
                 transition: "border 0.2s",
               }}
               placeholder={tr("phoneNumberPlaceholder", "Phone number")}
@@ -174,8 +175,8 @@ export function CartSidebar({
                 resize: "vertical",
                 border:
                   focusedField === "note"
-                    ? "1px solid rgba(255,255,255,0.8)"
-                    : "1px solid rgba(255,255,255,0.2)",
+                    ? `1px solid ${accentBorder.soft}`
+                    : "1px solid var(--surface-border)",
                 transition: "border 0.2s",
               }}
               placeholder={tr("noteOptional", "Note (optional)")}

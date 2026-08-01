@@ -7,7 +7,7 @@ export function CashMovementsWidget({ loading, cashMovements, t }) {
       icon={
         <ArrowSwapHorizontal
           size={20}
-          color="#fff"
+          color="currentColor"
           variant="Linear"
           style={{ animation: "float 3s ease-in-out infinite" }}
         />
@@ -28,8 +28,8 @@ export function CashMovementsWidget({ loading, cashMovements, t }) {
             className="rounded-[14px] px-4 py-3 flex-1"
             style={{
               minWidth: "140px",
-              background: "rgba(255,255,255,0.06)",
-              border: "1px solid rgba(255,255,255,0.1)",
+              background: "var(--surface-tint-06)",
+              border: "1px solid var(--surface-tint-10)",
             }}
           >
             <div className="text-white/60 text-xs mb-1">{t.dashboardCashInLabel}</div>
@@ -41,8 +41,8 @@ export function CashMovementsWidget({ loading, cashMovements, t }) {
             className="rounded-[14px] px-4 py-3 flex-1"
             style={{
               minWidth: "140px",
-              background: "rgba(255,255,255,0.06)",
-              border: "1px solid rgba(255,255,255,0.1)",
+              background: "var(--surface-tint-06)",
+              border: "1px solid var(--surface-tint-10)",
             }}
           >
             <div className="text-white/60 text-xs mb-1">{t.dashboardCashOutLabel}</div>
@@ -54,8 +54,8 @@ export function CashMovementsWidget({ loading, cashMovements, t }) {
             className="rounded-[14px] px-4 py-3 flex-1"
             style={{
               minWidth: "140px",
-              background: "rgba(255,255,255,0.06)",
-              border: "1px solid rgba(255,255,255,0.1)",
+              background: "var(--surface-tint-06)",
+              border: "1px solid var(--surface-tint-10)",
             }}
           >
             <div className="text-white/60 text-xs mb-1">{t.dashboardNetCashLabel}</div>

@@ -24,8 +24,8 @@ export function CloseShiftModal({ visible = true, closing, onClose, onCancel, t 
     paddingLeft: "40px",
     border:
       focusedField === field
-        ? "1px solid rgba(255,255,255,0.8)"
-        : "1px solid rgba(255,255,255,0.18)",
+        ? "1px solid var(--accent-border-soft)"
+        : "1px solid var(--surface-border)",
     transition: "border 0.2s",
   });
 
@@ -79,7 +79,7 @@ export function CloseShiftModal({ visible = true, closing, onClose, onCancel, t 
           <div className="w-11 h-11 rounded-[12px] flex items-center justify-center flex-none">
             <MoneyRecive
               size={32}
-              color="#fff"
+              color="currentColor"
               variant="Outline"
               style={{ animation: "float 3s ease-in-out infinite" }}
             />
@@ -187,8 +187,8 @@ export function CloseShiftModal({ visible = true, closing, onClose, onCancel, t 
                 minHeight: "64px",
                 border:
                   focusedField === "note"
-                    ? "1px solid rgba(255,255,255,0.8)"
-                    : "1px solid rgba(255,255,255,0.18)",
+                    ? "1px solid var(--accent-border-soft)"
+                    : "1px solid var(--surface-border)",
                 transition: "border 0.2s",
               }}
               value={note}

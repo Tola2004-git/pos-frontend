@@ -213,8 +213,8 @@ function Tables() {
         }}
       >
         <h2
+          className="text-white"
           style={{
-            color: "white",
             fontWeight: 700,
             fontSize: "1.5rem",
             margin: 0,
@@ -231,7 +231,7 @@ function Tables() {
               animation: "float 3s ease-in-out infinite",
             }}
           >
-            <Grid3 size={40} color="white" variant="Linear" />
+            <Grid3 size={40} color="currentColor" variant="Linear" />
           </div>
           {t.tablesPageTitle}
         </h2>
@@ -248,7 +248,7 @@ function Tables() {
             gap: "8px",
           }}
         >
-          <AddCircle size={20} color="white" variant="Linear" /> {t.addTableAction}
+          <AddCircle size={20} color="currentColor" variant="Linear" /> {t.addTableAction}
         </button>
       </div>
 
@@ -298,8 +298,8 @@ function Tables() {
                     {stat.value}
                   </span>
                   <span
+                    className="text-white/40"
                     style={{
-                      color: "rgba(255,255,255,0.4)",
                       fontSize: "0.85rem",
                     }}
                   >
@@ -351,12 +351,13 @@ function Tables() {
           >
             <Grid3
               size={60}
-              color="white"
+              color="currentColor"
               variant="TwoTone"
+              className="text-white"
               style={{ animation: "float 2s ease-in-out infinite" }}
             />
           </div>
-          <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "1rem" }}>
+          <p className="text-white/50" style={{ fontSize: "1rem" }}>
             {t.noTablesYetMsg}
           </p>
         </div>
@@ -405,14 +406,14 @@ function Tables() {
           }}
         >
           <div
+            className="text-white"
             style={{
               ...glassCard,
               width: "100%",
               maxWidth: "480px",
               borderRadius: "24px",
               padding: "28px",
-              color: "white",
-              border: "1px solid rgba(255,255,255,0.16)",
+              border: "1px solid var(--surface-border)",
               boxShadow: "0 24px 60px rgba(0, 0, 0, 0.35)",
               transform: isMoveVisible ? "translateY(0)" : "translateY(24px)",
               opacity: isMoveVisible ? 1 : 0,
@@ -450,10 +451,10 @@ function Tables() {
               <button
                 onClick={closeMoveModal}
                 aria-label={t.cancel}
+                className="text-white"
                 style={{
-                  background: "rgba(255,255,255,0.1)",
-                  border: "1px solid rgba(255,255,255,0.16)",
-                  color: "white",
+                  background: "var(--surface-tint-10)",
+                  border: "1px solid var(--surface-border)",
                   width: "36px",
                   height: "36px",
                   borderRadius: "999px",
@@ -466,9 +467,9 @@ function Tables() {
             </div>
 
             <p
+              className="text-white/70"
               style={{
                 margin: "0 0 16px",
-                color: "rgba(255,255,255,0.72)",
                 lineHeight: 1.6,
               }}
             >
@@ -479,14 +480,14 @@ function Tables() {
               style={{
                 padding: "12px",
                 borderRadius: "16px",
-                background: "rgba(255,255,255,0.08)",
-                border: "1px solid rgba(255,255,255,0.12)",
+                background: "var(--surface-tint-08)",
+                border: "1px solid var(--surface-border)",
               }}
             >
               {availableTargets.length === 0 ? (
                 <div
+                  className="text-white/70"
                   style={{
-                    color: "rgba(255,255,255,0.7)",
                     padding: "10px 4px",
                   }}
                 >
@@ -496,13 +497,13 @@ function Tables() {
                 <select
                   value={selectedTargetId}
                   onChange={(event) => setSelectedTargetId(event.target.value)}
+                  className="theme-dark-surface text-white"
                   style={{
                     width: "100%",
                     padding: "14px 16px",
                     borderRadius: "14px",
-                    border: "1px solid rgba(255,255,255,0.16)",
+                    border: "1px solid var(--surface-border)",
                     background: "rgba(15, 23, 42, 0.75)",
-                    color: "white",
                     fontSize: "0.95rem",
                     outline: "none",
                   }}
@@ -530,11 +531,10 @@ function Tables() {
             >
               <button
                 onClick={closeMoveModal}
-                className="btn-cancel-glass"
+                className="btn-cancel-glass text-white"
                 style={{
                   padding: "12px",
                   borderRadius: "12px",
-                  color: "white",
                   cursor: modalLoading ? "not-allowed" : "pointer",
                   fontWeight: 500,
                   fontSize: "0.9rem",
@@ -590,7 +590,7 @@ function Tables() {
                   </>
                 ) : (
                   <>
-                    <TickCircle size="22" color="#fff" variant="Outline" />
+                    <TickCircle size="22" color="currentColor" variant="Outline" />
                     {t.confirmMove}
                   </>
                 )}
@@ -618,14 +618,14 @@ function Tables() {
           }}
         >
           <div
+            className="text-white"
             style={{
               ...glassCard,
               width: "100%",
               maxWidth: "460px",
               borderRadius: "24px",
               padding: "28px",
-              color: "white",
-              border: "1px solid rgba(255,255,255,0.16)",
+              border: "1px solid var(--surface-border)",
               boxShadow: "0 24px 60px rgba(0, 0, 0, 0.35)",
               transform: isClearVisible ? "translateY(0)" : "translateY(24px)",
               opacity: isClearVisible ? 1 : 0,
@@ -663,10 +663,10 @@ function Tables() {
               <button
                 onClick={closeClearModal}
                 aria-label={t.cancel}
+                className="text-white"
                 style={{
-                  background: "rgba(255,255,255,0.1)",
-                  border: "1px solid rgba(255,255,255,0.16)",
-                  color: "white",
+                  background: "var(--surface-tint-10)",
+                  border: "1px solid var(--surface-border)",
                   width: "36px",
                   height: "36px",
                   borderRadius: "999px",
@@ -678,18 +678,17 @@ function Tables() {
               </button>
             </div>
 
-            <p style={{ margin: "0 0 20px", color: "rgba(255,255,255,0.72)", lineHeight: 1.6 }}>
+            <p className="text-white/70" style={{ margin: "0 0 20px", lineHeight: 1.6 }}>
               {t.adminClearTableDesc}
             </p>
 
             <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}>
               <button
                 onClick={closeClearModal}
-                className="btn-cancel-glass"
+                className="btn-cancel-glass text-white"
                 style={{
                   padding: "12px",
                   borderRadius: "12px",
-                  color: "white",
                   cursor: clearLoading ? "not-allowed" : "pointer",
                   fontWeight: 500,
                   fontSize: "0.9rem",
@@ -745,7 +744,7 @@ function Tables() {
                   </>
                 ) : (
                   <>
-                    <TickCircle size="22" color="#fff" variant="Outline" />
+                    <TickCircle size="22" color="currentColor" variant="Outline" />
                     {t.confirmClear}
                   </>
                 )}

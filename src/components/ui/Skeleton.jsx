@@ -10,9 +10,9 @@ export function Skeleton({
         width,
         height,
         borderRadius,
-        background: "rgba(255,255,255,0.08)",
+        background: "var(--surface-tint-08)",
         backgroundImage:
-          "linear-gradient(90deg, rgba(255,255,255,0.0) 0%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0.0) 100%)",
+          "linear-gradient(90deg, rgba(255,255,255,0.0) 0%, var(--surface-tint-07) 50%, rgba(255,255,255,0.0) 100%)",
         backgroundSize: "200% 100%",
         animation: "skeleton-shimmer 1.6s infinite",
         flexShrink: 0,

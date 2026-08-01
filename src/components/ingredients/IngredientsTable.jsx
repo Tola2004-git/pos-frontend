@@ -42,7 +42,7 @@ export default function IngredientsTable({
           style={{ width: "100%", borderCollapse: "collapse" }}
         >
           <thead>
-            <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
+            <tr style={{ borderBottom: "1px solid var(--surface-tint-10)" }}>
               {COLUMNS.map((h, hIndex) => (
                 <th
                   key={h}
@@ -101,12 +101,12 @@ export default function IngredientsTable({
                   <tr
                     key={ingredient.id}
                     style={{
-                      borderBottom: "1px solid rgba(255,255,255,0.05)",
+                      borderBottom: "1px solid var(--surface-tint-05)",
                       transition: "background 0.2s",
                     }}
                     onMouseEnter={(e) =>
                       (e.currentTarget.style.background =
-                        "rgba(255,255,255,0.05)")
+                        "var(--surface-tint-05)")
                     }
                     onMouseLeave={(e) =>
                       (e.currentTarget.style.background = "transparent")
@@ -192,7 +192,7 @@ export default function IngredientsTable({
                                 ? "#e74c3c"
                                 : ingredient.is_expiring_soon
                                   ? "#f39c12"
-                                  : "rgba(255,255,255,0.25)"
+                                  : "var(--surface-border)"
                             }`,
                           }}
                         >

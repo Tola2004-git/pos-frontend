@@ -127,7 +127,7 @@ function Sidebar({ open, onToggle, onLogout, t }) {
           ...glassSidebar,
           width: open ? "230px" : "60px",
         }}
-        className="fixed top-0 left-0 h-screen z-[1050] overflow-hidden flex flex-col transition-[width] duration-400 ease-[cubic-bezier(0.175,0.885,0.32,1.275)]"
+        className="theme-dark-surface fixed top-0 left-0 h-screen z-[1050] overflow-hidden flex flex-col transition-[width] duration-400 ease-[cubic-bezier(0.175,0.885,0.32,1.275)]"
       >
         <div
           className={`relative flex items-center border-b border-white/15 h-[85px] group transition-all duration-300 ${open ? "px-5 justify-between" : "justify-center px-0"

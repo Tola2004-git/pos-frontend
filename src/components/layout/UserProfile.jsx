@@ -1,4 +1,4 @@
-import { colors } from "../../utils/styles";
+import { accentBorder } from "../../utils/styles";
 
 function UserProfile({ user, t }) {
   const initial = user?.name?.charAt(0).toUpperCase() || "A";
@@ -11,12 +11,12 @@ function UserProfile({ user, t }) {
         <img
           src={user.profile_image}
           alt="profile"
-          style={{ borderColor: colors.white, objectPosition: "center top" }}
+          style={{ borderColor: accentBorder.soft, objectPosition: "center top" }}
           className="w-9 h-9 rounded-full object-cover border-2"
         />
       ) : (
         <div
-          style={{ borderColor: colors.white }}
+          style={{ borderColor: accentBorder.soft }}
           className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-[0.9rem] border-2"
         >
           {initial}
@@ -28,7 +28,7 @@ function UserProfile({ user, t }) {
           {user?.name || t?.roleAdmin || "Admin"}
         </span>
         <span
-          style={{ color: colors.white }}
+          style={{ color: accentBorder.soft }}
           className="text-[0.72rem] font-medium"
         >
           {roleLabel || "Admin"}

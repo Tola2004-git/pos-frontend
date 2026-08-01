@@ -1,7 +1,7 @@
 import { useState } from "react";
 import apiClient from "../api/apiClient";
 import { useNavigate } from "react-router-dom";
-import { getGradientBg, glassCard } from "../utils/styles";
+import { getGradientBg, glassCard, accentBorder } from "../utils/styles";
 import logo from "../assets/logo.png";
 import { Sms, Lock, Eye, EyeSlash, Login as LoginIcon } from "iconsax-react";
 import { useTranslations } from "../hooks/useTranslations";
@@ -59,15 +59,15 @@ const styles = `
   display: flex;
   align-items: center;
   border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.2);
-  background: rgba(255,255,255,0.08);
+  border: 1px solid var(--surface-border);
+  background: var(--surface-tint-08);
   padding-right: 12px;
   overflow: hidden;
   transition: border 0.25s, background 0.25s;
 }
 .input-wrap:focus-within {
-  border-color: rgba(255,255,255,0.5);
-  background: rgba(255,255,255,0.12);
+  border-color: var(--surface-border);
+  background: var(--surface-tint-12);
 }
 
 .toggle-btn {
@@ -212,15 +212,13 @@ function Login() {
     width: "100%",
     padding: "10px 14px",
     borderRadius: "10px",
-    border: "1px solid rgba(255,255,255,0.2)",
-    background: "rgba(255,255,255,0.1)",
-    color: "white",
+    border: "1px solid var(--surface-border)",
+    background: "var(--surface-tint-10)",
     fontSize: "0.9rem",
     outline: "none",
   };
 
   const labelStyle = {
-    color: "rgba(255,255,255,0.8)",
     fontSize: "0.85rem",
     display: "block",
     marginBottom: "6px",
@@ -233,7 +231,6 @@ function Login() {
     transform: "translateY(-50%)",
     width: "18px",
     height: "18px",
-    filter: "brightness(0) invert(1)",
     opacity: focusedField === field ? 1 : 0.4,
     transition: "opacity 0.2s",
     pointerEvents: "none",
@@ -294,8 +291,8 @@ function Login() {
             }}
           />
           <p
+            className="text-white/55"
             style={{
-              color: "rgba(255,255,255,0.55)",
               marginTop: "4px",
               fontSize: "0.88rem",
             }}
@@ -322,22 +319,24 @@ function Login() {
 
         <form onSubmit={handleLogin}>
           <div style={{ marginBottom: "8px" }}>
-            <label style={labelStyle}>{t.emailLabel}</label>
+            <label style={labelStyle} className="text-white/80">{t.emailLabel}</label>
             <div style={{ position: "relative" }}>
               <Sms
                 size={20}
-                color="white"
+                color="currentColor"
                 variant="Linear"
+                className="text-white"
                 style={iconStyle("email")}
               />
               <input
+                className="text-white"
                 style={{
                   ...inputStyle,
                   paddingLeft: "40px",
                   border:
                     focusedField === "email"
-                      ? "1px solid rgba(255,255,255,0.8)"
-                      : "1px solid rgba(255,255,255,0.2)",
+                      ? `1px solid ${accentBorder.soft}`
+                      : "1px solid var(--surface-border)",
                   transition: "border 0.25s",
                 }}
                 type="email"
@@ -352,12 +351,13 @@ function Login() {
           </div>
 
           <div style={{ marginBottom: "8px" }}>
-            <label style={labelStyle}>{t.passwordLabel}</label>
+            <label style={labelStyle} className="text-white/80">{t.passwordLabel}</label>
             <div style={{ position: "relative" }}>
               <Lock
                 size={20}
-                color="white"
+                color="currentColor"
                 variant="Linear"
+                className="text-white"
                 style={iconStyle("password")}
               />
               <input
@@ -366,13 +366,14 @@ function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                className="text-white"
                 style={{
                   ...inputStyle,
                   paddingLeft: "40px",
                   border:
                     focusedField === "password"
-                      ? "1px solid rgba(255,255,255,0.8)"
-                      : "1px solid rgba(255,255,255,0.2)",
+                      ? `1px solid ${accentBorder.soft}`
+                      : "1px solid var(--surface-border)",
                   transition: "border 0.2s",
                 }}
                 onFocus={() => setFocusedField("password")}
@@ -380,7 +381,7 @@ function Login() {
               />
               <button
                 type="button"
-                className="toggle-btn"
+                className={`toggle-btn ${focusedField === "password" ? "text-white/90" : "text-white/50"}`}
                 onClick={() => setShowPass(!showPass)}
                 tabIndex={-1}
                 style={{
@@ -391,18 +392,14 @@ function Login() {
                   background: "none",
                   border: "none",
                   display: "flex",
-                  color:
-                    focusedField === "password"
-                      ? "rgba(255,255,255,0.9)"
-                      : "rgba(255,255,255,0.5)",
                   cursor: "pointer",
                   transition: "color 0.2s",
                 }}
               >
                 {showPass ? (
-                  <Eye size={20} color="white" variant="Linear" />
+                  <Eye size={20} color="currentColor" variant="Linear" />
                 ) : (
-                  <EyeSlash size={20} color="white" variant="Linear" />
+                  <EyeSlash size={20} color="currentColor" variant="Linear" />
                 )}
               </button>
             </div>
@@ -432,7 +429,7 @@ function Login() {
                 <DotsLoader t={t} />
               ) : (
                 <>
-                  <LoginIcon size={20} color="white" variant="Linear" />
+                  <LoginIcon size={20} color="currentColor" variant="Linear" />
                   {t.loginAction}
                 </>
               )}

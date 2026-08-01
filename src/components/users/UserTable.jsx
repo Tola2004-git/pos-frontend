@@ -1,4 +1,4 @@
-import { glassCard } from "../../utils/styles";
+import { glassCard, accentBorder } from "../../utils/styles";
 import { SkeletonTable } from "../ui/SkeletonUser";
 import { Trash, Edit2, Edit } from "iconsax-react";
 import { Tooltip } from "../ui/Tooltip";
@@ -22,8 +22,8 @@ function UserTable({
           <thead>
             <tr
               style={{
-                borderBottom: "1px solid rgba(255,255,255,0.12)",
-                background: "rgba(255,255,255,0.03)",
+                borderBottom: "1px solid var(--surface-tint-12)",
+                background: "var(--surface-tint-05)",
               }}
             >
               {[
@@ -74,12 +74,12 @@ function UserTable({
                   key={user.id || index}
                   style={{
                     height: "56px",
-                    borderBottom: "1px solid rgba(255,255,255,0.05)",
+                    borderBottom: "1px solid var(--surface-tint-05)",
                     transition: "background 0.2s",
                   }}
                   onMouseEnter={(e) =>
                     (e.currentTarget.style.background =
-                      "rgba(255,255,255,0.05)")
+                      "var(--surface-tint-05)")
                   }
                   onMouseLeave={(e) =>
                     (e.currentTarget.style.background = "transparent")
@@ -101,7 +101,7 @@ function UserTable({
                           height: "40px",
                           borderRadius: "50%",
                           overflow: "hidden",
-                          border: "2px solid rgba(255,255,255,0.2)",
+                          border: "2px solid var(--surface-border)",
                         }}
                       >
                         <img
@@ -160,7 +160,7 @@ function UserTable({
                         fontSize: "0.78rem",
                         fontWeight: 600,
                         color: "white",
-                        border: "1px solid white",
+                        border: `1px solid ${accentBorder.full}`,
                       }}
                     >
                       {user.is_owner

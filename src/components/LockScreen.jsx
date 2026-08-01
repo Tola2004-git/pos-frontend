@@ -61,7 +61,7 @@ function LockScreen({ onUnlock, onFullLogout }) {
 
   return (
     <div
-      className="fixed inset-0 z-[20000] flex items-center justify-center p-6"
+      className="theme-dark-surface fixed inset-0 z-[20000] flex items-center justify-center p-6"
       style={{ ...glassCard, background: "rgba(10, 10, 20, 0.85)" }}
     >
       <form

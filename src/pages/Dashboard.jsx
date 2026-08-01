@@ -327,7 +327,7 @@ function Dashboard() {
             className="no-print w-8 h-8 rounded-full flex items-center justify-center transition-colors"
             style={glassCard}
           >
-            <Printer size={15} color="#fff" variant="Linear" />
+            <Printer size={15} color="currentColor" variant="Linear" className="text-white" />
           </button>
           <button
             onClick={handleManualRefresh}
@@ -338,9 +338,9 @@ function Dashboard() {
           >
             <Refresh2
               size={15}
-              color="#fff"
+              color="currentColor"
               variant="Linear"
-              className={refreshing ? "animate-spin" : ""}
+              className={`text-white ${refreshing ? "animate-spin" : ""}`}
             />
           </button>
           <div
@@ -351,10 +351,11 @@ function Dashboard() {
               <button
                 key={p}
                 onClick={() => setPeriod(p)}
-                className="px-3 py-1.5 rounded-full text-xs font-semibold transition-colors"
+                className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${
+                  period === p ? "text-white" : "text-white/50"
+                }`}
                 style={{
-                  background: period === p ? "rgba(255,255,255,0.15)" : "transparent",
-                  color: period === p ? "#fff" : "rgba(255,255,255,0.5)",
+                  background: period === p ? "var(--surface-tint-15)" : "transparent",
                 }}
               >
                 {PERIOD_LABELS[p]}
@@ -477,7 +478,7 @@ function Dashboard() {
         <h3 className="text-white font-bold text-base m-0 mb-4 flex items-center gap-2">
           <Chart2
             size={20}
-            color="#fff"
+            color="currentColor"
             variant="Linear"
             style={{ animation: "float 3s ease-in-out infinite" }}
           />

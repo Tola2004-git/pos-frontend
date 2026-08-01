@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Layout from "../components/layout/Layout";
-import { glassCard, colors } from "../utils/styles";
+import { glassCard } from "../utils/styles";
 import { useProducts } from "../hooks/useProducts";
 import { useCategories } from "../hooks/useCategories";
 import ProductSearch from "../components/products/ProductSearch";
@@ -110,8 +110,8 @@ function Products() {
         }}
       >
         <h2
+          className="text-white"
           style={{
-            color: "white",
             fontWeight: 700,
             fontSize: "1.5rem",
             margin: 0,
@@ -128,27 +128,27 @@ function Products() {
               animation: "float 3s ease-in-out infinite",
             }}
           >
-            <Box size={40} color="white" variant="Linear" />
+            <Box size={40} color="currentColor" variant="Linear" className="text-white" />
           </div>
           {t.productsManagementTitle}
         </h2>
         <div style={{ display: "flex", gap: "10px" }}>
           <button
             onClick={handleOpenCatModal}
+            className="text-white"
             style={{
               ...glassCard,
               padding: "10px 18px",
               borderRadius: "12px",
               fontWeight: 600,
               cursor: "pointer",
-              color: "white",
               display: "flex",
               alignItems: "center",
               gap: "8px",
               fontSize: "0.9rem",
             }}
           >
-            <Category size={20} color="white" variant="Linear" />
+            <Category size={20} color="currentColor" variant="Linear" className="text-white" />
             {t.categoriesAction}
           </button>
           <button
@@ -167,7 +167,7 @@ function Products() {
               fontSize: "0.9rem",
             }}
           >
-            <Add size={24} color="white" variant="Linear" />
+            <Add size={24} color="currentColor" variant="Linear" />
             {t.addProductAction}
           </button>
         </div>
@@ -203,21 +203,21 @@ function Products() {
           padding: "0 4px",
         }}
       >
-        <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.85rem" }}>
+        <span className="text-white/50" style={{ fontSize: "0.85rem" }}>
           {t.totalProductsCountMsg.replace("{n}", total)}
         </span>
         <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
+            className={page === 1 ? "text-white/30" : "text-white"}
             style={{
               padding: "8px 16px",
               borderRadius: "10px",
               border: "none",
               cursor: page === 1 ? "not-allowed" : "pointer",
               background:
-                page === 1 ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.1)",
-              color: page === 1 ? "rgba(255,255,255,0.3)" : "white",
+                page === 1 ? "var(--surface-tint-05)" : "var(--surface-tint-10)",
               fontWeight: 600,
               fontSize: "0.85rem",
             }}
@@ -225,8 +225,8 @@ function Products() {
             {t.paginationBackAction}
           </button>
           <span
+            className="text-white"
             style={{
-              color: "white",
               fontWeight: 600,
               fontSize: "0.85rem",
               padding: "0 8px",
@@ -237,6 +237,7 @@ function Products() {
           <button
             onClick={() => setPage((p) => Math.min(lastPage, p + 1))}
             disabled={page === lastPage}
+            className={page === lastPage ? "text-white/30" : "text-white"}
             style={{
               padding: "8px 16px",
               borderRadius: "10px",
@@ -244,9 +245,8 @@ function Products() {
               cursor: page === lastPage ? "not-allowed" : "pointer",
               background:
                 page === lastPage
-                  ? "rgba(255,255,255,0.05)"
-                  : "rgba(255,255,255,0.1)",
-              color: page === lastPage ? "rgba(255,255,255,0.3)" : "white",
+                  ? "var(--surface-tint-05)"
+                  : "var(--surface-tint-10)",
               fontWeight: 600,
               fontSize: "0.85rem",
             }}

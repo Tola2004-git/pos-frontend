@@ -1,12 +1,12 @@
-import { glass, glassCard } from "../../utils/styles";
+import { glass, glassCard, accentBorder } from "../../utils/styles";
 import { SearchNormal1 } from "iconsax-react";
 
 const inputStyle = {
   width: "100%",
   padding: "10px 14px",
   borderRadius: "10px",
-  border: "1px solid rgba(255,255,255,0.2)",
-  background: "rgba(255,255,255,0.1)",
+  border: "1px solid var(--surface-border)",
+  background: "var(--surface-tint-10)",
   color: "white",
   fontSize: "0.9rem",
   outline: "none",
@@ -127,7 +127,7 @@ function UserSearch({
                   padding: "11px 16px",
                   background:
                     roleFilter === r.value
-                      ? "rgba(255,255,255,0.15)"
+                      ? "var(--surface-tint-15)"
                       : "transparent",
                   border: "none",
                   cursor: "pointer",
@@ -137,18 +137,18 @@ function UserSearch({
                   fontWeight: roleFilter === r.value ? 700 : 400,
                   borderLeft:
                     roleFilter === r.value
-                      ? `3px solid #fff`
+                      ? `3px solid ${accentBorder.full}`
                       : "3px solid transparent",
                   transition: "all 0.25s ease",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "rgba(255,255,255,0.12)";
+                  e.currentTarget.style.background = "var(--surface-tint-12)";
                   e.currentTarget.style.transform = "scale(1.02)";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background =
                     roleFilter === r.value
-                      ? "rgba(255,255,255,0.15)"
+                      ? "var(--surface-tint-15)"
                       : "transparent";
                   e.currentTarget.style.transform = "scale(1)";
                 }}

@@ -1,5 +1,14 @@
 import { useEffect, useState } from "react";
-import { bgPresets, getCurrentBg, getCurrentBgOverlayOpacity } from "../utils/styles";
+import {
+  bgPresets,
+  getCurrentBg,
+  getCurrentBgOverlayOpacity,
+  getThemeForBackground,
+  PURE_WHITE_BG,
+  PURE_BLACK_BG,
+} from "../utils/styles";
+
+const isPureColorBg = (url) => url === PURE_WHITE_BG || url === PURE_BLACK_BG;
 
 export function useBackgroundChanger(onApply, onClose) {
   const [selected, setSelected] = useState(getCurrentBg());
@@ -17,6 +26,10 @@ export function useBackgroundChanger(onApply, onClose) {
   const [overlayOpacity, setOverlayOpacity] = useState(getCurrentBgOverlayOpacity());
 
   useEffect(() => {
+    document.documentElement.setAttribute("data-theme", getThemeForBackground(bgUrl));
+  }, [bgUrl]);
+
+  useEffect(() => {
     let timeout;
     if (showBgChanger) {
       setIsBgChangerMounted(true);
@@ -29,6 +42,11 @@ export function useBackgroundChanger(onApply, onClose) {
   }, [showBgChanger]);
 
   const handleSelectPreset = (url) => {
+    if (isPureColorBg(url)) {
+      setOverlayOpacity(0);
+    } else if (isPureColorBg(selected)) {
+      setOverlayOpacity(getCurrentBgOverlayOpacity());
+    }
     setSelected(url);
     setCustomUrl("");
     setPreviewUpload(null);

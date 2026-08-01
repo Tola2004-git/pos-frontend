@@ -12,7 +12,7 @@ export function SkeletonProductRow({ index = 0 }) {
   );
 
   return (
-    <tr style={{ height: "64px", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+    <tr style={{ height: "64px", borderBottom: "1px solid var(--surface-tint-05)" }}>
       <td style={{ padding: "12px 14px" }}>{s(20)}</td>
       <td style={{ padding: "12px 14px" }}>
         <Skeleton
@@ -203,8 +203,8 @@ export function SkeletonCategoryList({ rows = 5 }) {
             justifyContent: "space-between",
             padding: "12px 16px",
             borderRadius: "12px",
-            background: "rgba(255,255,255,0.05)",
-            border: "1px solid rgba(255,255,255,0.08)",
+            background: "var(--surface-tint-05)",
+            border: "1px solid var(--surface-tint-08)",
           }}
         >
           <Skeleton

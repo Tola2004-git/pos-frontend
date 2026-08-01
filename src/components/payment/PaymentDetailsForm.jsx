@@ -1,4 +1,5 @@
 import { Card, ReceiptItem } from "iconsax-react";
+import { accentBorder } from "../../utils/styles";
 
 export function PaymentDetailsForm({
   selectedCurrency,
@@ -24,7 +25,7 @@ export function PaymentDetailsForm({
     width: "100%",
     padding: "10px 14px",
     borderRadius: "10px",
-    border: "1px solid rgba(255,255,255,0.2)",
+    border: "1px solid var(--surface-border)",
     background: "rgba(255,255,255,0.0)",
     backdropFilter: "blur(25px)",
     WebkitBackdropFilter: "blur(25px)",
@@ -77,8 +78,8 @@ export function PaymentDetailsForm({
               ...inputStyle,
               border:
                 focusedField === "amount"
-                  ? "1px solid rgba(255,255,255,0.8)"
-                  : "1px solid rgba(255,255,255,0.2)",
+                  ? `1px solid ${accentBorder.soft}`
+                  : "1px solid var(--surface-border)",
               transition: "border 0.2s",
               fontSize: "1.2rem",
               fontWeight: 700,

@@ -3,7 +3,7 @@ import {
   inputStyle,
   labelStyle,
 } from "../../constants/paymentConstants";
-import { glass, glassCard, colors } from "../../utils/styles";
+import { glass, glassCard, accentBorder } from "../../utils/styles";
 import {
   Add,
   AddCircle,
@@ -160,7 +160,7 @@ function PaymentMethodModal({
             )}
             <h2
               style={{
-                color: colors.whiteFull,
+                color: accentBorder.full,
                 fontWeight: 600,
                 margin: 0,
                 fontSize: "1.5rem",
@@ -354,7 +354,7 @@ function PaymentMethodModal({
                       width: "60px",
                       height: "60px",
                       borderRadius: "50%",
-                      border: `2px solid ${form.icon === bank.logo ? colors.whiteFull : "rgba(255,255,255,0.2)"}`,
+                      border: `2px solid ${form.icon === bank.logo ? accentBorder.full : "rgba(255,255,255,0.2)"}`,
                       background:
                         form.icon === bank.logo
                           ? "rgba(255,255,255,0.06)"

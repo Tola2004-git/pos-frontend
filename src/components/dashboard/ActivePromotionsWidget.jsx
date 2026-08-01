@@ -13,7 +13,7 @@ export function ActivePromotionsWidget({ loading, activePromotions, t }) {
         <h3 className="text-white font-bold text-base m-0 flex items-center gap-2">
           <TicketDiscount
             size={20}
-            color="#fff"
+            color="currentColor"
             variant="Linear"
             style={{ animation: "float 3s ease-in-out infinite" }}
           />
@@ -42,8 +42,8 @@ export function ActivePromotionsWidget({ loading, activePromotions, t }) {
               className="rounded-[14px] px-4 py-3 flex-1"
               style={{
                 minWidth: "180px",
-                background: "rgba(255,255,255,0.06)",
-                border: "1px solid rgba(255,255,255,0.1)",
+                background: "var(--surface-tint-06)",
+                border: "1px solid var(--surface-tint-10)",
               }}
             >
               <div className="text-white font-semibold text-sm truncate">{promo.name}</div>

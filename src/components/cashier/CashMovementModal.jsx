@@ -24,8 +24,8 @@ export function CashMovementModal({ visible = true, recording, onSubmit, onCance
     paddingLeft: "40px",
     border:
       focusedField === field
-        ? "1px solid rgba(255,255,255,0.8)"
-        : "1px solid rgba(255,255,255,0.18)",
+        ? "1px solid var(--accent-border-soft)"
+        : "1px solid var(--surface-border)",
     transition: "border 0.2s",
   });
 
@@ -82,7 +82,7 @@ export function CashMovementModal({ visible = true, recording, onSubmit, onCance
         <style>{badgeFloatStyles}</style>
         <div className="flex items-center gap-3 mb-2">
           <div className="w-11 h-11 rounded-[12px] flex items-center justify-center flex-none">
-            <MoneySend size={32} color="#fff" variant="Outline" />
+            <MoneySend size={32} color="currentColor" variant="Outline" />
           </div>
           <div>
             <h3 className="text-lg font-bold m-0">{t.cashMovementTitle}</h3>
@@ -212,8 +212,8 @@ export function CashMovementModal({ visible = true, recording, onSubmit, onCance
                 minHeight: "64px",
                 border:
                   focusedField === "reason"
-                    ? "1px solid rgba(255,255,255,0.8)"
-                    : "1px solid rgba(255,255,255,0.18)",
+                    ? "1px solid var(--accent-border-soft)"
+                    : "1px solid var(--surface-border)",
                 transition: "border 0.2s",
               }}
               value={reason}

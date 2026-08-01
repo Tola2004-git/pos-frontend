@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { glass, glassCard, colors } from "../../utils/styles";
+import { glass, glassCard, accentBorder } from "../../utils/styles";
 import { SearchNormal1 } from "iconsax-react";
 
 function ProductSearch({ search, setSearch, categoryFilter, setCategoryFilter, categories, setPage, t }) {
@@ -121,22 +121,22 @@ function ProductSearch({ search, setSearch, categoryFilter, setCategoryFilter, c
                   gap: "10px",
                   width: "100%",
                   padding: "11px 16px",
-                  background: categoryFilter == c.id ? "rgba(255,255,255,0.15)" : "transparent",
+                  background: categoryFilter == c.id ? "var(--surface-tint-15)" : "transparent",
                   border: "none",
                   cursor: "pointer",
-                  color: categoryFilter == c.id ? colors.white : "rgba(255,255,255,0.85)",
+                  color: categoryFilter == c.id ? accentBorder.soft : "rgba(255,255,255,0.85)",
                   fontSize: "0.88rem",
                   fontWeight: categoryFilter == c.id ? 700 : 400,
-                  borderLeft: categoryFilter == c.id ? `3px solid ${colors.white}` : "3px solid transparent",
+                  borderLeft: categoryFilter == c.id ? `3px solid ${accentBorder.soft}` : "3px solid transparent",
                   transition: "all 0.25s ease",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "rgba(255,255,255,0.12)";
+                  e.currentTarget.style.background = "var(--surface-tint-12)";
                   e.currentTarget.style.transform = "scale(1.02)";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background =
-                    categoryFilter == c.id ? "rgba(255,255,255,0.15)" : "transparent";
+                    categoryFilter == c.id ? "var(--surface-tint-15)" : "transparent";
                   e.currentTarget.style.transform = "scale(1)";
                 }}
               >

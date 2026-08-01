@@ -139,8 +139,8 @@ function Promotions() {
         }}
       >
         <h2
+          className="text-white"
           style={{
-            color: "white",
             fontWeight: 700,
             fontSize: "1.5rem",
             margin: 0,
@@ -151,7 +151,7 @@ function Promotions() {
         >
           <TicketDiscount
             size={40}
-            color="#fff"
+            color="currentColor"
             variant="Linear"
             style={{ animation: "float 3s ease-in-out infinite" }}
           />
@@ -173,7 +173,7 @@ function Promotions() {
             fontSize: "0.9rem",
           }}
         >
-          <Add size={24} color="white" variant="Linear" />
+          <Add size={24} color="currentColor" variant="Linear" />
           {t.newPromotionAction}
         </button>
       </div>
@@ -229,21 +229,21 @@ function Promotions() {
           padding: "0 4px",
         }}
       >
-        <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.85rem" }}>
+        <span className="text-white/50" style={{ fontSize: "0.85rem" }}>
           {t.totalPromotionsCountMsg.replace("{n}", filtered.length)}
         </span>
         <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={safePage === 1}
+            className={safePage === 1 ? "text-white/30" : "text-white"}
             style={{
               padding: "8px 16px",
               borderRadius: "10px",
               border: "none",
               cursor: safePage === 1 ? "not-allowed" : "pointer",
               background:
-                safePage === 1 ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.1)",
-              color: safePage === 1 ? "rgba(255,255,255,0.3)" : "white",
+                safePage === 1 ? "var(--surface-tint-05)" : "var(--surface-tint-10)",
               fontWeight: 600,
               fontSize: "0.85rem",
             }}
@@ -251,8 +251,8 @@ function Promotions() {
             {t.paginationBackAction}
           </button>
           <span
+            className="text-white"
             style={{
-              color: "white",
               fontWeight: 600,
               fontSize: "0.85rem",
               padding: "0 8px",
@@ -263,6 +263,7 @@ function Promotions() {
           <button
             onClick={() => setPage((p) => Math.min(lastPage, p + 1))}
             disabled={safePage === lastPage}
+            className={safePage === lastPage ? "text-white/30" : "text-white"}
             style={{
               padding: "8px 16px",
               borderRadius: "10px",
@@ -270,9 +271,8 @@ function Promotions() {
               cursor: safePage === lastPage ? "not-allowed" : "pointer",
               background:
                 safePage === lastPage
-                  ? "rgba(255,255,255,0.05)"
-                  : "rgba(255,255,255,0.1)",
-              color: safePage === lastPage ? "rgba(255,255,255,0.3)" : "white",
+                  ? "var(--surface-tint-05)"
+                  : "var(--surface-tint-10)",
               fontWeight: 600,
               fontSize: "0.85rem",
             }}

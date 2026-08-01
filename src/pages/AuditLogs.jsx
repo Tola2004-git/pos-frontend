@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ShieldSecurity } from "iconsax-react";
 import Layout from "../components/layout/Layout";
-import { glassCard, colors } from "../utils/styles";
+import { glassCard, accentBorder } from "../utils/styles";
 import { useAuditLogs } from "../hooks/useAuditLogs";
 import { useTranslations } from "../hooks/useTranslations";
 import DateRangePicker from "../components/common/DateRangePicker";
@@ -143,14 +143,14 @@ function ActionFilterDropdown({ value, onChange, allLabel }) {
               display: "flex",
               width: "100%",
               padding: "11px 16px",
-              background: value === "all" ? "rgba(255,255,255,0.15)" : "transparent",
+              background: value === "all" ? "var(--surface-tint-15)" : "transparent",
               border: "none",
               cursor: "pointer",
-              color: value === "all" ? colors.whiteFull : "rgba(255,255,255,0.85)",
+              color: value === "all" ? accentBorder.full : "rgba(255,255,255,0.85)",
               fontSize: "0.88rem",
               fontWeight: value === "all" ? 700 : 400,
               textAlign: "left",
-              borderLeft: value === "all" ? `3px solid ${colors.whiteFull}` : "3px solid transparent",
+              borderLeft: value === "all" ? `3px solid ${accentBorder.full}` : "3px solid transparent",
             }}
           >
             {allLabel}
@@ -180,21 +180,21 @@ function ActionFilterDropdown({ value, onChange, allLabel }) {
                     display: "flex",
                     width: "100%",
                     padding: "9px 16px",
-                    background: value === action ? "rgba(255,255,255,0.15)" : "transparent",
+                    background: value === action ? "var(--surface-tint-15)" : "transparent",
                     border: "none",
                     cursor: "pointer",
-                    color: value === action ? colors.whiteFull : "rgba(255,255,255,0.85)",
+                    color: value === action ? accentBorder.full : "rgba(255,255,255,0.85)",
                     fontSize: "0.85rem",
                     fontWeight: value === action ? 700 : 400,
                     textAlign: "left",
-                    borderLeft: value === action ? `3px solid ${colors.whiteFull}` : "3px solid transparent",
+                    borderLeft: value === action ? `3px solid ${accentBorder.full}` : "3px solid transparent",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "rgba(255,255,255,0.12)";
+                    e.currentTarget.style.background = "var(--surface-tint-12)";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background =
-                      value === action ? "rgba(255,255,255,0.15)" : "transparent";
+                      value === action ? "var(--surface-tint-15)" : "transparent";
                   }}
                 >
                   {action}
@@ -265,7 +265,7 @@ function AuditLogs() {
                   (h) => (
                     <th
                       key={h}
-                      style={{ color: colors.whiteFull }}
+                      style={{ color: accentBorder.full }}
                       className="font-semibold px-4 py-3.5 text-[0.82rem] whitespace-nowrap"
                     >
                       {h}

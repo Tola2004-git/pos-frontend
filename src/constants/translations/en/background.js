@@ -13,6 +13,8 @@ export default {
   "bgPresetRestaurant": "Restaurant",
   "bgPresetDarkMinimal": "Dark Minimal",
   "bgPresetBurger": "Burger",
+  "bgPresetPureWhite": "Pure White",
+  "bgPresetPureBlack": "Pure Black",
   "bgOverlayDarknessLabel": "Overlay darkness",
   "bgOverlayDarknessDesc": "Adjust if the text is hard to read against your background.",
 };

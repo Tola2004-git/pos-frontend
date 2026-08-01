@@ -57,8 +57,8 @@ export function CardSkeleton({ minWidth }) {
       className="rounded-[14px] px-4 py-3 flex-1"
       style={{
         minWidth,
-        background: "rgba(255,255,255,0.06)",
-        border: "1px solid rgba(255,255,255,0.1)",
+        background: "var(--surface-tint-06)",
+        border: "1px solid var(--surface-tint-10)",
       }}
     >
       <Skeleton width="50%" height={10} style={{ marginBottom: 8 }} />
@@ -73,8 +73,8 @@ export function RowSkeleton() {
     <div
       className="flex items-center justify-between gap-3 rounded-[12px] px-3 py-2.5"
       style={{
-        background: "rgba(255,255,255,0.05)",
-        border: "1px solid rgba(255,255,255,0.08)",
+        background: "var(--surface-tint-05)",
+        border: "1px solid var(--surface-tint-08)",
       }}
     >
       <div className="min-w-0 flex-1">
@@ -91,8 +91,8 @@ export function TableCountSkeleton() {
     <div
       className="rounded-[14px] px-3 py-3 flex flex-col items-center"
       style={{
-        background: "rgba(255,255,255,0.06)",
-        border: "1px solid rgba(255,255,255,0.1)",
+        background: "var(--surface-tint-06)",
+        border: "1px solid var(--surface-tint-10)",
       }}
     >
       <Skeleton width={28} height={24} style={{ marginBottom: 8 }} />

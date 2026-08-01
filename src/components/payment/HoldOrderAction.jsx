@@ -7,8 +7,8 @@ const spinnerStyles = `
 .hold-spin-loader {
   width: 16px;
   height: 16px;
-  border: 2.5px solid rgba(255,255,255,0.35);
-  border-top-color: #fff;
+  border: 2.5px solid var(--surface-border);
+  border-top-color: var(--accent-border-full);
   border-radius: 50%;
   animation: hold-spin 0.7s linear infinite;
 }

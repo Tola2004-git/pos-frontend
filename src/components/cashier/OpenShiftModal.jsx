@@ -32,8 +32,8 @@ export function OpenShiftModal({ visible = true, opening, onOpen, onLogout, t })
     paddingLeft: "40px",
     border:
       focusedField === field
-        ? "1px solid rgba(255,255,255,0.8)"
-        : "1px solid rgba(255,255,255,0.18)",
+        ? "1px solid var(--accent-border-soft)"
+        : "1px solid var(--surface-border)",
     transition: "border 0.2s",
   });
 
@@ -64,7 +64,7 @@ export function OpenShiftModal({ visible = true, opening, onOpen, onLogout, t })
         <style>{badgeFloatStyles}</style>
         <div className="flex items-center gap-3 mb-2">
           <div className="badge-float w-11 h-11 rounded-[12px] flex items-center justify-center flex-none">
-            <HiLockClosed size={32} color="#fff" />
+            <HiLockClosed size={32} color="currentColor" />
           </div>
           <div>
             <h3 className="text-lg font-bold m-0">{t.openShiftTitle}</h3>

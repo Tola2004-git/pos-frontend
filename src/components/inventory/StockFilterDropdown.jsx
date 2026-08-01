@@ -1,4 +1,4 @@
-import { glassCard, colors } from "../../utils/styles";
+import { glassCard, accentBorder } from "../../utils/styles";
 
 export default function StockFilterDropdown({
   stockDropdownRef,
@@ -79,30 +79,30 @@ export default function StockFilterDropdown({
                 padding: "11px 16px",
                 background:
                   stockFilter === f.key
-                    ? "rgba(255,255,255,0.15)"
+                    ? "var(--surface-tint-15)"
                     : "transparent",
                 border: "none",
                 cursor: "pointer",
                 color:
                   stockFilter === f.key
-                    ? colors.whiteFull
+                    ? accentBorder.full
                     : "rgba(255,255,255,0.85)",
                 fontSize: "0.88rem",
                 fontWeight: stockFilter === f.key ? 700 : 400,
                 borderLeft:
                   stockFilter === f.key
-                    ? `3px solid ${colors.whiteFull}`
+                    ? `3px solid ${accentBorder.full}`
                     : "3px solid transparent",
                 transition: "all 0.25s ease",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = "rgba(255,255,255,0.12)";
+                e.currentTarget.style.background = "var(--surface-tint-12)";
                 e.currentTarget.style.transform = "scale(1.02)";
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.background =
                   stockFilter === f.key
-                    ? "rgba(255,255,255,0.15)"
+                    ? "var(--surface-tint-15)"
                     : "transparent";
                 e.currentTarget.style.transform = "scale(1)";
               }}

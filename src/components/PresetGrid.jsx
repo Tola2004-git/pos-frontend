@@ -4,6 +4,8 @@ const PRESET_NAME_KEYS = {
   Restaurant: "bgPresetRestaurant",
   "Dark Minimal": "bgPresetDarkMinimal",
   Burger: "bgPresetBurger",
+  "Pure White": "bgPresetPureWhite",
+  "Pure Black": "bgPresetPureBlack",
 };
 
 function PresetGrid({ bgPresets, selected, onSelect, t }) {

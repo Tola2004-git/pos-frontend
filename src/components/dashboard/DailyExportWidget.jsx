@@ -38,8 +38,9 @@ export function DailyExportWidget({ t }) {
         <div className="flex items-center gap-2">
           <DocumentDownload
             size={20}
-            color="#fff"
+            color="currentColor"
             variant="Linear"
+            className="text-white"
             style={{ animation: "float 3s ease-in-out infinite" }}
           />
           <div>

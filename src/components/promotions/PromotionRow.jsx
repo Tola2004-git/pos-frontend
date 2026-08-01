@@ -93,7 +93,7 @@ export default function PromotionRow({
 
   return (
     <>
-      <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.06)", height: 56 }}>
+      <tr style={{ borderBottom: "1px solid var(--surface-tint-06)", height: 56 }}>
         <td style={{ padding: "12px 14px", textAlign: "center" }}>{index + 1}</td>
         <td style={{ padding: "12px 14px", fontWeight: 500, textAlign: "left" }}>
           <div
@@ -339,7 +339,7 @@ export default function PromotionRow({
                 fontSize: "0.85rem",
                 color: "rgba(255,255,255,0.9)",
                 padding: "10px 12px",
-                background: "rgba(255,255,255,0.05)",
+                background: "var(--surface-tint-05)",
                 borderRadius: 8,
                 borderLeft: "3px solid rgba(52,152,219,0.7)",
               }}

@@ -28,10 +28,10 @@ function CustomTooltip({ active, payload }) {
   const { total } = payload[0].payload;
   return (
     <div
-      className="rounded-lg px-3 py-2 text-xs font-semibold text-white"
+      className="theme-dark-surface rounded-lg px-3 py-2 text-xs font-semibold text-white"
       style={{
         background: "rgba(20,28,35,0.95)",
-        border: "1px solid rgba(255,255,255,0.15)",
+        border: "1px solid var(--surface-border)",
       }}
     >
       ${total.toFixed(2)}

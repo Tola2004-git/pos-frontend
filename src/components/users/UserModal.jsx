@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { RiEyeLine, RiEyeOffLine } from "react-icons/ri";
-import { glass, colors, glassCard } from "../../utils/styles";
+import { glass, accentBorder, glassCard } from "../../utils/styles";
 import { isValidEmail } from "../../utils/userHelpers";
 import {
   AddCircle,
@@ -149,7 +149,7 @@ function UserModal({
             )}
             <h2
               style={{
-                color: colors.white,
+                color: accentBorder.soft,
                 fontWeight: 600,
                 margin: 0,
                 fontSize: "1.5rem",
@@ -231,7 +231,7 @@ function UserModal({
                       borderRadius: "50%",
                       objectFit: "cover",
                       objectPosition: "center top",
-                      border: `1px solid ${colors.white}`,
+                      border: `1px solid ${accentBorder.soft}`,
                     }}
                   />
                 ) : (

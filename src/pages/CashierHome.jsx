@@ -8,7 +8,7 @@ import {
   ArrowSwapHorizontal,
 } from "iconsax-react";
 import CashierLayout from "../components/layout/CashierLayout";
-import { glassCard } from "../utils/styles";
+import { glassCard, accentBorder } from "../utils/styles";
 import { TABLE_STATUS_STYLES } from "../constants/tableStatus";
 import useTables from "../hooks/useTables";
 import TableCard from "../components/tables/tableCard";
@@ -229,14 +229,14 @@ function CashierHome() {
 
       <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
         <h2 className="text-white font-bold text-2xl m-0 flex items-center gap-3">
-          <Grid3 size={32} color="white" variant="Linear" />
+          <Grid3 size={32} color="currentColor" variant="Linear" />
           {t.selectATable}
         </h2>
         <button
           onClick={openTakeawayOrder}
           className="btn-shine-blue flex items-center gap-2 px-5 py-3 rounded-[12px] font-semibold text-sm"
         >
-          <ReceiptAdd size={22} color="#fff" variant="bulk" />
+          <ReceiptAdd size={22} color="currentColor" variant="bulk" />
           {t.newTakeawayOrder}
         </button>
       </div>
@@ -292,7 +292,7 @@ function CashierHome() {
       ) : tables.length === 0 ? (
         <div style={glassCard} className="rounded-[20px] p-[60px] text-center">
           <div className="flex justify-center mb-4">
-            <Grid3 size={60} color="white" variant="TwoTone" />
+            <Grid3 size={60} color="currentColor" variant="TwoTone" className="text-white" />
           </div>
           <p className="text-white/50 text-base">
             {t.noTablesSetup}
@@ -427,8 +427,8 @@ function CashierHome() {
                     style={{
                       width: "16px",
                       height: "16px",
-                      border: "2.5px solid rgba(255,255,255,0.35)",
-                      borderTopColor: "#fff",
+                      border: "2.5px solid var(--surface-border)",
+                      borderTopColor: accentBorder.full,
                       borderRadius: "50%",
                       animation: "cashier-spin 0.7s linear infinite",
                     }}
@@ -436,7 +436,7 @@ function CashierHome() {
                 ) : (
                   <ArrowSwapHorizontal
                     size={18}
-                    color="#fff"
+                    color="currentColor"
                     variant="Linear"
                   />
                 )}
@@ -515,14 +515,14 @@ function CashierHome() {
                     style={{
                       width: "16px",
                       height: "16px",
-                      border: "2.5px solid rgba(255,255,255,0.35)",
-                      borderTopColor: "#fff",
+                      border: "2.5px solid var(--surface-border)",
+                      borderTopColor: accentBorder.full,
                       borderRadius: "50%",
                       animation: "cashier-spin 0.7s linear infinite",
                     }}
                   />
                 ) : (
-                  <TickCircle size={20} color="#fff" variant="Outline" />
+                  <TickCircle size={20} color="currentColor" variant="Outline" />
                 )}
                 {clearLoading ? t.clearing : t.confirmClear}
               </button>

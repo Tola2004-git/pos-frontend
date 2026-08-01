@@ -65,8 +65,8 @@ function StockHistory() {
         }}
       >
         <h2
+          className="text-white"
           style={{
-            color: "white",
             fontWeight: 700,
             fontSize: "1.5rem",
             margin: 0,
@@ -77,8 +77,9 @@ function StockHistory() {
         >
           <ReceiptItem
             size="35"
-            color="#fff"
+            color="currentColor"
             variant="bulk"
+            className="text-white"
             style={{ animation: "float 3s ease-in-out infinite" }}
           />
           {t.stockHistoryTitle}
@@ -102,21 +103,21 @@ function StockHistory() {
           alignItems: "center",
         }}
       >
-        <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.85rem" }}>
+        <span className="text-white/50" style={{ fontSize: "0.85rem" }}>
           {t.totalRecordsCountMsg.replace("{n}", total)}
         </span>
         <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
+            className={page === 1 ? "text-white/30" : "text-white"}
             style={{
               padding: "8px 16px",
               borderRadius: "10px",
               border: "none",
               cursor: page === 1 ? "not-allowed" : "pointer",
               background:
-                page === 1 ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.1)",
-              color: page === 1 ? "rgba(255,255,255,0.3)" : "white",
+                page === 1 ? "var(--surface-tint-05)" : "var(--surface-tint-10)",
               fontWeight: 600,
               fontSize: "0.85rem",
             }}
@@ -124,8 +125,8 @@ function StockHistory() {
             {t.paginationBackAction}
           </button>
           <span
+            className="text-white"
             style={{
-              color: "white",
               fontWeight: 600,
               fontSize: "0.85rem",
               padding: "0 8px",
@@ -136,6 +137,7 @@ function StockHistory() {
           <button
             onClick={() => setPage((p) => Math.min(lastPage, p + 1))}
             disabled={page === lastPage}
+            className={page === lastPage ? "text-white/30" : "text-white"}
             style={{
               padding: "8px 16px",
               borderRadius: "10px",
@@ -143,9 +145,8 @@ function StockHistory() {
               cursor: page === lastPage ? "not-allowed" : "pointer",
               background:
                 page === lastPage
-                  ? "rgba(255,255,255,0.05)"
-                  : "rgba(255,255,255,0.1)",
-              color: page === lastPage ? "rgba(255,255,255,0.3)" : "white",
+                  ? "var(--surface-tint-05)"
+                  : "var(--surface-tint-10)",
               fontWeight: 600,
               fontSize: "0.85rem",
             }}

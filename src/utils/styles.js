@@ -1,5 +1,15 @@
 export const defaultBg = 'https://i.pinimg.com/1200x/ef/be/e3/efbee3b59f6b81175085fe6dad2a1c31.jpg'
 
+// Solid-color presets, not photos - encoded as a tiny inline SVG so they go
+// through the exact same `background: url(...)` rendering path as every
+// other preset (no special-casing needed in bgStyle/PresetGrid/img src).
+// Their exact string value doubles as the theme trigger - see
+// getThemeForBackground() below.
+export const PURE_WHITE_BG =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Crect width='10' height='10' fill='%23ffffff'/%3E%3C/svg%3E"
+export const PURE_BLACK_BG =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Crect width='10' height='10' fill='%23000000'/%3E%3C/svg%3E"
+
 export const bgPresets = [
   {
     name: 'Food Dark',
@@ -21,10 +31,27 @@ export const bgPresets = [
     name: 'Burger',
     url: 'https://images.unsplash.com/photo-1550547660-d9450f859349?w=1920'
   },
+  {
+    name: 'Pure White',
+    url: PURE_WHITE_BG,
+  },
+  {
+    name: 'Pure Black',
+    url: PURE_BLACK_BG,
+  },
 ]
 
 export const getCurrentBg = () => {
   return localStorage.getItem('pos_background') || defaultBg
+}
+
+// The only two backgrounds with a deterministic, uniform color - text can
+// safely auto-invert for these specifically. Every photo preset (and any
+// custom upload/URL) keeps the app's normal white text + adjustable dark
+// overlay, since there's no reliable way to know a photo's dominant
+// brightness without actually analyzing its pixels.
+export const getThemeForBackground = (bgUrl) => {
+  return bgUrl === PURE_WHITE_BG ? 'light' : 'dark'
 }
 
 export const defaultBgOverlayOpacity = 0.5
@@ -55,7 +82,7 @@ export const glass = {
   background: 'rgba(255,255,255,0.0)',
   backdropFilter: 'blur(25px)',
   WebkitBackdropFilter: 'blur(25px)',
-  border: '1px solid rgba(255,255,255,0.15)',
+  border: '1px solid var(--surface-border)',
   boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
 }
 
@@ -63,7 +90,7 @@ export const glassCard = {
   background: 'rgba(255,255,255,0.0)',
   backdropFilter: 'blur(25px)',
   WebkitBackdropFilter: 'blur(25px)',
-  border: '1px solid rgba(255,255,255,0.15)',
+  border: '1px solid var(--surface-border)',
   boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
 }
 
@@ -72,4 +99,13 @@ export const colors = {
   red: '#c0392b',
   white: 'rgba(255,255,255,0.7)',
   whiteFull: '#ffffff',
+}
+
+// Theme-aware counterparts of colors.white/whiteFull, for the "active/selected"
+// indicator borders (tab underlines, selected-row accents) that need to stay
+// visible against the page background specifically - the plain white/whiteFull
+// above vanish on the Pure White background the same way glass's border did.
+export const accentBorder = {
+  soft: 'var(--accent-border-soft)',
+  full: 'var(--accent-border-full)',
 }

@@ -7,7 +7,7 @@ export function TableStatusWidget({ tableLoading, tableCounts, t }) {
       icon={
         <Grid3
           size={20}
-          color="#fff"
+          color="currentColor"
           variant="Linear"
           style={{ animation: "float 3s ease-in-out infinite" }}
         />
@@ -48,8 +48,8 @@ export function TableStatusWidget({ tableLoading, tableCounts, t }) {
                 key={s.label}
                 className="rounded-[14px] px-3 py-3 text-center"
                 style={{
-                  background: "rgba(255,255,255,0.06)",
-                  border: "1px solid rgba(255,255,255,0.1)",
+                  background: "var(--surface-tint-06)",
+                  border: "1px solid var(--surface-tint-10)",
                 }}
               >
                 <div className="text-2xl font-bold" style={{ color: s.color }}>

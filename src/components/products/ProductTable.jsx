@@ -11,8 +11,8 @@ function ProductImagePlaceholder() {
         width: "44px",
         height: "44px",
         borderRadius: "10px",
-        background: "rgba(255,255,255,0.06)",
-        border: "1px solid rgba(255,255,255,0.1)",
+        background: "var(--surface-tint-06)",
+        border: "1px solid var(--surface-tint-10)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -79,8 +79,8 @@ function ProductTable({ products, loading, page, onEdit, onDelete, onRecipe, del
             <thead>
               <tr
                 style={{
-                  borderBottom: "1px solid rgba(255,255,255,0.12)",
-                  background: "rgba(255,255,255,0.03)",
+                  borderBottom: "1px solid var(--surface-tint-12)",
+                  background: "var(--surface-tint-05)",
                 }}
               >
                 {COLUMNS.map((col, colIndex) => (
@@ -141,8 +141,8 @@ function ProductTable({ products, loading, page, onEdit, onDelete, onRecipe, del
           <thead>
             <tr
               style={{
-                borderBottom: "1px solid rgba(255,255,255,0.12)",
-                background: "rgba(255,255,255,0.03)",
+                borderBottom: "1px solid var(--surface-tint-12)",
+                background: "var(--surface-tint-05)",
               }}
             >
               {COLUMNS.map((col) => (
@@ -167,11 +167,11 @@ function ProductTable({ products, loading, page, onEdit, onDelete, onRecipe, del
                 key={product.id}
                 style={{
                   height: "64px",
-                  borderBottom: "1px solid rgba(255,255,255,0.06)",
+                  borderBottom: "1px solid var(--surface-tint-06)",
                   transition: "background 0.2s",
                 }}
                 onMouseEnter={(e) =>
-                  (e.currentTarget.style.background = "rgba(255,255,255,0.05)")
+                  (e.currentTarget.style.background = "var(--surface-tint-05)")
                 }
                 onMouseLeave={(e) =>
                   (e.currentTarget.style.background = "transparent")

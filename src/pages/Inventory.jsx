@@ -1,5 +1,5 @@
 import Layout from "../components/layout/Layout";
-import { glass, glassCard, colors } from "../utils/styles";
+import { glass, glassCard } from "../utils/styles";
 import { useInventory } from "../hooks/useInventory";
 import { getStockStatus } from "../utils/stockHelpers";
 import ThresholdSetting from "../components/inventory/ThresholdSetting";
@@ -87,8 +87,8 @@ function Inventory() {
         }}
       >
         <h2
+          className="text-white"
           style={{
-            color: "white",
             fontWeight: 700,
             fontSize: "1.5rem",
             margin: 0,
@@ -97,10 +97,10 @@ function Inventory() {
             gap: "10px",
           }}
         >
-          <div className="floating-wrapper">
+          <div className="floating-wrapper text-white">
             <Box
               size="40"
-              color="#fff"
+              color="currentColor"
               variant="bulk"
               style={{ animation: "float 3s ease-in-out infinite" }}
             />
@@ -134,7 +134,7 @@ function Inventory() {
               fontSize: "0.9rem",
             }}
           >
-            <Refresh2 size="20" color="#fff" variant="bulk" />
+            <Refresh2 size="20" color="currentColor" variant="bulk" />
             {t.restockAction}
           </button>
         </div>
@@ -193,8 +193,8 @@ function Inventory() {
                     {count}
                   </span>
                   <span
+                    className="text-white/40"
                     style={{
-                      color: "rgba(255,255,255,0.4)",
                       fontSize: "0.82rem",
                     }}
                   >
@@ -235,7 +235,7 @@ function Inventory() {
             gap: "12px",
           }}
         >
-          <SearchNormal1 size="20" color="#fff" variant="linear" />
+          <SearchNormal1 size="20" color="currentColor" variant="linear" className="text-white" />
           <input
             type="text"
             placeholder={t.searchInventoryPlaceholder}
@@ -244,12 +244,12 @@ function Inventory() {
               inv.setSearch(e.target.value);
               inv.setPage(1);
             }}
+            className="text-white"
             style={{
               border: "none",
               background: "transparent",
               padding: "0",
               flex: 1,
-              color: "white",
               fontSize: "0.9rem",
               outline: "none",
             }}
@@ -282,13 +282,14 @@ function Inventory() {
           alignItems: "center",
         }}
       >
-        <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.85rem" }}>
+        <span className="text-white/50" style={{ fontSize: "0.85rem" }}>
           {t.totalProductsCountMsg.replace("{n}", inv.total)}
         </span>
         <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
           <button
             onClick={() => inv.setPage((p) => Math.max(1, p - 1))}
             disabled={inv.page === 1}
+            className={inv.page === 1 ? "text-white/30" : "text-white"}
             style={{
               padding: "8px 16px",
               borderRadius: "10px",
@@ -296,9 +297,8 @@ function Inventory() {
               cursor: inv.page === 1 ? "not-allowed" : "pointer",
               background:
                 inv.page === 1
-                  ? "rgba(255,255,255,0.05)"
-                  : "rgba(255,255,255,0.1)",
-              color: inv.page === 1 ? "rgba(255,255,255,0.3)" : "white",
+                  ? "var(--surface-tint-05)"
+                  : "var(--surface-tint-10)",
               fontWeight: 600,
               fontSize: "0.85rem",
             }}
@@ -306,8 +306,8 @@ function Inventory() {
             {t.paginationBackAction}
           </button>
           <span
+            className="text-white"
             style={{
-              color: "white",
               fontWeight: 600,
               fontSize: "0.85rem",
               padding: "0 8px",
@@ -318,6 +318,7 @@ function Inventory() {
           <button
             onClick={() => inv.setPage((p) => Math.min(inv.lastPage, p + 1))}
             disabled={inv.page === inv.lastPage}
+            className={inv.page === inv.lastPage ? "text-white/30" : "text-white"}
             style={{
               padding: "8px 16px",
               borderRadius: "10px",
@@ -325,10 +326,8 @@ function Inventory() {
               cursor: inv.page === inv.lastPage ? "not-allowed" : "pointer",
               background:
                 inv.page === inv.lastPage
-                  ? "rgba(255,255,255,0.05)"
-                  : "rgba(255,255,255,0.1)",
-              color:
-                inv.page === inv.lastPage ? "rgba(255,255,255,0.3)" : "white",
+                  ? "var(--surface-tint-05)"
+                  : "var(--surface-tint-10)",
               fontWeight: 600,
               fontSize: "0.85rem",
             }}

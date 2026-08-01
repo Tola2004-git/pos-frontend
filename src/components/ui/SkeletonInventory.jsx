@@ -12,7 +12,7 @@ export function SkeletonInventoryRow({ index = 0 }) {
   );
 
   return (
-    <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+    <tr style={{ borderBottom: "1px solid var(--surface-tint-05)" }}>
       <td style={{ padding: "12px 14px" }}>{s(20)}</td>
       <td style={{ padding: "12px 14px" }}>
         <Skeleton
@@ -158,7 +158,7 @@ export function SkeletonStockRow({ index = 0 }) {
   );
 
   return (
-    <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+    <tr style={{ borderBottom: "1px solid var(--surface-tint-05)" }}>
       <td style={{ padding: "12px 14px" }}>{s(20)}</td> {/* # */}
       <td style={{ padding: "12px 14px" }}>{s(120)}</td> {/* Product */}
       <td style={{ padding: "12px 14px" }}>

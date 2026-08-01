@@ -13,6 +13,160 @@ html[lang="kh"] * {
   font-family: 'Kantumruy Pro', 'Outfit', sans-serif;
 }
 
+/* Theme-aware CSS variables for the many `style={{ border: 'rgba(255,255,255,...)' }}`
+   / `style={{ background: 'rgba(255,255,255,...)' }}` inline objects across the
+   app (glassCard, glassSidebar's cousin `glass`, cashier field styles, dashboard
+   widget row chips, "selected" indicator borders, ...). Inline styles are invisible
+   to the class-based [class*="..."] overrides below entirely, so these components
+   read a var() instead of a literal color and the var's value flips with the theme.
+   Reset back to the dark values inside .theme-dark-surface, same reasoning as the
+   text/border opt-out further down: a fixed dark surface's own inline styles must
+   stay dark-surface-appropriate (white-ish) regardless of the app theme. */
+:root {
+  --surface-border: rgba(255,255,255,0.15);
+  --surface-tint-05: rgba(255,255,255,0.05);
+  --surface-tint-06: rgba(255,255,255,0.06);
+  --surface-tint-07: rgba(255,255,255,0.07);
+  --surface-tint-08: rgba(255,255,255,0.08);
+  --surface-tint-10: rgba(255,255,255,0.10);
+  --surface-tint-12: rgba(255,255,255,0.12);
+  --surface-tint-15: rgba(255,255,255,0.15);
+  --accent-border-full: #ffffff;
+  --accent-border-soft: rgba(255,255,255,0.7);
+}
+[data-theme="light"] {
+  --surface-border: rgba(26,26,46,0.15);
+  --surface-tint-05: rgba(26,26,46,0.05);
+  --surface-tint-06: rgba(26,26,46,0.06);
+  --surface-tint-07: rgba(26,26,46,0.07);
+  --surface-tint-08: rgba(26,26,46,0.08);
+  --surface-tint-10: rgba(26,26,46,0.10);
+  --surface-tint-12: rgba(26,26,46,0.12);
+  --surface-tint-15: rgba(26,26,46,0.15);
+  --accent-border-full: #1a1a2e;
+  --accent-border-soft: rgba(26,26,46,0.7);
+}
+[data-theme="light"] .theme-dark-surface {
+  --surface-border: rgba(255,255,255,0.15);
+  --surface-tint-05: rgba(255,255,255,0.05);
+  --surface-tint-06: rgba(255,255,255,0.06);
+  --surface-tint-07: rgba(255,255,255,0.07);
+  --surface-tint-08: rgba(255,255,255,0.08);
+  --surface-tint-10: rgba(255,255,255,0.10);
+  --surface-tint-12: rgba(255,255,255,0.12);
+  --surface-tint-15: rgba(255,255,255,0.15);
+  --accent-border-full: #ffffff;
+  --accent-border-soft: rgba(255,255,255,0.7);
+}
+
+/* ─── Light theme ────────────────────────────────────────────────────────
+   Every component hardcodes white text/borders/fills as Tailwind utility
+   classes (text-white/70, border-white/15, etc.) rather than reading from a
+   theme token, since the app was built dark-only. Rather than touching each
+   of the ~100 files that use them, these attribute selectors intercept the
+   class names themselves and remap white to a dark equivalent (same
+   opacity step, so the existing text hierarchy - primary vs. secondary vs.
+   faint - still holds) whenever [data-theme="light"] is set on <html> (see
+   useBackgroundChanger's effect). General rule first, opacity-specific ones
+   after so they win the cascade tie for elements that match both.
+   NOTE: this only reaches Tailwind classes - inline `style={{ color: ... }}`
+   objects (still common in older/complex components) aren't touched by CSS
+   at all and stay white text until converted directly in those files. */
+[data-theme="light"] [class*="text-white"] { color: #1a1a2e; }
+[data-theme="light"] [class*="text-white/95"] { color: rgba(26,26,46,0.95); }
+[data-theme="light"] [class*="text-white/90"] { color: rgba(26,26,46,0.90); }
+[data-theme="light"] [class*="text-white/85"] { color: rgba(26,26,46,0.88); }
+[data-theme="light"] [class*="text-white/80"] { color: rgba(26,26,46,0.85); }
+[data-theme="light"] [class*="text-white/75"] { color: rgba(26,26,46,0.80); }
+[data-theme="light"] [class*="text-white/70"] { color: rgba(26,26,46,0.75); }
+[data-theme="light"] [class*="text-white/65"] { color: rgba(26,26,46,0.70); }
+[data-theme="light"] [class*="text-white/60"] { color: rgba(26,26,46,0.65); }
+[data-theme="light"] [class*="text-white/55"] { color: rgba(26,26,46,0.60); }
+[data-theme="light"] [class*="text-white/50"] { color: rgba(26,26,46,0.58); }
+[data-theme="light"] [class*="text-white/45"] { color: rgba(26,26,46,0.55); }
+[data-theme="light"] [class*="text-white/40"] { color: rgba(26,26,46,0.52); }
+[data-theme="light"] [class*="text-white/30"] { color: rgba(26,26,46,0.45); }
+
+[data-theme="light"] [class*="hover\:text-white"]:hover { color: #1a1a2e; }
+[data-theme="light"] [class*="hover\:text-white/80"]:hover { color: rgba(26,26,46,0.85); }
+[data-theme="light"] [class*="hover\:text-white/70"]:hover { color: rgba(26,26,46,0.75); }
+
+[data-theme="light"] input::placeholder,
+[data-theme="light"] textarea::placeholder { color: rgba(26,26,46,0.4); }
+
+[data-theme="light"] .btn-cancel-glass { color: #1a1a2e; }
+[data-theme="light"] .btn-cancel-glass:hover { color: #1a1a2e; }
+[data-theme="light"] .role-option:hover { color: #1a1a2e; }
+[data-theme="light"] .role-option.active { color: #1a1a2e; }
+
+/* Same substring-interception trick as text-white above, but for
+   border-white utility classes. These mark card/input/divider edges - on a
+   photo or pure-black background a faint white border reads fine, but on
+   the Pure White background it blends straight into the page and the
+   outline vanishes. General rule first, opacity-specific after. */
+[data-theme="light"] [class*="border-white"] { border-color: rgba(26,26,46,0.18) !important; }
+[data-theme="light"] [class*="border-white/5"] { border-color: rgba(26,26,46,0.08) !important; }
+[data-theme="light"] [class*="border-white/10"] { border-color: rgba(26,26,46,0.12) !important; }
+[data-theme="light"] [class*="border-white/15"] { border-color: rgba(26,26,46,0.15) !important; }
+[data-theme="light"] [class*="border-white/20"] { border-color: rgba(26,26,46,0.18) !important; }
+[data-theme="light"] [class*="border-white/25"] { border-color: rgba(26,26,46,0.20) !important; }
+[data-theme="light"] [class*="border-white/30"] { border-color: rgba(26,26,46,0.22) !important; }
+[data-theme="light"] [class*="border-white/40"] { border-color: rgba(26,26,46,0.28) !important; }
+
+/* Same trick again for bg-white utility classes - the subtle "chip"/hover
+   backgrounds used everywhere for list rows, buttons, dropdown items. On a
+   photo/black background a few % white gives a soft highlight; on Pure
+   White it's indistinguishable from the page, so rows lose their separation
+   and hover states become invisible. */
+[data-theme="light"] [class*="bg-white"] { background-color: rgba(26,26,46,0.10) !important; }
+[data-theme="light"] [class*="bg-white/5"] { background-color: rgba(26,26,46,0.05) !important; }
+[data-theme="light"] [class*="bg-white/10"] { background-color: rgba(26,26,46,0.08) !important; }
+[data-theme="light"] [class*="bg-white/15"] { background-color: rgba(26,26,46,0.10) !important; }
+[data-theme="light"] [class*="bg-white/20"] { background-color: rgba(26,26,46,0.12) !important; }
+[data-theme="light"] [class*="bg-white/25"] { background-color: rgba(26,26,46,0.15) !important; }
+[data-theme="light"] [class*="bg-white/30"] { background-color: rgba(26,26,46,0.18) !important; }
+[data-theme="light"] [class*="bg-white/70"] { background-color: rgba(26,26,46,0.60) !important; }
+
+[data-theme="light"] [class*="hover\:bg-white"]:hover { background-color: rgba(26,26,46,0.10) !important; }
+[data-theme="light"] [class*="hover\:bg-white/5"]:hover { background-color: rgba(26,26,46,0.05) !important; }
+[data-theme="light"] [class*="hover\:bg-white/10"]:hover { background-color: rgba(26,26,46,0.08) !important; }
+[data-theme="light"] [class*="hover\:bg-white/15"]:hover { background-color: rgba(26,26,46,0.10) !important; }
+[data-theme="light"] [class*="hover\:bg-white/20"]:hover { background-color: rgba(26,26,46,0.12) !important; }
+[data-theme="light"] [class*="hover\:bg-white/25"]:hover { background-color: rgba(26,26,46,0.15) !important; }
+
+/* Recharts renders raw SVG with colors set via `fill`/`stroke` attributes
+   (from JS props like tick={{ fill: '...' }}), which the class-based
+   selectors above can't reach at all. CSS fill/stroke properties always
+   beat the SVG presentation attribute regardless of selector specificity,
+   so these are enough to override them. */
+[data-theme="light"] .recharts-cartesian-axis-tick-label text { fill: rgba(26,26,46,0.55); }
+[data-theme="light"] .recharts-cartesian-grid-horizontal line,
+[data-theme="light"] .recharts-cartesian-grid-vertical line { stroke: rgba(26,26,46,0.08); }
+[data-theme="light"] .recharts-tooltip-cursor { stroke: rgba(26,26,46,0.2); }
+
+/* Opt-out for small popups (tooltips, dark dropdown/search panels) that
+   render on a fixed dark background via an inline `style` regardless of
+   theme - the blanket text-white override above can't tell "sits on the
+   theme-aware page/card background" from "sits on a small fixed-dark
+   surface that never lightens", so without this their text goes dark on a
+   background that's still dark too. Higher specificity (class + attribute)
+   than the plain [data-theme="light"] [class*="text-white"] rule, so it
+   wins regardless of source order. Add className="theme-dark-surface" to
+   the fixed-dark container. */
+[data-theme="light"] .theme-dark-surface,
+[data-theme="light"] .theme-dark-surface [class*="text-white"] {
+  color: white;
+}
+[data-theme="light"] .theme-dark-surface [class*="border-white"] {
+  border-color: rgba(255,255,255,0.15) !important;
+}
+[data-theme="light"] .theme-dark-surface [class*="bg-white"] {
+  background-color: rgba(255,255,255,0.06) !important;
+}
+[data-theme="light"] .theme-dark-surface [class*="hover\:bg-white"]:hover {
+  background-color: rgba(255,255,255,0.1) !important;
+}
+
 @keyframes shine {
   0% { background-position: -200px; }
   100% { background-position: 200px; }

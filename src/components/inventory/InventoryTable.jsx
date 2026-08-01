@@ -39,7 +39,7 @@ export default function InventoryTable({
           style={{ width: "100%", borderCollapse: "collapse" }}
         >
         <thead>
-          <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
+          <tr style={{ borderBottom: "1px solid var(--surface-tint-10)" }}>
             {HEADERS.map((h) => (
               <th
                 key={h}
@@ -79,12 +79,12 @@ export default function InventoryTable({
                 <tr
                   key={product.id}
                   style={{
-                    borderBottom: "1px solid rgba(255,255,255,0.05)",
+                    borderBottom: "1px solid var(--surface-tint-05)",
                     transition: "background 0.2s",
                   }}
                   onMouseEnter={(e) =>
                     (e.currentTarget.style.background =
-                      "rgba(255,255,255,0.05)")
+                      "var(--surface-tint-05)")
                   }
                   onMouseLeave={(e) =>
                     (e.currentTarget.style.background = "transparent")

@@ -1,5 +1,5 @@
 import { SearchNormal1 } from "iconsax-react";
-import { glass, glassCard } from "../../utils/styles";
+import { glass, glassCard, accentBorder } from "../../utils/styles";
 import { inputStyle, getStatusFilterOptions } from "../../constants/promotionConstants.js";
 
 export default function PromotionFilter({
@@ -34,7 +34,7 @@ export default function PromotionFilter({
           gap: "12px",
         }}
       >
-        <SearchNormal1 size={20} color="#fff" variant="Linear" />
+        <SearchNormal1 size={20} color="currentColor" variant="Linear" className="text-white" />
         <input
           type="text"
           placeholder={t.searchPlaceholderGeneric}
@@ -59,7 +59,7 @@ export default function PromotionFilter({
             padding: "14px 18px",
             borderRadius: "16px",
             cursor: "pointer",
-            color: "white",
+            color: accentBorder.full,
             fontWeight: 600,
             fontSize: "0.9rem",
             display: "flex",
@@ -114,24 +114,24 @@ export default function PromotionFilter({
                   padding: "11px 16px",
                   background:
                     statusFilter === opt.value
-                      ? "rgba(255,255,255,0.15)"
+                      ? "var(--surface-tint-15)"
                       : "transparent",
                   border: "none",
                   cursor: "pointer",
                   color:
                     statusFilter === opt.value
-                      ? "rgba(255,255,255,1)"
+                      ? accentBorder.full
                       : "rgba(255,255,255,0.85)",
                   fontSize: "0.88rem",
                   fontWeight: statusFilter === opt.value ? 700 : 400,
                   borderLeft:
                     statusFilter === opt.value
-                      ? "3px solid rgba(255,255,255,1)"
+                      ? `3px solid ${accentBorder.full}`
                       : "3px solid transparent",
                   transition: "all 0.25s ease",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "rgba(255,255,255,0.12)";
+                  e.currentTarget.style.background = "var(--surface-tint-12)";
                   e.currentTarget.style.transform = "scale(1.02)";
                 }}
                 onMouseLeave={(e) => {

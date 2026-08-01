@@ -110,7 +110,7 @@ function TableCard({
             gap: "6px",
             padding: "4px 10px",
             borderRadius: "999px",
-            background: "rgba(255,255,255,0.14)",
+            background: "var(--surface-tint-15)",
             color: "white",
             fontSize: "0.8rem",
             marginBottom: "8px",

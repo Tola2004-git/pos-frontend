@@ -7,7 +7,7 @@ export function CategorySalesWidget({ loading, categorySales, t }) {
       icon={
         <Category2
           size={20}
-          color="#fff"
+          color="currentColor"
           variant="Linear"
           style={{ animation: "float 3s ease-in-out infinite" }}
         />
@@ -46,7 +46,7 @@ export function CategorySalesWidget({ loading, categorySales, t }) {
                   </div>
                   <div
                     className="h-2 rounded-full overflow-hidden"
-                    style={{ background: "rgba(255,255,255,0.08)" }}
+                    style={{ background: "var(--surface-tint-08)" }}
                   >
                     <div
                       className="h-full rounded-full"

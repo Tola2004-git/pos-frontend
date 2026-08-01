@@ -17,7 +17,7 @@ export function SkeletonIngredientRow({ index = 0 }) {
   );
 
   return (
-    <tr style={{ height: "64px", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+    <tr style={{ height: "64px", borderBottom: "1px solid var(--surface-tint-05)" }}>
       <td style={{ padding: "12px 14px", textAlign: "center" }}>{centered(s(20))}</td>
       <td style={{ padding: "12px 14px" }}>{s(120)}</td>
       <td style={{ padding: "12px 14px", textAlign: "center" }}>

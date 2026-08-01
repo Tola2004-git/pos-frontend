@@ -42,7 +42,7 @@ export function IngredientStockHistoryTable({ logs, loading, page, t }) {
           style={{ width: "100%", borderCollapse: "collapse" }}
         >
         <thead>
-          <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
+          <tr style={{ borderBottom: "1px solid var(--surface-tint-10)" }}>
             {HEADERS.map((h) => (
               <th
                 key={h}
@@ -82,11 +82,11 @@ export function IngredientStockHistoryTable({ logs, loading, page, t }) {
               <tr
                 key={log.id}
                 style={{
-                  borderBottom: "1px solid rgba(255,255,255,0.05)",
+                  borderBottom: "1px solid var(--surface-tint-05)",
                   transition: "background 0.2s",
                 }}
                 onMouseEnter={(e) =>
-                  (e.currentTarget.style.background = "rgba(255,255,255,0.05)")
+                  (e.currentTarget.style.background = "var(--surface-tint-05)")
                 }
                 onMouseLeave={(e) =>
                   (e.currentTarget.style.background = "transparent")

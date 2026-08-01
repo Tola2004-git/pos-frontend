@@ -11,7 +11,7 @@ export function LowStockWidget({ lowStockLoading, lowStockProducts, isAdmin, t }
       icon={
         <BoxSearch
           size={20}
-          color="#fff"
+          color="currentColor"
           variant="Linear"
           style={{ animation: "float 3s ease-in-out infinite" }}
         />
@@ -45,8 +45,8 @@ export function LowStockWidget({ lowStockLoading, lowStockProducts, isAdmin, t }
                 key={p.id}
                 className="flex items-center justify-between gap-3 rounded-[12px] px-3 py-2.5"
                 style={{
-                  background: "rgba(255,255,255,0.05)",
-                  border: `1px solid ${isOutOfStock ? "rgba(231,76,60,0.3)" : "rgba(255,255,255,0.08)"}`,
+                  background: "var(--surface-tint-05)",
+                  border: `1px solid ${isOutOfStock ? "rgba(231,76,60,0.3)" : "var(--surface-tint-08)"}`,
                 }}
               >
                 <span className="text-white text-sm truncate" style={{ color: colors.whiteFull }}>

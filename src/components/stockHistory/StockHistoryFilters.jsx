@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from "react";
 import { SearchNormal1 } from "iconsax-react";
-import { glass, glassCard } from "../../utils/styles";
+import { glass, glassCard, accentBorder } from "../../utils/styles";
 
 const inputStyle = {
   border: "none",
@@ -131,7 +131,7 @@ export function StockHistoryFilters({
                   padding: "11px 16px",
                   background:
                     actionFilter === a.value
-                      ? "rgba(255,255,255,0.15)"
+                      ? "var(--surface-tint-15)"
                       : "transparent",
                   border: "none",
                   cursor: "pointer",
@@ -143,18 +143,18 @@ export function StockHistoryFilters({
                   fontWeight: actionFilter === a.value ? 700 : 400,
                   borderLeft:
                     actionFilter === a.value
-                      ? "3px solid #ffffff"
+                      ? `3px solid ${accentBorder.full}`
                       : "3px solid transparent",
                   transition: "all 0.25s ease",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "rgba(255,255,255,0.12)";
+                  e.currentTarget.style.background = "var(--surface-tint-12)";
                   e.currentTarget.style.transform = "scale(1.02)";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background =
                     actionFilter === a.value
-                      ? "rgba(255,255,255,0.15)"
+                      ? "var(--surface-tint-15)"
                       : "transparent";
                   e.currentTarget.style.transform = "scale(1)";
                 }}

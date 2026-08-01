@@ -7,7 +7,7 @@ export function PaymentMixWidget({ loading, paymentMix, exchangeRate, lang, t })
       icon={
         <MoneyChange
           size={20}
-          color="#fff"
+          color="currentColor"
           variant="Linear"
           style={{ animation: "float 3s ease-in-out infinite" }}
         />
@@ -35,7 +35,7 @@ export function PaymentMixWidget({ loading, paymentMix, exchangeRate, lang, t })
               <div className="mb-3">
                 <div
                   className="h-3 rounded-full overflow-hidden flex"
-                  style={{ background: "rgba(255,255,255,0.08)" }}
+                  style={{ background: "var(--surface-tint-08)" }}
                 >
                   {cashPct > 0 && (
                     <div
@@ -74,8 +74,8 @@ export function PaymentMixWidget({ loading, paymentMix, exchangeRate, lang, t })
               className="rounded-[14px] px-4 py-3 flex-1"
               style={{
                 minWidth: "160px",
-                background: "rgba(255,255,255,0.06)",
-                border: "1px solid rgba(255,255,255,0.1)",
+                background: "var(--surface-tint-06)",
+                border: "1px solid var(--surface-tint-10)",
               }}
             >
               <div className="text-white/60 text-xs mb-1">{t.dashboardCashLabel}</div>
@@ -92,8 +92,8 @@ export function PaymentMixWidget({ loading, paymentMix, exchangeRate, lang, t })
               className="rounded-[14px] px-4 py-3 flex-1"
               style={{
                 minWidth: "160px",
-                background: "rgba(255,255,255,0.06)",
-                border: "1px solid rgba(255,255,255,0.1)",
+                background: "var(--surface-tint-06)",
+                border: "1px solid var(--surface-tint-10)",
               }}
             >
               <div className="text-white/60 text-xs mb-1">{t.dashboardDigitalLabel}</div>

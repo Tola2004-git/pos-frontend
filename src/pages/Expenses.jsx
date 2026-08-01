@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Add, MoneyRemove, Edit, Trash, SearchNormal1 } from "iconsax-react";
 import Layout from "../components/layout/Layout";
-import { glass, glassCard, colors } from "../utils/styles";
+import { glass, glassCard, accentBorder } from "../utils/styles";
 import { useExpenses } from "../hooks/useExpenses";
 import { useTranslations } from "../hooks/useTranslations";
 import ExpenseModal from "../components/expenses/ExpenseModal";
@@ -206,30 +206,30 @@ function Expenses() {
                     padding: "11px 16px",
                     background:
                       categoryFilter === c
-                        ? "rgba(255,255,255,0.15)"
+                        ? "var(--surface-tint-15)"
                         : "transparent",
                     border: "none",
                     cursor: "pointer",
                     color:
                       categoryFilter === c
-                        ? colors.whiteFull
+                        ? accentBorder.full
                         : "rgba(255,255,255,0.85)",
                     fontSize: "0.88rem",
                     fontWeight: categoryFilter === c ? 700 : 400,
                     borderLeft:
                       categoryFilter === c
-                        ? `3px solid ${colors.whiteFull}`
+                        ? `3px solid ${accentBorder.full}`
                         : "3px solid transparent",
                     transition: "all 0.25s ease",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "rgba(255,255,255,0.12)";
+                    e.currentTarget.style.background = "var(--surface-tint-12)";
                     e.currentTarget.style.transform = "scale(1.02)";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background =
                       categoryFilter === c
-                        ? "rgba(255,255,255,0.15)"
+                        ? "var(--surface-tint-15)"
                         : "transparent";
                     e.currentTarget.style.transform = "scale(1)";
                   }}
@@ -264,7 +264,7 @@ function Expenses() {
                 ].map((h, i) => (
                   <th
                     key={h || `col-${i}`}
-                    style={{ color: colors.whiteFull }}
+                    style={{ color: accentBorder.full }}
                     className="font-semibold px-4 py-3.5 text-[0.82rem] whitespace-nowrap"
                   >
                     {h}

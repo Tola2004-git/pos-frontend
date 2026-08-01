@@ -2,15 +2,15 @@ export const fieldStyle = {
   width: "100%",
   padding: "12px 14px",
   borderRadius: "12px",
-  border: "1px solid rgba(255,255,255,0.18)",
-  background: "rgba(255,255,255,0.07)",
-  color: "white",
+  border: "1px solid var(--surface-border)",
+  background: "var(--surface-tint-07)",
+  color: "var(--accent-border-full)",
   fontSize: "0.95rem",
   outline: "none",
 };
 
 export const labelStyle = {
-  color: "rgba(255,255,255,0.65)",
+  color: "var(--accent-border-soft)",
   fontSize: "0.8rem",
   display: "block",
   marginBottom: "6px",

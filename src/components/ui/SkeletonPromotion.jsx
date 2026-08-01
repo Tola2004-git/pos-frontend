@@ -15,7 +15,7 @@ export function SkeletonPromotion({ index = 0 }) {
   );
 
   return (
-    <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.05)", height: 56 }}>
+    <tr style={{ borderBottom: "1px solid var(--surface-tint-05)", height: 56 }}>
       {cell(
         <div style={{ display: "flex", justifyContent: "center" }}>
           {s(28)}
@@ -87,7 +87,7 @@ export function SkeletonProductPickerItem({ index = 0 }) {
         padding: "10px 12px",
         marginBottom: 8,
         borderRadius: 12,
-        border: "1px solid rgba(255,255,255,0.08",
+        border: "1px solid var(--surface-tint-08)",
       }}
     >
       {s(16, 16, 4)}

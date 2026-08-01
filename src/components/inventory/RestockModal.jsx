@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { glass, glassCard, colors } from "../../utils/styles";
+import { glass, glassCard, accentBorder } from "../../utils/styles";
 import { SkeletonRestockModal } from "../ui/SkeletonInventory";
 import { getStockStatus } from "../../utils/stockHelpers";
 import {
@@ -247,7 +247,7 @@ export default function RestockModal({
             />
             <h3
               style={{
-                color: colors.whiteFull,
+                color: accentBorder.full,
                 fontWeight: 600,
                 margin: 0,
                 fontSize: "1.5rem",
@@ -339,7 +339,7 @@ export default function RestockModal({
                 left: 0,
                 right: 0,
                 background: "rgba(20,28,35,0.98)",
-                border: "1px solid rgba(255,255,255,0.15)",
+                border: "1px solid var(--surface-tint-15)",
                 borderRadius: "12px",
                 marginTop: "4px",
                 maxHeight: "200px",
@@ -441,7 +441,7 @@ export default function RestockModal({
               padding: "16px",
               borderRadius: "14px",
               background: "rgba(255,255,255,0.07)",
-              border: "1px solid rgba(255,255,255,0.12)",
+              border: "1px solid var(--surface-tint-12)",
               display: "flex",
               alignItems: "center",
               gap: "16px",
@@ -456,7 +456,7 @@ export default function RestockModal({
                   height: "64px",
                   borderRadius: "12px",
                   objectFit: "contain",
-                  border: `2px solid ${colors.whiteFull}`,
+                  border: `2px solid ${accentBorder.full}`,
                 }}
               />
             ) : (
@@ -470,7 +470,7 @@ export default function RestockModal({
                   justifyContent: "center",
                   fontSize: "1.8rem",
                   flexShrink: 0,
-                  border: `2px solid ${colors.whiteFull}`,
+                  border: `2px solid ${accentBorder.full}`,
                 }}
               >
                 <Gallery size="50" color="#fff" variant="bulk" />
@@ -495,7 +495,7 @@ export default function RestockModal({
               <div style={{ marginTop: "4px" }}>
                 <span
                   style={{
-                    color: colors.whiteFull,
+                    color: accentBorder.full,
                     fontWeight: 700,
                     fontSize: "0.9rem",
                   }}

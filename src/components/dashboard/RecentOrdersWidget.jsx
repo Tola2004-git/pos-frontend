@@ -11,7 +11,7 @@ export function RecentOrdersWidget({ loading, recentOrders, statusLabels, t }) {
       icon={
         <ReceiptText
           size={20}
-          color="#fff"
+          color="currentColor"
           variant="Linear"
           style={{ animation: "float 3s ease-in-out infinite" }}
         />
@@ -43,8 +43,8 @@ export function RecentOrdersWidget({ loading, recentOrders, statusLabels, t }) {
                 key={order.id}
                 className="flex items-center justify-between gap-3 rounded-[12px] px-3 py-2.5"
                 style={{
-                  background: "rgba(255,255,255,0.05)",
-                  border: "1px solid rgba(255,255,255,0.08)",
+                  background: "var(--surface-tint-05)",
+                  border: "1px solid var(--surface-tint-08)",
                 }}
               >
                 <div className="min-w-0">

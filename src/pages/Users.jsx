@@ -79,8 +79,8 @@ function Users() {
         }}
       >
         <h2
+          className="text-white"
           style={{
-            color: "white",
             fontWeight: 700,
             fontSize: "1.5rem",
             margin: 0,
@@ -97,7 +97,7 @@ function Users() {
               animation: "float 3s ease-in-out infinite",
             }}
           >
-            <Profile2User size={35} color="#fff" variant="bulk" />
+            <Profile2User size={35} color="currentColor" variant="bulk" />
           </div>
           {t.usersManagementTitle}
         </h2>
@@ -115,7 +115,7 @@ function Users() {
             gap: "8px",
           }}
         >
-          <UserCirlceAdd size={25} color="#fff" variant="bulk" />
+          <UserCirlceAdd size={25} color="currentColor" variant="bulk" />
           {t.addUserAction}
         </button>
       </div>
@@ -150,21 +150,21 @@ function Users() {
           padding: "0 4px",
         }}
       >
-        <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.85rem" }}>
+        <span className="text-white/50" style={{ fontSize: "0.85rem" }}>
           {t.totalUsersCountMsg.replace("{n}", total)}
         </span>
         <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
+            className={page === 1 ? "text-white/30" : "text-white"}
             style={{
               padding: "8px 16px",
               borderRadius: "10px",
               border: "none",
               cursor: page === 1 ? "not-allowed" : "pointer",
               background:
-                page === 1 ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.1)",
-              color: page === 1 ? "rgba(255,255,255,0.3)" : "white",
+                page === 1 ? "var(--surface-tint-05)" : "var(--surface-tint-10)",
               fontWeight: 600,
               fontSize: "0.85rem",
             }}
@@ -172,8 +172,8 @@ function Users() {
             {t.paginationBackAction}
           </button>
           <span
+            className="text-white"
             style={{
-              color: "white",
               fontWeight: 600,
               fontSize: "0.85rem",
               padding: "0 8px",
@@ -184,6 +184,7 @@ function Users() {
           <button
             onClick={() => setPage((p) => Math.min(lastPage, p + 1))}
             disabled={page === lastPage}
+            className={page === lastPage ? "text-white/30" : "text-white"}
             style={{
               padding: "8px 16px",
               borderRadius: "10px",
@@ -191,9 +192,8 @@ function Users() {
               cursor: page === lastPage ? "not-allowed" : "pointer",
               background:
                 page === lastPage
-                  ? "rgba(255,255,255,0.05)"
-                  : "rgba(255,255,255,0.1)",
-              color: page === lastPage ? "rgba(255,255,255,0.3)" : "white",
+                  ? "var(--surface-tint-05)"
+                  : "var(--surface-tint-10)",
               fontWeight: 600,
               fontSize: "0.85rem",
             }}

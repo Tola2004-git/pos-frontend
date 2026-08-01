@@ -48,17 +48,17 @@ function injectAlertStyles() {
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
     }
 
-    .toast-item.toast-success { background: linear-gradient(135deg, #27ae60, #1e8449); border: 1px solid rgba(255,255,255,0.15); }
-    .toast-item.toast-error   { background: linear-gradient(135deg, #e74c3c, #c0392b); border: 1px solid rgba(255,255,255,0.15); }
-    .toast-item.toast-warning { background: linear-gradient(135deg, #f39c12, #d68910); border: 1px solid rgba(255,255,255,0.15); }
-    .toast-item.toast-info    { background: linear-gradient(135deg, #2980b9, #1a5276); border: 1px solid rgba(255,255,255,0.15); }
+    .toast-item.toast-success { background: linear-gradient(135deg, #27ae60, #1e8449); border: 1px solid var(--surface-border); }
+    .toast-item.toast-error   { background: linear-gradient(135deg, #e74c3c, #c0392b); border: 1px solid var(--surface-border); }
+    .toast-item.toast-warning { background: linear-gradient(135deg, #f39c12, #d68910); border: 1px solid var(--surface-border); }
+    .toast-item.toast-info    { background: linear-gradient(135deg, #2980b9, #1a5276); border: 1px solid var(--surface-border); }
 
     .toast-item::before {
       content: "";
       position: absolute;
       top: 0; left: 0; right: 0;
       height: 1px;
-      background: rgba(255,255,255,0.3);
+      background: var(--surface-tint-15);
       border-radius: 16px 16px 0 0;
     }
 
@@ -108,7 +108,7 @@ function injectAlertStyles() {
       bottom: 0; left: 0;
       height: 3px;
       border-radius: 0 0 16px 16px;
-      background: rgba(255,255,255,0.5);
+      background: var(--surface-tint-15);
       animation: toast-progress linear forwards;
     }
 
@@ -129,7 +129,7 @@ function injectAlertStyles() {
       backdrop-filter: blur(25px);
       -webkit-backdrop-filter: blur(25px);
       background: rgba(255, 255, 255, 0.0);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 1px solid var(--surface-border);
       box-shadow: 0 8px 32px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
       border-radius: 24px;
       padding: 36px 32px 28px;
@@ -184,8 +184,8 @@ function injectAlertStyles() {
     .confirm-btn:active { transform: translateY(0px);  opacity: 1; }
 
     .confirm-btn-cancel {
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.15);
+      background: var(--surface-tint-10);
+      border: 1px solid var(--surface-border);
       color: rgba(255,255,255,0.7);
     }
 
@@ -209,8 +209,8 @@ function injectAlertStyles() {
       margin-bottom: 20px;
       padding: 10px 12px;
       border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(255,255,255,0.07);
+      border: 1px solid var(--surface-border);
+      background: var(--surface-tint-07);
       color: white;
       font-size: 0.85rem;
       font-family: inherit;

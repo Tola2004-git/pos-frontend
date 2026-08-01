@@ -10,7 +10,7 @@ export default function StatusToggle({ active, onChange, disabled }) {
         borderRadius: 12,
         border: "none",
         cursor: disabled ? "not-allowed" : "pointer",
-        background: active ? "#2ecc71" : "rgba(255,255,255,0.2)",
+        background: active ? "#2ecc71" : "var(--surface-tint-15)",
         position: "relative",
         transition: "background 0.2s",
         opacity: disabled ? 0.6 : 1,

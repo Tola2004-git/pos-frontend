@@ -41,8 +41,8 @@ export default function PromotionTable({
             <thead>
               <tr
                 style={{
-                  borderBottom: "1px solid rgba(255,255,255,0.12)",
-                  background: "rgba(255,255,255,0.03)",
+                  borderBottom: "1px solid var(--surface-tint-12)",
+                  background: "var(--surface-tint-05)",
                 }}
               >
                 {COLUMNS.map((col, colIndex) => (
@@ -109,8 +109,8 @@ export default function PromotionTable({
           <thead>
             <tr
               style={{
-                borderBottom: "1px solid rgba(255,255,255,0.12)",
-                background: "rgba(255,255,255,0.03)",
+                borderBottom: "1px solid var(--surface-tint-12)",
+                background: "var(--surface-tint-05)",
               }}
             >
               {COLUMNS.map((col, colIndex) => (
