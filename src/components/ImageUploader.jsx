@@ -12,7 +12,7 @@ function ImageUploader({
 }) {
   return (
     <div>
-      <p className="text-[rgba(255,255,255,0.6)] text-[0.85rem] mb-2">
+      <p className="text-white/60 text-[0.85rem] mb-2">
         {t.bgChangerUploadLabel}
       </p>
       <label
@@ -49,14 +49,14 @@ function ImageUploader({
               className="w-10 h-10 rounded-lg object-cover"
             />
             <span className="text-[0.85rem] flex items-center gap-1">
-              <TickCircle size={18} color="white" variant="Outline" />
+              <TickCircle size={18} color="currentColor" variant="Outline" />
               {t.bgChangerImageSelected}
             </span>
           </>
         ) : (
           <>
             <span className="text-2xl">
-              <Folder size={30} color="white" variant="Outline" />
+              <Folder size={30} color="currentColor" variant="Outline" />
             </span>
             <span className="text-[0.85rem]">{t.bgChangerClickToUpload}</span>
           </>

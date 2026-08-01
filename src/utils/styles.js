@@ -74,7 +74,7 @@ export const glassSidebar = {
   background: 'rgba(30, 39, 46, 0.75)',
   backdropFilter: 'blur(20px)',
   WebkitBackdropFilter: 'blur(20px)',
-  borderRight: '1px solid rgba(255,255,255,0.15)',
+  borderRight: '1px solid var(--surface-border)',
   boxShadow: '4px 0 25px rgba(0,0,0,0.3)',
 }
 

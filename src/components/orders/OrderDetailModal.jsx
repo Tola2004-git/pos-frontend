@@ -14,7 +14,7 @@ import {
   Danger,
   NoteText,
 } from "iconsax-react";
-import { glassCard, colors } from "../../utils/styles";
+import { glassCard, colors, accentBorder } from "../../utils/styles";
 
 function Row({ icon: Icon, label, value, valueStyle }) {
   return (
@@ -38,7 +38,7 @@ function Row({ icon: Icon, label, value, valueStyle }) {
         {Icon && <Icon size={14} color="currentColor" variant="Linear" />}
         {label}
       </span>
-      <span style={{ color: "white", fontSize: "0.85rem", ...valueStyle }}>
+      <span style={{ color: accentBorder.full, fontSize: "0.85rem", ...valueStyle }}>
         {value}
       </span>
     </div>
@@ -121,7 +121,7 @@ export default function OrderDetailModal({
         >
           <h3
             style={{
-              color: "white",
+              color: accentBorder.full,
               fontWeight: 700,
               fontSize: "1.1rem",
               margin: 0,
@@ -130,7 +130,7 @@ export default function OrderDetailModal({
               gap: "8px",
             }}
           >
-            <ReceiptText size={22} color="white" variant="Bold" />
+            <ReceiptText size={22} color="currentColor" variant="Bold" />
             {tr("orderDetailTitle", "Order Detail")}
           </h3>
           <div style={{ display: "flex", gap: "8px" }}>
@@ -181,9 +181,9 @@ export default function OrderDetailModal({
               onClick={onClose}
               aria-label={tr("cancel", "Close")}
               style={{
-                background: "rgba(255,255,255,0.1)",
+                background: "var(--surface-tint-10)",
                 border: "none",
-                color: "white",
+                color: accentBorder.full,
                 width: "36px",
                 height: "36px",
                 borderRadius: "50%",
@@ -193,7 +193,7 @@ export default function OrderDetailModal({
                 justifyContent: "center",
               }}
             >
-              <CloseCircle size={18} color="white" variant="Linear" />
+              <CloseCircle size={18} color="currentColor" variant="Linear" />
             </button>
           </div>
         </div>
@@ -240,7 +240,7 @@ export default function OrderDetailModal({
                 <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.85rem" }}>
                   {tr("reasonLabel", "Reason")}
                 </span>
-                <div style={{ color: "white", fontSize: "0.85rem", marginTop: "4px" }}>
+                <div style={{ color: accentBorder.full, fontSize: "0.85rem", marginTop: "4px" }}>
                   {order.refund_reason}
                 </div>
               </div>
@@ -260,7 +260,7 @@ export default function OrderDetailModal({
             icon={Hashtag}
             label={tr("orderHash", "Order#")}
             value={order.order_number}
-            valueStyle={{ color: "white", fontWeight: 600 }}
+            valueStyle={{ color: accentBorder.full, fontWeight: 600 }}
           />
           <Row
             icon={User}
@@ -293,13 +293,13 @@ export default function OrderDetailModal({
                 {tr("noteOptional", "Note (optional)")}
               </span>
             </div>
-            <div style={{ color: "white", fontSize: "0.85rem" }}>{order.note}</div>
+            <div style={{ color: accentBorder.full, fontSize: "0.85rem" }}>{order.note}</div>
           </div>
         )}
 
         <h4
           style={{
-            color: "white",
+            color: accentBorder.full,
             fontSize: "1rem",
             fontWeight: 600,
             marginBottom: "10px",
@@ -308,7 +308,7 @@ export default function OrderDetailModal({
             gap: "8px",
           }}
         >
-          <Bag2 size={18} color="white" variant="Outline" />
+          <Bag2 size={18} color="currentColor" variant="Outline" />
           {tr("itemsLabel", "Items")}
         </h4>
         <div
@@ -326,18 +326,18 @@ export default function OrderDetailModal({
                 display: "flex",
                 justifyContent: "space-between",
                 padding: "10px 0",
-                borderBottom: "1px solid rgba(255,255,255,0.07)",
+                borderBottom: "1px solid var(--surface-tint-07)",
                 fontSize: "0.85rem",
               }}
               className="last:border-b-0"
             >
-              <span style={{ color: "white" }}>
+              <span style={{ color: accentBorder.full }}>
                 {item.product_name}{" "}
                 <span style={{ color: "rgba(255,255,255,0.5)" }}>
                   x{item.quantity}
                 </span>
               </span>
-              <span style={{ color: "white", fontWeight: 600 }}>
+              <span style={{ color: accentBorder.full, fontWeight: 600 }}>
                 ${Number(item.subtotal).toFixed(2)}
               </span>
             </div>
@@ -361,7 +361,7 @@ export default function OrderDetailModal({
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              borderTop: "1px solid rgba(255,255,255,0.1)",
+              borderTop: "1px solid var(--surface-tint-10)",
               paddingTop: "8px",
               marginTop: "4px",
               marginBottom: "8px",

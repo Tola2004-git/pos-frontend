@@ -49,7 +49,7 @@ export default function IngredientsTable({
                   style={{
                     padding: "16px 14px",
                     textAlign: hIndex === 1 ? "left" : "center",
-                    color: "#ffffff",
+                    color: "var(--accent-border-full)",
                     fontWeight: 600,
                     fontSize: "0.9rem",
                     whiteSpace: "nowrap",
@@ -70,7 +70,7 @@ export default function IngredientsTable({
                   style={{
                     padding: "40px",
                     textAlign: "center",
-                    color: "rgba(255,255,255,0.5)",
+                    color: "var(--accent-border-soft)",
                   }}
                 >
                   <div
@@ -83,7 +83,7 @@ export default function IngredientsTable({
                   >
                     <Cake
                       size={60}
-                      color="rgba(255,255,255,0.5)"
+                      color="var(--accent-border-soft)"
                       variant="Bulk"
                     />
                     {t.noIngredientsFoundMsg}
@@ -116,7 +116,7 @@ export default function IngredientsTable({
                       style={{
                         padding: "12px 14px",
                         textAlign: "center",
-                        color: "rgba(255,255,255,0.5)",
+                        color: "var(--accent-border-soft)",
                       }}
                     >
                       {(page - 1) * 10 + index + 1}
@@ -124,7 +124,7 @@ export default function IngredientsTable({
                     <td
                       style={{
                         padding: "12px 14px",
-                        color: "white",
+                        color: "var(--accent-border-full)",
                         fontWeight: 500,
                       }}
                     >
@@ -148,7 +148,7 @@ export default function IngredientsTable({
                       style={{
                         padding: "12px 14px",
                         textAlign: "center",
-                        color: "rgba(255,255,255,0.7)",
+                        color: "var(--accent-border-soft)",
                       }}
                     >
                       {ingredient.unit}
@@ -168,7 +168,7 @@ export default function IngredientsTable({
                       style={{
                         padding: "12px 14px",
                         textAlign: "center",
-                        color: "white",
+                        color: "var(--accent-border-full)",
                         fontWeight: 600,
                       }}
                     >
@@ -186,7 +186,7 @@ export default function IngredientsTable({
                               ? "#e74c3c"
                               : ingredient.is_expiring_soon
                                 ? "#f39c12"
-                                : "rgba(255,255,255,0.7)",
+                                : "var(--accent-border-soft)",
                             border: `1px solid ${
                               ingredient.is_expired
                                 ? "#e74c3c"
@@ -203,7 +203,7 @@ export default function IngredientsTable({
                               : ingredient.expiry_date.slice(0, 10)}
                         </span>
                       ) : (
-                        <span style={{ color: "rgba(255,255,255,0.4)" }}>
+                        <span style={{ color: "var(--accent-border-soft)" }}>
                           {t.naLabel}
                         </span>
                       )}
@@ -212,7 +212,7 @@ export default function IngredientsTable({
                       style={{
                         padding: "12px 14px",
                         textAlign: "center",
-                        color: "rgba(255,255,255,0.7)",
+                        color: "var(--accent-border-soft)",
                       }}
                     >
                       {ingredient.supplier || t.naLabel}
@@ -253,7 +253,12 @@ export default function IngredientsTable({
                               alignItems: "center",
                             }}
                           >
-                            <Refresh2 size="20" color="#fff" variant="bulk" />
+                            <Refresh2
+                              size="20"
+                              color="currentColor"
+                              variant="bulk"
+                              className="text-white"
+                            />
                           </button>
                         </Tooltip>
                         <Tooltip label={t.editAction}>
@@ -270,7 +275,12 @@ export default function IngredientsTable({
                               alignItems: "center",
                             }}
                           >
-                            <Edit size="20" color="#fff" variant="Linear" />
+                            <Edit
+                              size="20"
+                              color="currentColor"
+                              variant="Linear"
+                              className="text-white"
+                            />
                           </button>
                         </Tooltip>
                         <Tooltip label={t.deleteAction}>
@@ -291,11 +301,16 @@ export default function IngredientsTable({
                           >
                             {deletingId === ingredient.id ? (
                               <svg className="animate-spin" width="20" height="20" viewBox="0 0 18 18" fill="none">
-                                <circle cx="9" cy="9" r="7" stroke="rgba(255,255,255,0.3)" strokeWidth="2" />
-                                <path d="M9 2 A7 7 0 0 1 16 9" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                                <circle cx="9" cy="9" r="7" stroke="var(--surface-border)" strokeWidth="2" />
+                                <path d="M9 2 A7 7 0 0 1 16 9" stroke="var(--accent-border-full)" strokeWidth="2" strokeLinecap="round" />
                               </svg>
                             ) : (
-                              <Trash size="20" color="#fff" variant="Linear" />
+                              <Trash
+                                size="20"
+                                color="currentColor"
+                                variant="Linear"
+                                className="text-white"
+                              />
                             )}
                           </button>
                         </Tooltip>

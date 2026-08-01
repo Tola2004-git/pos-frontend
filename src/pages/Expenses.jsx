@@ -94,8 +94,9 @@ function Expenses() {
         <div className="flex items-center gap-3">
           <MoneyRemove
             size="35"
-            color="#fff"
+            color="currentColor"
             variant="Outline"
+            className="text-white"
             style={{ animation: "float 3s ease-in-out infinite" }}
           />
           <h2 className="text-white font-bold text-2xl m-0">{t.expenses}</h2>
@@ -122,7 +123,7 @@ function Expenses() {
             gap: "12px",
           }}
         >
-          <SearchNormal1 size={20} color="white" variant="Linear" />
+          <SearchNormal1 size={20} color="currentColor" variant="Linear" className="text-white" />
           <input
             value={search}
             onChange={(e) => {
@@ -135,7 +136,7 @@ function Expenses() {
               background: "transparent",
               padding: "0",
               flex: 1,
-              color: "white",
+              color: "var(--accent-border-full)",
               fontSize: "0.9rem",
               outline: "none",
             }}
@@ -150,7 +151,7 @@ function Expenses() {
               padding: "14px 18px",
               borderRadius: "16px",
               cursor: "pointer",
-              color: "white",
+              color: "var(--accent-border-full)",
               fontWeight: 600,
               fontSize: "0.9rem",
               display: "flex",
@@ -213,7 +214,7 @@ function Expenses() {
                     color:
                       categoryFilter === c
                         ? accentBorder.full
-                        : "rgba(255,255,255,0.85)",
+                        : accentBorder.soft,
                     fontSize: "0.88rem",
                     fontWeight: categoryFilter === c ? 700 : 400,
                     borderLeft:
@@ -331,7 +332,7 @@ function Expenses() {
                             onClick={() => openEdit(exp)}
                             className="p-1.5 rounded-lg border-none bg-transparent cursor-pointer hover:scale-110 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
                           >
-                            <Edit size="18" color="#fff" variant="Linear" />
+                            <Edit size="18" color="currentColor" variant="Linear" className="text-white" />
                           </button>
                         </Tooltip>
                         <Tooltip label={t.deleteAction}>
@@ -352,18 +353,18 @@ function Expenses() {
                                   cx="9"
                                   cy="9"
                                   r="7"
-                                  stroke="rgba(255,255,255,0.3)"
+                                  stroke="var(--surface-border)"
                                   strokeWidth="2"
                                 />
                                 <path
                                   d="M9 2 A7 7 0 0 1 16 9"
-                                  stroke="white"
+                                  stroke="var(--accent-border-full)"
                                   strokeWidth="2"
                                   strokeLinecap="round"
                                 />
                               </svg>
                             ) : (
-                              <Trash size="18" color="#fff" variant="Linear" />
+                              <Trash size="18" color="currentColor" variant="Linear" className="text-white" />
                             )}
                           </button>
                         </Tooltip>

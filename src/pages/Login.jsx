@@ -77,10 +77,10 @@ const styles = `
   padding: 0 4px;
   display: flex;
   align-items: center;
-  color: rgba(255,255,255,0.5);
+  color: var(--accent-border-soft);
   transition: color 0.2s;
 }
-.toggle-btn:hover { color: rgba(255,255,255,0.9); }
+.toggle-btn:hover { color: var(--accent-border-full); }
 
 .btn-login {
   transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;

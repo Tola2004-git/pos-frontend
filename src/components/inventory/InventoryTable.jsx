@@ -1,4 +1,4 @@
-import { glassCard, colors } from "../../utils/styles";
+import { glassCard, accentBorder } from "../../utils/styles";
 import { SkeletonInventoryTable } from "../ui/SkeletonInventory";
 import { getStockStatus } from "../../utils/stockHelpers";
 import { Gallery, Refresh2 } from "iconsax-react";
@@ -46,7 +46,7 @@ export default function InventoryTable({
                 style={{
                   padding: "16px 14px",
                   textAlign: "left",
-                  color: colors.whiteFull,
+                  color: accentBorder.full,
                   fontWeight: 600,
                   fontSize: "0.9rem",
                 }}
@@ -66,7 +66,7 @@ export default function InventoryTable({
                 style={{
                   padding: "40px",
                   textAlign: "center",
-                  color: "rgba(255,255,255,0.5)",
+                  color: "var(--accent-border-soft)",
                 }}
               >
                 {t.noProductsFoundMsg}
@@ -93,7 +93,7 @@ export default function InventoryTable({
                   <td
                     style={{
                       padding: "12px 14px",
-                      color: "rgba(255,255,255,0.5)",
+                      color: "var(--accent-border-soft)",
                     }}
                   >
                     {(page - 1) * 10 + index + 1}
@@ -122,14 +122,19 @@ export default function InventoryTable({
                           fontSize: "1.2rem",
                         }}
                       >
-                        <Gallery size="30" color="#fff" variant="bulk"/>
+                        <Gallery
+                          size="30"
+                          color="currentColor"
+                          variant="bulk"
+                          className="text-white"
+                        />
                       </div>
                     )}
                   </td>
                   <td
                     style={{
                       padding: "12px 14px",
-                      color: "white",
+                      color: "var(--accent-border-full)",
                       fontWeight: 500,
                     }}
                   >
@@ -152,7 +157,7 @@ export default function InventoryTable({
                   <td
                     style={{
                       padding: "12px 14px",
-                      color: "rgba(255,255,255,0.6)",
+                      color: "var(--accent-border-soft)",
                       fontSize: "0.85rem",
                     }}
                   >
@@ -172,7 +177,7 @@ export default function InventoryTable({
                   <td
                     style={{
                       padding: "12px 14px",
-                      color: "rgba(255,255,255,0.6)",
+                      color: "var(--accent-border-soft)",
                       fontSize: "0.85rem",
                     }}
                   >
@@ -208,7 +213,12 @@ export default function InventoryTable({
                         }}
                         className="duration-200 hover:scale-110 transition-transform"
                       >
-                        <Refresh2 size="20" color="#fff" variant="bulk"/>
+                        <Refresh2
+                          size="20"
+                          color="currentColor"
+                          variant="bulk"
+                          className="text-white"
+                        />
                       </button>
                     </Tooltip>
                   </td>

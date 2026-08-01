@@ -80,8 +80,8 @@ function PaymentMethods() {
         }}
       >
         <h2
+          className="text-white"
           style={{
-            color: "white",
             fontWeight: 700,
             fontSize: "1.5rem",
             margin: 0,
@@ -98,7 +98,7 @@ function PaymentMethods() {
               animation: "float 3s ease-in-out infinite",
             }}
           >
-            <Card size={40} color="white" variant="Outline" />
+            <Card size={40} color="currentColor" variant="Outline" />
           </div>
           {t.paymentMethodsTitle}
         </h2>
@@ -134,11 +134,11 @@ function PaymentMethods() {
             gap: "20px",
           }}
         >
-          <Card size={60} color="white" variant="TwoTone" />
+          <Card size={60} color="currentColor" variant="TwoTone" className="text-white" />
           <div>
             <p
               style={{
-                color: "white",
+                color: "var(--accent-border-full)",
                 fontWeight: 600,
                 fontSize: "0.9rem",
                 margin: "0 0 6px",
@@ -148,7 +148,7 @@ function PaymentMethods() {
             </p>
             <p
               style={{
-                color: "rgba(255,255,255,0.5)",
+                color: "var(--accent-border-soft)",
                 fontSize: "0.85rem",
                 margin: 0,
               }}

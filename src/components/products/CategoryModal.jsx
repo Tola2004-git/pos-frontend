@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { RiCloseLine } from "react-icons/ri";
-import { glassCard, glass, colors } from "../../utils/styles";
+import { glassCard, glass, accentBorder } from "../../utils/styles";
 import { SkeletonCategoryList } from "../ui/SkeletonProduct";
 import { Edit, Trash, AddCircle, TickCircle, Category2, Tag } from "iconsax-react";
 
@@ -114,9 +114,9 @@ function CategoryModal({
     width: "100%",
     padding: "10px 14px",
     borderRadius: "10px",
-    border: "1px solid rgba(255,255,255,0.2)",
-    background: "rgba(255,255,255,0.1)",
-    color: "white",
+    border: "1px solid var(--surface-border)",
+    background: "var(--surface-tint-10)",
+    color: "var(--accent-border-full)",
     fontSize: "0.9rem",
     outline: "none",
   };
@@ -161,7 +161,7 @@ function CategoryModal({
         >
           <h3
             style={{
-              color: colors.whiteFull,
+              color: accentBorder.full,
               fontWeight: 700,
               fontSize: "1.5rem",
               margin: 0,
@@ -178,7 +178,7 @@ function CategoryModal({
                 animation: "float 3s ease-in-out infinite",
               }}
             >
-              <Category2 size={28} color="white" variant="Linear" />
+              <Category2 size={28} color="currentColor" variant="Linear" />
             </div>
             {t.categoriesAction}
           </h3>
@@ -187,7 +187,7 @@ function CategoryModal({
             aria-label={t.cancel}
             style={{
               border: "none",
-              color: "white",
+              color: "var(--accent-border-full)",
               width: "36px",
               height: "36px",
               borderRadius: "50%",
@@ -216,7 +216,7 @@ function CategoryModal({
             </div>
           )}
           <div style={{ position: 'relative', alignItems: "center", display: "flex", gap: "10px" }}>
-            <Tag size={20} color="white" variant="Linear" style={{position: 'absolute', left: '12px', pointerEvents: 'none', zIndex: 1}}/>
+            <Tag size={20} color="currentColor" variant="Linear" className="text-white" style={{position: 'absolute', left: '12px', pointerEvents: 'none', zIndex: 1}}/>
             <input
               style={{ ...inputStyle, flex: 1, paddingLeft: "40px" }}
               placeholder={t.categoryNamePlaceholder}
@@ -283,9 +283,9 @@ function CategoryModal({
                 style={{
                   padding: "10px",
                   borderRadius: "10px",
-                  border: "1px solid rgba(255,255,255,0.2)",
-                  background: "rgba(255,255,255,0.1)",
-                  color: "white",
+                  border: "1px solid var(--surface-border)",
+                  background: "var(--surface-tint-10)",
+                  color: "var(--accent-border-full)",
                   cursor: "pointer",
                 }}
               >
@@ -301,7 +301,7 @@ function CategoryModal({
         ) : categories.length === 0 ? (
           <p
             style={{
-              color: "rgba(255,255,255,0.4)",
+              color: accentBorder.soft,
               textAlign: "center",
               padding: "20px",
             }}
@@ -323,7 +323,7 @@ function CategoryModal({
                   border: "1px solid var(--surface-tint-08)",
                 }}
               >
-                <span style={{ color: "white", fontWeight: 500 }}>
+                <span style={{ color: "var(--accent-border-full)", fontWeight: 500 }}>
                   {cat.name}
                 </span>
                 <div
@@ -357,7 +357,7 @@ function CategoryModal({
                     />
                   </div>
                   <IconButtonWithTooltip
-                    icon={<Edit size={20} color="white" variant="Linear" />}
+                    icon={<Edit size={20} color="currentColor" variant="Linear" className="text-white" />}
                     label={t.editAction}
                     onClick={() => {
                       setEditCat(cat);
@@ -372,7 +372,7 @@ function CategoryModal({
                           <path d="M9 2 A7 7 0 0 1 16 9" stroke="white" strokeWidth="2" strokeLinecap="round" />
                         </svg>
                       ) : (
-                        <Trash size={20} color="white" variant="Linear" />
+                        <Trash size={20} color="currentColor" variant="Linear" className="text-white" />
                       )
                     }
                     label={t.deleteAction}

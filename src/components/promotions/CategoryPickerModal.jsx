@@ -92,7 +92,7 @@ export default function CategoryPickerModal({
         <div
           style={{
             padding: "20px 24px",
-            borderBottom: "1px solid rgba(255,255,255,0.1)",
+            borderBottom: "1px solid var(--surface-tint-10)",
           }}
         >
           <div
@@ -106,8 +106,9 @@ export default function CategoryPickerModal({
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <AddCircle
                 size={28}
-                color="white"
+                color="currentColor"
                 variant="Linear"
+                className="text-white"
                 style={{
                   width: 28,
                   height: 28,
@@ -115,7 +116,7 @@ export default function CategoryPickerModal({
                 }}
               />
               <h2
-                style={{ color: "white", fontSize: "1.5rem", fontWeight: 600 }}
+                style={{ color: "var(--accent-border-full)", fontSize: "1.5rem", fontWeight: 600 }}
               >
                 {t.selectCategoriesTitle}
               </h2>
@@ -125,9 +126,9 @@ export default function CategoryPickerModal({
               onClick={onClose}
               aria-label={t.cancel}
               style={{
-                background: "rgba(255,255,255,0.1)",
+                background: "var(--surface-tint-10)",
                 border: "none",
-                color: "white",
+                color: "var(--accent-border-full)",
                 width: 36,
                 height: 36,
                 borderRadius: 18,
@@ -141,13 +142,13 @@ export default function CategoryPickerModal({
             style={{
               display: "flex",
               alignItems: "center",
-              background: "rgba(255,255,255,0.05)",
+              background: "var(--surface-tint-05)",
               padding: "8px 12px",
               borderRadius: 10,
-              border: "1px solid rgba(255,255,255,0.1)",
+              border: "1px solid var(--surface-tint-10)",
             }}
           >
-            <SearchNormal1 size={18} color="white" variant="Linear" />
+            <SearchNormal1 size={18} color="currentColor" variant="Linear" className="text-white" />
             <input
               type="text"
               placeholder={t.searchCategoriesSimplePlaceholder}
@@ -159,7 +160,7 @@ export default function CategoryPickerModal({
                 background: "transparent",
                 border: "none",
                 outline: "none",
-                color: "white",
+                color: "var(--accent-border-full)",
                 fontSize: "0.9rem",
               }}
             />
@@ -178,7 +179,7 @@ export default function CategoryPickerModal({
           {catLoading ? (
             <SkeletonCategoryChips count={6} />
           ) : filtered.length === 0 ? (
-            <p style={{ color: "rgba(255,255,255,0.5)", textAlign: "center" }}>
+            <p style={{ color: "var(--accent-border-soft)", textAlign: "center" }}>
               {t.noCategoriesFoundMsg}
             </p>
           ) : (
@@ -198,7 +199,7 @@ export default function CategoryPickerModal({
                     cursor: "pointer",
                     border: checked
                       ? "1px solid rgba(14, 233, 36, 0.4)"
-                      : "1px solid rgba(255,255,255,0.08)",
+                      : "1px solid var(--surface-tint-08)",
                   }}
                 >
                   <input
@@ -216,14 +217,14 @@ export default function CategoryPickerModal({
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      background: "rgba(255,255,255,0.06)",
+                      background: "var(--surface-tint-06)",
                     }}
                   >
-                    <Category2 size={18} color="white" variant="Linear" />
+                    <Category2 size={18} color="currentColor" variant="Linear" className="text-white" />
                   </div>
                   <span
                     style={{
-                      color: "white",
+                      color: "var(--accent-border-full)",
                       fontSize: "0.9rem",
                       fontWeight: 500,
                     }}
@@ -240,7 +241,7 @@ export default function CategoryPickerModal({
         <div
           style={{
             padding: "16px 24px",
-            borderTop: "1px solid rgba(255,255,255,0.1)",
+            borderTop: "1px solid var(--surface-tint-10)",
             display: "flex",
             gap: 10,
           }}
@@ -253,7 +254,6 @@ export default function CategoryPickerModal({
               flex: 1,
               padding: 12,
               borderRadius: 12,
-              color: "white",
               cursor: "pointer",
               fontWeight: 500,
               fontSize: "0.9rem",

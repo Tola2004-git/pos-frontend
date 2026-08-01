@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import imageCompression from "browser-image-compression";
 import { alertSuccess, alertError } from "../../utils/alert.jsx";
-import { glass, glassCard, colors } from "../../utils/styles.js";
+import { glass, glassCard, colors, accentBorder } from "../../utils/styles.js";
 import { SkeletonProductModal } from "../ui/SkeletonProduct.jsx";
 import api from "../../api/productApi.js";
 
@@ -49,15 +49,15 @@ function ProductModal({
     width: "100%",
     padding: "10px 14px",
     borderRadius: "10px",
-    border: "1px solid rgba(255,255,255,0.2)",
-    background: "rgba(255,255,255,0.1)",
-    color: "white",
+    border: "1px solid var(--surface-border)",
+    background: "var(--surface-tint-10)",
+    color: "var(--accent-border-full)",
     fontSize: "0.9rem",
     outline: "none",
   };
 
   const labelStyle = {
-    color: "rgba(255,255,255,0.8)",
+    color: accentBorder.soft,
     fontSize: "0.85rem",
     display: "block",
     marginBottom: "6px",
@@ -70,7 +70,6 @@ function ProductModal({
     transform: "translateY(-50%)",
     width: "18px",
     height: "18px",
-    filter: "brightness(0) invert(1)",
     opacity: focusedField === field ? 1 : 0.4,
     transition: "opacity 0.2s",
     pointerEvents: "none",
@@ -177,8 +176,9 @@ function ProductModal({
             {editProduct ? (
               <Edit
                 size={28}
-                color="white"
+                color="currentColor"
                 variant="Linear"
+                className="text-white"
                 style={{
                   width: 28,
                   height: 28,
@@ -188,8 +188,9 @@ function ProductModal({
             ) : (
               <BoxAdd
                 size={28}
-                color="white"
+                color="currentColor"
                 variant="Linear"
+                className="text-white"
                 style={{
                   width: 28,
                   height: 28,
@@ -200,7 +201,7 @@ function ProductModal({
 
             <h2
               style={{
-                color: colors.whiteFull,
+                color: accentBorder.full,
                 fontWeight: 600,
                 margin: 0,
                 fontSize: "1.5rem",
@@ -213,9 +214,9 @@ function ProductModal({
             onClick={onClose}
             aria-label={t.cancel}
             style={{
-              background: "rgba(255,255,255,0.1)",
+              background: "var(--surface-tint-10)",
               border: "none",
-              color: "white",
+              color: "var(--accent-border-full)",
               width: "36px",
               height: "36px",
               borderRadius: "50%",
@@ -282,24 +283,24 @@ function ProductModal({
                       width: "100px",
                       height: "100px",
                       borderRadius: "16px",
-                      background: "rgba(255,255,255,0.1)",
-                      border: "2px dashed rgba(255,255,255,0.3)",
+                      background: "var(--surface-tint-10)",
+                      border: "2px dashed var(--surface-border)",
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "center",
                       justifyContent: "center",
-                      color: "rgba(255,255,255,0.5)",
+                      color: accentBorder.soft,
                       gap: "4px",
                       margin: "0 auto",
                     }}
                   >
-                    <Camera size={28} color="white" variant="Linear" />
+                    <Camera size={28} color="currentColor" variant="Linear" />
                     <span style={{ fontSize: "0.7rem" }}>{t.uploadLabel}</span>
                   </div>
                 )}
                 <p
                   style={{
-                    color: "rgba(255,255,255,0.5)",
+                    color: accentBorder.soft,
                     fontSize: "0.75rem",
                     marginTop: "6px",
                   }}
@@ -322,8 +323,9 @@ function ProductModal({
                 <div style={{ position: "relative" }}>
                   <Tag
                     size={20}
-                    color="white"
+                    color="currentColor"
                     variant="Linear"
+                    className="text-white"
                     style={iconStyle("Product Name")}
                   />
                   <input
@@ -332,8 +334,8 @@ function ProductModal({
                       paddingLeft: "40px",
                       border:
                         focusedField === "Product Name"
-                          ? "1px solid rgba(255,255,255,0.8)"
-                          : "1px solid rgba(255,255,255,0.2)",
+                          ? `1px solid ${accentBorder.soft}`
+                          : "1px solid var(--surface-border)",
                       transition: "border 0.2s",
                     }}
                     placeholder={t.productNamePlaceholder}
@@ -349,8 +351,9 @@ function ProductModal({
                 <div style={{ position: "relative" }}>
                   <Category
                     size={20}
-                    color="white"
+                    color="currentColor"
                     variant="Linear"
+                    className="text-white"
                     style={iconStyle("Category")}
                   />
                   <select
@@ -360,8 +363,8 @@ function ProductModal({
                       paddingLeft: "40px",
                       border:
                         focusedField === "Category"
-                          ? "1px solid rgba(255,255,255,0.8)"
-                          : "1px solid rgba(255,255,255,0.2)",
+                          ? `1px solid ${accentBorder.soft}`
+                          : "1px solid var(--surface-border)",
                       transition: "border 0.2s",
                     }}
                     value={form.category_id}
@@ -394,8 +397,9 @@ function ProductModal({
                 <div style={{ position: "relative" }}>
                   <MoneySend
                     size={20}
-                    color="white"
+                    color="currentColor"
                     variant="Linear"
+                    className="text-white"
                     style={iconStyle("Price")}
                   />
                   <input
@@ -404,8 +408,8 @@ function ProductModal({
                       paddingLeft: "40px",
                       border:
                         focusedField === "Price"
-                          ? "1px solid rgba(255,255,255,0.8)"
-                          : "1px solid rgba(255,255,255,0.2)",
+                          ? `1px solid ${accentBorder.soft}`
+                          : "1px solid var(--surface-border)",
                       transition: "border 0.2s",
                     }}
                     type="number"
@@ -424,8 +428,9 @@ function ProductModal({
                 <div style={{ position: "relative" }}>
                   <ScanBarcode
                     size={20}
-                    color="white"
+                    color="currentColor"
                     variant="Linear"
+                    className="text-white"
                     style={iconStyle("SKU")}
                   />
                   <input
@@ -434,8 +439,8 @@ function ProductModal({
                       paddingLeft: "40px",
                       border:
                         focusedField === "SKU"
-                          ? "1px solid rgba(255,255,255,0.8)"
-                          : "1px solid rgba(255,255,255,0.2)",
+                          ? `1px solid ${accentBorder.soft}`
+                          : "1px solid var(--surface-border)",
                       transition: "border 0.2s",
                     }}
                     placeholder={t.skuPlaceholder}
@@ -451,8 +456,9 @@ function ProductModal({
                 <div style={{ position: "relative" }}>
                   <Barcode
                     size={20}
-                    color="white"
+                    color="currentColor"
                     variant="Linear"
+                    className="text-white"
                     style={iconStyle("Barcode")}
                   />
                   <input
@@ -461,8 +467,8 @@ function ProductModal({
                       paddingLeft: "40px",
                       border:
                         focusedField === "Barcode"
-                          ? "1px solid rgba(255,255,255,0.8)"
-                          : "1px solid rgba(255,255,255,0.2)",
+                          ? `1px solid ${accentBorder.soft}`
+                          : "1px solid var(--surface-border)",
                       transition: "border 0.2s",
                     }}
                     placeholder={t.barcodePlaceholder}
@@ -492,7 +498,7 @@ function ProductModal({
                     borderRadius: "12px",
                     background: form.status
                       ? "#2ecc71"
-                      : "rgba(255,255,255,0.2)",
+                      : "var(--surface-tint-15)",
                     cursor: "pointer",
                     position: "relative",
                     transition: "background 0.3s",
@@ -513,7 +519,7 @@ function ProductModal({
                 </div>
                 <span
                   style={{
-                    color: form.status ? "#2ecc71" : "rgba(255,255,255,0.5)",
+                    color: form.status ? "#2ecc71" : accentBorder.soft,
                     fontSize: "0.85rem",
                   }}
                 >
@@ -530,7 +536,6 @@ function ProductModal({
                   flex: 1,
                   padding: "12px",
                   borderRadius: "12px",
-                  color: "white",
                   cursor: submitting ? "not-allowed" : "pointer",
                   fontWeight: 500,
                   fontSize: "0.9rem",

@@ -21,15 +21,15 @@ const inputStyle = {
   width: "100%",
   padding: "10px 14px",
   borderRadius: "10px",
-  border: "1px solid rgba(255,255,255,0.2)",
-  background: "rgba(255,255,255,0.1)",
-  color: "white",
+  border: "1px solid var(--surface-border)",
+  background: "var(--surface-tint-10)",
+  color: "var(--accent-border-full)",
   fontSize: "0.9rem",
   outline: "none",
 };
 
 const labelStyle = {
-  color: "rgba(255,255,255,0.8)",
+  color: "var(--accent-border-soft)",
   fontSize: "0.85rem",
   display: "block",
   marginBottom: "6px",
@@ -80,7 +80,6 @@ function UserModal({
     transform: "translateY(-50%)",
     width: "18px",
     height: "18px",
-    filter: "brightness(0) invert(1)",
     opacity: focusedField === field ? 1 : 0.4,
     transition: "opacity 0.2s",
     pointerEvents: "none",
@@ -135,15 +134,17 @@ function UserModal({
             {editUser ? (
               <UserEdit
                 size={30}
-                color="#fff"
+                color="currentColor"
                 variant="bold"
+                className="text-white"
                 style={{ animation: "float 2s ease-in-out infinite" }}
               />
             ) : (
               <UserAdd
                 size={30}
-                color="#fff"
+                color="currentColor"
                 variant="bold"
+                className="text-white"
                 style={{ animation: "float 2s ease-in-out infinite" }}
               />
             )}
@@ -162,9 +163,9 @@ function UserModal({
             onClick={closeModal}
             aria-label={t.cancel}
             style={{
-              background: "rgba(255,255,255,0.1)",
+              background: "var(--surface-tint-10)",
               border: "none",
-              color: "white",
+              color: "var(--accent-border-full)",
               width: "36px",
               height: "36px",
               borderRadius: "50%",
@@ -240,25 +241,25 @@ function UserModal({
                       width: "80px",
                       height: "80px",
                       borderRadius: "50%",
-                      background: "rgba(255,255,255,0.1)",
-                      border: "2px dashed rgba(255,255,255,0.3)",
+                      background: "var(--surface-tint-10)",
+                      border: "2px dashed var(--surface-border)",
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "center",
                       justifyContent: "center",
-                      color: "rgba(255,255,255,0.5)",
+                      color: "var(--accent-border-soft)",
                       fontSize: "0.7rem",
                       gap: "4px",
                       margin: "0 auto",
                     }}
                   >
-                    <Camera size={30} color="#fff" variant="outline" />
+                    <Camera size={30} color="currentColor" variant="outline" className="text-white" />
                     <span>{t.uploadLabel}</span>
                   </div>
                 )}
                 <p
                   style={{
-                    color: "rgba(255,255,255,0.5)",
+                    color: "var(--accent-border-soft)",
                     fontSize: "0.75rem",
                     marginTop: "6px",
                   }}
@@ -273,8 +274,9 @@ function UserModal({
               <div style={{ position: "relative" }}>
                 <User
                   size={18}
-                  color="#fff"
+                  color="currentColor"
                   variant="bulk"
+                  className="text-white"
                   style={iconStyle("name")}
                 />
                 <input
@@ -283,8 +285,8 @@ function UserModal({
                     paddingLeft: "40px",
                     border:
                       focusedField === "name"
-                        ? "1px solid rgba(255,255,255,0.8)"
-                        : "1px solid rgba(255,255,255,0.2)",
+                        ? "1px solid var(--accent-border-soft)"
+                        : "1px solid var(--surface-border)",
                     transition: "border 0.2s",
                   }}
                   placeholder={t.fullNamePlaceholder}
@@ -301,8 +303,9 @@ function UserModal({
               <div style={{ position: "relative" }}>
                 <Sms
                   size={18}
-                  color="#fff"
+                  color="currentColor"
                   variant="bulk"
+                  className="text-white"
                   style={iconStyle("email")}
                 />
                 <input
@@ -314,8 +317,8 @@ function UserModal({
                         ? "rgba(46,204,113,0.8)"
                         : "rgba(231,76,60,0.8)"
                       : focusedField === "email"
-                        ? "rgba(255,255,255,0.8)"
-                        : "rgba(255,255,255,0.2)",
+                        ? "var(--accent-border-soft)"
+                        : "var(--surface-border)",
                     transition: "border-color 0.2s",
                   }}
                   type="email"
@@ -361,8 +364,9 @@ function UserModal({
               <div style={{ position: "relative" }}>
                 <Key
                   size={18}
-                  color="#fff"
+                  color="currentColor"
                   variant="Outline"
+                  className="text-white"
                   style={iconStyle("password")}
                 />
                 <input
@@ -371,8 +375,8 @@ function UserModal({
                     paddingLeft: "40px",
                     border:
                       focusedField === "password"
-                        ? "1px solid rgba(255,255,255,0.8)"
-                        : "1px solid rgba(255,255,255,0.2)",
+                        ? "1px solid var(--accent-border-soft)"
+                        : "1px solid var(--surface-border)",
                     transition: "border 0.2s",
                   }}
                   type={showPassword ? "text" : "password"}
@@ -394,16 +398,16 @@ function UserModal({
                     display: "flex",
                     color:
                       focusedField === "password"
-                        ? "rgba(255,255,255,0.9)"
-                        : "rgba(255,255,255,0.5)",
+                        ? "var(--accent-border-full)"
+                        : "var(--accent-border-soft)",
                     cursor: "pointer",
                     transition: "color 0.2s",
                   }}
                 >
                   {showPassword ? (
-                    <Eye size={18} color="#fff" variant="bold" />
+                    <Eye size={18} color="currentColor" variant="bold" />
                   ) : (
-                    <EyeSlash size={18} color="#fff" variant="bold" />
+                    <EyeSlash size={18} color="currentColor" variant="bold" />
                   )}
                 </button>
               </div>
@@ -421,7 +425,7 @@ function UserModal({
                   <span
                     style={{
                       fontSize: "0.75rem",
-                      color: "rgba(255,255,255,0.5)",
+                      color: "var(--accent-border-soft)",
                     }}
                   >
                     {t.passwordStrengthLabel}
@@ -447,7 +451,7 @@ function UserModal({
                         background:
                           i <= passwordStrength.score
                             ? passwordStrength.color
-                            : "rgba(255,255,255,0.1)",
+                            : "var(--surface-tint-10)",
                         transition: "background 0.3s",
                       }}
                     />
@@ -458,7 +462,7 @@ function UserModal({
                     style={{
                       marginTop: "8px",
                       fontSize: "0.75rem",
-                      color: "rgba(255,255,255,0.4)",
+                      color: "var(--surface-tint-15)",
                       display: "flex",
                       alignItems: "center",
                       gap: "6px",
@@ -466,7 +470,7 @@ function UserModal({
                   >
                     <LampCharge
                       size={16}
-                      color="rgba(255,255,255,0.4)"
+                      color="var(--surface-tint-15)"
                       variant="bold"
                     />
                     <span>
@@ -485,7 +489,7 @@ function UserModal({
                     ...inputStyle,
                     display: "flex",
                     alignItems: "center",
-                    color: "rgba(255,255,255,0.6)",
+                    color: "var(--accent-border-soft)",
                   }}
                 >
                   {editUser?.is_owner ? t.ownerProtectedMsg : t.adminProtectedRoleMsg}
@@ -525,7 +529,6 @@ function UserModal({
                   flex: 1,
                   padding: "12px",
                   borderRadius: "12px",
-                  color: "white",
                   cursor: submitting ? "not-allowed" : "pointer",
                   fontWeight: 500,
                   fontSize: "0.9rem",

@@ -7,9 +7,9 @@ const inputStyle = {
   width: "100%",
   padding: "10px 14px",
   borderRadius: "10px",
-  border: "1px solid rgba(255,255,255,0.2)",
-  background: "rgba(255,255,255,0.1)",
-  color: "white",
+  border: "1px solid var(--surface-border)",
+  background: "var(--surface-tint-10)",
+  color: "var(--accent-border-full)",
   fontSize: "0.9rem",
   outline: "none",
 };
@@ -55,7 +55,6 @@ export function CartSidebar({
     transform: "translateY(-50%)",
     width: "18px",
     height: "18px",
-    filter: "brightness(0) invert(1)",
     opacity: focusedField === field ? 1 : 0.4,
     transition: "opacity 0.2s",
     pointerEvents: "none",
@@ -64,7 +63,7 @@ export function CartSidebar({
   return (
     <div className="w-[300px] p-4 flex flex-col overflow-y-auto h-[500px]">
       <h4 className="text-white mb-3 font-bold flex items-center gap-[10px]">
-        <Bag2 size={20} color="white" variant="Linear" />
+        <Bag2 size={20} color="currentColor" variant="Linear" />
         {tr("cartCount", "Cart ({n})").replace("{n}", cart.length)}
       </h4>
 
@@ -97,7 +96,7 @@ export function CartSidebar({
         className="mb-[8px] flex w-full items-center justify-between rounded-lg bg-white/5 px-3 py-2 text-left transition-colors hover:bg-white/10"
       >
         <span className="flex items-center gap-2 text-[0.8rem] text-white/70">
-          <User size={16} color="white" variant="Linear" />
+          <User size={16} color="currentColor" variant="Linear" />
           {tr("customerDetailsOptional", "Customer details (optional)")}
           {hasCustomerDetails && (
             <span className="h-1.5 w-1.5 rounded-full bg-[#2ecc71]" />
@@ -114,7 +113,8 @@ export function CartSidebar({
             <User
               size={18}
               variant="Linear"
-              color="white"
+              color="currentColor"
+              className="text-white"
               style={iconStyle("name")}
             />
             <input
@@ -138,8 +138,9 @@ export function CartSidebar({
           <div className="relative mb-[5px]">
             <Call
               size={18}
-              color="white"
+              color="currentColor"
               variant="Linear"
+              className="text-white"
               style={iconStyle("phone")}
             />
             <input
@@ -163,8 +164,9 @@ export function CartSidebar({
           <div className="relative mb-[10px]">
             <NoteText
               size={18}
-              color="white"
+              color="currentColor"
               variant="Linear"
+              className="text-white"
               style={{ ...iconStyle("note"), top: "16px", transform: "none" }}
             />
             <textarea

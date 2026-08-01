@@ -6,7 +6,7 @@ import {
   ArrowRotateLeft,
 } from "iconsax-react";
 import Layout from "../components/layout/Layout";
-import { glassCard, colors } from "../utils/styles";
+import { glassCard, accentBorder } from "../utils/styles";
 import { useBackups } from "../hooks/useBackups";
 import { useTranslations } from "../hooks/useTranslations";
 import { Tooltip } from "../components/ui/Tooltip";
@@ -69,8 +69,9 @@ function Backups() {
       <div className="flex items-center gap-3 mb-6">
         <CloudChange
           size="35"
-          color="#fff"
+          color="currentColor"
           variant="Outline"
+          className="text-white"
           style={{ animation: "float 3s ease-in-out infinite" }}
         />
         <h2 className="text-white font-bold text-2xl m-0">{t.backups}</h2>
@@ -116,7 +117,7 @@ function Backups() {
                 ].map((h) => (
                   <th
                     key={h}
-                    style={{ color: colors.whiteFull }}
+                    style={{ color: accentBorder.full }}
                     className="font-semibold px-4 py-3.5 text-[0.82rem] whitespace-nowrap"
                   >
                     {h}
@@ -210,7 +211,7 @@ function Backups() {
                                   cx="9"
                                   cy="9"
                                   r="7"
-                                  stroke="rgba(255,255,255,0.3)"
+                                  stroke="var(--surface-border)"
                                   strokeWidth="2"
                                 />
                                 <path
@@ -253,12 +254,12 @@ function Backups() {
                                   cx="9"
                                   cy="9"
                                   r="7"
-                                  stroke="rgba(255,255,255,0.3)"
+                                  stroke="var(--surface-border)"
                                   strokeWidth="2"
                                 />
                                 <path
                                   d="M9 2 A7 7 0 0 1 16 9"
-                                  stroke="white"
+                                  stroke="currentColor"
                                   strokeWidth="2"
                                   strokeLinecap="round"
                                 />

@@ -8,11 +8,11 @@ const inputStyle = {
   width: "100%",
   padding: "10px 14px",
   borderRadius: "10px",
-  border: "1px solid rgba(255,255,255,0.2)",
+  border: "1px solid var(--surface-border)",
   background: "rgba(255,255,255,0.0)",
   backdropFilter: "blur(25px)",
   WebkitBackdropFilter: "blur(25px)",
-  color: "white",
+  color: accentBorder.full,
   fontSize: "0.9rem",
   outline: "none",
 };
@@ -103,7 +103,7 @@ export default function OrdersFilter({
           gap: "12px",
         }}
       >
-        <SearchNormal1 size={20} color="#fff" variant="bulk" />
+        <SearchNormal1 size={20} color="currentColor" variant="bulk" className="text-white" />
         <input
           type="text"
           placeholder={searchPlaceholder}
@@ -137,7 +137,7 @@ export default function OrdersFilter({
             padding: "12px 18px",
             borderRadius: "16px",
             cursor: "pointer",
-            color: "white",
+            color: accentBorder.full,
             fontWeight: 600,
             fontSize: "0.85rem",
             display: "flex",
@@ -233,7 +233,7 @@ export default function OrdersFilter({
               padding: "12px 18px",
               borderRadius: "16px",
               cursor: "pointer",
-              color: "white",
+              color: accentBorder.full,
               fontWeight: 600,
               fontSize: "0.85rem",
               display: "flex",

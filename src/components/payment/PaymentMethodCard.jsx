@@ -64,6 +64,7 @@ function PaymentMethodCard({
       }}
     >
       <div
+        className="text-white"
         style={{
           width: "128px",
           height: "128px",
@@ -83,13 +84,13 @@ function PaymentMethodCard({
             style={{ objectFit: "contain" }}
           />
         ) : (
-          <Bank size={56} color="white" variant="Outline" />
+          <Bank size={56} color="currentColor" variant="Outline" />
         )}
       </div>
 
       <h3
         style={{
-          color: "white",
+          color: "var(--accent-border-full)",
           fontSize: "1.2rem",
           margin: "0 0 8px",
         }}
@@ -127,12 +128,12 @@ function PaymentMethodCard({
         <div style={{ display: "flex", gap: "4px" }}>
           {[
             {
-              icon: <Eye size={20} color="white" variant="Outline" />,
+              icon: <Eye size={20} color="currentColor" variant="Outline" className="text-white" />,
               label: t.viewAction,
               action: () => onView?.(method),
             },
             {
-              icon: <Edit size={20} color="white" variant="Outline" />,
+              icon: <Edit size={20} color="currentColor" variant="Outline" className="text-white" />,
               label: t.editAction,
               action: () => onEdit(method),
             },
@@ -143,7 +144,7 @@ function PaymentMethodCard({
                   <path d="M9 2 A7 7 0 0 1 16 9" stroke="white" strokeWidth="2" strokeLinecap="round" />
                 </svg>
               ) : (
-                <Trash size={20} color="white" variant="Outline" />
+                <Trash size={20} color="currentColor" variant="Outline" className="text-white" />
               ),
               label: t.deleteAction,
               action: handleDelete,

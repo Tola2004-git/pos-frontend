@@ -40,12 +40,12 @@ function ActionDropdown({ value, onChange, t }) {
     {
       value: "add",
       label: t.addStockOption,
-      icon: <AddCircle size={18} color="#fff" variant="Bold" />,
+      icon: <AddCircle size={18} color="currentColor" variant="Bold" />,
     },
     {
       value: "remove",
       label: t.removeStockOption,
-      icon: <MinusCirlce size={18} color="#fff" variant="Bold" />,
+      icon: <MinusCirlce size={18} color="currentColor" variant="Bold" />,
     },
   ];
 
@@ -63,8 +63,8 @@ function ActionDropdown({ value, onChange, t }) {
           cursor: "pointer",
           userSelect: "none",
           border: isOpen
-            ? "1px solid rgba(255, 255, 255, 0.8)"
-            : "1px solid rgba(255, 255, 255, 0.2)",
+            ? "1px solid var(--accent-border-soft)"
+            : "1px solid var(--surface-border)",
           transition: "border 0.2s",
         }}
       >
@@ -112,6 +112,7 @@ function ActionDropdown({ value, onChange, t }) {
                 gap: "10px",
                 padding: "10px 14px",
                 cursor: "pointer",
+                color: "#fff",
                 background:
                   value === option.value
                     ? "rgba(255, 255, 255, 0.15)"
@@ -237,8 +238,9 @@ export default function RestockModal({
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <RefreshCircle
               size={28}
-              color="#fff"
+              color="currentColor"
               variant="bulk"
+              className="text-white"
               style={{
                 width: 28,
                 height: 28,
@@ -260,9 +262,9 @@ export default function RestockModal({
             onClick={closeRestock}
             aria-label={t.cancel}
             style={{
-              background: "rgba(255,255,255,0.1)",
+              background: "var(--surface-tint-10)",
               border: "none",
-              color: "white",
+              color: "var(--accent-border-full)",
               width: "36px",
               height: "36px",
               borderRadius: "50%",
@@ -297,8 +299,9 @@ export default function RestockModal({
           <div style={{ position: "relative" }}>
             <SearchNormal1
               size="20"
-              color="#fff"
+              color="currentColor"
               variant="Linear"
+              className="text-white"
               style={iconStyle("Search", focusedField)}
             />
             <input
@@ -307,8 +310,8 @@ export default function RestockModal({
                 paddingLeft: "40px",
                 border:
                   focusedField === "Search"
-                    ? "1px solid rgba(255,255,255,0.8)"
-                    : "1px solid rgba(255,255,255,0.2)",
+                    ? "1px solid var(--accent-border-soft)"
+                    : "1px solid var(--surface-border)",
                 transition: "border 0.2s",
               }}
               placeholder={t.searchInventoryPlaceholder}
@@ -440,7 +443,7 @@ export default function RestockModal({
               marginBottom: "20px",
               padding: "16px",
               borderRadius: "14px",
-              background: "rgba(255,255,255,0.07)",
+              background: "var(--surface-tint-07)",
               border: "1px solid var(--surface-tint-12)",
               display: "flex",
               alignItems: "center",
@@ -473,13 +476,18 @@ export default function RestockModal({
                   border: `2px solid ${accentBorder.full}`,
                 }}
               >
-                <Gallery size="50" color="#fff" variant="bulk" />
+                <Gallery
+                  size="50"
+                  color="currentColor"
+                  variant="bulk"
+                  className="text-white"
+                />
               </div>
             )}
             <div>
               <div
                 style={{
-                  color: "white",
+                  color: "var(--accent-border-full)",
                   fontWeight: 700,
                   fontSize: "1rem",
                   marginBottom: "4px",
@@ -488,7 +496,7 @@ export default function RestockModal({
                 {selectedProduct.name}
               </div>
               <div
-                style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.82rem" }}
+                style={{ color: "var(--accent-border-soft)", fontSize: "0.82rem" }}
               >
                 {t.restockSkuOnlyMsg.replace("{sku}", selectedProduct.sku || t.naLabel)}
               </div>
@@ -539,8 +547,9 @@ export default function RestockModal({
             <div style={{ position: "relative" }}>
               <Box1
                 size="18"
-                color="#fff"
+                color="currentColor"
                 variant="bulk"
+                className="text-white"
                 style={iconStyle("Quantity", focusedField)}
               />
               <input
@@ -549,8 +558,8 @@ export default function RestockModal({
                   paddingLeft: "40px",
                   border:
                     focusedField === "Quantity"
-                      ? "1px solid rgba(255, 255, 255, 0.8)"
-                      : "1px solid rgba(255, 255, 255, 0.2)",
+                      ? "1px solid var(--accent-border-soft)"
+                      : "1px solid var(--surface-border)",
                   transition: "border 0.2s",
                 }}
                 type="number"
@@ -572,8 +581,9 @@ export default function RestockModal({
           <div style={{ position: "relative" }}>
             <Shop
               size="18"
-              color="#fff"
+              color="currentColor"
               variant="bulk"
+              className="text-white"
               style={iconStyle("Supplier", focusedField)}
             />
             <input
@@ -582,8 +592,8 @@ export default function RestockModal({
                 paddingLeft: "40px",
                 border:
                   focusedField === "Supplier"
-                    ? "1px solid rgba(255, 255, 255, 0.8)"
-                    : "1px solid rgba(255, 255, 255, 0.2)",
+                    ? "1px solid var(--accent-border-soft)"
+                    : "1px solid var(--surface-border)",
                 transition: "border 0.2s",
               }}
               placeholder={t.supplierPlaceholder}
@@ -602,8 +612,9 @@ export default function RestockModal({
           <div style={{ position: "relative" }}>
             <NoteText
               size="18"
-              color="#fff"
+              color="currentColor"
               variant="Linear"
+              className="text-white"
               style={{
                 ...iconStyle("Note", focusedField),
                 top: "12px",
@@ -620,8 +631,8 @@ export default function RestockModal({
                 minHeight: "80px",
                 border:
                   focusedField === "Note"
-                    ? "1px solid rgba(255, 255, 255, 0.8)"
-                    : "1px solid rgba(255, 255, 255, 0.2)",
+                    ? "1px solid var(--accent-border-soft)"
+                    : "1px solid var(--surface-border)",
                 transition: "border 0.2s",
               }}
               placeholder={t.restockNotePlaceholder}
@@ -643,7 +654,6 @@ export default function RestockModal({
               flex: 1,
               padding: "12px",
               borderRadius: "12px",
-              color: "white",
               cursor: submitting ? "not-allowed" : "pointer",
               fontWeight: 500,
               fontSize: "0.9rem",

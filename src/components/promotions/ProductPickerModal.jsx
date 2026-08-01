@@ -117,7 +117,7 @@ export default function ProductPickerModal({
         <div
           style={{
             padding: "20px 24px",
-            borderBottom: "1px solid rgba(255,255,255,0.1)",
+            borderBottom: "1px solid var(--surface-tint-10)",
           }}
         >
           <div
@@ -131,8 +131,9 @@ export default function ProductPickerModal({
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <AddCircle
                 size={28}
-                color="white"
+                color="currentColor"
                 variant="Linear"
+                className="text-white"
                 style={{
                   width: 28,
                   height: 28,
@@ -140,7 +141,7 @@ export default function ProductPickerModal({
                 }}
               />
               <h2
-                style={{ color: "white", fontSize: "1.5rem", fontWeight: 600 }}
+                style={{ color: "var(--accent-border-full)", fontSize: "1.5rem", fontWeight: 600 }}
               >
                 {t.selectProductsTitle}
               </h2>
@@ -150,9 +151,9 @@ export default function ProductPickerModal({
               onClick={onClose}
               aria-label={t.cancel}
               style={{
-                background: "rgba(255,255,255,0.1)",
+                background: "var(--surface-tint-10)",
                 border: "none",
-                color: "white",
+                color: "var(--accent-border-full)",
                 width: 36,
                 height: 36,
                 borderRadius: 18,
@@ -166,13 +167,13 @@ export default function ProductPickerModal({
             style={{
               display: "flex",
               alignItems: "center",
-              background: "rgba(255,255,255,0.05)",
+              background: "var(--surface-tint-05)",
               padding: "8px 12px",
               borderRadius: 10,
-              border: "1px solid rgba(255,255,255,0.1)",
+              border: "1px solid var(--surface-tint-10)",
             }}
           >
-            <SearchNormal1 size={18} color="white" variant="Linear" />
+            <SearchNormal1 size={18} color="currentColor" variant="Linear" className="text-white" />
             <input
               type="text"
               placeholder={t.searchProductsSimplePlaceholder}
@@ -184,7 +185,7 @@ export default function ProductPickerModal({
                 background: "transparent",
                 border: "none",
                 outline: "none",
-                color: "white",
+                color: "var(--accent-border-full)",
                 fontSize: "0.9rem",
               }}
             />
@@ -216,12 +217,12 @@ export default function ProductPickerModal({
                       padding: "8px 14px",
                       borderRadius: 50,
                       border: active
-                        ? "1px solid rgba(255,255,255,0.9)"
-                        : "1px solid rgba(255,255,255,0.15)",
+                        ? "1px solid var(--accent-border-full)"
+                        : "1px solid var(--surface-border)",
                       background: active
-                        ? "rgba(255,255,255,0.12)"
-                        : "rgba(255,255,255,0.05)",
-                      color: active ? "white" : "rgba(255,255,255,0.8)",
+                        ? "var(--surface-tint-12)"
+                        : "var(--surface-tint-05)",
+                      color: active ? "var(--accent-border-full)" : "var(--accent-border-soft)",
                       cursor: "pointer",
                       whiteSpace: "nowrap",
                     }}
@@ -246,7 +247,7 @@ export default function ProductPickerModal({
           {loading ? (
             <SkeletonProductPickerList rows={6} />
           ) : filtered.length === 0 ? (
-            <p style={{ color: "rgba(255,255,255,0.5)", textAlign: "center" }}>
+            <p style={{ color: "var(--accent-border-soft)", textAlign: "center" }}>
               {t.noProductsFoundMsg}
             </p>
           ) : (
@@ -266,7 +267,7 @@ export default function ProductPickerModal({
                     cursor: "pointer",
                     border: checked
                       ? "1px solid rgba(14, 233, 36, 0.4)"
-                      : "1px solid rgba(255,255,255,0.08)",
+                      : "1px solid var(--surface-tint-08)",
                   }}
                 >
                   <input
@@ -298,12 +299,12 @@ export default function ProductPickerModal({
                         }}
                       />
                     ) : (
-                      <Gallery size={24} color="white" variant="Linear" />
+                      <Gallery size={24} color="currentColor" variant="Linear" className="text-white" />
                     )}
                   </div>
                   <span
                     style={{
-                      color: "white",
+                      color: "var(--accent-border-full)",
                       fontSize: "0.9rem",
                       fontWeight: 500,
                     }}
@@ -319,7 +320,7 @@ export default function ProductPickerModal({
         <div
           style={{
             padding: "16px 24px",
-            borderTop: "1px solid rgba(255,255,255,0.1)",
+            borderTop: "1px solid var(--surface-tint-10)",
             display: "flex",
             gap: 10,
           }}
@@ -332,7 +333,6 @@ export default function ProductPickerModal({
               flex: 1,
               padding: 12,
               borderRadius: 12,
-              color: "white",
               cursor: "pointer",
               fontWeight: 500,
               fontSize: "0.9rem",

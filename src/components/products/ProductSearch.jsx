@@ -10,9 +10,9 @@ function ProductSearch({ search, setSearch, categoryFilter, setCategoryFilter, c
     width: "100%",
     padding: "10px 14px",
     borderRadius: "10px",
-    border: "1px solid rgba(255,255,255,0.2)",
-    background: "rgba(255,255,255,0.1)",
-    color: "white",
+    border: "1px solid var(--surface-border)",
+    background: "var(--surface-tint-10)",
+    color: "var(--accent-border-full)",
     fontSize: "0.9rem",
     outline: "none",
   };
@@ -40,7 +40,7 @@ function ProductSearch({ search, setSearch, categoryFilter, setCategoryFilter, c
           gap: "12px",
         }}
       >
-        <SearchNormal1 size={20} color="white" variant="Linear" />
+        <SearchNormal1 size={20} color="currentColor" variant="Linear" className="text-white" />
         <input
           type="text"
           placeholder={t.searchProductsPlaceholder}
@@ -67,7 +67,7 @@ function ProductSearch({ search, setSearch, categoryFilter, setCategoryFilter, c
             padding: "14px 18px",
             borderRadius: "16px",
             cursor: "pointer",
-            color: "white",
+            color: "var(--accent-border-full)",
             fontWeight: 600,
             fontSize: "0.9rem",
             display: "flex",
@@ -124,7 +124,7 @@ function ProductSearch({ search, setSearch, categoryFilter, setCategoryFilter, c
                   background: categoryFilter == c.id ? "var(--surface-tint-15)" : "transparent",
                   border: "none",
                   cursor: "pointer",
-                  color: categoryFilter == c.id ? accentBorder.soft : "rgba(255,255,255,0.85)",
+                  color: categoryFilter == c.id ? accentBorder.soft : accentBorder.full,
                   fontSize: "0.88rem",
                   fontWeight: categoryFilter == c.id ? 700 : 400,
                   borderLeft: categoryFilter == c.id ? `3px solid ${accentBorder.soft}` : "3px solid transparent",

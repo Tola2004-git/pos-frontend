@@ -34,7 +34,7 @@ export default function PromotionTable({
             style={{
               width: "100%",
               borderCollapse: "collapse",
-              color: "white",
+              color: "var(--accent-border-full)",
               fontSize: "0.85rem",
             }}
           >
@@ -52,7 +52,7 @@ export default function PromotionTable({
                       padding: "12px 14px",
                       textAlign: colIndex === 1 ? "left" : "center",
                       fontWeight: 600,
-                      color: "white",
+                      color: "var(--accent-border-full)",
                       whiteSpace: "nowrap",
                     }}
                   >
@@ -77,7 +77,7 @@ export default function PromotionTable({
           borderRadius: 16,
           padding: "48px 24px",
           textAlign: "center",
-          color: "rgba(255,255,255,0.5)",
+          color: "var(--accent-border-soft)",
           ...glassCard,
           display: "flex",
           flexDirection: "column",
@@ -87,7 +87,7 @@ export default function PromotionTable({
       >
         <TicketDiscount
           size={80}
-          color="rgba(255,255,255,0.5)"
+          color="currentColor"
           variant="Linear"
         />
         {t.noPromotionsFoundMsg}
@@ -102,7 +102,7 @@ export default function PromotionTable({
           style={{
             width: "100%",
             borderCollapse: "collapse",
-            color: "white",
+            color: "var(--accent-border-full)",
             fontSize: "0.85rem",
           }}
         >
@@ -120,7 +120,7 @@ export default function PromotionTable({
                     padding: "12px 14px",
                     textAlign: colIndex === 1 ? "left" : "center",
                     fontWeight: 600,
-                    color: "white",
+                    color: "var(--accent-border-full)",
                     whiteSpace: "nowrap",
                   }}
                 >

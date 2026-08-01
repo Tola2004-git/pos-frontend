@@ -7,7 +7,7 @@ export const paymentStyles = {
   },
 
   headerTitle: {
-    color: "white",
+    color: "var(--accent-border-full)",
     fontWeight: 700,
     fontSize: "1.5rem",
     margin: 0,
@@ -44,7 +44,7 @@ export const paymentStyles = {
     width: "16px",
     height: "16px",
     borderRadius: "50%",
-    background: "white",
+    background: "var(--accent-border-full)",
     transition: "left 0.3s",
   },
 

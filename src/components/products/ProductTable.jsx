@@ -18,7 +18,7 @@ function ProductImagePlaceholder() {
         justifyContent: "center",
       }}
     >
-      <Gallery size={22} color="white" variant="Bulk" />
+      <Gallery size={22} color="currentColor" variant="Bulk" className="text-white" />
     </div>
   );
 }
@@ -74,7 +74,7 @@ function ProductTable({ products, loading, page, onEdit, onDelete, onRecipe, del
         <div className="table-scroll-x" style={{ overflowX: "auto" }}>
           <table
             className="min-w-[1100px]"
-            style={{ width: "100%", borderCollapse: "collapse", color: "white", fontSize: "0.85rem" }}
+            style={{ width: "100%", borderCollapse: "collapse", color: "var(--accent-border-full)", fontSize: "0.85rem" }}
           >
             <thead>
               <tr
@@ -90,7 +90,7 @@ function ProductTable({ products, loading, page, onEdit, onDelete, onRecipe, del
                       padding: "12px 14px",
                       textAlign: colIndex === 2 ? "left" : "center",
                       fontWeight: 600,
-                      color: "white",
+                      color: "var(--accent-border-full)",
                       whiteSpace: "nowrap",
                     }}
                   >
@@ -116,7 +116,7 @@ function ProductTable({ products, loading, page, onEdit, onDelete, onRecipe, del
           borderRadius: 16,
           padding: "48px 24px",
           textAlign: "center",
-          color: "rgba(255,255,255,0.5)",
+          color: "var(--accent-border-soft)",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -125,7 +125,7 @@ function ProductTable({ products, loading, page, onEdit, onDelete, onRecipe, del
           marginBottom: "16px",
         }}
       >
-        <Gallery size={80} color="rgba(255,255,255,0.5)" variant="Linear" />
+        <Gallery size={80} color="currentColor" variant="Linear" />
         {t.noProductsFoundMsg}
       </div>
     );
@@ -136,7 +136,7 @@ function ProductTable({ products, loading, page, onEdit, onDelete, onRecipe, del
       <div className="table-scroll-x" style={{ overflowX: "auto" }}>
         <table
           className="min-w-[1100px]"
-          style={{ width: "100%", borderCollapse: "collapse", color: "white", fontSize: "0.85rem" }}
+          style={{ width: "100%", borderCollapse: "collapse", color: "var(--accent-border-full)", fontSize: "0.85rem" }}
         >
           <thead>
             <tr
@@ -152,7 +152,7 @@ function ProductTable({ products, loading, page, onEdit, onDelete, onRecipe, del
                     padding: "12px 14px",
                     textAlign: col === "Name" ? "left" : "center",
                     fontWeight: 600,
-                    color: "white",
+                    color: "var(--accent-border-full)",
                     whiteSpace: "nowrap",
                   }}
                 >
@@ -181,7 +181,7 @@ function ProductTable({ products, loading, page, onEdit, onDelete, onRecipe, del
                   style={{
                     padding: "12px 14px",
                     textAlign: "center",
-                    color: "rgba(255,255,255,0.5)",
+                    color: "var(--accent-border-soft)",
                   }}
                 >
                   {(page - 1) * 10 + index + 1}
@@ -195,7 +195,7 @@ function ProductTable({ products, loading, page, onEdit, onDelete, onRecipe, del
                   style={{
                     padding: "12px 14px",
                     textAlign: "left",
-                    color: "white",
+                    color: "var(--accent-border-full)",
                     fontWeight: 500,
                   }}
                 >
@@ -222,7 +222,7 @@ function ProductTable({ products, loading, page, onEdit, onDelete, onRecipe, del
                   style={{
                     padding: "12px 14px",
                     textAlign: "center",
-                    color: "rgba(255,255,255,0.7)",
+                    color: "var(--accent-border-soft)",
                   }}
                 >
                   {product.sku || t.naLabel}
@@ -234,7 +234,7 @@ function ProductTable({ products, loading, page, onEdit, onDelete, onRecipe, del
                         product.qty <= 5
                           ? "#e74c3c"
                           : product.qty <= 20
-                            ? "white"
+                            ? "var(--accent-border-full)"
                             : "#2ecc71",
                       fontWeight: 600,
                     }}
@@ -246,7 +246,7 @@ function ProductTable({ products, loading, page, onEdit, onDelete, onRecipe, del
                   style={{
                     padding: "12px 14px",
                     textAlign: "center",
-                    color: "white",
+                    color: "var(--accent-border-full)",
                     fontWeight: 600,
                   }}
                 >
@@ -256,7 +256,7 @@ function ProductTable({ products, loading, page, onEdit, onDelete, onRecipe, del
                   style={{
                     padding: "12px 14px",
                     textAlign: "center",
-                    color: "rgba(255,255,255,0.7)",
+                    color: "var(--accent-border-soft)",
                   }}
                 >
                   {product.barcode || t.naLabel}
@@ -296,7 +296,7 @@ function ProductTable({ products, loading, page, onEdit, onDelete, onRecipe, del
                           alignItems: "center",
                         }}
                       >
-                        <Edit size={20} color="white" variant="Linear" />
+                        <Edit size={20} color="currentColor" variant="Linear" className="text-white" />
                       </button>
                     </Tooltip>
                     {onRecipe && (
@@ -314,7 +314,7 @@ function ProductTable({ products, loading, page, onEdit, onDelete, onRecipe, del
                             alignItems: "center",
                           }}
                         >
-                          <Cake size={20} color="white" variant="Linear" />
+                          <Cake size={20} color="currentColor" variant="Linear" className="text-white" />
                         </button>
                       </Tooltip>
                     )}
@@ -340,7 +340,7 @@ function ProductTable({ products, loading, page, onEdit, onDelete, onRecipe, del
                             <path d="M9 2 A7 7 0 0 1 16 9" stroke="white" strokeWidth="2" strokeLinecap="round" />
                           </svg>
                         ) : (
-                          <Trash size={20} color="white" variant="Linear" />
+                          <Trash size={20} color="currentColor" variant="Linear" className="text-white" />
                         )}
                       </button>
                     </Tooltip>

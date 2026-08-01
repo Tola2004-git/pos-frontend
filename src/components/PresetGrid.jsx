@@ -11,7 +11,7 @@ const PRESET_NAME_KEYS = {
 function PresetGrid({ bgPresets, selected, onSelect, t }) {
   return (
     <div>
-      <p className="text-[rgba(255,255,255,0.6)] text-[0.85rem] mb-2">
+      <p className="text-white/60 text-[0.85rem] mb-2">
         {t.bgChangerPresetLabel}
       </p>
       <div className="grid grid-cols-3 gap-[10px] mb-[20px]">

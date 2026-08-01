@@ -79,7 +79,6 @@ function PaymentMethodModal({
     transform: "translateY(-50%)",
     width: "18px",
     height: "18px",
-    filter: "brightness(0) invert(1)",
     opacity: focusedField === field ? 1 : 0.4,
     transition: "opacity 0.2s",
     pointerEvents: "none",
@@ -135,8 +134,9 @@ function PaymentMethodModal({
               <>
                 <Card
                   size="28"
-                  color="white"
+                  color="currentColor"
                   variant="Linear"
+                  className="text-white"
                   style={{
                     width: "28px",
                     height: "28px",
@@ -148,8 +148,9 @@ function PaymentMethodModal({
               <>
                 <Card
                   size="28"
-                  color="white"
+                  color="currentColor"
                   variant="Linear"
+                  className="text-white"
                   style={{
                     width: "28px",
                     height: "28px",
@@ -178,9 +179,9 @@ function PaymentMethodModal({
             disabled={submitting}
             aria-label={t.cancel}
             style={{
-              background: "rgba(255,255,255,0.1)",
+              background: "var(--surface-tint-10)",
               border: "none",
-              color: "white",
+              color: "var(--accent-border-full)",
               width: "36px",
               height: "36px",
               borderRadius: "50%",
@@ -218,13 +219,14 @@ function PaymentMethodModal({
             }}
           >
             <div
+              className="text-white"
               style={{
                 width: "128px",
                 height: "128px",
                 margin: "0 auto 10px",
                 borderRadius: "50%",
-                background: "rgba(255,255,255,0.08)",
-                border: "1px solid rgba(255,255,255,0.15)",
+                background: "var(--surface-tint-08)",
+                border: "1px solid var(--surface-border)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -238,12 +240,12 @@ function PaymentMethodModal({
                   style={{ objectFit: "contain" }}
                 />
               ) : (
-                <Bank size={56} color="white" variant="Outline" />
+                <Bank size={56} color="currentColor" variant="Outline" />
               )}
             </div>
             <h3
               style={{
-                color: "white",
+                color: accentBorder.full,
                 fontSize: "1.2rem",
                 margin: "0 0 8px",
               }}
@@ -260,18 +262,18 @@ function PaymentMethodModal({
                   alignItems: "center",
                   padding: "14px 16px",
                   borderRadius: "16px",
-                  background: "rgba(255,255,255,0.05)",
+                  background: "var(--surface-tint-05)",
                   marginBottom: "12px",
                 }}
               >
                 <span
-                  style={{ color: "rgba(255,255,255,0.7)", fontSize: "0.9rem" }}
+                  style={{ color: accentBorder.soft, fontSize: "0.9rem" }}
                 >
                   {t.accountNameLabel}
                 </span>
                 <span
                   style={{
-                    color: "white",
+                    color: accentBorder.full,
                     fontWeight: 600,
                     fontSize: "0.9rem",
                   }}
@@ -286,17 +288,17 @@ function PaymentMethodModal({
                   alignItems: "center",
                   padding: "14px 16px",
                   borderRadius: "16px",
-                  background: "rgba(255,255,255,0.05)",
+                  background: "var(--surface-tint-05)",
                 }}
               >
                 <span
-                  style={{ color: "rgba(255,255,255,0.7)", fontSize: "0.9rem" }}
+                  style={{ color: accentBorder.soft, fontSize: "0.9rem" }}
                 >
                   {t.accountNumberLabel}
                 </span>
                 <span
                   style={{
-                    color: "white",
+                    color: accentBorder.full,
                     fontWeight: 600,
                     fontSize: "0.9rem",
                   }}
@@ -313,8 +315,9 @@ function PaymentMethodModal({
               <div style={{ position: "relative" }}>
                 <Tag
                   size={18}
-                  color="white"
+                  color="currentColor"
                   variant="Outline"
+                  className="text-white"
                   style={iconStyle("Name")}
                 />
                 <input
@@ -323,8 +326,8 @@ function PaymentMethodModal({
                     paddingLeft: "40px",
                     border:
                       focusedField === "Name"
-                        ? "1px solid rgba(255,255,255,0.8)"
-                        : "1px solid rgba(255,255,255,0.2)",
+                        ? `1px solid ${accentBorder.soft}`
+                        : "1px solid var(--surface-border)",
                     transition: "border 0.2s",
                   }}
                   placeholder={t.paymentMethodNamePlaceholder}
@@ -354,11 +357,8 @@ function PaymentMethodModal({
                       width: "60px",
                       height: "60px",
                       borderRadius: "50%",
-                      border: `2px solid ${form.icon === bank.logo ? accentBorder.full : "rgba(255,255,255,0.2)"}`,
-                      background:
-                        form.icon === bank.logo
-                          ? "rgba(255,255,255,0.06)"
-                          : "rgba(255,255,255,0.06)",
+                      border: `2px solid ${form.icon === bank.logo ? accentBorder.full : "var(--surface-border)"}`,
+                      background: "var(--surface-tint-06)",
                       cursor: viewMode ? "not-allowed" : "pointer",
                       display: "flex",
                       alignItems: "center",
@@ -390,7 +390,7 @@ function PaymentMethodModal({
             >
               <p
                 style={{
-                  color: "#fff",
+                  color: accentBorder.full,
                   fontSize: "0.85rem",
                   fontWeight: 600,
                   marginBottom: "12px",
@@ -399,7 +399,7 @@ function PaymentMethodModal({
                   gap: "6px",
                 }}
               >
-                <Bank size={20} color="white" variant="Outline" />
+                <Bank size={20} color="currentColor" variant="Outline" />
                 <span>{t.bankInfoOptionalMsg}</span>
               </p>
               <div
@@ -414,8 +414,9 @@ function PaymentMethodModal({
                   <div style={{ position: "relative" }}>
                     <Building
                       size={18}
-                      color="white"
+                      color="currentColor"
                       variant="Outline"
+                      className="text-white"
                       style={iconStyle("Bank Name")}
                     />
                     <input
@@ -424,11 +425,11 @@ function PaymentMethodModal({
                         paddingLeft: "40px",
                         border:
                           focusedField === "Bank Name"
-                            ? "1px solid rgba(255,255,255,0.8)"
-                            : "1px solid rgba(255,255,255,0.2)",
+                            ? `1px solid ${accentBorder.soft}`
+                            : "1px solid var(--surface-border)",
                         transition: "border 0.2s",
                         background: viewMode
-                          ? "rgba(255,255,255,0.06)"
+                          ? "var(--surface-tint-06)"
                           : undefined,
                       }}
                       placeholder={t.bankNamePlaceholder}
@@ -447,8 +448,9 @@ function PaymentMethodModal({
                   <div style={{ position: "relative" }}>
                     <Personalcard
                       size={18}
-                      color="white"
+                      color="currentColor"
                       variant="Outline"
+                      className="text-white"
                       style={iconStyle("Account Name")}
                     />
                     <input
@@ -457,11 +459,11 @@ function PaymentMethodModal({
                         paddingLeft: "40px",
                         border:
                           focusedField === "Account Name"
-                            ? "1px solid rgba(255,255,255,0.8)"
-                            : "1px solid rgba(255,255,255,0.2)",
+                            ? `1px solid ${accentBorder.soft}`
+                            : "1px solid var(--surface-border)",
                         transition: "border 0.2s",
                         background: viewMode
-                          ? "rgba(255,255,255,0.06)"
+                          ? "var(--surface-tint-06)"
                           : undefined,
                       }}
                       placeholder={t.accountNamePlaceholder}
@@ -480,8 +482,9 @@ function PaymentMethodModal({
                   <div style={{ position: "relative" }}>
                     <Hashtag
                       size={18}
-                      color="white"
+                      color="currentColor"
                       variant="Outline"
+                      className="text-white"
                       style={iconStyle("Account Number")}
                     />
                     <input
@@ -490,11 +493,11 @@ function PaymentMethodModal({
                         paddingLeft: "40px",
                         border:
                           focusedField === "Account Number"
-                            ? "1px solid rgba(255,255,255,0.8)"
-                            : "1px solid rgba(255,255,255,0.2)",
+                            ? `1px solid ${accentBorder.soft}`
+                            : "1px solid var(--surface-border)",
                         transition: "border 0.2s",
                         background: viewMode
-                          ? "rgba(255,255,255,0.06)"
+                          ? "var(--surface-tint-06)"
                           : undefined,
                       }}
                       placeholder={t.accountNumberPlaceholder}
@@ -526,7 +529,7 @@ function PaymentMethodModal({
                   width: "46px",
                   height: "24px",
                   borderRadius: "12px",
-                  background: form.status ? "#2ecc71" : "rgba(255,255,255,0.2)",
+                  background: form.status ? "#2ecc71" : "var(--surface-tint-15)",
                   cursor: viewMode ? "not-allowed" : "pointer",
                   position: "relative",
                   transition: "background 0.3s",
@@ -547,7 +550,7 @@ function PaymentMethodModal({
               </div>
               <span
                 style={{
-                  color: form.status ? "#2ecc71" : "rgba(255,255,255,0.5)",
+                  color: form.status ? "#2ecc71" : accentBorder.soft,
                   fontSize: "0.85rem",
                 }}
               >
@@ -566,7 +569,6 @@ function PaymentMethodModal({
               flex: 1,
               padding: "12px",
               borderRadius: "12px",
-              color: "white",
               cursor: submitting ? "not-allowed" : "pointer",
               fontWeight: 500,
               fontSize: "0.9rem",

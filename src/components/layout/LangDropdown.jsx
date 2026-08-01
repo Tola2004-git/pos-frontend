@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { glassCard, colors } from "../../utils/styles";
+import { glassCard } from "../../utils/styles";
 import flagUs from "flag-icons/flags/4x3/us.svg";
 import flagKh from "flag-icons/flags/4x3/kh.svg";
 
@@ -19,7 +19,7 @@ function Flag({ src, width = 20, height = 15 }) {
       className="shrink-0 object-cover"
       style={{
         borderRadius: 3,
-        boxShadow: "0 0 0 1px rgba(255,255,255,0.25)",
+        boxShadow: "0 0 0 1px var(--surface-border)",
       }}
     />
   );
@@ -112,8 +112,8 @@ function LangDropdown({ lang, setLang }) {
                 <button
                   key={code}
                   onClick={() => handleSelect(code)}
-                  style={{ color: active ? colors.white : "white" }}
                   className={`
+                    text-white
                     flex items-center gap-[10px] w-full px-4 py-[10px] border-none cursor-pointer text-[0.85rem] transition-colors duration-200
                     ${active ? "bg-white/5 font-semibold" : "bg-transparent font-normal"}
                     hover:bg-white/10

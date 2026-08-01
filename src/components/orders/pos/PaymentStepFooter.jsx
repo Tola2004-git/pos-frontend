@@ -31,12 +31,11 @@ export function PaymentStepFooter({
           className="btn-cancel-glass flex-1 flex items-center justify-center gap-2 whitespace-nowrap text-sm transition-all active:scale-95"
           style={{
             borderRadius: "12px",
-            color: "white",
             cursor: "pointer",
             fontWeight: 500,
           }}
         >
-          <ArrowLeft2 size={18} color="white" variant="Linear" />
+          <ArrowLeft2 size={18} color="currentColor" variant="Linear" />
           {t.back2}
         </button>
 

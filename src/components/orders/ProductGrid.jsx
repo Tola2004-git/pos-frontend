@@ -7,7 +7,7 @@ import {
   Gallery,
   SearchNormal1,
 } from "iconsax-react";
-import { glassCard } from "../../utils/styles";
+import { glassCard, accentBorder } from "../../utils/styles";
 import { useLowStock } from "../../context/LowStockContext";
 
 const PAGE_SIZE = 9;
@@ -61,10 +61,10 @@ export const ProductGrid = memo(function ProductGrid({
   return (
     <div className="flex-1 flex flex-col overflow-hidden border-r border-white/10">
       <div className="p-4 pb-0">
-        <div className="flex items-center bg-white/5 px-3 py-2 rounded-lg border border-white/10 mb-[14px]">
+        <div className="flex items-center bg-white/5 px-3 py-2 rounded-lg border border-white/10 mb-[14px] text-white">
           <SearchNormal1
             size={20}
-            color="#fff"
+            color="currentColor"
             variant="Linear"
             style={{ marginRight: "10px" }}
           />
@@ -149,11 +149,11 @@ export const ProductGrid = memo(function ProductGrid({
                 gap: "12px",
               }}
             >
-              <Box size="48" color="white" variant="Outline" className="text-white/30" />
+              <Box size="48" color="currentColor" variant="Outline" className="text-white/30" />
               <div
                 style={{
                   fontSize: "1rem",
-                  color: "rgba(255,255,255,0.7)",
+                  color: accentBorder.soft,
                   fontWeight: "500",
                 }}
               >
@@ -217,8 +217,8 @@ export const ProductGrid = memo(function ProductGrid({
                     />
                   </div>
                 ) : (
-                  <div className="w-[60px] h-[60px] rounded-[10px] flex items-center justify-center text-[1.5rem] mx-auto mb-2">
-                    <Gallery size={50} color="#fff" variant="Linear" />
+                  <div className="w-[60px] h-[60px] rounded-[10px] flex items-center justify-center text-[1.5rem] mx-auto mb-2 text-white">
+                    <Gallery size={50} color="currentColor" variant="Linear" />
                   </div>
                 )}
 
@@ -276,7 +276,7 @@ export const ProductGrid = memo(function ProductGrid({
           style={glassCard}
           className="flex items-center gap-1 rounded-full px-4 py-2 text-[0.8rem] font-semibold text-white transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed hover:enabled:scale-105"
         >
-          <ArrowLeft2 size={14} color="#fff" variant="Linear" />
+          <ArrowLeft2 size={14} color="currentColor" variant="Linear" />
           {tr("back2", "Back")}
         </button>
 
@@ -297,7 +297,7 @@ export const ProductGrid = memo(function ProductGrid({
           className="flex items-center gap-1 rounded-full px-4 py-2 text-[0.8rem] font-semibold text-white transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed hover:enabled:scale-105"
         >
           {tr("next", "Next")}
-          <ArrowRight2 size={14} color="#fff" variant="Linear" />
+          <ArrowRight2 size={14} color="currentColor" variant="Linear" />
         </button>
       </div>
     </div>

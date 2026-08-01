@@ -21,7 +21,7 @@ export function CartItem({
       style={glassCard}
       className="p-3 rounded-xl mb-[10px] flex gap-3 relative"
     >
-      <div className="w-[60px] h-[60px] rounded-[8px] overflow-hidden flex items-center justify-center bg-white/5 shrink-0">
+      <div className="w-[60px] h-[60px] rounded-[8px] overflow-hidden flex items-center justify-center bg-white/5 shrink-0 text-white">
         {item.product?.image ||
         item.product?.image_url ||
         item.image_url ||
@@ -37,7 +37,7 @@ export function CartItem({
             className="w-full h-full object-contain"
           />
         ) : (
-          <Gallery size={40} color="white" variant="Linear" />
+          <Gallery size={40} color="currentColor" variant="Linear" />
         )}
       </div>
 
@@ -96,7 +96,7 @@ export function CartItem({
             className="w-[22px] h-[22px] rounded-full border-none bg-white/15 text-white flex items-center justify-center cursor-pointer hover:bg-white/25 transition-colors"
             aria-label={t?.decreaseQtyAction || "Decrease quantity"}
           >
-            <Minus size={14} variant="Linear" color="white" />
+            <Minus size={14} variant="Linear" color="currentColor" />
           </button>
           <span className="text-white font-semibold min-w-[15px] text-center">
             {item.quantity}
@@ -106,7 +106,7 @@ export function CartItem({
             className="w-[22px] h-[22px] rounded-full border-none bg-white/15 text-white flex items-center justify-center cursor-pointer hover:bg-white/25 transition-colors"
             aria-label={t?.increaseQtyAction || "Increase quantity"}
           >
-            <Add size={14} color="white" variant="Linear" />
+            <Add size={14} color="currentColor" variant="Linear" />
           </button>
         </div>
       </div>

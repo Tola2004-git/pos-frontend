@@ -29,13 +29,13 @@ export function PaymentDetailsForm({
     background: "rgba(255,255,255,0.0)",
     backdropFilter: "blur(25px)",
     WebkitBackdropFilter: "blur(25px)",
-    color: "white",
+    color: "var(--accent-border-full)",
     fontSize: "0.9rem",
     outline: "none",
   };
 
   const labelStyle = {
-    color: "rgba(255,255,255,0.8)",
+    color: accentBorder.soft,
     fontSize: "0.85rem",
     display: "block",
     marginBottom: "6px",
@@ -44,13 +44,13 @@ export function PaymentDetailsForm({
   return (
     <div className="">
       <h4 className="flex items-center gap-2 text-white mb-[14px] text-lg font-semibold">
-        <ReceiptItem size={24} color="white" variant="Outline" />
+        <ReceiptItem size={24} color="currentColor" variant="Outline" />
         {tr("paymentDetails", "Payment Details")}
       </h4>
 
       <div className="flex items-center justify-between mb-4">
         <h4 className="flex items-center gap-2 text-white text-lg font-medium">
-          <Card size={24} color="white" variant="Outline" />
+          <Card size={24} color="currentColor" variant="Outline" />
           {tr("paymentSettings", "Payment Settings")}
         </h4>
         <div className="flex gap-2">

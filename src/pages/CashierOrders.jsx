@@ -115,7 +115,7 @@ function CashierOrders() {
         <h2 className="text-white font-bold text-2xl m-0 flex items-center gap-3">
           <ReceiptText
             size={32}
-            color="white"
+            color="currentColor"
             variant="Linear"
             style={{ animation: "float 3s ease-in-out infinite" }}
           />
@@ -129,7 +129,7 @@ function CashierOrders() {
           className="w-full max-w-[280px] rounded-[16px] px-5 py-4 mb-5"
         >
           <div className="flex items-baseline gap-2 mb-2.5">
-            <Chart2 size={18} color="#fff" variant="Bold" />
+            <Chart2 size={18} color="currentColor" variant="Bold" className="text-white" />
             <span className="text-white font-bold text-xl">
               ${Number(mySales.total_sales || 0).toFixed(2)}
             </span>

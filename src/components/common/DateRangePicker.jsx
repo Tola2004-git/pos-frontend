@@ -30,11 +30,11 @@ const DateRangeTrigger = forwardRef(
         width: "auto",
         padding: "12px 14px",
         borderRadius: "16px",
-        border: "1px solid rgba(255,255,255,0.2)",
+        border: "1px solid var(--surface-border)",
         background: "rgba(255,255,255,0.0)",
         backdropFilter: "blur(25px)",
         WebkitBackdropFilter: "blur(25px)",
-        color: "white",
+        color: "var(--accent-border-full)",
         fontSize: "0.9rem",
         display: "flex",
         alignItems: "center",
@@ -62,7 +62,7 @@ const DateRangeTrigger = forwardRef(
           cursor: disabled ? "not-allowed" : "pointer",
         }}
       >
-        <Calendar size={16} color="#fff" variant="Outline" />
+        <Calendar size={16} color="currentColor" variant="Outline" />
         {value || placeholder}
       </button>
       {value && !disabled && (
@@ -82,7 +82,7 @@ const DateRangeTrigger = forwardRef(
             display: "flex",
             alignItems: "center",
             cursor: "pointer",
-            color: "rgba(255,255,255,0.5)",
+            color: "var(--accent-border-soft)",
           }}
         >
           <CloseCircle size={16} color="currentColor" variant="Linear" />

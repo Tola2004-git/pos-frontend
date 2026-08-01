@@ -134,7 +134,6 @@ export default function PromotionModal({
     transform: "translateY(-50%)",
     width: "18px",
     height: "18px",
-    filter: "brightness(0) invert(1)",
     opacity: focusedField === field ? 1 : 0.4,
     transition: "opacity 0.2s",
     pointerEvents: "none",
@@ -144,15 +143,15 @@ export default function PromotionModal({
     width: "100%",
     padding: "10px 14px",
     borderRadius: "10px",
-    border: "1px solid rgba(255,255,255,0.2)",
-    background: "rgba(255,255,255,0.1)",
-    color: "white",
+    border: "1px solid var(--surface-border)",
+    background: "var(--surface-tint-10)",
+    color: "var(--accent-border-full)",
     fontSize: "0.9rem",
     outline: "none",
   };
 
   const labelStyle = {
-    color: "rgba(255,255,255,0.8)",
+    color: "var(--accent-border-soft)",
     fontSize: "0.85rem",
     display: "block",
     marginBottom: "6px",
@@ -209,8 +208,9 @@ export default function PromotionModal({
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <TicketDiscount
               size={28}
-              color="white"
+              color="currentColor"
               variant="Linear"
+              className="text-white"
               style={{
                 width: 28,
                 height: 28,
@@ -220,7 +220,7 @@ export default function PromotionModal({
             <div>
               <h2
                 style={{
-                  color: "white",
+                  color: "var(--accent-border-full)",
                   margin: 0,
                   fontSize: "1.5rem",
                   fontWeight: 600,
@@ -235,9 +235,9 @@ export default function PromotionModal({
             onClick={onClose}
             aria-label={t.cancel}
             style={{
-              background: "rgba(255,255,255,0.1)",
+              background: "var(--surface-tint-10)",
               border: "none",
-              color: "white",
+              color: "var(--accent-border-full)",
               width: 36,
               height: 36,
               borderRadius: 18,
@@ -270,8 +270,9 @@ export default function PromotionModal({
             <div style={{ position: "relative" }}>
               <Tag
                 size={20}
-                color="white"
+                color="currentColor"
                 variant="Linear"
+                className="text-white"
                 style={iconStyle("Promotion Name")}
               />
               <input
@@ -280,8 +281,8 @@ export default function PromotionModal({
                   paddingLeft: "40px",
                   border:
                     focusedField === "Promotion Name"
-                      ? "1px solid rgba(255,255,255,0.8)"
-                      : "1px solid rgba(255,255,255,0.2)",
+                      ? "1px solid var(--accent-border-soft)"
+                      : "1px solid var(--surface-border)",
                   transition: "border 0.2s",
                 }}
                 placeholder={t.promotionNamePlaceholder}
@@ -299,8 +300,9 @@ export default function PromotionModal({
               {SelectedIcon && (
                 <SelectedIcon
                   size={20}
-                  color="white"
+                  color="currentColor"
                   variant="Linear"
+                  className="text-white"
                   style={iconStyle("Promotion Type")}
                 />
               )}
@@ -310,8 +312,8 @@ export default function PromotionModal({
                   paddingLeft: "40px",
                   border:
                     focusedField === "Promotion Type"
-                      ? "1px solid rgba(255,255,255,0.8)"
-                      : "1px solid rgba(255,255,255,0.2)",
+                      ? "1px solid var(--accent-border-soft)"
+                      : "1px solid var(--surface-border)",
                   transition: "border 0.2s",
                   cursor: "pointer",
                 }}
@@ -349,15 +351,17 @@ export default function PromotionModal({
                 {form.type === "percentage" ? (
                   <PercentageCircle
                     size={20}
-                    color="white"
+                    color="currentColor"
                     variant="Linear"
+                    className="text-white"
                     style={iconStyle("Discount Value")}
                   />
                 ) : (
                   <DollarCircle
                     size={20}
-                    color="white"
+                    color="currentColor"
                     variant="Linear"
+                    className="text-white"
                     style={iconStyle("Discount Value")}
                   />
                 )}
@@ -368,8 +372,8 @@ export default function PromotionModal({
                   paddingLeft: "40px",
                   border:
                     focusedField === "Discount Value"
-                      ? "1px solid rgba(255,255,255,0.8)"
-                      : "1px solid rgba(255,255,255,0.2)",
+                      ? "1px solid var(--accent-border-soft)"
+                      : "1px solid var(--surface-border)",
                   transition: "border 0.2s",
                 }}
                 type="number"
@@ -412,13 +416,13 @@ export default function PromotionModal({
                     fontWeight: 600,
                     border:
                       form.apply_to === scope.value
-                        ? "1px solid rgba(255,255,255,0.8)"
-                        : "1px solid rgba(255,255,255,0.2)",
+                        ? "1px solid var(--accent-border-soft)"
+                        : "1px solid var(--surface-border)",
                     background:
                       form.apply_to === scope.value
-                        ? "rgba(255,255,255,0.15)"
-                        : "rgba(255,255,255,0.05)",
-                    color: "white",
+                        ? "var(--surface-tint-15)"
+                        : "var(--surface-tint-05)",
+                    color: "var(--accent-border-full)",
                   }}
                 >
                   {scope.label}
@@ -430,8 +434,9 @@ export default function PromotionModal({
               <div style={{ position: "relative" }}>
                 <Box
                   size={20}
-                  color="white"
+                  color="currentColor"
                   variant="Linear"
+                  className="text-white"
                   style={iconStyle("Apply To")}
                 />
                 <button
@@ -443,14 +448,14 @@ export default function PromotionModal({
                     display: "flex",
                     border:
                       focusedField === "Apply To"
-                        ? "1px solid rgba(255,255,255,0.8)"
-                        : "1px solid rgba(255,255,255,0.2)",
+                        ? "1px solid var(--accent-border-soft)"
+                        : "1px solid var(--surface-border)",
                     transition: "border 0.2s",
                   }}
                   onFocus={() => setFocusedField("Apply To")}
                   onBlur={() => setFocusedField("")}
                 >
-                  <span style={{ color: "rgba(255,255,255,0.85)" }}>
+                  <span style={{ color: "var(--accent-border-full)" }}>
                     {form.product_ids.length > 0
                       ? t.productsSelectedMsg.replace("{n}", form.product_ids.length)
                       : t.allProductsTapMsg}
@@ -463,8 +468,9 @@ export default function PromotionModal({
               <div style={{ position: "relative" }}>
                 <Box
                   size={20}
-                  color="white"
+                  color="currentColor"
                   variant="Linear"
+                  className="text-white"
                   style={iconStyle("Apply To")}
                 />
                 <button
@@ -476,14 +482,14 @@ export default function PromotionModal({
                     display: "flex",
                     border:
                       focusedField === "Apply To"
-                        ? "1px solid rgba(255,255,255,0.8)"
-                        : "1px solid rgba(255,255,255,0.2)",
+                        ? "1px solid var(--accent-border-soft)"
+                        : "1px solid var(--surface-border)",
                     transition: "border 0.2s",
                   }}
                   onFocus={() => setFocusedField("Apply To")}
                   onBlur={() => setFocusedField("")}
                 >
-                  <span style={{ color: "rgba(255,255,255,0.85)" }}>
+                  <span style={{ color: "var(--accent-border-full)" }}>
                     {form.category_ids.length > 0
                       ? t.categoriesSelectedMsg.replace("{n}", form.category_ids.length)
                       : t.tapToSelectCategoriesMsg}
@@ -506,8 +512,9 @@ export default function PromotionModal({
               <div style={{ position: "relative" }}>
                 <Calendar
                   size={20}
-                  color="white"
+                  color="currentColor"
                   variant="Linear"
+                  className="text-white"
                   style={iconStyle("Start Date")}
                 />
                 <input
@@ -517,8 +524,8 @@ export default function PromotionModal({
                     paddingLeft: "40px",
                     border:
                       focusedField === "Start Date"
-                        ? "1px solid rgba(255,255,255,0.8)"
-                        : "1px solid rgba(255,255,255,0.2)",
+                        ? "1px solid var(--accent-border-soft)"
+                        : "1px solid var(--surface-border)",
                     transition: "border 0.2s",
                     colorScheme: "dark",
                   }}
@@ -534,8 +541,9 @@ export default function PromotionModal({
               <div style={{ position: "relative" }}>
                 <Calendar
                   size={20}
-                  color="white"
+                  color="currentColor"
                   variant="Linear"
+                  className="text-white"
                   style={iconStyle("End Date")}
                 />
                 <input
@@ -545,8 +553,8 @@ export default function PromotionModal({
                     paddingLeft: "40px",
                     border:
                       focusedField === "End Date"
-                        ? "1px solid rgba(255,255,255,0.8)"
-                        : "1px solid rgba(255,255,255,0.2)",
+                        ? "1px solid var(--accent-border-soft)"
+                        : "1px solid var(--surface-border)",
                     transition: "border 0.2s",
                     colorScheme: "dark",
                   }}
@@ -564,8 +572,9 @@ export default function PromotionModal({
             <div style={{ position: "relative" }}>
               <DollarCircle
                 size={20}
-                color="white"
+                color="currentColor"
                 variant="Linear"
+                className="text-white"
                 style={iconStyle("Minimum Purchase")}
               />
               <input
@@ -577,8 +586,8 @@ export default function PromotionModal({
                   paddingLeft: "40px",
                   border:
                     focusedField === "Minimum Purchase"
-                      ? "1px solid rgba(255,255,255,0.8)"
-                      : "1px solid rgba(255,255,255,0.2)",
+                      ? "1px solid var(--accent-border-soft)"
+                      : "1px solid var(--surface-border)",
                   transition: "border 0.2s",
                 }}
                 placeholder={t.minPurchasePlaceholder}
@@ -598,7 +607,6 @@ export default function PromotionModal({
                 flex: 1,
                 padding: "12px",
                 borderRadius: "12px",
-                color: "white",
                 cursor: submitting ? "not-allowed" : "pointer",
                 fontWeight: 500,
                 fontSize: "0.9rem",

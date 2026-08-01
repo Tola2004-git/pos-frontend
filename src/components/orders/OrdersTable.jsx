@@ -1,5 +1,5 @@
 import { RiEyeLine, RiPrinterLine, RiCloseLine } from "react-icons/ri";
-import { glassCard, colors } from "../../utils/styles";
+import { glassCard, accentBorder } from "../../utils/styles";
 import { CloseCircle, Eye, Printer, Edit, MoneyRecive } from "iconsax-react";
 import { SkeletonOrdersTable } from "../ui/SkeletonOrder";
 import { getStatusStyle } from "../../utils/orderHelpers";
@@ -102,7 +102,7 @@ export default function OrdersTable({
                   style={{
                     padding: "16px 14px",
                     textAlign: "left",
-                    color: colors.whiteFull,
+                    color: accentBorder.full,
                     fontWeight: 600,
                     fontSize: "0.85rem",
                     letterSpacing: "0.02em",
@@ -162,7 +162,7 @@ export default function OrdersTable({
                       title={order.order_number}
                       style={{
                         padding: "12px 14px",
-                        color: colors.white,
+                        color: accentBorder.soft,
                         fontWeight: 600,
                         fontSize: "0.85rem",
                         maxWidth: "150px",
@@ -177,7 +177,7 @@ export default function OrdersTable({
                       title={order.customer_name || walkInLabel}
                       style={{
                         padding: "12px 14px",
-                        color: "white",
+                        color: accentBorder.full,
                         fontSize: "0.85rem",
                         maxWidth: "140px",
                         overflow: "hidden",
@@ -229,7 +229,7 @@ export default function OrdersTable({
                     <td
                       style={{
                         padding: "12px 14px",
-                        color: colors.white,
+                        color: accentBorder.soft,
                         fontWeight: 700,
                         fontSize: "0.85rem",
                         whiteSpace: "nowrap",
@@ -339,9 +339,9 @@ export default function OrdersTable({
                               gap: "3px",
                               fontSize: "0.78rem",
                             }}
-                            className="duration-200 hover:scale-110 transition-transform"
+                            className="duration-200 hover:scale-110 transition-transform text-white"
                           >
-                            <Eye size={20} color="#fff" variant="TwoTone" />
+                            <Eye size={20} color="currentColor" variant="TwoTone" />
                           </button>
                         </Tooltip>
                         {order.status === "pending" && onEdit && (
@@ -371,7 +371,7 @@ export default function OrdersTable({
                                 fontSize: "0.78rem",
                                 opacity: editLoadingId === order.id ? 0.7 : 1,
                               }}
-                              className="duration-200 hover:scale-110 transition-transform"
+                              className="duration-200 hover:scale-110 transition-transform text-white"
                             >
                               {editLoadingId === order.id ? (
                                 <svg
@@ -401,7 +401,7 @@ export default function OrdersTable({
                               ) : (
                                 <Edit
                                   size={20}
-                                  color="#fff"
+                                  color="currentColor"
                                   variant="TwoTone"
                                 />
                               )}
@@ -421,9 +421,9 @@ export default function OrdersTable({
                               gap: "3px",
                               fontSize: "0.78rem",
                             }}
-                            className="duration-200 hover:scale-110 transition-transform"
+                            className="duration-200 hover:scale-110 transition-transform text-white"
                           >
-                            <Printer size={20} color="#fff" variant="TwoTone" />
+                            <Printer size={20} color="currentColor" variant="TwoTone" />
                           </button>
                         </Tooltip>
                         {order.status === "pending" && onCancel && (
@@ -454,7 +454,7 @@ export default function OrdersTable({
                                 fontSize: "0.78rem",
                                 opacity: cancelLoadingId === order.id ? 0.7 : 1,
                               }}
-                              className="duration-200 hover:scale-110 transition-transform"
+                              className="duration-200 hover:scale-110 transition-transform text-white"
                             >
                               {cancelLoadingId === order.id ? (
                                 <svg
@@ -484,7 +484,7 @@ export default function OrdersTable({
                               ) : (
                                 <CloseCircle
                                   size={20}
-                                  color="#fff"
+                                  color="currentColor"
                                   variant="TwoTone"
                                 />
                               )}
@@ -601,7 +601,7 @@ export default function OrdersTable({
           </button>
           <span
             style={{
-              color: "white",
+              color: accentBorder.full,
               fontWeight: 600,
               fontSize: "0.85rem",
               padding: "0 8px",

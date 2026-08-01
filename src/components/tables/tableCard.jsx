@@ -76,7 +76,7 @@ function TableCard({
           <div
             style={{
               border: `1px solid ${statusStyle.border}`,
-              color: "white",
+              color: "var(--accent-border-full)",
               padding: "6px 10px",
               borderRadius: "50%",
               fontWeight: 700,
@@ -111,7 +111,7 @@ function TableCard({
             padding: "4px 10px",
             borderRadius: "999px",
             background: "var(--surface-tint-15)",
-            color: "white",
+            color: "var(--accent-border-full)",
             fontSize: "0.8rem",
             marginBottom: "8px",
           }}
@@ -121,7 +121,7 @@ function TableCard({
         </div>
         <h3
           style={{
-            color: "white",
+            color: "var(--accent-border-full)",
             fontWeight: 400,
             margin: "10px 0 4px",
             fontSize: "1.2rem",
@@ -134,7 +134,7 @@ function TableCard({
       {table.notes && (
         <div
           style={{
-            color: "rgba(255,255,255,0.4)",
+            color: "var(--surface-tint-15)",
             fontSize: "0.75rem",
             textAlign: "center",
             marginBottom: "14px",
@@ -163,7 +163,7 @@ function TableCard({
                     }}
                     className="duration-200 hover:scale-110 transition-transform"
                   >
-                    <ArrowSwapHorizontal size={20} color="white" variant="Linear" />
+                    <ArrowSwapHorizontal size={20} color="currentColor" variant="Linear" className="text-white" />
                   </button>
                 </Tooltip>
               )}
@@ -182,7 +182,7 @@ function TableCard({
                     }}
                     className="duration-200 hover:scale-110 transition-transform"
                   >
-                    <TickCircle size={20} color="white" variant="Linear" />
+                    <TickCircle size={20} color="currentColor" variant="Linear" className="text-white" />
                   </button>
                 </Tooltip>
               )}
@@ -203,7 +203,7 @@ function TableCard({
                     }}
                     className="duration-200 hover:scale-110 transition-transform"
                   >
-                    <ArrowSwapHorizontal size={20} color="white" variant="Linear" />
+                    <ArrowSwapHorizontal size={20} color="currentColor" variant="Linear" className="text-white" />
                   </button>
                 </Tooltip>
                 <Tooltip label={clearTableLabel}>
@@ -217,7 +217,7 @@ function TableCard({
                     }}
                     className="duration-200 hover:scale-110 transition-transform"
                   >
-                    <TickCircle size={20} color="white" variant="Linear" />
+                    <TickCircle size={20} color="currentColor" variant="Linear" className="text-white" />
                   </button>
                 </Tooltip>
               </>
@@ -233,7 +233,7 @@ function TableCard({
                 }}
                 className="duration-200 hover:scale-110 transition-transform"
               >
-                <Edit size={20} color="white" variant="Linear" />
+                <Edit size={20} color="currentColor" variant="Linear" className="text-white" />
               </button>
             </Tooltip>
             <Tooltip label={deleteLabel}>
@@ -251,11 +251,11 @@ function TableCard({
               >
                 {isDeleting ? (
                   <svg className="animate-spin" width="20" height="20" viewBox="0 0 18 18" fill="none">
-                    <circle cx="9" cy="9" r="7" stroke="rgba(255,255,255,0.3)" strokeWidth="2" />
-                    <path d="M9 2 A7 7 0 0 1 16 9" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                    <circle cx="9" cy="9" r="7" stroke="var(--surface-border)" strokeWidth="2" />
+                    <path d="M9 2 A7 7 0 0 1 16 9" stroke="var(--accent-border-full)" strokeWidth="2" strokeLinecap="round" />
                   </svg>
                 ) : (
-                  <Trash size={20} color="white" variant="Linear" />
+                  <Trash size={20} color="currentColor" variant="Linear" className="text-white" />
                 )}
               </button>
             </Tooltip>

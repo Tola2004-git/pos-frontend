@@ -25,6 +25,6 @@ export const getStatusStyle = (status) => {
         border: "rgba(155,89,182,0.3)",
       };
     default:
-      return { color: "white", bg: "transparent", border: "transparent" };
+      return { color: "var(--accent-border-full)", bg: "transparent", border: "transparent" };
   }
 };

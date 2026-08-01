@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { glass, glassCard, colors } from "../../utils/styles";
+import { glass, glassCard, accentBorder } from "../../utils/styles";
 import { alertSuccess, alertError } from "../../utils/alert.jsx";
 import {
   Cake,
@@ -49,9 +49,9 @@ function RecipeModal({ product, ingredients, onClose, onSuccess, t }) {
   const inputStyle = {
     padding: "10px 12px",
     borderRadius: "10px",
-    border: "1px solid rgba(255,255,255,0.2)",
-    background: "rgba(255,255,255,0.1)",
-    color: "white",
+    border: "1px solid var(--surface-border)",
+    background: "var(--surface-tint-10)",
+    color: "var(--accent-border-full)",
     fontSize: "0.85rem",
     outline: "none",
   };
@@ -146,7 +146,7 @@ function RecipeModal({ product, ingredients, onClose, onSuccess, t }) {
         >
           <h3
             style={{
-              color: colors.whiteFull,
+              color: accentBorder.full,
               fontWeight: 700,
               fontSize: "1.4rem",
               margin: 0,
@@ -155,7 +155,7 @@ function RecipeModal({ product, ingredients, onClose, onSuccess, t }) {
               gap: "10px",
             }}
           >
-            <Cake size={26} color="white" variant="Linear" />
+            <Cake size={26} color="currentColor" variant="Linear" />
             {t.recipeTitle}
           </h3>
           <button
@@ -163,12 +163,12 @@ function RecipeModal({ product, ingredients, onClose, onSuccess, t }) {
             aria-label={t.cancel}
             style={{
               border: "none",
-              color: "white",
+              color: "var(--accent-border-full)",
               width: "36px",
               height: "36px",
               borderRadius: "50%",
               cursor: "pointer",
-              background: "rgba(255,255,255,0.1)",
+              background: "var(--surface-tint-10)",
             }}
           >
             ✕
@@ -176,7 +176,7 @@ function RecipeModal({ product, ingredients, onClose, onSuccess, t }) {
         </div>
         <p
           style={{
-            color: "rgba(255,255,255,0.5)",
+            color: "var(--accent-border-soft)",
             fontSize: "0.82rem",
             margin: "0 0 20px",
           }}
@@ -203,11 +203,11 @@ function RecipeModal({ product, ingredients, onClose, onSuccess, t }) {
 
         <div className="hide-scrollbar" style={{ flex: 1, overflowY: "auto", marginBottom: "16px" }}>
           {loading ? (
-            <p style={{ color: "rgba(255,255,255,0.5)", textAlign: "center", padding: "20px" }}>
+            <p style={{ color: "var(--accent-border-soft)", textAlign: "center", padding: "20px" }}>
               {t.loadingMsg}
             </p>
           ) : rows.length === 0 ? (
-            <p style={{ color: "rgba(255,255,255,0.4)", textAlign: "center", padding: "20px" }}>
+            <p style={{ color: "var(--accent-border-soft)", textAlign: "center", padding: "20px" }}>
               {t.recipeNoIngredientsMsg}
             </p>
           ) : (
@@ -269,9 +269,9 @@ function RecipeModal({ product, ingredients, onClose, onSuccess, t }) {
               onClick={addRow}
               style={{
                 marginTop: "12px",
-                border: "1px dashed rgba(255,255,255,0.3)",
+                border: "1px dashed var(--surface-border)",
                 background: "transparent",
-                color: "rgba(255,255,255,0.7)",
+                color: "var(--accent-border-soft)",
                 borderRadius: "10px",
                 padding: "10px",
                 width: "100%",
@@ -283,7 +283,7 @@ function RecipeModal({ product, ingredients, onClose, onSuccess, t }) {
                 fontSize: "0.85rem",
               }}
             >
-              <AddCircle size={18} color="rgba(255,255,255,0.7)" variant="Linear" />
+              <AddCircle size={18} color="currentColor" variant="Linear" />
               {t.recipeAddIngredientAction}
             </button>
           )}
@@ -303,7 +303,7 @@ function RecipeModal({ product, ingredients, onClose, onSuccess, t }) {
             }}
           >
             <InfoCircle size={18} color="#3498db" variant="Linear" />
-            <span style={{ color: "white", fontSize: "0.85rem" }}>
+            <span style={{ color: "var(--accent-border-full)", fontSize: "0.85rem" }}>
               {t.recipeEstimatedCostLabel}: <strong>${estimatedUnitCost.toFixed(2)}</strong>
             </span>
           </div>
@@ -317,7 +317,6 @@ function RecipeModal({ product, ingredients, onClose, onSuccess, t }) {
               flex: 1,
               padding: "12px",
               borderRadius: "12px",
-              color: "white",
               cursor: submitting ? "not-allowed" : "pointer",
               fontWeight: 500,
               fontSize: "0.9rem",

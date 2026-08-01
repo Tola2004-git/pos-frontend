@@ -8,7 +8,7 @@ const inputStyle = {
   padding: "0",
   flex: 1,
   width: "100%",
-  color: "white",
+  color: "var(--accent-border-full)",
   fontSize: "0.9rem",
   outline: "none",
 };
@@ -60,7 +60,7 @@ export function StockHistoryFilters({
           gap: "12px",
         }}
       >
-        <SearchNormal1 size={18} color="#fff" variant="outline" />
+        <SearchNormal1 size={18} color="currentColor" variant="outline" className="text-white" />
         <input
           type="text"
           placeholder={t.searchProductNamePlaceholder}
@@ -78,7 +78,7 @@ export function StockHistoryFilters({
             padding: "14px 18px",
             borderRadius: "16px",
             cursor: "pointer",
-            color: "white",
+            color: "var(--accent-border-full)",
             fontWeight: 600,
             fontSize: "0.85rem",
             display: "flex",
@@ -137,8 +137,8 @@ export function StockHistoryFilters({
                   cursor: "pointer",
                   color:
                     actionFilter === a.value
-                      ? "#ffffff"
-                      : "rgba(255,255,255,0.85)",
+                      ? accentBorder.full
+                      : accentBorder.soft,
                   fontSize: "0.88rem",
                   fontWeight: actionFilter === a.value ? 700 : 400,
                   borderLeft:

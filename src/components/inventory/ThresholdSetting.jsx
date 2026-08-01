@@ -24,7 +24,7 @@ export default function ThresholdSetting({
           padding: "10px 16px",
           borderRadius: "12px",
           cursor: "pointer",
-          color: "white",
+          color: "var(--accent-border-full)",
           display: "flex",
           alignItems: "center",
           gap: "6px",
@@ -32,7 +32,7 @@ export default function ThresholdSetting({
           fontSize: "0.9rem",
         }}
       >
-        <Notification size="20" color="#fff" variant="Outline" />
+        <Notification size="20" color="currentColor" variant="Outline" />
         {t.lowStockThresholdMsg.replace("{n}", threshold)}
       </button>
 
@@ -52,7 +52,7 @@ export default function ThresholdSetting({
         >
           <p
             style={{
-              color: "rgba(255,255,255,0.7)",
+              color: "var(--accent-border-soft)",
               fontSize: "0.82rem",
               marginBottom: "10px",
             }}

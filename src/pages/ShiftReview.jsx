@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { Wallet2, TickCircle, Warning2, CloseCircle } from "iconsax-react";
 import Layout from "../components/layout/Layout";
-import { glassCard, colors } from "../utils/styles";
+import { glassCard, accentBorder } from "../utils/styles";
 import { useShiftReview } from "../hooks/useShiftReview";
 import { useTranslations } from "../hooks/useTranslations";
 import { SkeletonShiftTable } from "../components/ui/SkeletonShiftReview";
@@ -304,8 +304,9 @@ function ShiftReview() {
       <div className="flex items-center gap-3 mb-6">
         <Wallet2
           size="35"
-          color="#fff"
+          color="currentColor"
           variant="Outline"
+          className="text-white"
           style={{ animation: "float 3s ease-in-out infinite" }}
         />
         <h2 className="text-white font-bold text-2xl m-0">{t.shifts}</h2>
@@ -348,7 +349,7 @@ function ShiftReview() {
                 ].map((h) => (
                   <th
                     key={h}
-                    style={{ color: colors.whiteFull }}
+                    style={{ color: accentBorder.full }}
                     className="font-semibold px-4 py-3.5 text-[0.82rem] whitespace-nowrap"
                   >
                     {h}

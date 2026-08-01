@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { glass, glassCard, colors } from "../../utils/styles";
+import { glass, glassCard, accentBorder } from "../../utils/styles";
 import {
   MoneyRemove,
   Tag,
@@ -192,7 +192,7 @@ export default function ExpenseModal({ show, onClose, editExpense, submitting, o
                 style={{ animation: "float 2s ease-in-out infinite" }}
               />
             )}
-            <h2 style={{ color: colors.whiteFull, margin: 0, fontSize: "1.4rem", fontWeight: 600 }}>
+            <h2 style={{ color: accentBorder.full, margin: 0, fontSize: "1.4rem", fontWeight: 600 }}>
               {editExpense ? t.editExpenseTitle : t.newExpenseAction}
             </h2>
           </div>

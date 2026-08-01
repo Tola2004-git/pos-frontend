@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { alertSuccess, alertError } from "../../utils/alert.jsx";
-import { glass, glassCard, colors } from "../../utils/styles.js";
+import { glass, glassCard, accentBorder } from "../../utils/styles.js";
 import { SkeletonIngredientModal } from "../ui/SkeletonIngredients.jsx";
 import api from "../../api/apiClient";
 
@@ -51,15 +51,15 @@ function IngredientModal({
     width: "100%",
     padding: "10px 14px",
     borderRadius: "10px",
-    border: "1px solid rgba(255,255,255,0.2)",
-    background: "rgba(255,255,255,0.1)",
-    color: "white",
+    border: "1px solid var(--surface-border)",
+    background: "var(--surface-tint-10)",
+    color: "var(--accent-border-full)",
     fontSize: "0.9rem",
     outline: "none",
   };
 
   const labelStyle = {
-    color: "rgba(255,255,255,0.8)",
+    color: "var(--accent-border-soft)",
     fontSize: "0.85rem",
     display: "block",
     marginBottom: "6px",
@@ -80,8 +80,8 @@ function IngredientModal({
   const borderFor = (field) => ({
     border:
       focusedField === field
-        ? "1px solid rgba(255,255,255,0.8)"
-        : "1px solid rgba(255,255,255,0.2)",
+        ? "1px solid var(--accent-border-soft)"
+        : "1px solid var(--surface-border)",
     transition: "border 0.2s",
   });
 
@@ -159,21 +159,23 @@ function IngredientModal({
             {editIngredient ? (
               <Edit
                 size={28}
-                color="white"
+                color="currentColor"
                 variant="Linear"
+                className="text-white"
                 style={{ animation: "float 2s ease-in-out infinite" }}
               />
             ) : (
               <BoxAdd
                 size={28}
-                color="white"
+                color="currentColor"
                 variant="Linear"
+                className="text-white"
                 style={{ animation: "float 2s ease-in-out infinite" }}
               />
             )}
             <h2
               style={{
-                color: colors.whiteFull,
+                color: accentBorder.full,
                 fontWeight: 600,
                 margin: 0,
                 fontSize: "1.5rem",
@@ -186,9 +188,9 @@ function IngredientModal({
             onClick={onClose}
             aria-label={t.cancel}
             style={{
-              background: "rgba(255,255,255,0.1)",
+              background: "var(--surface-tint-10)",
               border: "none",
-              color: "white",
+              color: "var(--accent-border-full)",
               width: "36px",
               height: "36px",
               borderRadius: "50%",
@@ -232,8 +234,9 @@ function IngredientModal({
                 <div style={{ position: "relative" }}>
                   <Tag
                     size={20}
-                    color="white"
+                    color="currentColor"
                     variant="Linear"
+                    className="text-white"
                     style={iconStyle("name")}
                   />
                   <input
@@ -256,8 +259,9 @@ function IngredientModal({
                 <div style={{ position: "relative" }}>
                   <Category
                     size={20}
-                    color="white"
+                    color="currentColor"
                     variant="Linear"
+                    className="text-white"
                     style={iconStyle("category")}
                   />
                   <select
@@ -298,8 +302,9 @@ function IngredientModal({
                 <div style={{ position: "relative" }}>
                   <Weight
                     size={20}
-                    color="white"
+                    color="currentColor"
                     variant="Linear"
+                    className="text-white"
                     style={iconStyle("unit")}
                   />
                   <input
@@ -337,8 +342,9 @@ function IngredientModal({
                 <div style={{ position: "relative" }}>
                   <MoneySend
                     size={20}
-                    color="white"
+                    color="currentColor"
                     variant="Linear"
+                    className="text-white"
                     style={iconStyle("cost")}
                   />
                   <input
@@ -364,8 +370,9 @@ function IngredientModal({
                 <div style={{ position: "relative" }}>
                   <Calendar
                     size={20}
-                    color="white"
+                    color="currentColor"
                     variant="Linear"
+                    className="text-white"
                     style={iconStyle("expiry")}
                   />
                   <input
@@ -391,8 +398,9 @@ function IngredientModal({
                 <div style={{ position: "relative" }}>
                   <Shop
                     size={20}
-                    color="white"
+                    color="currentColor"
                     variant="Linear"
+                    className="text-white"
                     style={iconStyle("supplier")}
                   />
                   <input
@@ -431,7 +439,7 @@ function IngredientModal({
                     borderRadius: "12px",
                     background: form.status
                       ? "#2ecc71"
-                      : "rgba(255,255,255,0.2)",
+                      : "var(--surface-tint-15)",
                     cursor: "pointer",
                     position: "relative",
                     transition: "background 0.3s",
@@ -452,7 +460,7 @@ function IngredientModal({
                 </div>
                 <span
                   style={{
-                    color: form.status ? "#2ecc71" : "rgba(255,255,255,0.5)",
+                    color: form.status ? "#2ecc71" : "var(--accent-border-soft)",
                     fontSize: "0.85rem",
                   }}
                 >
@@ -465,8 +473,9 @@ function IngredientModal({
                 <div style={{ position: "relative" }}>
                   <NoteText
                     size={18}
-                    color="white"
+                    color="currentColor"
                     variant="Linear"
+                    className="text-white"
                     style={{
                       ...iconStyle("note"),
                       top: "14px",
@@ -499,7 +508,6 @@ function IngredientModal({
                   flex: 1,
                   padding: "12px",
                   borderRadius: "12px",
-                  color: "white",
                   cursor: submitting ? "not-allowed" : "pointer",
                   fontWeight: 500,
                   fontSize: "0.9rem",

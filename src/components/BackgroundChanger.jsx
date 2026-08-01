@@ -69,7 +69,7 @@ function BackgroundChanger({
           <h2 className="text-white font-bold text-[1.3rem] m-0 flex items-center gap-2">
             <GalleryEdit
               size={30}
-              color="white"
+              color="currentColor"
               variant="Outline"
               style={{ animation: "float 2s ease-in-out infinite" }}
             />

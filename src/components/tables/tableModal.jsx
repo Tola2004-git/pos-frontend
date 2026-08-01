@@ -1,4 +1,4 @@
-import { glass, colors, glassCard } from "../../utils/styles";
+import { glass, accentBorder, glassCard } from "../../utils/styles";
 import { TABLE_STATUS_OPTIONS } from "../../constants/tableStatus";
 import { useState, useEffect } from "react";
 import {
@@ -58,7 +58,6 @@ function TableModal({
     transform: "translateY(-50%)",
     width: "18px",
     height: "18px",
-    filter: "brightness(0) invert(1)",
     opacity: focusedField === field ? 1 : 0.4,
     transition: "opacity 0.2s",
     pointerEvents: "none",
@@ -68,15 +67,15 @@ function TableModal({
     width: "100%",
     padding: "10px 14px",
     borderRadius: "10px",
-    border: "1px solid rgba(255,255,255,0.2)",
-    background: "rgba(255,255,255,0.1)",
-    color: "white",
+    border: "1px solid var(--surface-border)",
+    background: "var(--surface-tint-10)",
+    color: "var(--accent-border-full)",
     fontSize: "0.9rem",
     outline: "none",
   };
 
   const labelStyle = {
-    color: "rgba(255,255,255,0.8)",
+    color: "var(--accent-border-soft)",
     fontSize: "0.85rem",
     display: "block",
     marginBottom: "6px",
@@ -131,8 +130,9 @@ function TableModal({
             {editTable ? (
               <Grid3
                 size="28"
-                color="#fff"
+                color="currentColor"
                 variant="Outline"
+                className="text-white"
                 style={{
                   width: "28px",
                   height: "28px",
@@ -142,8 +142,9 @@ function TableModal({
             ) : (
               <Grid3
                 size="28"
-                color="#fff"
+                color="currentColor"
                 variant="Outline"
+                className="text-white"
                 style={{
                   width: "28px",
                   height: "28px",
@@ -153,7 +154,7 @@ function TableModal({
             )}
             <h2
               style={{
-                color: colors.whiteFull,
+                color: accentBorder.full,
                 fontWeight: 600,
                 margin: 0,
                 fontSize: "1.5rem",
@@ -166,9 +167,9 @@ function TableModal({
             onClick={onClose}
             aria-label={t.cancel}
             style={{
-              background: "rgba(255,255,255,0.1)",
+              background: "var(--surface-tint-10)",
               border: "none",
-              color: "white",
+              color: "var(--accent-border-full)",
               width: "36px",
               height: "36px",
               borderRadius: "50%",
@@ -186,8 +187,9 @@ function TableModal({
             <div style={{ position: "relative" }}>
               <Grid4
                 size="20"
-                color="white"
+                color="currentColor"
                 variant="Outline"
+                className="text-white"
                 style={iconStyle("Table Name")}
               />
 
@@ -197,8 +199,8 @@ function TableModal({
                   paddingLeft: "40px",
                   border:
                     focusedField === "Table Name"
-                      ? "1px solid rgba(255,255,255,0.8)"
-                      : "1px solid rgba(255,255,255,0.2)",
+                      ? "1px solid var(--accent-border-soft)"
+                      : "1px solid var(--surface-border)",
                   transition: "border 0.2s",
                 }}
                 placeholder={t.tableNamePlaceholder}
@@ -215,8 +217,9 @@ function TableModal({
             <div style={{ position: "relative" }}>
               <Profile2User
                 size={20}
-                color="white"
+                color="currentColor"
                 variant="Outline"
+                className="text-white"
                 style={iconStyle("Capacity")}
               />
               <input
@@ -225,8 +228,8 @@ function TableModal({
                   paddingLeft: "40px",
                   border:
                     focusedField === "Capacity"
-                      ? "1px solid rgba(255,255,255,0.8)"
-                      : "1px solid rgba(255,255,255,0.2)",
+                      ? "1px solid var(--accent-border-soft)"
+                      : "1px solid var(--surface-border)",
                   transition: "border 0.2s",
                 }}
                 type="number"
@@ -248,8 +251,9 @@ function TableModal({
               <div style={{ position: "relative" }}>
                 <Status
                   size={20}
-                  color="white"
+                  color="currentColor"
                   variant="Outline"
+                  className="text-white"
                   style={iconStyle("Status")}
                 />
                 <select
@@ -259,8 +263,8 @@ function TableModal({
                     paddingLeft: "40px",
                     border:
                       focusedField === "Status"
-                        ? "1px solid rgba(255,255,255,0.8)"
-                        : "1px solid rgba(255,255,255,0.2)",
+                        ? "1px solid var(--accent-border-soft)"
+                        : "1px solid var(--surface-border)",
                     transition: "border 0.2s",
                     appearance: "none",
                     backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
@@ -297,8 +301,9 @@ function TableModal({
             <div style={{ position: "relative" }}>
               <NoteText
                 size={20}
-                color="white"
+                color="currentColor"
                 variant="Outline"
+                className="text-white"
                 style={{
                   ...iconStyle("Note", focusedField),
                   top: "12px",
@@ -315,8 +320,8 @@ function TableModal({
                   minHeight: "70px",
                   border:
                     focusedField === "Note"
-                      ? "1px solid rgba(255,255,255,0.8)"
-                      : "1px solid rgba(255,255,255,0.2)",
+                      ? "1px solid var(--accent-border-soft)"
+                      : "1px solid var(--surface-border)",
                   transition: "border 0.2s",
                 }}
                 placeholder={t.tableNotePlaceholder}
@@ -337,7 +342,6 @@ function TableModal({
               flex: 1,
               padding: "12px",
               borderRadius: "12px",
-              color: "white",
               cursor: modalLoading ? "not-allowed" : "pointer",
               fontWeight: 500,
               fontSize: "0.9rem",

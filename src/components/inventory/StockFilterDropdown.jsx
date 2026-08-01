@@ -25,7 +25,7 @@ export default function StockFilterDropdown({
           padding: "14px 18px",
           borderRadius: "16px",
           cursor: "pointer",
-          color: "white",
+          color: "var(--accent-border-full)",
           fontWeight: 600,
           fontSize: "0.85rem",
           display: "flex",
@@ -86,7 +86,7 @@ export default function StockFilterDropdown({
                 color:
                   stockFilter === f.key
                     ? accentBorder.full
-                    : "rgba(255,255,255,0.85)",
+                    : "var(--accent-border-soft)",
                 fontSize: "0.88rem",
                 fontWeight: stockFilter === f.key ? 700 : 400,
                 borderLeft:

@@ -48,7 +48,7 @@ export function StockHistoryTable({ logs, loading, page, t }) {
                 style={{
                   padding: "16px 14px",
                   textAlign: "left",
-                  color: "#ffffff",
+                  color: "var(--accent-border-full)",
                   fontWeight: 600,
                   fontSize: "0.9rem",
                 }}
@@ -68,7 +68,7 @@ export function StockHistoryTable({ logs, loading, page, t }) {
                 style={{
                   padding: "40px",
                   textAlign: "center",
-                  color: "rgba(255,255,255,0.5)",
+                  color: "var(--accent-border-soft)",
                 }}
               >
                 {t.noStockHistoryFoundMsg}
@@ -94,7 +94,7 @@ export function StockHistoryTable({ logs, loading, page, t }) {
                 <td
                   style={{
                     padding: "12px 14px",
-                    color: "rgba(255,255,255,0.5)",
+                    color: "var(--accent-border-soft)",
                   }}
                 >
                   {(page - 1) * 15 + index + 1}
@@ -102,7 +102,7 @@ export function StockHistoryTable({ logs, loading, page, t }) {
                 <td
                   style={{
                     padding: "12px 14px",
-                    color: "white",
+                    color: "var(--accent-border-full)",
                     fontWeight: 500,
                   }}
                 >
@@ -147,7 +147,7 @@ export function StockHistoryTable({ logs, loading, page, t }) {
                 <td
                   style={{
                     padding: "12px 14px",
-                    color: "rgba(255,255,255,0.6)",
+                    color: "var(--accent-border-soft)",
                   }}
                 >
                   {log.qty_before}
@@ -155,7 +155,7 @@ export function StockHistoryTable({ logs, loading, page, t }) {
                 <td
                   style={{
                     padding: "12px 14px",
-                    color: "white",
+                    color: "var(--accent-border-full)",
                     fontWeight: 600,
                   }}
                 >
@@ -164,7 +164,7 @@ export function StockHistoryTable({ logs, loading, page, t }) {
                 <td
                   style={{
                     padding: "12px 14px",
-                    color: "rgba(255,255,255,0.6)",
+                    color: "var(--accent-border-soft)",
                     fontSize: "0.85rem",
                   }}
                 >
@@ -175,7 +175,7 @@ export function StockHistoryTable({ logs, loading, page, t }) {
                 <td
                   style={{
                     padding: "12px 14px",
-                    color: "rgba(255,255,255,0.6)",
+                    color: "var(--accent-border-soft)",
                     fontSize: "0.85rem",
                     maxWidth: "150px",
                   }}
@@ -194,7 +194,7 @@ export function StockHistoryTable({ logs, loading, page, t }) {
                 <td
                   style={{
                     padding: "12px 14px",
-                    color: "rgba(255,255,255,0.7)",
+                    color: "var(--accent-border-soft)",
                     fontSize: "0.85rem",
                   }}
                 >
@@ -203,7 +203,7 @@ export function StockHistoryTable({ logs, loading, page, t }) {
                 <td
                   style={{
                     padding: "12px 14px",
-                    color: "rgba(255,255,255,0.5)",
+                    color: "var(--accent-border-soft)",
                     fontSize: "0.82rem",
                   }}
                 >

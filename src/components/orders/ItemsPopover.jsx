@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Eye, InfoCircle } from "iconsax-react";
-import { glassCard } from "../../utils/styles";
+import { glassCard, accentBorder } from "../../utils/styles";
 
 export default function ItemsPopover({ order, t }) {
   const [open, setOpen] = useState(false);
@@ -54,7 +54,7 @@ export default function ItemsPopover({ order, t }) {
         gap: "6px",
       }}
     >
-      <span style={{ color: "rgba(255,255,255,0.7)", fontSize: "0.85rem", whiteSpace: "nowrap" }}>
+      <span style={{ color: accentBorder.soft, fontSize: "0.85rem", whiteSpace: "nowrap" }}>
         {items.length}{" "}
         {items.length === 1
           ? t?.itemSingular || "item"
@@ -86,7 +86,7 @@ export default function ItemsPopover({ order, t }) {
               width: "200px",
               boxShadow: "0 15px 40px rgba(0,0,0,0.5)",
               overflow: "hidden",
-              color: "white",
+              color: accentBorder.full,
               border: "1px solid var(--surface-tint-12)",
             }}
           >

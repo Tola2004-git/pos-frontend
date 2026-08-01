@@ -17,7 +17,7 @@ function UserTable({
       <div className="w-full overflow-x-auto table-scroll-x">
         <table
           className="w-full min-w-[1000px] border-collapse"
-          style={{ color: "white", fontSize: "0.85rem" }}
+          style={{ color: "var(--accent-border-full)", fontSize: "0.85rem" }}
         >
           <thead>
             <tr
@@ -42,7 +42,7 @@ function UserTable({
                     padding: "12px 14px",
                     textAlign: "left",
                     fontWeight: 600,
-                    color: "white",
+                    color: "var(--accent-border-full)",
                     whiteSpace: "nowrap",
                   }}
                 >
@@ -62,7 +62,7 @@ function UserTable({
                   style={{
                     padding: "40px",
                     textAlign: "center",
-                    color: "rgba(255,255,255,0.5)",
+                    color: "var(--accent-border-soft)",
                   }}
                 >
                   {t.noUsersFoundMsg}
@@ -88,7 +88,7 @@ function UserTable({
                   <td
                     style={{
                       padding: "12px 14px",
-                      color: "rgba(255,255,255,0.5)",
+                      color: "var(--accent-border-soft)",
                     }}
                   >
                     {index + 1}
@@ -137,7 +137,7 @@ function UserTable({
                   <td
                     style={{
                       padding: "12px 14px",
-                      color: "white",
+                      color: "var(--accent-border-full)",
                       fontSize: "0.85rem",
                     }}
                   >
@@ -146,7 +146,7 @@ function UserTable({
                   <td
                     style={{
                       padding: "12px 14px",
-                      color: "rgba(255,255,255,0.7)",
+                      color: "var(--accent-border-soft)",
                       fontSize: "0.85rem",
                     }}
                   >
@@ -159,7 +159,7 @@ function UserTable({
                         borderRadius: "20px",
                         fontSize: "0.78rem",
                         fontWeight: 600,
-                        color: "white",
+                        color: "var(--accent-border-full)",
                         border: `1px solid ${accentBorder.full}`,
                       }}
                     >
@@ -173,7 +173,7 @@ function UserTable({
                   <td
                     style={{
                       padding: "12px 14px",
-                      color: "rgba(255,255,255,0.5)",
+                      color: "var(--accent-border-soft)",
                       fontSize: "0.85rem",
                     }}
                   >
@@ -182,7 +182,7 @@ function UserTable({
                   <td
                     style={{
                       padding: "12px 14px",
-                      color: "rgba(255,255,255,0.5)",
+                      color: "var(--accent-border-soft)",
                       fontSize: "0.85rem",
                     }}
                   >
@@ -210,7 +210,7 @@ function UserTable({
                               justifyContent: "center",
                             }}
                           >
-                            <Edit size={18} color="#fff" variant="linear" />
+                            <Edit size={18} color="currentColor" variant="linear" className="text-white" />
                           </button>
                         </Tooltip>
 
@@ -251,12 +251,12 @@ function UserTable({
                                     cx="9"
                                     cy="9"
                                     r="7"
-                                    stroke="rgba(255,255,255,0.3)"
+                                    stroke="var(--surface-border)"
                                     strokeWidth="2"
                                   />
                                   <path
                                     d="M9 2 A7 7 0 0 1 16 9"
-                                    stroke="white"
+                                    stroke="var(--accent-border-full)"
                                     strokeWidth="2"
                                     strokeLinecap="round"
                                   />
@@ -264,8 +264,9 @@ function UserTable({
                               ) : (
                                 <Trash
                                   size={18}
-                                  color="#fff"
+                                  color="currentColor"
                                   variant="linear"
+                                  className="text-white"
                                 />
                               )}
                             </button>

@@ -36,7 +36,7 @@ export function TableSelectionPanel({
               aria-label={t.switchTable}
               className="flex-shrink-0 rounded-full border border-white/10 bg-white/10 p-2 text-white transition-all hover:bg-white/20"
             >
-              <Edit2 size={16} color="white" variant="Outline" />
+              <Edit2 size={16} color="currentColor" variant="Outline" />
             </button>
           )}
         </div>

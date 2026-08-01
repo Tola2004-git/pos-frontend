@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import { BoxSearch } from "iconsax-react";
-import { colors } from "../../utils/styles";
 import { WidgetCard, RowSkeleton } from "./DashboardPrimitives";
 
 export function LowStockWidget({ lowStockLoading, lowStockProducts, isAdmin, t }) {
@@ -49,7 +48,7 @@ export function LowStockWidget({ lowStockLoading, lowStockProducts, isAdmin, t }
                   border: `1px solid ${isOutOfStock ? "rgba(231,76,60,0.3)" : "var(--surface-tint-08)"}`,
                 }}
               >
-                <span className="text-white text-sm truncate" style={{ color: colors.whiteFull }}>
+                <span className="text-white text-sm truncate">
                   {p.name}
                 </span>
                 <span

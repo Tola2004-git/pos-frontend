@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { glass, glassCard, colors } from "../../utils/styles";
+import { glass, glassCard, accentBorder } from "../../utils/styles";
 import { getStockStatus } from "../../utils/stockHelpers";
 import {
   inputStyle,
@@ -36,12 +36,12 @@ function ActionDropdown({ value, onChange, t }) {
     {
       value: "add",
       label: t.addStockOption,
-      icon: <AddCircle size={18} color="#fff" variant="Bold" />,
+      icon: <AddCircle size={18} color="currentColor" variant="Bold" />,
     },
     {
       value: "remove",
       label: t.removeStockOption,
-      icon: <MinusCirlce size={18} color="#fff" variant="Bold" />,
+      icon: <MinusCirlce size={18} color="currentColor" variant="Bold" />,
     },
   ];
   const selected = options.find((o) => o.value === value);
@@ -58,8 +58,8 @@ function ActionDropdown({ value, onChange, t }) {
           cursor: "pointer",
           userSelect: "none",
           border: isOpen
-            ? "1px solid rgba(255,255,255,0.8)"
-            : "1px solid rgba(255,255,255,0.2)",
+            ? "1px solid var(--accent-border-soft)"
+            : "1px solid var(--surface-border)",
           transition: "border 0.2s",
         }}
       >
@@ -103,6 +103,7 @@ function ActionDropdown({ value, onChange, t }) {
                 gap: "10px",
                 padding: "10px 14px",
                 cursor: "pointer",
+                color: "#fff",
                 background:
                   value === option.value
                     ? "rgba(255,255,255,0.15)"
@@ -178,13 +179,14 @@ export default function RestockModal({
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <RefreshCircle
               size="34"
-              color="#fff"
+              color="currentColor"
               variant="bulk"
+              className="text-white"
               style={{ animation: "float 2s ease-in-out infinite" }}
             />
             <h3
               style={{
-                color: colors.whiteFull,
+                color: accentBorder.full,
                 fontWeight: 600,
                 margin: 0,
                 fontSize: "1.4rem",
@@ -197,9 +199,9 @@ export default function RestockModal({
             onClick={closeRestock}
             aria-label={t.cancel}
             style={{
-              background: "rgba(255,255,255,0.1)",
+              background: "var(--surface-tint-10)",
               border: "none",
-              color: "white",
+              color: "var(--accent-border-full)",
               width: "36px",
               height: "36px",
               borderRadius: "50%",
@@ -231,13 +233,13 @@ export default function RestockModal({
             marginBottom: "20px",
             padding: "16px",
             borderRadius: "14px",
-            background: "rgba(255,255,255,0.07)",
-            border: "1px solid rgba(255,255,255,0.12)",
+            background: "var(--surface-tint-07)",
+            border: "1px solid var(--surface-tint-12)",
           }}
         >
           <div
             style={{
-              color: "white",
+              color: "var(--accent-border-full)",
               fontWeight: 700,
               fontSize: "1rem",
               marginBottom: "4px",
@@ -247,14 +249,14 @@ export default function RestockModal({
           </div>
           <div
             style={{
-              color: "rgba(255,255,255,0.5)",
+              color: "var(--accent-border-soft)",
               fontSize: "0.82rem",
               marginBottom: "6px",
             }}
           >
             {t.unitColonMsg.replace("{unit}", selectedIngredient.unit)}
           </div>
-          <span style={{ color: "rgba(255,255,255,0.7)", fontSize: "0.9rem" }}>
+          <span style={{ color: "var(--accent-border-soft)", fontSize: "0.9rem" }}>
             {t.currentQuantityLabel}
           </span>
           <span
@@ -287,8 +289,9 @@ export default function RestockModal({
             <div style={{ position: "relative" }}>
               <Box1
                 size="18"
-                color="#fff"
+                color="currentColor"
                 variant="bulk"
+                className="text-white"
                 style={iconStyle("Quantity", focusedField)}
               />
               <input
@@ -297,8 +300,8 @@ export default function RestockModal({
                   paddingLeft: "40px",
                   border:
                     focusedField === "Quantity"
-                      ? "1px solid rgba(255,255,255,0.8)"
-                      : "1px solid rgba(255,255,255,0.2)",
+                      ? "1px solid var(--accent-border-soft)"
+                      : "1px solid var(--surface-border)",
                   transition: "border 0.2s",
                 }}
                 type="number"
@@ -322,8 +325,9 @@ export default function RestockModal({
             <div style={{ position: "relative" }}>
               <Calendar
                 size="18"
-                color="#fff"
+                color="currentColor"
                 variant="bulk"
+                className="text-white"
                 style={iconStyle("Expiry", focusedField)}
               />
               <input
@@ -333,8 +337,8 @@ export default function RestockModal({
                   colorScheme: "dark",
                   border:
                     focusedField === "Expiry"
-                      ? "1px solid rgba(255,255,255,0.8)"
-                      : "1px solid rgba(255,255,255,0.2)",
+                      ? "1px solid var(--accent-border-soft)"
+                      : "1px solid var(--surface-border)",
                   transition: "border 0.2s",
                 }}
                 type="date"
@@ -354,8 +358,9 @@ export default function RestockModal({
           <div style={{ position: "relative" }}>
             <Shop
               size="18"
-              color="#fff"
+              color="currentColor"
               variant="bulk"
+              className="text-white"
               style={iconStyle("Supplier", focusedField)}
             />
             <input
@@ -364,8 +369,8 @@ export default function RestockModal({
                 paddingLeft: "40px",
                 border:
                   focusedField === "Supplier"
-                    ? "1px solid rgba(255,255,255,0.8)"
-                    : "1px solid rgba(255,255,255,0.2)",
+                    ? "1px solid var(--accent-border-soft)"
+                    : "1px solid var(--surface-border)",
                 transition: "border 0.2s",
               }}
               placeholder={t.supplierPlaceholder}
@@ -384,8 +389,9 @@ export default function RestockModal({
           <div style={{ position: "relative" }}>
             <NoteText
               size="18"
-              color="#fff"
+              color="currentColor"
               variant="Linear"
+              className="text-white"
               style={{
                 ...iconStyle("Note", focusedField),
                 top: "12px",
@@ -402,8 +408,8 @@ export default function RestockModal({
                 minHeight: "70px",
                 border:
                   focusedField === "Note"
-                    ? "1px solid rgba(255,255,255,0.8)"
-                    : "1px solid rgba(255,255,255,0.2)",
+                    ? "1px solid var(--accent-border-soft)"
+                    : "1px solid var(--surface-border)",
                 transition: "border 0.2s",
               }}
               placeholder={t.restockNotePlaceholder}

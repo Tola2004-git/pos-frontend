@@ -407,7 +407,7 @@ export default function POSModal({
         <div className="px-6 py-5 border-b border-white/10 flex justify-between items-center">
           <h3 className="text-white font-bold m-0 flex items-center gap-[10px]">
             <div className="animate-bounce">
-              <ShoppingBag size={25} color="#fff" variant="Linear" />
+              <ShoppingBag size={25} color="currentColor" variant="Linear" />
             </div>
             {isEditMode ? t.editOrderTitle : resumingOrderId ? t.resumeHeldOrderTitle : t.newOrderTitle}
           </h3>

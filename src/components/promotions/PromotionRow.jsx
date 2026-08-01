@@ -137,9 +137,9 @@ export default function PromotionRow({
               >
                 <InfoCircle
                   size={16}
-                  color="rgba(255,255,255,0.5)"
+                  color="currentColor"
                   variant="Linear"
-                  className="hover:text-white transition-colors duration-200"
+                  className="text-white/50 hover:text-white transition-colors duration-200"
                   style={{ opacity: 0.6, transition: "opacity 0.2s" }}
                   onMouseEnter={(e) => (e.currentTarget.style.opacity = 1)}
                   onMouseLeave={(e) => (e.currentTarget.style.opacity = 0.6)}
@@ -152,7 +152,7 @@ export default function PromotionRow({
         style={{
           padding: "12px 14px",
           textAlign: "center",
-          color: "rgba(255,255,255,0.7)",
+          color: "var(--accent-border-soft)",
         }}
       >
         {formatDate(promo.start_date)}
@@ -161,7 +161,7 @@ export default function PromotionRow({
         style={{
           padding: "12px 14px",
           textAlign: "center",
-          color: "rgba(255,255,255,0.7)",
+          color: "var(--accent-border-soft)",
         }}
       >
         {formatDate(promo.end_date)}
@@ -224,7 +224,7 @@ export default function PromotionRow({
                 gap: 4,
               }}
             >
-              <Edit size={20} color="white" variant="Linear" />
+              <Edit size={20} color="currentColor" variant="Linear" className="text-white" />
             </button>
           </Tooltip>
           <Tooltip label={t.deleteAction}>
@@ -249,7 +249,7 @@ export default function PromotionRow({
                   <path d="M9 2 A7 7 0 0 1 16 9" stroke="white" strokeWidth="2" strokeLinecap="round" />
                 </svg>
               ) : (
-                <Trash size={20} color="white" variant="Linear" />
+                <Trash size={20} color="currentColor" variant="Linear" className="text-white" />
               )}
             </button>
           </Tooltip>
@@ -289,7 +289,7 @@ export default function PromotionRow({
             style={{
               fontSize: "0.75rem",
               fontWeight: 600,
-              color: "rgba(255,255,255,0.8)",
+              color: "var(--accent-border-soft)",
               textTransform: "uppercase",
               letterSpacing: "0.5px",
             }}
@@ -304,15 +304,15 @@ export default function PromotionRow({
               border: "none",
               padding: 0,
               cursor: "pointer",
-              color: "rgba(255,255,255,0.7)",
+              color: "var(--accent-border-soft)",
             }}
           >
             <CloseCircle
               size={18}
               variant="Linear"
               style={{ transition: "color 0.2s" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "white")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.7)")}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "var(--accent-border-full)")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "var(--accent-border-soft)")}
             />
           </button>
         </div>
@@ -329,7 +329,7 @@ export default function PromotionRow({
             maxHeight: "220px",
             overflowY: "auto",
             scrollbarWidth: "thin",
-            scrollbarColor: "rgba(255, 255, 255, 0.2) transparent",
+            scrollbarColor: "var(--surface-border) transparent",
           }}
         >
           {applyToDetails.items.map((item, idx) => (
@@ -337,7 +337,7 @@ export default function PromotionRow({
               key={idx}
               style={{
                 fontSize: "0.85rem",
-                color: "rgba(255,255,255,0.9)",
+                color: "var(--accent-border-full)",
                 padding: "10px 12px",
                 background: "var(--surface-tint-05)",
                 borderRadius: 8,

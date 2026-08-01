@@ -1,6 +1,6 @@
 import { DocumentDownload, Calendar, ExportCircle, Trash } from "iconsax-react";
 import Layout from "../components/layout/Layout";
-import { glassCard, colors } from "../utils/styles";
+import { glassCard, accentBorder } from "../utils/styles";
 import { useDailyExports } from "../hooks/useDailyExports";
 import { useTranslations } from "../hooks/useTranslations";
 import { SkeletonDailyExportTable } from "../components/ui/SkeletonDailyExport";
@@ -40,8 +40,9 @@ function DailyExports() {
       <div className="flex items-center gap-3 mb-6">
         <DocumentDownload
           size="35"
-          color="#fff"
+          color="currentColor"
           variant="Outline"
+          className="text-white"
           style={{ animation: "float 3s ease-in-out infinite" }}
         />
         <h2 className="text-white font-bold text-2xl m-0">{t.dailyExports}</h2>
@@ -55,7 +56,7 @@ function DailyExports() {
           <div className="relative">
             <Calendar
               size={18}
-              color="rgba(255,255,255,0.5)"
+              color="var(--accent-border-soft)"
               variant="Linear"
               className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
             />
@@ -120,7 +121,7 @@ function DailyExports() {
                 ].map((h, i) => (
                   <th
                     key={h || `col-${i}`}
-                    style={{ color: colors.whiteFull }}
+                    style={{ color: accentBorder.full }}
                     className="font-semibold px-4 py-3.5 text-[0.82rem] whitespace-nowrap"
                   >
                     {h}
@@ -193,18 +194,18 @@ function DailyExports() {
                                   cx="9"
                                   cy="9"
                                   r="7"
-                                  stroke="rgba(255,255,255,0.3)"
+                                  stroke="var(--surface-border)"
                                   strokeWidth="2"
                                 />
                                 <path
                                   d="M9 2 A7 7 0 0 1 16 9"
-                                  stroke="white"
+                                  stroke="currentColor"
                                   strokeWidth="2"
                                   strokeLinecap="round"
                                 />
                               </svg>
                             ) : (
-                              <Trash size={18} color="#fff" variant="Linear" />
+                              <Trash size={18} color="currentColor" variant="Linear" />
                             )}
                           </button>
                         </Tooltip>

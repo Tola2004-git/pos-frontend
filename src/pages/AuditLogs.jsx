@@ -19,7 +19,7 @@ const ACTION_COLOR_OVERRIDES = {
   order_refunded: "#e74c3c",
   backup_restored: "#e74c3c",
   backup_restore_failed: "#e74c3c",
-  backup_downloaded: "rgba(255,255,255,0.7)",
+  backup_downloaded: accentBorder.soft,
   login_failed: "#e74c3c",
 };
 
@@ -29,7 +29,7 @@ function getActionColor(action) {
   if (action.endsWith("_created") || action.endsWith("_generated")) return "#2ecc71";
   if (action.endsWith("_updated") || action.endsWith("_reviewed")) return "#3498db";
   if (action.endsWith("_restocked")) return "#f39c12";
-  return "rgba(255,255,255,0.7)";
+  return accentBorder.soft;
 }
 
 // Grouped for the filter dropdown's <optgroup> labels; the action values
@@ -96,7 +96,7 @@ function ActionFilterDropdown({ value, onChange, allLabel }) {
           padding: "12px 18px",
           borderRadius: "16px",
           cursor: "pointer",
-          color: "white",
+          color: accentBorder.full,
           fontWeight: 600,
           fontSize: "0.85rem",
           display: "flex",
@@ -146,7 +146,7 @@ function ActionFilterDropdown({ value, onChange, allLabel }) {
               background: value === "all" ? "var(--surface-tint-15)" : "transparent",
               border: "none",
               cursor: "pointer",
-              color: value === "all" ? accentBorder.full : "rgba(255,255,255,0.85)",
+              color: value === "all" ? accentBorder.full : accentBorder.soft,
               fontSize: "0.88rem",
               fontWeight: value === "all" ? 700 : 400,
               textAlign: "left",
@@ -164,7 +164,7 @@ function ActionFilterDropdown({ value, onChange, allLabel }) {
                   fontWeight: 700,
                   letterSpacing: "0.5px",
                   textTransform: "uppercase",
-                  color: "rgba(255,255,255,0.4)",
+                  color: accentBorder.soft,
                 }}
               >
                 {group.label}
@@ -183,7 +183,7 @@ function ActionFilterDropdown({ value, onChange, allLabel }) {
                     background: value === action ? "var(--surface-tint-15)" : "transparent",
                     border: "none",
                     cursor: "pointer",
-                    color: value === action ? accentBorder.full : "rgba(255,255,255,0.85)",
+                    color: value === action ? accentBorder.full : accentBorder.soft,
                     fontSize: "0.85rem",
                     fontWeight: value === action ? 700 : 400,
                     textAlign: "left",
@@ -230,8 +230,9 @@ function AuditLogs() {
       <div className="flex items-center gap-3 mb-6">
         <ShieldSecurity
           size="35"
-          color="#fff"
+          color="currentColor"
           variant="Outline"
+          className="text-white"
           style={{ animation: "float 3s ease-in-out infinite" }}
         />
         <h2 className="text-white font-bold text-2xl m-0">{t.auditLogs}</h2>

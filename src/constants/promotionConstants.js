@@ -8,13 +8,13 @@ export const inputStyle = {
   background: "var(--surface-tint-05)",
   backdropFilter: "blur(25px)",
   WebkitBackdropFilter: "blur(25px)",
-  color: "white",
+  color: "var(--accent-border-full)",
   fontSize: "0.9rem",
   outline: "none",
 };
 
 export const labelStyle = {
-  color: "rgba(255,255,255,0.8)",
+  color: "var(--accent-border-soft)",
   fontSize: "0.85rem",
   display: "block",
   marginBottom: "6px",
