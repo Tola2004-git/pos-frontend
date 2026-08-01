@@ -27,6 +27,16 @@ export const getCurrentBg = () => {
   return localStorage.getItem('pos_background') || defaultBg
 }
 
+export const defaultBgOverlayOpacity = 0.5
+
+// The overlay darkening the background photo so white text stays readable
+// is user-adjustable (see BackgroundChanger) since a fixed level looks fine
+// against some photos and too washed-out or too murky against others.
+export const getCurrentBgOverlayOpacity = () => {
+  const stored = parseFloat(localStorage.getItem('pos_bg_overlay_opacity'))
+  return Number.isFinite(stored) ? stored : defaultBgOverlayOpacity
+}
+
 export const getGradientBg = () => ({
   background: `url("${getCurrentBg()}") center/cover no-repeat fixed`,
   backgroundColor: '#2c3e50',

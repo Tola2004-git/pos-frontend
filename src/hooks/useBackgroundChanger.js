@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { bgPresets, getCurrentBg } from "../utils/styles";
+import { bgPresets, getCurrentBg, getCurrentBgOverlayOpacity } from "../utils/styles";
 
 export function useBackgroundChanger(onApply, onClose) {
   const [selected, setSelected] = useState(getCurrentBg());
@@ -11,6 +11,10 @@ export function useBackgroundChanger(onApply, onClose) {
   const [bgUrl, setBgUrl] = useState(getCurrentBg());
   const [compressing, setCompressing] = useState(false);
   const [uploadError, setUploadError] = useState("");
+  // Live rather than gated behind Apply (unlike the image itself) - it's a
+  // continuous value the user is tuning by eye against the current photo,
+  // so seeing the effect immediately as they drag is the point.
+  const [overlayOpacity, setOverlayOpacity] = useState(getCurrentBgOverlayOpacity());
 
   useEffect(() => {
     let timeout;
@@ -79,6 +83,7 @@ export function useBackgroundChanger(onApply, onClose) {
     const bg = customUrl.trim() || selected;
     try {
       localStorage.setItem("pos_background", bg);
+      localStorage.setItem("pos_bg_overlay_opacity", String(overlayOpacity));
     } catch (err) {
       console.error("Failed to save background", err);
       setUploadError("This image is too large to save. Try a smaller one.");
@@ -88,12 +93,21 @@ export function useBackgroundChanger(onApply, onClose) {
     setShowBgChanger(false);
   };
 
+  // Opacity renders live while the modal's open, so closing without
+  // applying has to snap it back to the last saved value - otherwise a
+  // cancelled drag would keep darkening/lightening the real page behind it.
+  const closeBgChanger = () => {
+    setOverlayOpacity(getCurrentBgOverlayOpacity());
+    setShowBgChanger(false);
+  };
+
   return {
     bgStyle: {
       background: `url("${bgUrl}") center/cover no-repeat fixed`,
       backgroundColor: "#2c3e50",
       minHeight: "100vh",
     },
+    overlayOpacity,
     selected,
     customUrl,
     previewUpload,
@@ -104,10 +118,11 @@ export function useBackgroundChanger(onApply, onClose) {
     compressing,
     uploadError,
     openBgChanger: () => setShowBgChanger(true),
-    closeBgChanger: () => setShowBgChanger(false),
+    closeBgChanger,
     applyBg,
     handleSelectPreset,
     handleImageUpload,
     handleCustomUrlChange,
+    handleOverlayOpacityChange: (value) => setOverlayOpacity(value),
   };
 }

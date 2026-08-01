@@ -98,6 +98,8 @@ function CashierLayout({ children }) {
     handleSelectPreset,
     handleImageUpload,
     handleCustomUrlChange,
+    handleOverlayOpacityChange,
+    overlayOpacity,
     compressing,
     uploadError,
   } = useBackgroundChanger(
@@ -190,7 +192,10 @@ function CashierLayout({ children }) {
       style={bgStyle}
       className="min-h-screen bg-cover bg-center bg-no-repeat transition-all duration-500"
     >
-      <div className="fixed inset-0 bg-black/50 pointer-events-none z-0" />
+      <div
+        className="fixed inset-0 pointer-events-none z-0"
+        style={{ background: `rgba(0,0,0,${overlayOpacity})` }}
+      />
       {isBgChangerMounted && (
         <BackgroundChanger
           visible={isBgChangerVisible}
@@ -205,6 +210,8 @@ function CashierLayout({ children }) {
           handleCustomUrlChange={handleCustomUrlChange}
           compressing={compressing}
           uploadError={uploadError}
+          overlayOpacity={overlayOpacity}
+          onOverlayOpacityChange={handleOverlayOpacityChange}
           t={t}
         />
       )}

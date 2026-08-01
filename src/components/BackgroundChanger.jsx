@@ -17,6 +17,8 @@ function BackgroundChanger({
   onApply,
   compressing = false,
   uploadError = "",
+  overlayOpacity,
+  onOverlayOpacityChange,
   t,
 }) {
   useEffect(() => {
@@ -98,6 +100,29 @@ function BackgroundChanger({
           uploadError={uploadError}
           t={t}
         />
+
+        <div className="mt-5">
+          <div className="flex items-center justify-between mb-1.5">
+            <label className="text-white/70 text-sm font-medium">
+              {t.bgOverlayDarknessLabel}
+            </label>
+            <span className="text-white/50 text-xs">
+              {Math.round(overlayOpacity * 100)}%
+            </span>
+          </div>
+          <input
+            type="range"
+            min={0.2}
+            max={0.8}
+            step={0.05}
+            value={overlayOpacity}
+            onChange={(e) => onOverlayOpacityChange(parseFloat(e.target.value))}
+            className="w-full accent-white cursor-pointer"
+          />
+          <p className="text-white/40 text-[0.72rem] mt-1 mb-0">
+            {t.bgOverlayDarknessDesc}
+          </p>
+        </div>
 
         <div className="flex gap-3 mt-6">
           <button

@@ -13,4 +13,6 @@ export default {
   "bgPresetRestaurant": "ភោជនីយដ្ឋាន",
   "bgPresetDarkMinimal": "សាមញ្ញ ស្រអាប់",
   "bgPresetBurger": "ប៊ឺហ្គឺរ",
+  "bgOverlayDarknessLabel": "កម្រិតងងឹតនៃ Overlay",
+  "bgOverlayDarknessDesc": "លៃតម្រូវបើអក្សរពិបាកអានលើផ្ទៃខាងក្រោយរបស់អ្នក។",
 };
