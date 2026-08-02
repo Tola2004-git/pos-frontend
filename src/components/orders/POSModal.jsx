@@ -417,10 +417,10 @@ export default function POSModal({
               { step: 2, label: t.stepPayment },
             ].map(({ step, label }) => (
               <button
-                className={`px-[14px] py-[6px] rounded-[20px] border-none cursor-pointer font-semibold text-[0.85rem] transition-colors ${
+                className={`px-[14px] py-[6px] rounded-[20px] border cursor-pointer font-semibold text-[0.85rem] transition-colors ${
                   posStep === step
-                    ? "bg-white text-[#1a1a2e]"
-                    : "bg-white/10 text-white"
+                    ? "bg-white text-[#1a1a2e] border-white"
+                    : "bg-white/10 text-white border-white/15"
                 }`}
                 key={step}
                 onClick={() =>
@@ -471,8 +471,8 @@ export default function POSModal({
                         onClick={() => setOrderType(option.value)}
                         className={`flex-1 rounded-[10px] px-3 py-2 text-sm font-semibold transition-all ${
                           selected
-                            ? "bg-white text-[#1a1a2e]"
-                            : "bg-white/10 text-white hover:bg-white/20"
+                            ? "bg-white text-[#1a1a2e] border border-white"
+                            : "bg-white/10 text-white border border-white/15 hover:bg-white/20"
                         }`}
                       >
                         {option.label}

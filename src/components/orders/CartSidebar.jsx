@@ -8,7 +8,6 @@ const inputStyle = {
   padding: "10px 14px",
   borderRadius: "10px",
   border: "1px solid var(--surface-border)",
-  background: "var(--surface-tint-10)",
   color: "var(--accent-border-full)",
   fontSize: "0.9rem",
   outline: "none",

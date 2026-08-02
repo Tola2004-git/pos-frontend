@@ -174,7 +174,6 @@ export const ProductGrid = memo(function ProductGrid({
                 key={p.id}
                 onClick={() => !isOutOfStock && onAddToCart(p)}
                 style={{
-                  background: "var(--surface-tint-05)",
                   border: glassCard.border,
                   boxShadow: glassCard.boxShadow,
                 }}

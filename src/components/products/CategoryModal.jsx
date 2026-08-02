@@ -110,15 +110,19 @@ function CategoryModal({
     };
   }, []);
 
+  const [nameFocused, setNameFocused] = useState(false);
+
   const inputStyle = {
     width: "100%",
     padding: "10px 14px",
     borderRadius: "10px",
-    border: "1px solid var(--surface-border)",
-    background: "var(--surface-tint-10)",
+    border: nameFocused
+      ? `1px solid ${accentBorder.soft}`
+      : "1px solid var(--surface-border)",
     color: "var(--accent-border-full)",
     fontSize: "0.9rem",
     outline: "none",
+    transition: "border 0.2s",
   };
 
   return (
@@ -222,6 +226,8 @@ function CategoryModal({
               placeholder={t.categoryNamePlaceholder}
               value={catForm.name}
               onChange={(e) => setCatForm({ ...catForm, name: e.target.value })}
+              onFocus={() => setNameFocused(true)}
+              onBlur={() => setNameFocused(false)}
             />
             <button
               onClick={onSubmit}
@@ -319,8 +325,8 @@ function CategoryModal({
                   justifyContent: "space-between",
                   padding: "12px 16px",
                   borderRadius: "12px",
-                  background: "var(--surface-tint-05)",
-                  border: "1px solid var(--surface-tint-08)",
+                  border: glassCard.border,
+                  boxShadow: glassCard.boxShadow,
                 }}
               >
                 <span style={{ color: "var(--accent-border-full)", fontWeight: 500 }}>

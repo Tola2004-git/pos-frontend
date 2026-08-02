@@ -497,13 +497,12 @@ function Tables() {
                 <select
                   value={selectedTargetId}
                   onChange={(event) => setSelectedTargetId(event.target.value)}
-                  className="theme-dark-surface text-white"
                   style={{
                     width: "100%",
                     padding: "14px 16px",
                     borderRadius: "14px",
                     border: "1px solid var(--surface-border)",
-                    background: "rgba(15, 23, 42, 0.75)",
+                    color: "var(--accent-border-full)",
                     fontSize: "0.95rem",
                     outline: "none",
                   }}

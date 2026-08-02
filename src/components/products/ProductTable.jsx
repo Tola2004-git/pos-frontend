@@ -80,7 +80,6 @@ function ProductTable({ products, loading, page, onEdit, onDelete, onRecipe, del
               <tr
                 style={{
                   borderBottom: "1px solid var(--surface-tint-12)",
-                  background: "var(--surface-tint-05)",
                 }}
               >
                 {COLUMNS.map((col, colIndex) => (
@@ -142,7 +141,6 @@ function ProductTable({ products, loading, page, onEdit, onDelete, onRecipe, del
             <tr
               style={{
                 borderBottom: "1px solid var(--surface-tint-12)",
-                background: "var(--surface-tint-05)",
               }}
             >
               {COLUMNS.map((col) => (

@@ -317,10 +317,10 @@ function ShiftReview() {
           <button
             key={tab.value}
             onClick={() => setStatusFilter(tab.value)}
-            className={`px-4 py-2 rounded-[10px] text-sm font-semibold transition-colors ${
+            className={`px-4 py-2 rounded-[10px] border text-sm font-semibold transition-colors ${
               statusFilter === tab.value
-                ? "bg-white text-[#1a1a2e]"
-                : "bg-white/10 text-white/70 hover:text-white"
+                ? "bg-white text-[#1a1a2e] border-white"
+                : "bg-white/10 text-white/70 border-white/15 hover:text-white"
             }`}
           >
             {tab.label}
@@ -454,7 +454,12 @@ function ShiftReview() {
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="px-4 py-2 rounded-[10px] text-sm font-semibold disabled:opacity-30 bg-white/10 text-white"
+            style={page === 1 ? { background: "var(--surface-tint-08)" } : undefined}
+            className={`px-4 py-2 rounded-[10px] border text-sm font-semibold transition-colors ${
+              page === 1
+                ? "text-white/30 border-white/10 cursor-not-allowed"
+                : "bg-white/10 text-white border-white/15"
+            }`}
           >
             {t.paginationBackAction}
           </button>
@@ -464,7 +469,12 @@ function ShiftReview() {
           <button
             onClick={() => setPage((p) => Math.min(lastPage, p + 1))}
             disabled={page === lastPage}
-            className="px-4 py-2 rounded-[10px] text-sm font-semibold disabled:opacity-30 bg-white/10 text-white"
+            style={page === lastPage ? { background: "var(--surface-tint-08)" } : undefined}
+            className={`px-4 py-2 rounded-[10px] border text-sm font-semibold transition-colors ${
+              page === lastPage
+                ? "text-white/30 border-white/10 cursor-not-allowed"
+                : "bg-white/10 text-white border-white/15"
+            }`}
           >
             {t.paginationNextAction}
           </button>

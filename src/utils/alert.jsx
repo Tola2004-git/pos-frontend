@@ -124,13 +124,16 @@ function injectAlertStyles() {
       -webkit-backdrop-filter: blur(25px);
       animation: confirm-fade-in 0.2s ease forwards;
     }
+    [data-theme="light"] .confirm-overlay {
+      background: transparent;
+    }
 
     .confirm-box {
       backdrop-filter: blur(25px);
       -webkit-backdrop-filter: blur(25px);
-      background: rgba(255, 255, 255, 0.0);
+      // background: rgba(255, 255, 255, 0.0);
       border: 1px solid var(--surface-border);
-      box-shadow: 0 8px 32px var(--shadow-color), inset 0 1px 0 var(--surface-tint-10);
+      box-shadow: 0 8px 32px var(--shadow-color), inset 0 1px 0 rgba(255,255,255,0.1);
       border-radius: 24px;
       padding: 36px 32px 28px;
       width: 100%;
@@ -139,6 +142,9 @@ function injectAlertStyles() {
       color: var(--accent-border-full);
       font-family: inherit;
       animation: confirm-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    [data-theme="light"] .confirm-box {
+      box-shadow: 0 8px 32px var(--shadow-color);
     }
 
     .confirm-emoji {
@@ -292,9 +298,9 @@ const ICONS = {
   error: toSvgString(<Danger size="22" variant="Bulk" color="white" />),
   warning: toSvgString(<Danger size="22" variant="Bulk" color="white" />),
   info: toSvgString(<InfoCircle size="22" variant="Bulk" color="white" />),
-  trash: toSvgString(<Trash size="50" variant="Bulk" color="white" />),
-  arrowRight: toSvgString(<ArrowRight size="50" variant="Bulk" color="white" />),
-  confirmWarning: toSvgString(<Danger size="50" variant="Bulk" color="white" />),
+  trash: toSvgString(<Trash size="50" variant="Bulk" color="currentColor" />),
+  arrowRight: toSvgString(<ArrowRight size="50" variant="Bulk" color="currentColor" />),
+  confirmWarning: toSvgString(<Danger size="50" variant="Bulk" color="currentColor" />),
 };
 
 function showToast(type, title, message, duration = 3500) {

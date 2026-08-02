@@ -16,22 +16,6 @@ export const bgPresets = [
     url: 'https://i.pinimg.com/1200x/ef/be/e3/efbee3b59f6b81175085fe6dad2a1c31.jpg'
   },
   {
-    name: 'Coffee Shop',
-    url: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=1920'
-  },
-  {
-    name: 'Restaurant',
-    url: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1920'
-  },
-  {
-    name: 'Dark Minimal',
-    url: 'https://images.unsplash.com/photo-1557683316-973673baf926?w=1920'
-  },
-  {
-    name: 'Burger',
-    url: 'https://images.unsplash.com/photo-1550547660-d9450f859349?w=1920'
-  },
-  {
     name: 'Pure White',
     url: PURE_WHITE_BG,
   },
@@ -83,7 +67,7 @@ export const glass = {
   backdropFilter: 'blur(25px)',
   WebkitBackdropFilter: 'blur(25px)',
   border: '1px solid var(--surface-border)',
-  boxShadow: '0 10px 30px var(--shadow-color)',
+  boxShadow: '0 2px 10px var(--shadow-color)',
 }
 
 export const glassCard = {
@@ -91,7 +75,7 @@ export const glassCard = {
   backdropFilter: 'blur(25px)',
   WebkitBackdropFilter: 'blur(25px)',
   border: '1px solid var(--surface-border)',
-  boxShadow: '0 8px 32px var(--shadow-color)',
+  boxShadow: '0 2px 10px var(--shadow-color)',
 }
 
 export const colors = {

@@ -58,10 +58,10 @@ export function PaymentDetailsForm({
             <button
               key={curr}
               onClick={() => onCurrencyChange(curr)}
-              className={`px-3 py-1 rounded-lg font-semibold text-sm transition-all ${
+              className={`px-3 py-1 rounded-lg border font-semibold text-sm transition-all ${
                 selectedCurrency === curr
-                  ? "bg-white text-[#1a1a2e]"
-                  : "bg-white/10 text-white"
+                  ? "bg-white text-[#1a1a2e] border-white"
+                  : "bg-white/10 text-white border-white/15"
               }`}
             >
               {curr === "USD" ? "$ USD" : "៛ KHR"}

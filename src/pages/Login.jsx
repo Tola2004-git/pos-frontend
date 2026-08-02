@@ -213,7 +213,6 @@ function Login() {
     padding: "10px 14px",
     borderRadius: "10px",
     border: "1px solid var(--surface-border)",
-    background: "var(--surface-tint-10)",
     fontSize: "0.9rem",
     outline: "none",
   };

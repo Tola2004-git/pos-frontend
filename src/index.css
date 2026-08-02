@@ -104,8 +104,24 @@ html[lang="kh"] * {
 [data-theme="light"] input::placeholder,
 [data-theme="light"] textarea::placeholder { color: rgba(26,26,46,0.5); }
 
-[data-theme="light"] .btn-cancel-glass { color: #1a1a2e; }
-[data-theme="light"] .btn-cancel-glass:hover { color: #1a1a2e; }
+[data-theme="light"] .btn-cancel-glass {
+  color: #1a1a2e;
+  background: var(--surface-tint-08);
+  border-color: var(--surface-border);
+}
+[data-theme="light"] .btn-cancel-glass:hover {
+  color: #1a1a2e;
+  background: var(--surface-tint-15);
+}
+
+/* text-amber-100 / text-emerald-200 are near-white tints meant to sit on a
+   dark glass background - on Pure White they're indistinguishable from the
+   page behind their own translucent amber/emerald banner. Swap to a
+   saturated dark shade of the same hue so the warning/success banners stay
+   legible without changing which color family they read as. */
+[data-theme="light"] [class*="text-amber-100"] { color: #92400e; }
+[data-theme="light"] [class*="text-emerald-200"] { color: #065f46; }
+[data-theme="light"] [class*="text-[#ffd166]"] { color: #92400e !important; }
 [data-theme="light"] .role-option:hover { color: #1a1a2e; }
 [data-theme="light"] .role-option.active { color: #1a1a2e; }
 
@@ -124,25 +140,27 @@ html[lang="kh"] * {
 [data-theme="light"] [class*="border-white/40"] { border-color: rgba(26,26,46,0.28) !important; }
 
 /* Same trick again for bg-white utility classes - the subtle "chip"/hover
-   backgrounds used everywhere for list rows, buttons, dropdown items. On a
-   photo/black background a few % white gives a soft highlight; on Pure
-   White it's indistinguishable from the page, so rows lose their separation
-   and hover states become invisible. */
-[data-theme="light"] [class*="bg-white"] { background-color: rgba(26,26,46,0.10) !important; }
-[data-theme="light"] [class*="bg-white/5"] { background-color: rgba(26,26,46,0.05) !important; }
-[data-theme="light"] [class*="bg-white/10"] { background-color: rgba(26,26,46,0.08) !important; }
-[data-theme="light"] [class*="bg-white/15"] { background-color: rgba(26,26,46,0.10) !important; }
-[data-theme="light"] [class*="bg-white/20"] { background-color: rgba(26,26,46,0.12) !important; }
-[data-theme="light"] [class*="bg-white/25"] { background-color: rgba(26,26,46,0.15) !important; }
-[data-theme="light"] [class*="bg-white/30"] { background-color: rgba(26,26,46,0.18) !important; }
-[data-theme="light"] [class*="bg-white/70"] { background-color: rgba(26,26,46,0.60) !important; }
+   backgrounds used everywhere for list rows, buttons, dropdown items,
+   category pills, image placeholders. On a photo/black background a few %
+   white gives a soft highlight; on Pure White that same tint reads as a
+   dirty gray smudge sitting on an otherwise clean white page (a card, pill,
+   or dropdown doesn't need a filled background to read as a distinct
+   surface once its border - see border-white above - is already visible).
+   So in light theme these are dropped to fully transparent instead of
+   getting a dark tint, and the element's border carries the definition. */
+[data-theme="light"] [class*="bg-white"] { background-color: transparent !important; }
+[data-theme="light"] [class*="hover\:bg-white"]:hover { background-color: transparent !important; }
 
-[data-theme="light"] [class*="hover\:bg-white"]:hover { background-color: rgba(26,26,46,0.10) !important; }
-[data-theme="light"] [class*="hover\:bg-white/5"]:hover { background-color: rgba(26,26,46,0.05) !important; }
-[data-theme="light"] [class*="hover\:bg-white/10"]:hover { background-color: rgba(26,26,46,0.08) !important; }
-[data-theme="light"] [class*="hover\:bg-white/15"]:hover { background-color: rgba(26,26,46,0.10) !important; }
-[data-theme="light"] [class*="hover\:bg-white/20"]:hover { background-color: rgba(26,26,46,0.12) !important; }
-[data-theme="light"] [class*="hover\:bg-white/25"]:hover { background-color: rgba(26,26,46,0.15) !important; }
+/* Exception: the bare `bg-white` token (no opacity suffix, e.g. an active
+   category pill or a selected list item) isn't a decorative chip - it's
+   the ONLY visual signal that something is selected, paired with dark text
+   that assumes a light fill behind it. Making that transparent too doesn't
+   just look plain, it erases the selection state entirely. [class~="..."]
+   matches the exact space-separated class token, so this does NOT catch
+   "bg-white/5" etc - only literal `bg-white`. Declared after the rule
+   above so it wins the cascade tie for elements matching both. */
+[data-theme="light"] [class~="bg-white"] { background-color: var(--surface-tint-15) !important; }
+[data-theme="light"] [class~="hover\:bg-white"]:hover { background-color: var(--surface-tint-15) !important; }
 
 /* Recharts renders raw SVG with colors set via `fill`/`stroke` attributes
    (from JS props like tick={{ fill: '...' }}), which the class-based

@@ -592,7 +592,7 @@ export default function OrdersTable({
               cursor: page === 1 ? "not-allowed" : "pointer",
               background:
                 page === 1 ? "var(--surface-tint-05)" : "var(--surface-tint-10)",
-              color: page === 1 ? "rgba(255,255,255,0.3)" : "white",
+              color: page === 1 ? "var(--surface-tint-15)" : "var(--accent-border-full)",
               fontWeight: 600,
               fontSize: "0.85rem",
             }}
@@ -621,7 +621,7 @@ export default function OrdersTable({
                 page === lastPage
                   ? "var(--surface-tint-05)"
                   : "var(--surface-tint-10)",
-              color: page === lastPage ? "rgba(255,255,255,0.3)" : "white",
+              color: page === lastPage ? "var(--surface-tint-15)" : "var(--accent-border-full)",
               fontWeight: 600,
               fontSize: "0.85rem",
             }}
