@@ -500,10 +500,10 @@ function UserModal({
                   value={form.role}
                   onChange={(e) => setForm({ ...form, role: e.target.value })}
                 >
-                  <option value="cashier" style={{ background: "#2c3e50" }}>
+                  <option value="cashier" style={{ background: "#2c3e50", color: "white" }}>
                     {t.roleCashier}
                   </option>
-                  <option value="admin" style={{ background: "#2c3e50" }}>
+                  <option value="admin" style={{ background: "#2c3e50", color: "white" }}>
                     {t.roleAdmin}
                   </option>
                 </select>
@@ -514,7 +514,7 @@ function UserModal({
                   disabled
                   onChange={(e) => setForm({ ...form, role: e.target.value })}
                 >
-                  <option value="cashier" style={{ background: "#2c3e50" }}>
+                  <option value="cashier" style={{ background: "#2c3e50", color: "white" }}>
                     {t.roleCashier}
                   </option>
                 </select>

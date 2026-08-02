@@ -130,6 +130,12 @@ export function useDashboard(
   customRange = null,
 ) {
   const [loading, setLoading] = useState(true);
+  // Separate from `loading` (which only fires on the very first mount, to
+  // avoid a jarring full-skeleton flicker every time the user just switches
+  // period tabs) - this tracks every fetch so the UI has *some* visible
+  // feedback while a period switch is in flight, instead of looking frozen
+  // for however long the request takes with the old data still on screen.
+  const [refetching, setRefetching] = useState(false);
   const [error, setError] = useState(false);
   const [salesByCashier, setSalesByCashier] = useState([]);
   const [paymentMix, setPaymentMix] = useState({
@@ -189,6 +195,7 @@ export function useDashboard(
 
     const requestId = ++requestIdRef.current;
     if (isFirstLoad.current) setLoading(true);
+    setRefetching(true);
     const isCustom =
       period === "custom" && customRange?.from && customRange?.to;
     const clampedCustom = isCustom
@@ -371,6 +378,7 @@ export function useDashboard(
     setError(failures.length > 0);
 
     setLoading(false);
+    setRefetching(false);
     setLastUpdated(new Date());
     isFirstLoad.current = false;
   }, [period, isAdmin, customRange]);
@@ -408,6 +416,7 @@ export function useDashboard(
 
   return {
     loading,
+    refetching,
     error,
     customRangeClamped,
     salesByCashier,

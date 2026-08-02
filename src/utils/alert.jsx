@@ -130,7 +130,7 @@ function injectAlertStyles() {
       -webkit-backdrop-filter: blur(25px);
       background: rgba(255, 255, 255, 0.0);
       border: 1px solid var(--surface-border);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.2), inset 0 1px 0 var(--surface-tint-10);
+      box-shadow: 0 8px 32px var(--shadow-color), inset 0 1px 0 var(--surface-tint-10);
       border-radius: 24px;
       padding: 36px 32px 28px;
       width: 100%;

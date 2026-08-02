@@ -374,7 +374,7 @@ function ProductModal({
                     onFocus={() => setFocusedField("Category")}
                     onBlur={() => setFocusedField("")}
                   >
-                    <option value="" style={{ background: "#2c3e50" }}>
+                    <option value="" style={{ background: "#2c3e50", color: "white" }}>
                       {t.selectCategoryOption}
                     </option>
                     {categories
@@ -383,7 +383,7 @@ function ProductModal({
                         <option
                           key={c.id}
                           value={c.id}
-                          style={{ background: "#2c3e50" }}
+                          style={{ background: "#2c3e50", color: "white" }}
                         >
                           {c.name}
                           {!c.status ? ` - ${t.inactiveLabel}` : ""}

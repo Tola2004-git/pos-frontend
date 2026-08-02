@@ -84,7 +84,7 @@ export default function ItemsPopover({ order, t }) {
               borderRadius: "14px",
               zIndex: 99999,
               width: "200px",
-              boxShadow: "0 15px 40px rgba(0,0,0,0.5)",
+              boxShadow: "0 15px 40px var(--popover-shadow-color)",
               overflow: "hidden",
               color: accentBorder.full,
               border: "1px solid var(--surface-tint-12)",

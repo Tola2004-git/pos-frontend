@@ -106,7 +106,7 @@ export function CloseShiftModal({ visible = true, closing, onClose, onCancel, t 
           <div className="relative">
             <DollarCircle
               size={18}
-              color="white"
+              color="currentColor"
               variant="Outline"
               style={{
                 position: "absolute",
@@ -142,7 +142,7 @@ export function CloseShiftModal({ visible = true, closing, onClose, onCancel, t 
                 transform: "translateY(-50%)",
                 fontSize: "0.95rem",
                 fontWeight: 700,
-                color: "white",
+                color: "var(--accent-border-full)",
                 opacity: focusedField === "khr" ? 1 : 0.4,
                 transition: "opacity 0.2s",
                 pointerEvents: "none",
@@ -168,7 +168,7 @@ export function CloseShiftModal({ visible = true, closing, onClose, onCancel, t 
           <div className="relative">
             <Note
               size={18}
-              color="white"
+              color="currentColor"
               variant="Outline"
               style={{
                 position: "absolute",
@@ -221,7 +221,7 @@ export function CloseShiftModal({ visible = true, closing, onClose, onCancel, t 
               </>
             ) : (
               <>
-                <HiLockClosed size={18} color="white" />
+                <HiLockClosed size={18} color="currentColor" />
                 {t.closeShiftSubmit}
               </>
             )}

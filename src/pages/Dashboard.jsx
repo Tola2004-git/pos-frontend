@@ -71,6 +71,7 @@ function Dashboard() {
   const { shift: currentShift, loading: shiftLoading } = useCashierShift(!isAdmin);
   const {
     loading,
+    refetching,
     error,
     customRangeClamped,
     salesByCashier,
@@ -344,7 +345,7 @@ function Dashboard() {
             />
           </button>
           <div
-            className="no-print flex items-center gap-1 p-1 rounded-full"
+            className="no-print flex items-center gap-1 p-1 rounded-full relative"
             style={glassCard}
           >
             {PERIODS.map((p) => (
@@ -361,6 +362,14 @@ function Dashboard() {
                 {PERIOD_LABELS[p]}
               </button>
             ))}
+            {refetching && (
+              <Refresh2
+                size={13}
+                color="currentColor"
+                variant="Linear"
+                className="text-white/60 animate-spin ml-1 mr-1.5 flex-shrink-0"
+              />
+            )}
           </div>
         </div>
       </div>
@@ -408,7 +417,7 @@ function Dashboard() {
       )}
 
       {period === "custom" && (
-        <div className="no-print mb-5 -mt-3" style={glassCard}>
+        <div className="no-print mb-5 -mt-3">
           <DateRangePicker
             dateFrom={customRange.from}
             dateTo={customRange.to}
@@ -458,7 +467,8 @@ function Dashboard() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4 mb-5">
+      <div className="@container">
+      <div className="grid grid-cols-1 @sm:grid-cols-2 @md:grid-cols-3 @lg:grid-cols-4 @min-[1650px]:grid-cols-7 gap-4 mb-5">
         {STAT_CARDS.map((s) => (
           <StatCard
             key={s.key}
@@ -472,6 +482,7 @@ function Dashboard() {
             loading={s.key === "low_stock" ? lowStockLoading : loading}
           />
         ))}
+      </div>
       </div>
 
       <div style={glassCard} className="rounded-[20px] p-5 mb-4">

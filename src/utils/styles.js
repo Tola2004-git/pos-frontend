@@ -75,7 +75,7 @@ export const glassSidebar = {
   backdropFilter: 'blur(20px)',
   WebkitBackdropFilter: 'blur(20px)',
   borderRight: '1px solid var(--surface-border)',
-  boxShadow: '4px 0 25px rgba(0,0,0,0.3)',
+  boxShadow: '4px 0 25px var(--shadow-color)',
 }
 
 export const glass = {
@@ -83,7 +83,7 @@ export const glass = {
   backdropFilter: 'blur(25px)',
   WebkitBackdropFilter: 'blur(25px)',
   border: '1px solid var(--surface-border)',
-  boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
+  boxShadow: '0 10px 30px var(--shadow-color)',
 }
 
 export const glassCard = {
@@ -91,7 +91,7 @@ export const glassCard = {
   backdropFilter: 'blur(25px)',
   WebkitBackdropFilter: 'blur(25px)',
   border: '1px solid var(--surface-border)',
-  boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
+  boxShadow: '0 8px 32px var(--shadow-color)',
 }
 
 export const colors = {

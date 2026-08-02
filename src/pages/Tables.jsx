@@ -414,7 +414,7 @@ function Tables() {
               borderRadius: "24px",
               padding: "28px",
               border: "1px solid var(--surface-border)",
-              boxShadow: "0 24px 60px rgba(0, 0, 0, 0.35)",
+              boxShadow: "0 24px 60px var(--shadow-color)",
               transform: isMoveVisible ? "translateY(0)" : "translateY(24px)",
               opacity: isMoveVisible ? 1 : 0,
               animation: isMoveVisible
@@ -626,7 +626,7 @@ function Tables() {
               borderRadius: "24px",
               padding: "28px",
               border: "1px solid var(--surface-border)",
-              boxShadow: "0 24px 60px rgba(0, 0, 0, 0.35)",
+              boxShadow: "0 24px 60px var(--shadow-color)",
               transform: isClearVisible ? "translateY(0)" : "translateY(24px)",
               opacity: isClearVisible ? 1 : 0,
               animation: isClearVisible

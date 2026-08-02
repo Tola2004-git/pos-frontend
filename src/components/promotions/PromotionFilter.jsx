@@ -92,7 +92,7 @@ export default function PromotionFilter({
               borderRadius: "14px",
               zIndex: 99999,
               minWidth: "180px",
-              boxShadow: "0 15px 40px rgba(0,0,0,0.5)",
+              boxShadow: "0 15px 40px var(--popover-shadow-color)",
               overflow: "hidden",
               animation: "dropdownFade 0.2s ease",
               transformOrigin: "top right",
@@ -121,7 +121,7 @@ export default function PromotionFilter({
                   color:
                     statusFilter === opt.value
                       ? accentBorder.full
-                      : "rgba(255,255,255,0.85)",
+                      : accentBorder.soft,
                   fontSize: "0.88rem",
                   fontWeight: statusFilter === opt.value ? 700 : 400,
                   borderLeft:

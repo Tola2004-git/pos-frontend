@@ -124,7 +124,7 @@ export default function OrdersTable({
                   style={{
                     padding: "40px",
                     textAlign: "center",
-                    color: "rgba(255,255,255,0.5)",
+                    color: "var(--accent-border-soft)",
                   }}
                 >
                   {noOrdersFound}
@@ -151,7 +151,7 @@ export default function OrdersTable({
                     <td
                       style={{
                         padding: "12px 14px",
-                        color: "rgba(255,255,255,0.5)",
+                        color: "var(--accent-border-soft)",
                         fontSize: "0.85rem",
                         whiteSpace: "nowrap",
                       }}
@@ -191,7 +191,7 @@ export default function OrdersTable({
                       title={order.table?.name || order.table_name || undefined}
                       style={{
                         padding: "12px 14px",
-                        color: "rgba(255,255,255,0.7)",
+                        color: "var(--accent-border-soft)",
                         fontSize: "0.85rem",
                         maxWidth: "110px",
                         overflow: "hidden",
@@ -212,7 +212,7 @@ export default function OrdersTable({
                             padding: "4px 10px",
                             borderRadius: "999px",
                             background: "var(--surface-tint-08)",
-                            color: "rgba(255,255,255,0.85)",
+                            color: "var(--accent-border-soft)",
                             fontWeight: 600,
                             fontSize: "0.8rem",
                           }}
@@ -241,7 +241,7 @@ export default function OrdersTable({
                           style={{
                             fontWeight: 500,
                             fontSize: "0.72rem",
-                            color: "rgba(255,255,255,0.4)",
+                            color: "var(--accent-border-soft)",
                           }}
                         >
                           {Math.round(
@@ -255,7 +255,7 @@ export default function OrdersTable({
                       title={getPaymentMethodName(order, notAvailableLabel)}
                       style={{
                         padding: "12px 14px",
-                        color: "rgba(255,255,255,0.7)",
+                        color: "var(--accent-border-soft)",
                         fontSize: "0.85rem",
                         maxWidth: "100px",
                         overflow: "hidden",
@@ -269,7 +269,7 @@ export default function OrdersTable({
                       title={order.user?.name || notAvailableLabel}
                       style={{
                         padding: "12px 14px",
-                        color: "rgba(255,255,255,0.6)",
+                        color: "var(--accent-border-soft)",
                         fontSize: "0.85rem",
                         maxWidth: "100px",
                         overflow: "hidden",
@@ -307,7 +307,7 @@ export default function OrdersTable({
                     <td
                       style={{
                         padding: "12px 14px",
-                        color: "rgba(255,255,255,0.5)",
+                        color: "var(--accent-border-soft)",
                         fontSize: "0.85rem",
                       }}
                     >
@@ -317,7 +317,7 @@ export default function OrdersTable({
                       <div
                         style={{
                           whiteSpace: "nowrap",
-                          color: "rgba(255,255,255,0.4)",
+                          color: "var(--accent-border-soft)",
                           fontSize: "0.78rem",
                         }}
                       >
@@ -578,7 +578,7 @@ export default function OrdersTable({
           gap: "10px",
         }}
       >
-        <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.85rem" }}>
+        <span style={{ color: "var(--accent-border-soft)", fontSize: "0.85rem" }}>
           {totalOrdersCount(total)}
         </span>
         <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>

@@ -79,14 +79,14 @@ export default function ExpenseModal({ show, onClose, editExpense, submitting, o
     width: "100%",
     padding: "10px 14px",
     borderRadius: "10px",
-    border: "1px solid rgba(255,255,255,0.2)",
-    background: "rgba(255,255,255,0.1)",
-    color: "white",
+    border: "1px solid var(--surface-border)",
+    background: "var(--surface-tint-10)",
+    color: "var(--accent-border-full)",
     fontSize: "0.9rem",
     outline: "none",
   };
   const labelStyle = {
-    color: "rgba(255,255,255,0.8)",
+    color: "var(--accent-border-soft)",
     fontSize: "0.85rem",
     display: "block",
     marginBottom: "6px",
@@ -103,8 +103,8 @@ export default function ExpenseModal({ show, onClose, editExpense, submitting, o
   const borderFor = (field) => ({
     border:
       focusedField === field
-        ? "1px solid rgba(255,255,255,0.8)"
-        : "1px solid rgba(255,255,255,0.2)",
+        ? "1px solid var(--accent-border-soft)"
+        : "1px solid var(--surface-border)",
     transition: "border 0.2s",
   });
 
@@ -180,15 +180,17 @@ export default function ExpenseModal({ show, onClose, editExpense, submitting, o
             {editExpense ? (
               <Edit
                 size={28}
-                color="white"
+                color="currentColor"
                 variant="Linear"
+                className="text-white"
                 style={{ animation: "float 2s ease-in-out infinite" }}
               />
             ) : (
               <MoneyRemove
                 size={28}
-                color="white"
+                color="currentColor"
                 variant="Linear"
+                className="text-white"
                 style={{ animation: "float 2s ease-in-out infinite" }}
               />
             )}
@@ -200,9 +202,9 @@ export default function ExpenseModal({ show, onClose, editExpense, submitting, o
             onClick={onClose}
             aria-label={t.cancel}
             style={{
-              background: "rgba(255,255,255,0.1)",
+              background: "var(--surface-tint-10)",
               border: "none",
-              color: "white",
+              color: "var(--accent-border-full)",
               width: 36,
               height: 36,
               borderRadius: 18,
@@ -232,7 +234,7 @@ export default function ExpenseModal({ show, onClose, editExpense, submitting, o
         <div style={{ marginBottom: 16 }}>
           <label style={labelStyle}>{t.expenseTitleLabel}</label>
           <div style={{ position: "relative" }}>
-            <Tag size={20} color="white" variant="Linear" style={iconStyle("title")} />
+            <Tag size={20} color="currentColor" variant="Linear" className="text-white" style={iconStyle("title")} />
             <input
               style={{ ...inputStyle, paddingLeft: 40, ...borderFor("title") }}
               placeholder={t.expenseTitlePlaceholder}
@@ -248,7 +250,7 @@ export default function ExpenseModal({ show, onClose, editExpense, submitting, o
           <div>
             <label style={labelStyle}>{t.expenseCategoryLabel}</label>
             <div style={{ position: "relative" }}>
-              <Category size={20} color="white" variant="Linear" style={iconStyle("category")} />
+              <Category size={20} color="currentColor" variant="Linear" className="text-white" style={iconStyle("category")} />
               <select
                 style={{ ...inputStyle, paddingLeft: 40, cursor: "pointer", ...borderFor("category") }}
                 value={form.category}
@@ -257,7 +259,7 @@ export default function ExpenseModal({ show, onClose, editExpense, submitting, o
                 onBlur={() => setFocusedField("")}
               >
                 {CATEGORIES.map((c) => (
-                  <option key={c} value={c} style={{ background: "#2c3e50" }}>
+                  <option key={c} value={c} style={{ background: "#2c3e50", color: "white" }}>
                     {t[`expenseCategory_${c}`] || c}
                   </option>
                 ))}
@@ -267,7 +269,7 @@ export default function ExpenseModal({ show, onClose, editExpense, submitting, o
           <div>
             <label style={labelStyle}>{t.expenseDateLabel}</label>
             <div style={{ position: "relative" }}>
-              <Calendar size={20} color="white" variant="Linear" style={iconStyle("date")} />
+              <Calendar size={20} color="currentColor" variant="Linear" className="text-white" style={iconStyle("date")} />
               <input
                 type="date"
                 style={{ ...inputStyle, paddingLeft: 40, colorScheme: "dark", ...borderFor("date") }}
@@ -284,7 +286,7 @@ export default function ExpenseModal({ show, onClose, editExpense, submitting, o
           <div>
             <label style={labelStyle}>{t.expenseAmountUsdLabel}</label>
             <div style={{ position: "relative" }}>
-              <DollarCircle size={20} color="white" variant="Linear" style={iconStyle("usd")} />
+              <DollarCircle size={20} color="currentColor" variant="Linear" className="text-white" style={iconStyle("usd")} />
               <input
                 type="number"
                 min="0"
@@ -301,7 +303,7 @@ export default function ExpenseModal({ show, onClose, editExpense, submitting, o
           <div>
             <label style={labelStyle}>{t.expenseAmountKhrLabel}</label>
             <div style={{ position: "relative" }}>
-              <Wallet2 size={20} color="white" variant="Linear" style={iconStyle("khr")} />
+              <Wallet2 size={20} color="currentColor" variant="Linear" className="text-white" style={iconStyle("khr")} />
               <input
                 type="number"
                 min="0"
@@ -322,8 +324,9 @@ export default function ExpenseModal({ show, onClose, editExpense, submitting, o
           <div style={{ position: "relative" }}>
             <NoteText
               size={18}
-              color="white"
+              color="currentColor"
               variant="Linear"
+              className="text-white"
               style={{ ...iconStyle("note"), top: 14, transform: "none" }}
             />
             <textarea
@@ -345,7 +348,6 @@ export default function ExpenseModal({ show, onClose, editExpense, submitting, o
               flex: 1,
               padding: 12,
               borderRadius: 12,
-              color: "white",
               cursor: submitting ? "not-allowed" : "pointer",
               fontWeight: 500,
               fontSize: "0.9rem",

@@ -219,7 +219,7 @@ function RecipeModal({ product, ingredients, onClose, onSuccess, t }) {
                     value={row.ingredient_id}
                     onChange={(e) => updateRow(index, { ingredient_id: e.target.value })}
                   >
-                    <option value="" style={{ background: "#2c3e50" }}>
+                    <option value="" style={{ background: "#2c3e50", color: "white" }}>
                       {t.recipeSelectIngredientOption}
                     </option>
                     {ingredients
@@ -229,7 +229,7 @@ function RecipeModal({ product, ingredients, onClose, onSuccess, t }) {
                           (ing.status && !usedIngredientIds.has(String(ing.id))),
                       )
                       .map((ing) => (
-                        <option key={ing.id} value={ing.id} style={{ background: "#2c3e50" }}>
+                        <option key={ing.id} value={ing.id} style={{ background: "#2c3e50", color: "white" }}>
                           {ing.name} ({ing.unit})
                           {!ing.status ? ` - ${t.inactiveLabel}` : ""}
                         </option>

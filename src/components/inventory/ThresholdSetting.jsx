@@ -47,7 +47,7 @@ export default function ThresholdSetting({
             borderRadius: "14px",
             padding: "16px",
             minWidth: "220px",
-            boxShadow: "0 15px 40px rgba(0,0,0,0.5)",
+            boxShadow: "0 15px 40px var(--popover-shadow-color)",
           }}
         >
           <p

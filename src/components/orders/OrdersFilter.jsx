@@ -167,7 +167,7 @@ export default function OrdersFilter({
               borderRadius: "14px",
               zIndex: 99999,
               minWidth: "160px",
-              boxShadow: "0 15px 40px rgba(0,0,0,0.5)",
+              boxShadow: "0 15px 40px var(--popover-shadow-color)",
               overflow: "hidden",
               animation: "dropdownFade 0.2s ease",
               transformOrigin: "top right",
@@ -195,7 +195,7 @@ export default function OrdersFilter({
                   color:
                     statusFilter === s
                       ? accentBorder.soft
-                      : "rgba(255,255,255,0.85)",
+                      : accentBorder.full,
                   fontSize: "0.88rem",
                   fontWeight: statusFilter === s ? 700 : 400,
                   textAlign: "left",
@@ -258,7 +258,7 @@ export default function OrdersFilter({
                 minWidth: "180px",
                 maxHeight: "280px",
                 overflowY: "auto",
-                boxShadow: "0 15px 40px rgba(0,0,0,0.5)",
+                boxShadow: "0 15px 40px var(--popover-shadow-color)",
                 animation: "dropdownFade 0.2s ease",
                 transformOrigin: "top right",
               }}
@@ -275,7 +275,7 @@ export default function OrdersFilter({
                   background: !cashierFilter ? "var(--surface-tint-15)" : "transparent",
                   border: "none",
                   cursor: "pointer",
-                  color: !cashierFilter ? accentBorder.soft : "rgba(255,255,255,0.85)",
+                  color: !cashierFilter ? accentBorder.soft : accentBorder.full,
                   fontSize: "0.88rem",
                   fontWeight: !cashierFilter ? 700 : 400,
                   textAlign: "left",
@@ -299,7 +299,7 @@ export default function OrdersFilter({
                       String(cashierFilter) === String(c.id) ? "var(--surface-tint-15)" : "transparent",
                     border: "none",
                     cursor: "pointer",
-                    color: String(cashierFilter) === String(c.id) ? accentBorder.soft : "rgba(255,255,255,0.85)",
+                    color: String(cashierFilter) === String(c.id) ? accentBorder.soft : accentBorder.full,
                     fontSize: "0.88rem",
                     fontWeight: String(cashierFilter) === String(c.id) ? 700 : 400,
                     textAlign: "left",

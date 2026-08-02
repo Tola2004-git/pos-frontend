@@ -21,8 +21,16 @@ html[lang="kh"] * {
    read a var() instead of a literal color and the var's value flips with the theme.
    Reset back to the dark values inside .theme-dark-surface, same reasoning as the
    text/border opt-out further down: a fixed dark surface's own inline styles must
-   stay dark-surface-appropriate (white-ish) regardless of the app theme. */
+   stay dark-surface-appropriate (white-ish) regardless of the app theme.
+   --shadow-color is deliberately NOT reset inside .theme-dark-surface: a
+   drop shadow is cast onto whatever's behind the element (the page), not
+   the element's own surface, so it should always track the page's theme
+   even for elements that stay permanently dark themselves. A heavy black
+   shadow tuned for a dark page (invisible, blends in) becomes a visible
+   gray halo bleeding around every card once the page itself is white. */
 :root {
+  --shadow-color: rgba(0,0,0,0.2);
+  --popover-shadow-color: rgba(0,0,0,0.5);
   --surface-border: rgba(255,255,255,0.15);
   --surface-tint-05: rgba(255,255,255,0.05);
   --surface-tint-06: rgba(255,255,255,0.06);
@@ -35,6 +43,8 @@ html[lang="kh"] * {
   --accent-border-soft: rgba(255,255,255,0.7);
 }
 [data-theme="light"] {
+  --shadow-color: rgba(26,26,46,0.10);
+  --popover-shadow-color: rgba(26,26,46,0.18);
   --surface-border: rgba(26,26,46,0.15);
   --surface-tint-05: rgba(26,26,46,0.05);
   --surface-tint-06: rgba(26,26,46,0.06);
@@ -77,22 +87,22 @@ html[lang="kh"] * {
 [data-theme="light"] [class*="text-white/90"] { color: rgba(26,26,46,0.90); }
 [data-theme="light"] [class*="text-white/85"] { color: rgba(26,26,46,0.88); }
 [data-theme="light"] [class*="text-white/80"] { color: rgba(26,26,46,0.85); }
-[data-theme="light"] [class*="text-white/75"] { color: rgba(26,26,46,0.80); }
-[data-theme="light"] [class*="text-white/70"] { color: rgba(26,26,46,0.75); }
-[data-theme="light"] [class*="text-white/65"] { color: rgba(26,26,46,0.70); }
-[data-theme="light"] [class*="text-white/60"] { color: rgba(26,26,46,0.65); }
-[data-theme="light"] [class*="text-white/55"] { color: rgba(26,26,46,0.60); }
-[data-theme="light"] [class*="text-white/50"] { color: rgba(26,26,46,0.58); }
-[data-theme="light"] [class*="text-white/45"] { color: rgba(26,26,46,0.55); }
-[data-theme="light"] [class*="text-white/40"] { color: rgba(26,26,46,0.52); }
-[data-theme="light"] [class*="text-white/30"] { color: rgba(26,26,46,0.45); }
+[data-theme="light"] [class*="text-white/75"] { color: rgba(26,26,46,0.82); }
+[data-theme="light"] [class*="text-white/70"] { color: rgba(26,26,46,0.78); }
+[data-theme="light"] [class*="text-white/65"] { color: rgba(26,26,46,0.74); }
+[data-theme="light"] [class*="text-white/60"] { color: rgba(26,26,46,0.70); }
+[data-theme="light"] [class*="text-white/55"] { color: rgba(26,26,46,0.66); }
+[data-theme="light"] [class*="text-white/50"] { color: rgba(26,26,46,0.64); }
+[data-theme="light"] [class*="text-white/45"] { color: rgba(26,26,46,0.68); }
+[data-theme="light"] [class*="text-white/40"] { color: rgba(26,26,46,0.62); }
+[data-theme="light"] [class*="text-white/30"] { color: rgba(26,26,46,0.58); }
 
 [data-theme="light"] [class*="hover\:text-white"]:hover { color: #1a1a2e; }
 [data-theme="light"] [class*="hover\:text-white/80"]:hover { color: rgba(26,26,46,0.85); }
-[data-theme="light"] [class*="hover\:text-white/70"]:hover { color: rgba(26,26,46,0.75); }
+[data-theme="light"] [class*="hover\:text-white/70"]:hover { color: rgba(26,26,46,0.78); }
 
 [data-theme="light"] input::placeholder,
-[data-theme="light"] textarea::placeholder { color: rgba(26,26,46,0.4); }
+[data-theme="light"] textarea::placeholder { color: rgba(26,26,46,0.5); }
 
 [data-theme="light"] .btn-cancel-glass { color: #1a1a2e; }
 [data-theme="light"] .btn-cancel-glass:hover { color: #1a1a2e; }

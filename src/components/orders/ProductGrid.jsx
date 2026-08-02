@@ -159,7 +159,7 @@ export const ProductGrid = memo(function ProductGrid({
               >
                 {tr("noProductsAvailable", "No products available")}
               </div>
-              <div style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.4)" }}>
+              <div style={{ fontSize: "0.85rem", color: "var(--accent-border-soft)" }}>
                 {tr("tryAnotherCategory", "Try selecting another category")}
               </div>
             </div>

@@ -131,7 +131,7 @@ export function CashMovementModal({ visible = true, recording, onSubmit, onCance
           <div className="relative">
             <DollarCircle
               size={18}
-              color="white"
+              color="currentColor"
               variant="Outline"
               style={{
                 position: "absolute",
@@ -167,7 +167,7 @@ export function CashMovementModal({ visible = true, recording, onSubmit, onCance
                 transform: "translateY(-50%)",
                 fontSize: "0.95rem",
                 fontWeight: 700,
-                color: "white",
+                color: "var(--accent-border-full)",
                 opacity: focusedField === "khr" ? 1 : 0.4,
                 transition: "opacity 0.2s",
                 pointerEvents: "none",
@@ -193,7 +193,7 @@ export function CashMovementModal({ visible = true, recording, onSubmit, onCance
           <div className="relative">
             <Note
               size={18}
-              color="white"
+              color="currentColor"
               variant="Outline"
               style={{
                 position: "absolute",

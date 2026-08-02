@@ -38,7 +38,7 @@ export function StatCard({ label, value, sub, color, StatIcon, onClick, loading,
           <Skeleton width={70} height={22} />
         ) : (
           <>
-            <p className="text-2xl font-bold text-white m-0">{value}</p>
+            <p className="text-xl font-bold text-white m-0 truncate">{value}</p>
             {sub && (
               <p className="text-white/40 text-[0.68rem] m-0 mt-0.5 truncate">
                 {sub}

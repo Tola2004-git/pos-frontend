@@ -31,7 +31,7 @@ function Row({ icon: Icon, label, value, valueStyle }) {
           display: "flex",
           alignItems: "center",
           gap: "6px",
-          color: "rgba(255,255,255,0.5)",
+          color: "var(--accent-border-soft)",
           fontSize: "0.85rem",
         }}
       >
@@ -237,7 +237,7 @@ export default function OrderDetailModal({
             )}
             {order.refund_reason && (
               <div style={{ marginTop: "6px" }}>
-                <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.85rem" }}>
+                <span style={{ color: "var(--accent-border-soft)", fontSize: "0.85rem" }}>
                   {tr("reasonLabel", "Reason")}
                 </span>
                 <div style={{ color: accentBorder.full, fontSize: "0.85rem", marginTop: "4px" }}>
@@ -289,7 +289,7 @@ export default function OrderDetailModal({
           >
             <div className="flex items-center gap-1.5 mb-1.5">
               <NoteText size={14} color="rgba(255,255,255,0.5)" variant="Linear" />
-              <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.85rem" }}>
+              <span style={{ color: "var(--accent-border-soft)", fontSize: "0.85rem" }}>
                 {tr("noteOptional", "Note (optional)")}
               </span>
             </div>
@@ -333,7 +333,7 @@ export default function OrderDetailModal({
             >
               <span style={{ color: accentBorder.full }}>
                 {item.product_name}{" "}
-                <span style={{ color: "rgba(255,255,255,0.5)" }}>
+                <span style={{ color: "var(--accent-border-soft)" }}>
                   x{item.quantity}
                 </span>
               </span>
@@ -408,7 +408,7 @@ export default function OrderDetailModal({
               ]
                 .filter(Boolean)
                 .join(" + ")}
-              valueStyle={{ color: "rgba(255,255,255,0.6)" }}
+              valueStyle={{ color: "var(--accent-border-soft)" }}
             />
           )}
           <Row

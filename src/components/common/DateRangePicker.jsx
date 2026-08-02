@@ -1,4 +1,5 @@
 import { forwardRef } from "react";
+import { createPortal } from "react-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Calendar, CloseCircle } from "iconsax-react";
@@ -103,7 +104,7 @@ const DATEPICKER_DARK_THEME_CSS = `
   border-radius: 14px;
   overflow: hidden;
   font-family: inherit;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+  box-shadow: 0 15px 40px var(--popover-shadow-color);
 }
 .pos-datepicker-dark .react-datepicker__triangle {
   display: none;
@@ -188,6 +189,16 @@ export default function DateRangePicker({
           onDateToChange(toDateStr(end));
         }}
         disabled={disabled}
+        // The trigger's wrapping element has `backdrop-filter: blur(...)`
+        // for its own glass look; react-datepicker renders the popup as a
+        // DOM child of that same wrapper by default (not portaled), which
+        // makes the blur bleed into the calendar's own rendering - it looks
+        // fine on a dark page (the haze blends in) but shows as a visible
+        // translucent smear over whatever's behind it on a light page.
+        // popperContainer portals just the popup DOM node to <body> (still
+        // positioned normally, anchored to the input) to escape that
+        // ancestor stacking context.
+        popperContainer={({ children }) => createPortal(children, document.body)}
         popperClassName="pos-datepicker-popper"
         calendarClassName="pos-datepicker-dark"
         customInput={

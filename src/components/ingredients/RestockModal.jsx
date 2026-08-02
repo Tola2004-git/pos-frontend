@@ -87,7 +87,7 @@ function ActionDropdown({ value, onChange, t }) {
             borderRadius: "8px",
             overflow: "hidden",
             zIndex: 999,
-            boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
+            boxShadow: "0 8px 24px var(--popover-shadow-color)",
           }}
         >
           {options.map((option) => (

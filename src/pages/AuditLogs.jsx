@@ -128,7 +128,7 @@ function ActionFilterDropdown({ value, onChange, allLabel }) {
             minWidth: "220px",
             maxHeight: "340px",
             overflowY: "auto",
-            boxShadow: "0 15px 40px rgba(0,0,0,0.5)",
+            boxShadow: "0 15px 40px var(--popover-shadow-color)",
             animation: "dropdownFade 0.2s ease",
             transformOrigin: "top left",
           }}

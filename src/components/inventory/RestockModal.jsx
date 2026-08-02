@@ -93,7 +93,7 @@ function ActionDropdown({ value, onChange, t }) {
             borderRadius: "8px",
             overflow: "hidden",
             zIndex: 999,
-            boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
+            boxShadow: "0 8px 24px var(--popover-shadow-color)",
           }}
         >
           {options.map((option) => (
@@ -348,7 +348,7 @@ export default function RestockModal({
                 maxHeight: "200px",
                 overflowY: "auto",
                 zIndex: 999,
-                boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
+                boxShadow: "0 10px 30px var(--popover-shadow-color)",
               }}
               onMouseDown={(e) => e.stopPropagation()}
             >
@@ -356,7 +356,7 @@ export default function RestockModal({
                 <p
                   style={{
                     padding: "12px 16px",
-                    color: "rgba(255,255,255,0.4)",
+                    color: "var(--accent-border-soft)",
                     margin: 0,
                     fontSize: "0.85rem",
                   }}
@@ -422,7 +422,7 @@ export default function RestockModal({
                       <div
                         style={{
                           fontSize: "0.75rem",
-                          color: "rgba(255,255,255,0.5)",
+                          color: "var(--accent-border-soft)",
                         }}
                       >
                         {t.restockSkuQtyMsg

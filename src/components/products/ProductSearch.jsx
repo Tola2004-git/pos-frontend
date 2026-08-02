@@ -101,7 +101,7 @@ function ProductSearch({ search, setSearch, categoryFilter, setCategoryFilter, c
               borderRadius: "14px",
               zIndex: 99999,
               minWidth: "180px",
-              boxShadow: "0 15px 40px rgba(0,0,0,0.5)",
+              boxShadow: "0 15px 40px var(--popover-shadow-color)",
               overflow: "hidden",
               animation: "dropdownFade 0.2s ease",
               transformOrigin: "top right",

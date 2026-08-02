@@ -278,7 +278,7 @@ function IngredientModal({
                     onFocus={() => setFocusedField("category")}
                     onBlur={() => setFocusedField("")}
                   >
-                    <option value="" style={{ background: "#2c3e50" }}>
+                    <option value="" style={{ background: "#2c3e50", color: "white" }}>
                       {t.selectCategoryOption}
                     </option>
                     {categories
@@ -287,7 +287,7 @@ function IngredientModal({
                         <option
                           key={c.id}
                           value={c.id}
-                          style={{ background: "#2c3e50" }}
+                          style={{ background: "#2c3e50", color: "white" }}
                         >
                           {c.name}
                           {!c.status ? ` - ${t.inactiveLabel}` : ""}

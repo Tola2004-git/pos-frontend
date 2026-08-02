@@ -326,7 +326,7 @@ export default function PromotionModal({
                   <option
                     key={pt.value}
                     value={pt.value}
-                    style={{ background: "#2c3e50" }}
+                    style={{ background: "#2c3e50", color: "white" }}
                   >
                     {pt.label}
                   </option>
