@@ -136,6 +136,7 @@ function IngredientModal({
       }}
     >
       <div
+        className="thin-light-scrollbar"
         style={{
           ...glass,
           borderRadius: "24px",
@@ -378,7 +379,7 @@ function IngredientModal({
                     style={{
                       ...inputStyle,
                       paddingLeft: "40px",
-                      colorScheme: "dark",
+                      colorScheme: "var(--native-color-scheme)",
                       ...borderFor("expiry"),
                     }}
                     type="date"

@@ -38,6 +38,16 @@ export const getThemeForBackground = (bgUrl) => {
   return bgUrl === PURE_WHITE_BG ? 'light' : 'dark'
 }
 
+// The Sidebar always stays a dark, fixed surface regardless of theme, but
+// which dark it uses is tuned per-preset so it visually pairs with
+// whichever background is active instead of clashing with it - see
+// --sidebar-bg in index.css.
+export const getBgVariant = (bgUrl) => {
+  if (bgUrl === PURE_WHITE_BG) return 'pure-white'
+  if (bgUrl === PURE_BLACK_BG) return 'pure-black'
+  return 'photo'
+}
+
 export const defaultBgOverlayOpacity = 0.5
 
 // The overlay darkening the background photo so white text stays readable
@@ -55,7 +65,7 @@ export const getGradientBg = () => ({
 })
 
 export const glassSidebar = {
-  background: 'rgba(30, 39, 46, 0.75)',
+  background: 'var(--sidebar-bg)',
   backdropFilter: 'blur(20px)',
   WebkitBackdropFilter: 'blur(20px)',
   borderRight: '1px solid var(--surface-border)',

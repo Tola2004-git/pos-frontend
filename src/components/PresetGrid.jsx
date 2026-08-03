@@ -1,3 +1,5 @@
+import { PURE_WHITE_BG } from "../utils/styles";
+
 const PRESET_NAME_KEYS = {
   "Food Dark": "bgPresetFoodDark",
   "Coffee Shop": "bgPresetCoffeeShop",
@@ -31,11 +33,23 @@ function PresetGrid({ bgPresets, selected, onSelect, t }) {
                 alt={name}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-[0.7rem] p-1 text-center">
+              <div
+                className={`absolute bottom-0 left-0 right-0 text-[0.7rem] p-1 text-center ${
+                  bg.url === PURE_WHITE_BG
+                    ? "bg-white/70 text-[#1a1a2e]"
+                    : "theme-dark-surface bg-black/50 text-white"
+                }`}
+              >
                 {name}
               </div>
               {selected === bg.url && (
-                <div className="absolute top-[6px] right-[6px] bg-[#fff] rounded-full w-5 h-5 flex items-center justify-center text-[0.7rem] font-bold">
+                <div
+                  className="absolute top-[6px] right-[6px] bg-[#fff] text-[#1a1a2e] rounded-full w-5 h-5 flex items-center justify-center text-[0.7rem] font-bold"
+                  style={{
+                    border: "1px solid rgba(26,26,46,0.15)",
+                    boxShadow: "0 1px 4px rgba(0,0,0,0.35)",
+                  }}
+                >
                   ✓
                 </div>
               )}

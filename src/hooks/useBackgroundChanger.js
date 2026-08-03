@@ -4,6 +4,7 @@ import {
   getCurrentBg,
   getCurrentBgOverlayOpacity,
   getThemeForBackground,
+  getBgVariant,
   PURE_WHITE_BG,
   PURE_BLACK_BG,
 } from "../utils/styles";
@@ -27,6 +28,7 @@ export function useBackgroundChanger(onApply, onClose) {
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", getThemeForBackground(bgUrl));
+    document.documentElement.setAttribute("data-bg-variant", getBgVariant(bgUrl));
   }, [bgUrl]);
 
   useEffect(() => {

@@ -3,7 +3,6 @@ export const fieldStyle = {
   padding: "12px 14px",
   borderRadius: "12px",
   border: "1px solid var(--surface-border)",
-  background: "var(--surface-tint-07)",
   color: "var(--accent-border-full)",
   fontSize: "0.95rem",
   outline: "none",

@@ -159,11 +159,12 @@ export function SkeletonStockRow({ index = 0 }) {
 
   return (
     <tr style={{ borderBottom: "1px solid var(--surface-tint-05)" }}>
-      <td style={{ padding: "12px 14px" }}>{s(20)}</td> {/* # */}
-      <td style={{ padding: "12px 14px" }}>{s(120)}</td> {/* Product */}
+      {/* # */}
+      <td style={{ padding: "12px 14px" }}>{s(20)}</td>
+      {/* Product */}
+      <td style={{ padding: "12px 14px" }}>{s(120)}</td>
+      {/* Action badge */}
       <td style={{ padding: "12px 14px" }}>
-        {" "}
-        {/* Action badge */}
         <Skeleton
           width={72}
           height={24}
@@ -171,15 +172,20 @@ export function SkeletonStockRow({ index = 0 }) {
           style={{ animationDelay: delay }}
         />
       </td>
-      <td style={{ padding: "12px 14px" }}>{s(30)}</td> {/* Qty */}
-      <td style={{ padding: "12px 14px" }}>{s(30)}</td> {/* Before */}
-      <td style={{ padding: "12px 14px" }}>{s(30)}</td> {/* After */}
-      <td style={{ padding: "12px 14px" }}>{s(90)}</td> {/* Supplier */}
-      <td style={{ padding: "12px 14px" }}>{s(110)}</td> {/* Note */}
-      <td style={{ padding: "12px 14px" }}>{s(70)}</td> {/* By */}
+      {/* Qty */}
+      <td style={{ padding: "12px 14px" }}>{s(30)}</td>
+      {/* Before */}
+      <td style={{ padding: "12px 14px" }}>{s(30)}</td>
+      {/* After */}
+      <td style={{ padding: "12px 14px" }}>{s(30)}</td>
+      {/* Supplier */}
+      <td style={{ padding: "12px 14px" }}>{s(90)}</td>
+      {/* Note */}
+      <td style={{ padding: "12px 14px" }}>{s(110)}</td>
+      {/* By */}
+      <td style={{ padding: "12px 14px" }}>{s(70)}</td>
+      {/* Date */}
       <td style={{ padding: "12px 14px" }}>
-        {" "}
-        {/* Date */}
         <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
           {s(70)} {s(55)}
         </div>

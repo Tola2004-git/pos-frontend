@@ -38,13 +38,18 @@ export default function ToastNotification({ toasts, onClose, onPrint }) {
   return (
     <div className="fixed top-6 right-6 z-[999999] flex flex-col gap-3 pointer-events-none">
       {toasts.map((toast) => {
+        // order can be missing (e.g. a stale/aborted request resolved after
+        // the toast was queued) - skip rendering rather than crash the whole
+        // app on toast.order.total below, since nothing here has a fallback.
+        if (!toast.order) return null;
+
         const config = TOAST_CONFIG[toast.type] || TOAST_CONFIG.payment;
         const Icon = config.Icon;
         const duration = toast.duration || TOAST_DURATION;
         return (
           <div
             key={toast.id}
-            className={`pointer-events-auto relative overflow-hidden rounded-[16px] border border-white/15 bg-gradient-to-br ${config.gradient} p-[14px_18px] min-w-[300px] max-w-[380px] text-white shadow-[0_8px_24px_rgba(0,0,0,0.35)]`}
+            className={`theme-dark-surface pointer-events-auto relative overflow-hidden rounded-[16px] border border-white/15 bg-gradient-to-br ${config.gradient} p-[14px_18px] min-w-[300px] max-w-[380px] text-white shadow-[0_8px_24px_rgba(0,0,0,0.35)]`}
             style={{ animation: "slideIn 0.3s ease" }}
           >
             <div className="absolute inset-x-0 top-0 h-px bg-white/30" />

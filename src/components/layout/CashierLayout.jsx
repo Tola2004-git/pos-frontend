@@ -290,14 +290,14 @@ function CashierLayout({ children }) {
             <UserProfile user={user} t={t} />
             <button
               onClick={confirmLogout}
-              className="flex items-center gap-2 px-3 md:px-4 py-2 rounded-[10px] bg-[#c0392b]/80 hover:bg-[#c0392b] text-white font-semibold text-sm whitespace-nowrap transition-colors cursor-pointer"
+              className="theme-dark-surface flex items-center gap-2 px-3 md:px-4 py-2 rounded-[10px] bg-[#c0392b]/80 hover:bg-[#c0392b] text-white font-semibold text-sm whitespace-nowrap transition-colors cursor-pointer"
             >
               <Logout size={18} color="white" variant="Linear" />
               <span className="hidden sm:inline">{t.logoutBtn}</span>
             </button>
           </div>
         </header>
-        <main className="flex-1 p-4 md:p-6 overflow-y-auto">
+        <main className="flex-1 p-4 md:p-6 overflow-y-auto thin-light-scrollbar">
           {showShiftChecking ? (
             <>
               <style>{badgeFloatStyles}</style>

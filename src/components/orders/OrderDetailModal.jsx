@@ -106,10 +106,8 @@ export default function OrderDetailModal({
           maxWidth: "560px",
           maxHeight: "90vh",
           overflowY: "auto",
-          scrollbarWidth: "thin",
-          scrollbarColor: "rgba(255, 255, 255, 0.2) transparent",
         }}
-        className="[&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-white/15 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent"
+        className="thin-light-scrollbar"
       >
         <div
           style={{

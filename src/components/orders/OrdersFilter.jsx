@@ -248,6 +248,7 @@ export default function OrdersFilter({
 
           {showCashierDropdown && (
             <div
+              className="thin-light-scrollbar"
               style={{
                 ...glassCard,
                 position: "absolute",

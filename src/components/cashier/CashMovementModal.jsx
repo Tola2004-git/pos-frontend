@@ -82,7 +82,7 @@ export function CashMovementModal({ visible = true, recording, onSubmit, onCance
         <style>{badgeFloatStyles}</style>
         <div className="flex items-center gap-3 mb-2">
           <div className="w-11 h-11 rounded-[12px] flex items-center justify-center flex-none">
-            <MoneySend size={32} color="currentColor" variant="Outline" />
+            <MoneySend size={32} color="currentColor" variant="Outline" style={{animation: "float 3s ease-in-out infinite"}}/>
           </div>
           <div>
             <h3 className="text-lg font-bold m-0">{t.cashMovementTitle}</h3>
@@ -105,10 +105,10 @@ export function CashMovementModal({ visible = true, recording, onSubmit, onCance
           <button
             type="button"
             onClick={() => setType("cash_in")}
-            className={`flex-1 py-2.5 rounded-[10px] text-sm font-semibold transition-colors ${
+            className={`flex-1 py-2.5 rounded-[10px] border text-sm font-semibold transition-colors ${
               type === "cash_in"
-                ? "bg-[#2ecc71] text-white"
-                : "bg-white/10 text-white/70 hover:text-white"
+                ? "bg-[#2ecc71] text-white border-[#2ecc71]"
+                : "bg-white/10 text-white/70 border-white/15 hover:text-white"
             }`}
           >
             {t.cashIn}
@@ -116,10 +116,10 @@ export function CashMovementModal({ visible = true, recording, onSubmit, onCance
           <button
             type="button"
             onClick={() => setType("cash_out")}
-            className={`flex-1 py-2.5 rounded-[10px] text-sm font-semibold transition-colors ${
+            className={`flex-1 py-2.5 rounded-[10px] border text-sm font-semibold transition-colors ${
               type === "cash_out"
-                ? "bg-[#e74c3c] text-white"
-                : "bg-white/10 text-white/70 hover:text-white"
+                ? "bg-[#e74c3c] text-white border-[#e74c3c]"
+                : "bg-white/10 text-white/70 border-white/15 hover:text-white"
             }`}
           >
             {t.cashOut}

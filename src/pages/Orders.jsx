@@ -94,10 +94,14 @@ function Orders() {
   }, [refetchProducts]);
 
   useEffect(() => {
+    // Admin-only endpoint (filtering orders by cashier only makes sense for
+    // an admin viewing everyone's orders) - a cashier only ever sees their
+    // own, so skip the call rather than let it 403 on every page load.
+    if (!isAdmin) return;
     getAllCashiers()
       .then((res) => setCashiers(res.data.data))
       .catch(() => setCashiers([]));
-  }, []);
+  }, [isAdmin]);
 
   useEffect(() => {
     let active = true;

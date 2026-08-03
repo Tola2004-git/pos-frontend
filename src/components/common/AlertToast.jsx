@@ -30,7 +30,7 @@ export default function AlertToast({
 
   return (
     <div
-      className={`pointer-events-auto relative overflow-hidden rounded-[16px] border border-white/15 bg-gradient-to-br ${gradient} p-[14px_18px] min-w-[260px] max-w-[380px] text-white shadow-[0_8px_24px_rgba(0,0,0,0.35)]`}
+      className={`theme-dark-surface pointer-events-auto relative overflow-hidden rounded-[16px] border border-white/15 bg-gradient-to-br ${gradient} p-[14px_18px] min-w-[260px] max-w-[380px] text-white shadow-[0_8px_24px_rgba(0,0,0,0.35)]`}
       style={{
         animation:
           "alert-toast-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards",

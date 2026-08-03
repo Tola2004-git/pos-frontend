@@ -31,6 +31,13 @@ html[lang="kh"] * {
 :root {
   --shadow-color: rgba(0,0,0,0.2);
   --popover-shadow-color: rgba(0,0,0,0.5);
+  --popover-solid-bg: rgba(30,41,59,0.98);
+  --scrollbar-thumb: rgba(255,255,255,0.25);
+  --scrollbar-thumb-hover: rgba(255,255,255,0.4);
+  --native-color-scheme: dark;
+  --sidebar-bg: rgba(30,39,46,0.75);
+  --tooltip-bg: rgba(20,28,35,0.95);
+  --tooltip-text: #ffffff;
   --surface-border: rgba(255,255,255,0.15);
   --surface-tint-05: rgba(255,255,255,0.05);
   --surface-tint-06: rgba(255,255,255,0.06);
@@ -45,6 +52,10 @@ html[lang="kh"] * {
 [data-theme="light"] {
   --shadow-color: rgba(26,26,46,0.10);
   --popover-shadow-color: rgba(26,26,46,0.18);
+  --popover-solid-bg: rgba(255,255,255,0.98);
+  --scrollbar-thumb: rgba(26,26,46,0.25);
+  --scrollbar-thumb-hover: rgba(26,26,46,0.4);
+  --native-color-scheme: light;
   --surface-border: rgba(26,26,46,0.15);
   --surface-tint-05: rgba(26,26,46,0.05);
   --surface-tint-06: rgba(26,26,46,0.06);
@@ -56,7 +67,28 @@ html[lang="kh"] * {
   --accent-border-full: #1a1a2e;
   --accent-border-soft: rgba(26,26,46,0.7);
 }
+
+/* The Sidebar (and its collapsed-state tooltip) stay a fixed dark surface
+   regardless of theme, but which dark pairs differently per exact
+   background choice rather than using one shade for every non-white case -
+   see getBgVariant() in utils/styles.js, set alongside data-theme. */
+[data-bg-variant="pure-white"] {
+  --sidebar-bg: rgba(26,26,46,0.95);
+}
+[data-bg-variant="pure-black"] {
+  --sidebar-bg: rgba(0,0,0,0.95);
+  /* A dark tooltip is invisible on a Pure Black page, so invert it here
+     specifically - Pure White and every photo background already have
+     enough separation from a dark tooltip and stay as-is. */
+  --tooltip-bg: rgba(255,255,255,0.97);
+  --tooltip-text: #1a1a2e;
+}
+
 [data-theme="light"] .theme-dark-surface {
+  --popover-solid-bg: rgba(30,41,59,0.98);
+  --scrollbar-thumb: rgba(255,255,255,0.25);
+  --scrollbar-thumb-hover: rgba(255,255,255,0.4);
+  --native-color-scheme: dark;
   --surface-border: rgba(255,255,255,0.15);
   --surface-tint-05: rgba(255,255,255,0.05);
   --surface-tint-06: rgba(255,255,255,0.06);
@@ -353,7 +385,7 @@ input::placeholder {
 
 .table-scroll-x {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
 }
 .table-scroll-x::-webkit-scrollbar {
   height: 8px;
@@ -362,16 +394,16 @@ input::placeholder {
   background: transparent;
 }
 .table-scroll-x::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.25);
+  background-color: var(--scrollbar-thumb);
   border-radius: 999px;
 }
 .table-scroll-x::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(255, 255, 255, 0.4);
+  background-color: var(--scrollbar-thumb-hover);
 }
 
 .thin-light-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
 }
 .thin-light-scrollbar::-webkit-scrollbar {
   width: 6px;
@@ -380,11 +412,11 @@ input::placeholder {
   background: transparent;
 }
 .thin-light-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.25);
+  background-color: var(--scrollbar-thumb);
   border-radius: 999px;
 }
 .thin-light-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(255, 255, 255, 0.4);
+  background-color: var(--scrollbar-thumb-hover);
 }
 
 /* Printing a page (Dashboard's "Print / Save as PDF" button) - the app's

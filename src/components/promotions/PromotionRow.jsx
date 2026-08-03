@@ -318,7 +318,7 @@ export default function PromotionRow({
         </div>
 
         <ul
-          className="[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:bg-white/20 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent"
+          className="thin-light-scrollbar"
           style={{
             listStyle: "none",
             padding: 0,
@@ -328,8 +328,6 @@ export default function PromotionRow({
             gap: 8,
             maxHeight: "220px",
             overflowY: "auto",
-            scrollbarWidth: "thin",
-            scrollbarColor: "var(--surface-border) transparent",
           }}
         >
           {applyToDetails.items.map((item, idx) => (

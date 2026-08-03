@@ -60,7 +60,7 @@ export function CartSidebar({
   });
 
   return (
-    <div className="w-[300px] p-4 flex flex-col overflow-y-auto h-[500px]">
+    <div className="w-[300px] p-4 flex flex-col overflow-y-auto h-[500px] thin-light-scrollbar">
       <h4 className="text-white mb-3 font-bold flex items-center gap-[10px]">
         <Bag2 size={20} color="currentColor" variant="Linear" />
         {tr("cartCount", "Cart ({n})").replace("{n}", cart.length)}

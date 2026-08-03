@@ -521,10 +521,8 @@ export default function POSModal({
                   flexDirection: "column",
                   gap: "8px",
                   listStyle: "none",
-                  scrollbarWidth: "thin",
-                  scrollbarColor: "rgba(255, 255, 255, 0.2) transparent",
                 }}
-                className="overflow-y-auto flex-1 pr-1 pb-8 space-y-3 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-white/15 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent"
+                className="thin-light-scrollbar overflow-y-auto flex-1 pr-1 pb-8 space-y-3"
               >
                 <div className="grid grid-cols-12 gap-2 lg:gap-3">
                   {/* Payment Method Selection - sticks in place on desktop

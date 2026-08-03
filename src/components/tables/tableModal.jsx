@@ -116,7 +116,7 @@ function TableModal({
 
   return (
     <div style={overlayStyle}>
-      <div style={modalStyle}>
+      <div className="thin-light-scrollbar" style={modalStyle}>
         <div
           style={{
             display: "flex",

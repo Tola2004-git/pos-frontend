@@ -65,8 +65,8 @@ function IconButtonWithTooltip({ icon, label, onClick, disabled = false }) {
               transform: visible
                 ? "translate(-50%, -100%)"
                 : "translate(-50%, calc(-100% + 4px))",
-              background: "rgba(20,28,35,0.95)",
-              color: "white",
+              background: "var(--tooltip-bg)",
+              color: "var(--tooltip-text)",
               padding: "4px 10px",
               borderRadius: "6px",
               fontSize: "0.75rem",

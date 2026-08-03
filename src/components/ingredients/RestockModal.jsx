@@ -78,12 +78,12 @@ function ActionDropdown({ value, onChange, t }) {
       {isOpen && (
         <div
           style={{
+            background: "var(--popover-solid-bg)",
+            border: "1px solid var(--surface-border)",
             position: "absolute",
             top: "calc(100% + 4px)",
             left: 0,
             right: 0,
-            background: "#2c3e50",
-            border: "1px solid #3d5166",
             borderRadius: "8px",
             overflow: "hidden",
             zIndex: 999,
@@ -103,15 +103,15 @@ function ActionDropdown({ value, onChange, t }) {
                 gap: "10px",
                 padding: "10px 14px",
                 cursor: "pointer",
-                color: "#fff",
+                color: "var(--accent-border-full)",
                 background:
                   value === option.value
-                    ? "rgba(255,255,255,0.15)"
+                    ? "var(--surface-tint-15)"
                     : "transparent",
               }}
             >
               {option.icon}
-              <span style={{ color: "#fff" }}>{option.label}</span>
+              <span style={{ color: "var(--accent-border-full)" }}>{option.label}</span>
             </div>
           ))}
         </div>
@@ -158,6 +158,7 @@ export default function RestockModal({
       }}
     >
       <div
+        className="thin-light-scrollbar"
         style={{
           ...glass,
           borderRadius: "24px",
@@ -233,8 +234,8 @@ export default function RestockModal({
             marginBottom: "20px",
             padding: "16px",
             borderRadius: "14px",
-            background: "var(--surface-tint-07)",
             border: "1px solid var(--surface-tint-12)",
+            boxShadow: glassCard.boxShadow,
           }}
         >
           <div
@@ -334,7 +335,7 @@ export default function RestockModal({
                 style={{
                   ...inputStyle,
                   paddingLeft: "40px",
-                  colorScheme: "dark",
+                  colorScheme: "var(--native-color-scheme)",
                   border:
                     focusedField === "Expiry"
                       ? "1px solid var(--accent-border-soft)"

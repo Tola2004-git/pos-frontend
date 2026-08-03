@@ -526,7 +526,7 @@ export default function PromotionModal({
                         ? "1px solid var(--accent-border-soft)"
                         : "1px solid var(--surface-border)",
                     transition: "border 0.2s",
-                    colorScheme: "dark",
+                    colorScheme: "var(--native-color-scheme)",
                   }}
                   value={form.start_date}
                   onChange={(e) => set("start_date", e.target.value)}
@@ -555,7 +555,7 @@ export default function PromotionModal({
                         ? "1px solid var(--accent-border-soft)"
                         : "1px solid var(--surface-border)",
                     transition: "border 0.2s",
-                    colorScheme: "dark",
+                    colorScheme: "var(--native-color-scheme)",
                   }}
                   value={form.end_date}
                   onChange={(e) => set("end_date", e.target.value)}

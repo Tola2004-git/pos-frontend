@@ -152,6 +152,7 @@ function ProductModal({
       }}
     >
       <div
+        className="thin-light-scrollbar"
         style={{
           ...glass,
           borderRadius: "24px",

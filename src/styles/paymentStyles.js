@@ -44,7 +44,7 @@ export const paymentStyles = {
     width: "16px",
     height: "16px",
     borderRadius: "50%",
-    background: "var(--accent-border-full)",
+    background: "white",
     transition: "left 0.3s",
   },
 

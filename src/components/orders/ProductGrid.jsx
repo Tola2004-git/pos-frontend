@@ -87,10 +87,8 @@ export const ProductGrid = memo(function ProductGrid({
             flexDirection: "row",
             gap: "8px",
             listStyle: "none",
-            scrollbarWidth: "thin",
-            scrollbarColor: "rgba(255, 255, 255, 0.2) transparent",
           }}
-          className="flex items-center gap-2 pb-2 [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-thumb]:bg-white/15 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent"
+          className="table-scroll-x flex items-center gap-2 pb-2"
         >
           <button
             type="button"
@@ -131,10 +129,8 @@ export const ProductGrid = memo(function ProductGrid({
           flexDirection: "column",
           gap: "8px",
           listStyle: "none",
-          scrollbarWidth: "thin",
-          scrollbarColor: "rgba(255, 255, 255, 0.2) transparent",
         }}
-        className="flex-1 overflow-y-auto px-4 pb-4 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-white/15 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent"
+        className="thin-light-scrollbar flex-1 overflow-y-auto px-4 pb-4"
       >
         <div className="grid grid-cols-[repeat(auto-fill,minmax(130px,1fr))] gap-[10px]">
           {paginatedProducts.length === 0 ? (
@@ -185,7 +181,7 @@ export const ProductGrid = memo(function ProductGrid({
               >
                 {isOutOfStock && (
                   <div className="absolute inset-0 z-10 flex items-center justify-center rounded-[12px] bg-black/50">
-                    <span className="rounded-full bg-red-600/90 px-2 py-1 text-[0.68rem] font-bold uppercase tracking-wide text-white">
+                    <span className="theme-dark-surface rounded-full bg-red-600/90 px-2 py-1 text-[0.68rem] font-bold uppercase tracking-wide text-white">
                       {tr("outOfStock", "Out of Stock")}
                     </span>
                   </div>
@@ -193,7 +189,7 @@ export const ProductGrid = memo(function ProductGrid({
 
                 {isLowStock && (
                   <div className="pointer-events-none absolute right-0 top-0 z-10 h-16 w-16 overflow-hidden">
-                    <span className="absolute right-[-30px] top-[13px] block w-[110px] rotate-45 bg-amber-500/95 py-[3px] text-center text-[0.56rem] font-bold uppercase tracking-wide text-white shadow-sm">
+                    <span className="theme-dark-surface absolute right-[-30px] top-[13px] block w-[110px] rotate-45 bg-amber-500/95 py-[3px] text-center text-[0.56rem] font-bold uppercase tracking-wide text-white shadow-sm">
                       {tr("lowStock", "Low Stock")}
                     </span>
                   </div>

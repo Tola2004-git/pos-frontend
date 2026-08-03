@@ -100,10 +100,8 @@ export default function ItemsPopover({ order, t }) {
                 flexDirection: "column",
                 gap: "8px",
                 listStyle: "none",
-                scrollbarWidth: "thin",
-                scrollbarColor: "rgba(255, 255, 255, 0.2) transparent",
               }}
-              className="overflow-y-auto flex flex-col gap-2 m-0 list-none [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:bg-white/20 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent"
+              className="thin-light-scrollbar overflow-y-auto flex flex-col gap-2 m-0 list-none"
             >
               {items.length === 0 ? (
                 <li className="text-[0.8rem] text-white/50">

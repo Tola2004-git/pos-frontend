@@ -23,7 +23,7 @@ export function CategorySalesWidget({ loading, categorySales, t }) {
       ) : categorySales.length === 0 ? (
         <p className="text-white/50 text-sm m-0">{t.dashboardNoCategorySalesMsg}</p>
       ) : (
-        <div className="flex flex-col gap-3 overflow-y-auto pr-1" style={{ maxHeight: "17rem" }}>
+        <div className="thin-light-scrollbar flex flex-col gap-3 overflow-y-auto pr-1" style={{ maxHeight: "17rem" }}>
           {(() => {
             const maxRevenue = Number(categorySales[0]?.revenue) || 0;
             return categorySales.map((c) => {

@@ -341,7 +341,7 @@ export default function RestockModal({
                 position: "absolute",
                 left: 0,
                 right: 0,
-                background: "rgba(20,28,35,0.98)",
+                background: "var(--popover-solid-bg)",
                 border: "1px solid var(--surface-tint-15)",
                 borderRadius: "12px",
                 marginTop: "4px",
@@ -377,12 +377,12 @@ export default function RestockModal({
                       background: "transparent",
                       border: "none",
                       cursor: "pointer",
-                      color: "white",
+                      color: "var(--accent-border-full)",
                       textAlign: "left",
                     }}
                     onMouseEnter={(e) =>
                       (e.currentTarget.style.background =
-                        "rgba(255,255,255,0.08)")
+                        "var(--surface-tint-08)")
                     }
                     onMouseLeave={(e) =>
                       (e.currentTarget.style.background = "transparent")
@@ -412,7 +412,7 @@ export default function RestockModal({
                           flexShrink: 0,
                         }}
                       >
-                        <Gallery size="25" color="#fff" variant="bulk" />
+                        <Gallery size="25" color="currentColor" variant="bulk" />
                       </div>
                     )}
                     <div>
@@ -443,8 +443,8 @@ export default function RestockModal({
               marginBottom: "20px",
               padding: "16px",
               borderRadius: "14px",
-              background: "var(--surface-tint-07)",
               border: "1px solid var(--surface-tint-12)",
+              boxShadow: glassCard.boxShadow,
               display: "flex",
               alignItems: "center",
               gap: "16px",

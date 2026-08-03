@@ -9,7 +9,7 @@ export default function LowStockToastStack() {
   if (toastLowStockProducts.length === 0) return null;
 
   return (
-    <div className="pointer-events-none fixed top-6 right-6 z-[10000] flex flex-col gap-3">
+    <div className="pointer-events-none fixed bottom-6 right-6 z-[10000] flex flex-col-reverse gap-3">
       {toastLowStockProducts.map((p) => (
         <AlertToast
           key={p.id}

@@ -146,6 +146,7 @@ export default function ExpenseModal({ show, onClose, editExpense, submitting, o
       }}
     >
       <div
+        className="thin-light-scrollbar"
         style={{
           ...glass,
           borderRadius: 24,
@@ -271,7 +272,7 @@ export default function ExpenseModal({ show, onClose, editExpense, submitting, o
               <Calendar size={20} color="currentColor" variant="Linear" className="text-white" style={iconStyle("date")} />
               <input
                 type="date"
-                style={{ ...inputStyle, paddingLeft: 40, colorScheme: "dark", ...borderFor("date") }}
+                style={{ ...inputStyle, paddingLeft: 40, colorScheme: "var(--native-color-scheme)", ...borderFor("date") }}
                 value={form.expense_date}
                 onChange={(e) => setForm({ ...form, expense_date: e.target.value })}
                 onFocus={() => setFocusedField("date")}

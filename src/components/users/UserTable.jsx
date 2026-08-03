@@ -23,7 +23,6 @@ function UserTable({
             <tr
               style={{
                 borderBottom: "1px solid var(--surface-tint-12)",
-                background: "var(--surface-tint-05)",
               }}
             >
               {[

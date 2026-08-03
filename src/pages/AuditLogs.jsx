@@ -132,7 +132,7 @@ function ActionFilterDropdown({ value, onChange, allLabel }) {
             animation: "dropdownFade 0.2s ease",
             transformOrigin: "top left",
           }}
-          className="[&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-white/20 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent"
+          className="thin-light-scrollbar"
         >
           <button
             onClick={() => {

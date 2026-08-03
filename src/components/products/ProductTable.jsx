@@ -107,29 +107,6 @@ function ProductTable({ products, loading, page, onEdit, onDelete, onRecipe, del
     );
   }
 
-  if (products.length === 0) {
-    return (
-      <div
-        style={{
-          ...glassCard,
-          borderRadius: 16,
-          padding: "48px 24px",
-          textAlign: "center",
-          color: "var(--accent-border-soft)",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "8px",
-          marginBottom: "16px",
-        }}
-      >
-        <Gallery size={80} color="currentColor" variant="Linear" />
-        {t.noProductsFoundMsg}
-      </div>
-    );
-  }
-
   return (
     <div style={{ ...glassCard, borderRadius: 16, overflow: "hidden", marginBottom: "16px" }}>
       <div className="table-scroll-x" style={{ overflowX: "auto" }}>
@@ -160,7 +137,32 @@ function ProductTable({ products, loading, page, onEdit, onDelete, onRecipe, del
             </tr>
           </thead>
           <tbody>
-            {products.map((product, index) => (
+            {products.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={COLUMNS.length}
+                  style={{
+                    padding: "48px 24px",
+                    textAlign: "center",
+                    color: "var(--accent-border-soft)",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "8px",
+                    }}
+                  >
+                    <Gallery size={80} color="currentColor" variant="Linear" />
+                    {t.noProductsFoundMsg}
+                  </div>
+                </td>
+              </tr>
+            ) : (
+            products.map((product, index) => (
               <tr
                 key={product.id}
                 style={{
@@ -345,7 +347,8 @@ function ProductTable({ products, loading, page, onEdit, onDelete, onRecipe, del
                   </div>
                 </td>
               </tr>
-            ))}
+            ))
+            )}
           </tbody>
         </table>
       </div>

@@ -1,7 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import apiClient from "../api/apiClient";
 import { useNavigate } from "react-router-dom";
-import { getGradientBg, glassCard, accentBorder } from "../utils/styles";
+import {
+  getGradientBg,
+  glassCard,
+  accentBorder,
+  getCurrentBg,
+  getThemeForBackground,
+  getBgVariant,
+  getCurrentBgOverlayOpacity,
+  PURE_WHITE_BG,
+  PURE_BLACK_BG,
+} from "../utils/styles";
 import logo from "../assets/logo.png";
 import { Sms, Lock, Eye, EyeSlash, Login as LoginIcon } from "iconsax-react";
 import { useTranslations } from "../hooks/useTranslations";
@@ -159,6 +169,15 @@ function Login() {
   const navigate = useNavigate();
   const [focusedField, setFocusedField] = useState("");
 
+  const bgUrl = getCurrentBg();
+  const isPureColorBg = bgUrl === PURE_WHITE_BG || bgUrl === PURE_BLACK_BG;
+  const overlayOpacity = isPureColorBg ? 0 : getCurrentBgOverlayOpacity();
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", getThemeForBackground(bgUrl));
+    document.documentElement.setAttribute("data-bg-variant", getBgVariant(bgUrl));
+  }, [bgUrl]);
+
   const triggerShake = () => {
     setShaking(true);
     setTimeout(() => setShaking(false), 500);
@@ -251,7 +270,7 @@ function Login() {
         style={{
           position: "fixed",
           inset: 0,
-          background: "rgba(0,0,0,0.5)",
+          background: `rgba(0,0,0,${overlayOpacity})`,
           pointerEvents: "none",
           zIndex: 0,
         }}
