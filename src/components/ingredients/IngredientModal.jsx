@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { alertSuccess, alertError } from "../../utils/alert.jsx";
 import { glass, glassCard, accentBorder } from "../../utils/styles.js";
 import { SkeletonIngredientModal } from "../ui/SkeletonIngredients.jsx";
+import PackageCalculator from "./PackageCalculator.jsx";
 import api from "../../api/apiClient";
 
 import {
@@ -17,6 +18,14 @@ import {
   Calendar,
 } from "iconsax-react";
 
+// A curated preset list - not an enum in the database (`unit` stays free
+// text, see IngredientController::store) - just steers admins away from
+// hand-typed variants ("kg" vs "Kg" vs "kgs") that would otherwise silently
+// look distinct from each other in the table and defeat PackageCalculator's
+// unit matching. "other" escapes back to free text for anything uncommon
+// (e.g. a fresh-produce unit like "bunch").
+const PRESET_UNITS = ["g", "kg", "ml", "L", "pcs", "can", "packet", "box"];
+
 function IngredientModal({
   editIngredient,
   categories,
@@ -25,10 +34,11 @@ function IngredientModal({
   modalLoading,
   t,
 }) {
+  const initialUnit = editIngredient?.unit || "";
   const [form, setForm] = useState({
     name: editIngredient?.name || "",
     category_id: editIngredient?.category_id || "",
-    unit: editIngredient?.unit || "",
+    unit: initialUnit,
     low_stock_threshold: editIngredient?.low_stock_threshold ?? "",
     cost_per_unit: editIngredient?.cost_per_unit ?? "",
     expiry_date: editIngredient?.expiry_date?.slice(0, 10) || "",
@@ -36,6 +46,9 @@ function IngredientModal({
     note: editIngredient?.note || "",
     status: editIngredient?.status ?? true,
   });
+  const [unitMode, setUnitMode] = useState(
+    initialUnit && !PRESET_UNITS.includes(initialUnit) ? "other" : "preset",
+  );
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [focusedField, setFocusedField] = useState("");
@@ -307,19 +320,50 @@ function IngredientModal({
                     className="text-white"
                     style={iconStyle("unit")}
                   />
-                  <input
+                  <select
                     style={{
                       ...inputStyle,
+                      cursor: "pointer",
                       paddingLeft: "40px",
                       ...borderFor("unit"),
                     }}
+                    value={unitMode === "other" ? "other" : form.unit}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val === "other") {
+                        setUnitMode("other");
+                        setForm({ ...form, unit: PRESET_UNITS.includes(form.unit) ? "" : form.unit });
+                      } else {
+                        setUnitMode("preset");
+                        setForm({ ...form, unit: val });
+                      }
+                    }}
+                    onFocus={() => setFocusedField("unit")}
+                    onBlur={() => setFocusedField("")}
+                  >
+                    <option value="" disabled style={{ background: "#2c3e50", color: "white" }}>
+                      {t.selectUnitOption}
+                    </option>
+                    {PRESET_UNITS.map((u) => (
+                      <option key={u} value={u} style={{ background: "#2c3e50", color: "white" }}>
+                        {u}
+                      </option>
+                    ))}
+                    <option value="other" style={{ background: "#2c3e50", color: "white" }}>
+                      {t.otherUnitOption}
+                    </option>
+                  </select>
+                </div>
+                {unitMode === "other" && (
+                  <input
+                    style={{ ...inputStyle, marginTop: "8px", ...borderFor("unitOther") }}
                     placeholder={t.unitPlaceholder}
                     value={form.unit}
                     onChange={(e) => setForm({ ...form, unit: e.target.value })}
-                    onFocus={() => setFocusedField("unit")}
+                    onFocus={() => setFocusedField("unitOther")}
                     onBlur={() => setFocusedField("")}
                   />
-                </div>
+                )}
               </div>
 
               <div>
@@ -364,6 +408,15 @@ function IngredientModal({
                   />
                 </div>
               </div>
+
+              <PackageCalculator
+                baseUnit={form.unit}
+                showQuantity={false}
+                onApply={({ costPerUnit }) =>
+                  setForm({ ...form, cost_per_unit: costPerUnit })
+                }
+                t={t}
+              />
 
               <div>
                 <label style={labelStyle}>{t.expiryDateLabel}</label>

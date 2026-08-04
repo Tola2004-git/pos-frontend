@@ -39,4 +39,14 @@ export default {
   "ingColExpiry": "Expiry",
   "ingredientExpiredBadge": "Expired",
   "ingredientExpiringSoonBadge": "Expiring Soon",
+
+  "packageCalculatorTitle": "Calculate from package (optional)",
+  "packageSizeLabel": "Package size",
+  "pricePaidLabel": "Price paid ($)",
+  "packageCalcQuantityPreview": "= {qty} {unit}",
+  "packageCalcCostPreview": "≈ ${cost} / {unit}",
+  "packageCalcApplyAction": "Use this",
+  "costPerUnitOptionalPlaceholder": "Leave blank to keep current price",
+  "selectUnitOption": "-- Select unit --",
+  "otherUnitOption": "Other (type manually)",
 };

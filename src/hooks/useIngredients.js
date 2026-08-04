@@ -22,6 +22,7 @@ export function useIngredients() {
     ingredient_id: "",
     action: "add",
     quantity: "",
+    cost_per_unit: "",
     expiry_date: "",
     supplier: "",
     note: "",
@@ -99,7 +100,7 @@ export function useIngredients() {
     setSelectedIngredient(ingredient);
     setRestockError("");
     setSubmitting(false);
-    setRestockForm({ ingredient_id: ingredient.id, action: "add", quantity: "", expiry_date: "", supplier: "", note: "" });
+    setRestockForm({ ingredient_id: ingredient.id, action: "add", quantity: "", cost_per_unit: "", expiry_date: "", supplier: "", note: "" });
     setShowRestock(true);
   };
 
@@ -118,10 +119,13 @@ export function useIngredients() {
     }
     setSubmitting(true);
     try {
-      // Empty string fails Laravel's `nullable|date` rule (only a real
-      // null is treated as "absent") - normalize before sending.
+      // Empty string fails Laravel's `nullable|date`/`nullable|numeric`
+      // rules (only a real null is treated as "absent") - normalize before
+      // sending. cost_per_unit is optional here - restocking doesn't
+      // require re-declaring the price, only updates it when provided.
       await api.post("/ingredients/restock", {
         ...restockForm,
+        cost_per_unit: restockForm.cost_per_unit === "" ? null : restockForm.cost_per_unit,
         expiry_date: restockForm.expiry_date || null,
       });
       setShowRestock(false);

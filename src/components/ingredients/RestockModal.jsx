@@ -18,6 +18,7 @@ import {
   TickCircle,
 } from "iconsax-react";
 import { useEffect, useRef } from "react";
+import PackageCalculator from "./PackageCalculator.jsx";
 
 function ActionDropdown({ value, onChange, t }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -319,6 +320,45 @@ export default function RestockModal({
             </div>
           </div>
         </div>
+
+        {restockForm.action === "add" && (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr",
+              gap: "16px",
+              marginBottom: "16px",
+            }}
+          >
+            <PackageCalculator
+              baseUnit={selectedIngredient.unit}
+              showQuantity
+              onApply={({ quantity, costPerUnit }) =>
+                setRestockForm({
+                  ...restockForm,
+                  quantity,
+                  cost_per_unit: costPerUnit,
+                })
+              }
+              t={t}
+            />
+
+            <div>
+              <label style={labelStyle}>{t.costPerUnitLabel}</label>
+              <input
+                style={inputStyle}
+                type="number"
+                min="0"
+                step="0.0001"
+                placeholder={t.costPerUnitOptionalPlaceholder}
+                value={restockForm.cost_per_unit ?? ""}
+                onChange={(e) =>
+                  setRestockForm({ ...restockForm, cost_per_unit: e.target.value })
+                }
+              />
+            </div>
+          </div>
+        )}
 
         {restockForm.action === "add" && (
           <div style={{ marginBottom: "16px" }}>

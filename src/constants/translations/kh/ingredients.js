@@ -39,4 +39,14 @@ export default {
   "ingColExpiry": "ថ្ងៃផុតកំណត់",
   "ingredientExpiredBadge": "ផុតកំណត់",
   "ingredientExpiringSoonBadge": "ជិតផុតកំណត់",
+
+  "packageCalculatorTitle": "គណនាពីកញ្ចប់ (ស្រេចចិត្ត)",
+  "packageSizeLabel": "ទំហំកញ្ចប់",
+  "pricePaidLabel": "តម្លៃទិញ ($)",
+  "packageCalcQuantityPreview": "= {qty} {unit}",
+  "packageCalcCostPreview": "≈ ${cost} / {unit}",
+  "packageCalcApplyAction": "ប្រើលេខនេះ",
+  "costPerUnitOptionalPlaceholder": "ទុកទទេ ដើម្បីរក្សាតម្លៃចាស់",
+  "selectUnitOption": "-- ជ្រើសរើសឯកតា --",
+  "otherUnitOption": "ផ្សេងទៀត (វាយបញ្ចូលដោយដៃ)",
 };
