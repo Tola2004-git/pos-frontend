@@ -1,3 +1,4 @@
+import { VideoPlay } from "iconsax-react";
 import { PURE_WHITE_BG } from "../utils/styles";
 
 const PRESET_NAME_KEYS = {
@@ -6,6 +7,7 @@ const PRESET_NAME_KEYS = {
   Restaurant: "bgPresetRestaurant",
   "Dark Minimal": "bgPresetDarkMinimal",
   Burger: "bgPresetBurger",
+  "Anime Loop": "bgPresetAnimeLoop",
   "Pure White": "bgPresetPureWhite",
   "Pure Black": "bgPresetPureBlack",
 };
@@ -29,10 +31,15 @@ function PresetGrid({ bgPresets, selected, onSelect, t }) {
             `}
             >
               <img
-                src={bg.url}
+                src={bg.type === "video" ? bg.poster : bg.url}
                 alt={name}
                 className="w-full h-full object-cover"
               />
+              {bg.type === "video" && (
+                <div className="absolute top-[6px] left-[6px] bg-black/55 rounded-full w-5 h-5 flex items-center justify-center">
+                  <VideoPlay size={12} color="#fff" variant="Bold" />
+                </div>
+              )}
               <div
                 className={`absolute bottom-0 left-0 right-0 text-[0.7rem] p-1 text-center ${
                   bg.url === PURE_WHITE_BG

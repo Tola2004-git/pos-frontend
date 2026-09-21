@@ -5,6 +5,8 @@ import {
   getCurrentBgOverlayOpacity,
   getThemeForBackground,
   getBgVariant,
+  isVideoBg,
+  getVideoPoster,
   PURE_WHITE_BG,
   PURE_BLACK_BG,
 } from "../utils/styles";
@@ -122,11 +124,21 @@ export function useBackgroundChanger(onApply, onClose) {
   };
 
   return {
-    bgStyle: {
-      background: `url("${bgUrl}") center/cover no-repeat fixed`,
-      backgroundColor: "#2c3e50",
-      minHeight: "100vh",
-    },
+    // Both branches use the `background` shorthand exclusively (never mixed
+    // with the `backgroundColor` longhand) - React applies style objects by
+    // diffing individual CSS properties, and switching a property from
+    // shorthand to longhand (or dropping it) between renders trips "Removing
+    // a style property... when a conflicting property is set" since the
+    // shorthand implicitly resets the longhand's underlying property too.
+    bgStyle: isVideoBg(bgUrl)
+      ? { background: "#2c3e50", minHeight: "100vh" }
+      : {
+          background: `#2c3e50 url("${bgUrl}") center/cover no-repeat fixed`,
+          minHeight: "100vh",
+        },
+    isVideoBg: isVideoBg(bgUrl),
+    videoUrl: bgUrl,
+    videoPoster: getVideoPoster(bgUrl),
     overlayOpacity,
     selected,
     customUrl,

@@ -16,6 +16,18 @@ export const bgPresets = [
     url: 'https://i.pinimg.com/1200x/ef/be/e3/efbee3b59f6b81175085fe6dad2a1c31.jpg'
   },
   {
+    name: 'Anime Loop',
+    // Re-encoded from a 4K/60fps/19.5Mbps 52MB source down to 1080p/24fps/
+    // ~2.4Mbps/6.5MB (H.264, audio stripped since it's always muted) -
+    // see frontend/public/videos/ - the source resolution/framerate was far
+    // more than a blurred, overlay-darkened background can show, and would
+    // have cost proportionally more battery/CPU to decode for zero visible
+    // benefit.
+    url: '/videos/bg-jjk.mp4',
+    poster: '/videos/bg-jjk-poster.jpg',
+    type: 'video',
+  },
+  {
     name: 'Pure White',
     url: PURE_WHITE_BG,
   },
@@ -24,6 +36,17 @@ export const bgPresets = [
     url: PURE_BLACK_BG,
   },
 ]
+
+// Video backgrounds are stored the same way as image ones - just the URL
+// string in `pos_background` - and told apart by file extension rather than
+// a separate stored "type" field, so old saved values (image data URLs,
+// https:// photo URLs) keep working with zero migration.
+export const isVideoBg = (url) => /\.(mp4|webm|mov)(\?|$)/i.test(url || '')
+
+// Looks up the poster frame for a video preset by URL, so a page rendering
+// the current background doesn't need its own copy of bgPresets to find it.
+export const getVideoPoster = (url) =>
+  bgPresets.find((p) => p.url === url)?.poster
 
 export const getCurrentBg = () => {
   return localStorage.getItem('pos_background') || defaultBg
@@ -58,9 +81,13 @@ export const getCurrentBgOverlayOpacity = () => {
   return Number.isFinite(stored) ? stored : defaultBgOverlayOpacity
 }
 
+// `background` shorthand only (color folded into the same value, never a
+// separate `backgroundColor` key) - Login.jsx conditionally swaps this
+// object for a video-mode fallback of just a color, and mixing shorthand
+// with the longhand across that swap trips React's
+// "Removing a style property... when a conflicting property is set" warning.
 export const getGradientBg = () => ({
-  background: `url("${getCurrentBg()}") center/cover no-repeat fixed`,
-  backgroundColor: '#2c3e50',
+  background: `#2c3e50 url("${getCurrentBg()}") center/cover no-repeat fixed`,
   minHeight: '100vh',
 })
 

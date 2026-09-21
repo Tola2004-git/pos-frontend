@@ -9,6 +9,7 @@ import { getCachedUser, setCachedUser, clearCachedUser } from "../../utils/curre
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
 import BackgroundChanger from "../BackgroundChanger";
+import BackgroundVideo from "../BackgroundVideo";
 
 function Layout({ children }) {
   const navigate = useNavigate();
@@ -16,6 +17,9 @@ function Layout({ children }) {
   const { sidebarOpen, toggleSidebar: handleToggle } = useContext(SidebarContext);
   const {
     bgStyle,
+    isVideoBg,
+    videoUrl,
+    videoPoster,
     isBgChangerMounted,
     isBgChangerVisible,
     openBgChanger,
@@ -74,6 +78,13 @@ function Layout({ children }) {
       style={bgStyle}
       className="app-shell min-h-screen bg-cover bg-center bg-no-repeat transition-all duration-500"
     >
+      {isVideoBg && (
+        <BackgroundVideo
+          src={videoUrl}
+          poster={videoPoster}
+          className="no-print fixed inset-0 w-full h-full object-cover"
+        />
+      )}
       <div
         className="no-print fixed inset-0 pointer-events-none z-0"
         style={{ background: `rgba(0,0,0,${overlayOpacity})` }}

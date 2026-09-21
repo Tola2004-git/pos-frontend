@@ -9,9 +9,12 @@ import {
   getThemeForBackground,
   getBgVariant,
   getCurrentBgOverlayOpacity,
+  isVideoBg,
+  getVideoPoster,
   PURE_WHITE_BG,
   PURE_BLACK_BG,
 } from "../utils/styles";
+import BackgroundVideo from "../components/BackgroundVideo";
 import logo from "../assets/logo.png";
 import { Sms, Lock, Eye, EyeSlash, Login as LoginIcon } from "iconsax-react";
 import { useTranslations } from "../hooks/useTranslations";
@@ -172,6 +175,7 @@ function Login() {
   const bgUrl = getCurrentBg();
   const isPureColorBg = bgUrl === PURE_WHITE_BG || bgUrl === PURE_BLACK_BG;
   const overlayOpacity = isPureColorBg ? 0 : getCurrentBgOverlayOpacity();
+  const videoBg = isVideoBg(bgUrl);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", getThemeForBackground(bgUrl));
@@ -257,7 +261,7 @@ function Login() {
   return (
     <div
       style={{
-        ...getGradientBg(),
+        ...(videoBg ? { background: "#2c3e50" } : getGradientBg()),
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -265,6 +269,14 @@ function Login() {
       }}
     >
       <style>{styles}</style>
+
+      {videoBg && (
+        <BackgroundVideo
+          src={bgUrl}
+          poster={getVideoPoster(bgUrl)}
+          className="fixed inset-0 w-full h-full object-cover"
+        />
+      )}
 
       <div
         style={{

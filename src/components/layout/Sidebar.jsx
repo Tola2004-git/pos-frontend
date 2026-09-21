@@ -14,7 +14,7 @@ import logo from "../../assets/logo.png";
 // survives the remount so it can be restored before the next paint.
 let lastSidebarScrollTop = 0;
 
-function Tooltip({ tooltip }) {
+function Tooltip({ tooltip, open }) {
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(false);
   const [displayed, setDisplayed] = useState(null);
@@ -38,7 +38,7 @@ function Tooltip({ tooltip }) {
     <div
       style={{
         position: "fixed",
-        left: displayed.rect.right + 8,
+        left: displayed.left ?? Math.max(displayed.rect.right + 8, open ? 230 : 60),
         top: displayed.rect.top + displayed.rect.height / 2,
         transform: visible
           ? "translateY(-50%) translateX(0)"
@@ -69,6 +69,7 @@ function Sidebar({ open, onToggle, onLogout, t }) {
     (menu) => !menu.roles || menu.roles.includes(role),
   );
   const navRef = useRef(null);
+  const labelRefs = useRef({});
 
   // Runs before the browser paints, so the restored offset never flashes at
   // the top first.
@@ -78,10 +79,26 @@ function Sidebar({ open, onToggle, onLogout, t }) {
   const handleMouseEnter = (e, label) => {
     if (open) return;
     const rect = e.currentTarget.getBoundingClientRect();
-    setTooltip({ label, rect });
+    setTooltip({ label, rect, left: 60 });
   };
   const handleMouseLeave = () => {
     setTooltip(null);
+  };
+  const handleMenuMouseEnter = (e, menu) => {
+    if (!open) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      setTooltip({ label: t[menu.key], rect, left: 60 });
+      return;
+    }
+
+    const labelElement = labelRefs.current[menu.path];
+    if (!labelElement || labelElement.scrollWidth <= labelElement.clientWidth) {
+      setTooltip(null);
+      return;
+    }
+
+    const rect = labelElement.getBoundingClientRect();
+    setTooltip({ label: t[menu.key], rect });
   };
 
   return (
@@ -121,7 +138,7 @@ function Sidebar({ open, onToggle, onLogout, t }) {
           box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.1);
         }
       `}</style>
-      <Tooltip tooltip={tooltip} />
+      <Tooltip tooltip={tooltip} open={open} />
       <div
         style={{
           ...glassSidebar,
@@ -181,7 +198,7 @@ function Sidebar({ open, onToggle, onLogout, t }) {
               <div
                 key={menu.path}
                 onClick={(e) => e.stopPropagation()}
-                onMouseEnter={(e) => handleMouseEnter(e, t[menu.key])}
+                onMouseEnter={(e) => handleMenuMouseEnter(e, menu)}
                 onMouseLeave={handleMouseLeave}
               >
                 <Link
@@ -193,7 +210,7 @@ function Sidebar({ open, onToggle, onLogout, t }) {
                       ? "inset 10px 0px 15px -10px rgba(255, 255, 255, 0.2)"
                       : "none",
                   }}
-                  className={`menu-item-link flex items-center gap-3 py-3.5 no-underline whitespace-nowrap border-l-4 ${open ? "px-[25px] justify-start" : "px-0 justify-center"
+                  className={`menu-item-link flex min-w-0 items-center gap-3 py-3.5 no-underline whitespace-nowrap border-l-4 ${open ? "px-[25px] justify-start" : "px-0 justify-center"
                     } ${active ? "opacity-100" : "opacity-80 hover:opacity-100"}`}
                 >
                   <span
@@ -211,13 +228,16 @@ function Sidebar({ open, onToggle, onLogout, t }) {
 
                   {open && (
                     <span
+                      ref={(element) => {
+                        labelRefs.current[menu.path] = element;
+                      }}
                       style={{
                         color: active ? "#FFFFFF" : "rgba(255,255,255,0.6)",
                         textShadow: active
                           ? "0 0 10px rgba(255,255,255,0.5)"
                           : "none",
                       }}
-                      className={`font-medium transition-all duration-300 ${active ? "tracking-wide" : ""
+                      className={`min-w-0 truncate font-medium transition-all duration-300 ${active ? "tracking-wide" : ""
                         }`}
                     >
                       {t[menu.key]}
