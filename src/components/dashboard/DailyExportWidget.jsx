@@ -12,10 +12,13 @@ export function DailyExportWidget({ t }) {
   const handleGenerateAndDownloadExport = async () => {
     setExporting(true);
     setExportError(false);
-    const today = new Date().toISOString().slice(0, 10);
+    const now = new Date();
+    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
     try {
-      await generateDailyExportApi(today);
-      const res = await downloadDailyExportApi(today);
+      const generated = await generateDailyExportApi({ date_from: today, date_to: today });
+      const exportId = generated.data?.export?.id;
+      if (!exportId) throw new Error("The generated export did not return an ID.");
+      const res = await downloadDailyExportApi(exportId);
       const url = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement("a");
       link.href = url;

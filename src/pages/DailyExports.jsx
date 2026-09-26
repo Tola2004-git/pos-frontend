@@ -1,13 +1,20 @@
-import { DocumentDownload, Calendar, ExportCircle, Trash } from "iconsax-react";
+import { DocumentDownload, ExportCircle, Trash } from "iconsax-react";
 import Layout from "../components/layout/Layout";
 import { glassCard, accentBorder } from "../utils/styles";
 import { useDailyExports } from "../hooks/useDailyExports";
 import { useTranslations } from "../hooks/useTranslations";
 import { SkeletonDailyExportTable } from "../components/ui/SkeletonDailyExport";
 import { Tooltip } from "../components/ui/Tooltip";
+import DateRangePicker from "../components/common/DateRangePicker";
 
-function fmtDate(v) {
-  return v ? new Date(v).toLocaleDateString() : "—";
+function fmtRange(from, to) {
+  if (!from) return "—";
+  const formatDate = (value) => {
+    const [year, month, day] = value.split("-").map(Number);
+    return new Date(year, month - 1, day).toLocaleDateString();
+  };
+  const start = formatDate(from);
+  return from === to ? start : `${start} - ${formatDate(to)}`;
 }
 function fmtDateTime(v) {
   return v ? new Date(v).toLocaleString() : "—";
@@ -25,8 +32,12 @@ function DailyExports() {
     setPage,
     lastPage,
     total,
-    generateDate,
-    setGenerateDate,
+    dateFrom,
+    dateTo,
+    rangeMode,
+    chooseRangeMode,
+    changeDateFrom,
+    changeDateTo,
     generating,
     downloadingDate,
     deletingDate,
@@ -53,23 +64,47 @@ function DailyExports() {
           {t.dailyExportGenerateTitle}
         </h3>
         <div className="flex items-center gap-3 flex-wrap">
-          <div className="relative">
-            <Calendar
-              size={18}
-              color="var(--accent-border-soft)"
-              variant="Linear"
-              className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
-            />
-            <input
-              type="date"
-              value={generateDate}
-              onChange={(e) => setGenerateDate(e.target.value)}
-              className="rounded-[10px] border border-white/20 bg-white/10 text-white text-sm py-2.5 pl-10 pr-3 outline-none"
-            />
+          <div
+            className="flex items-center gap-1 p-1 rounded-full relative"
+            style={glassCard}
+            role="group"
+            aria-label={t.dailyExportPeriodLabel}
+          >
+            {[
+              ["day", t.periodDayLabel],
+              ["month", t.periodMonthLabel],
+              ["year", t.periodYearLabel],
+              ["custom", t.periodCustomLabel],
+            ].map(([mode, label]) => (
+              <button
+                key={mode}
+                type="button"
+                onClick={() => chooseRangeMode(mode)}
+                aria-pressed={rangeMode === mode}
+                className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${
+                  rangeMode === mode ? "text-white" : "text-white/50"
+                }`}
+                style={{
+                  background: rangeMode === mode ? "var(--surface-tint-15)" : "transparent",
+                }}
+              >
+                {label}
+              </button>
+            ))}
           </div>
+          {rangeMode === "custom" && (
+            <DateRangePicker
+              dateFrom={dateFrom}
+              dateTo={dateTo}
+              onDateFromChange={changeDateFrom}
+              onDateToChange={changeDateTo}
+              maxDate={new Date()}
+              placeholder={t.selectDateRange}
+            />
+          )}
           <button
             onClick={handleGenerate}
-            disabled={generating || !generateDate}
+            disabled={generating || !dateFrom || !dateTo || dateTo < dateFrom}
             className="btn-shine-blue px-4 py-2.5 rounded-[10px] text-sm font-semibold flex items-center gap-2 disabled:opacity-60"
           >
             {generating ? (
@@ -148,7 +183,7 @@ function DailyExports() {
                     className="border-b border-white/5 text-white/85"
                   >
                     <td className="px-4 py-3.5 font-medium text-white whitespace-nowrap">
-                      {fmtDate(exp.export_date)}
+                      {fmtRange(exp.date_from, exp.date_to)}
                     </td>
                     <td className="px-4 py-3.5 whitespace-nowrap">
                       {exp.orders_count}
@@ -162,8 +197,8 @@ function DailyExports() {
                     <td className="px-4 py-3.5">
                       <div className="flex items-center gap-2 justify-start">
                         <button
-                          onClick={() => handleDownload(exp.export_date)}
-                          disabled={downloadingDate === exp.export_date}
+                          onClick={() => handleDownload(exp.id, exp.date_from, exp.date_to)}
+                          disabled={downloadingDate === exp.id}
                           className="btn-shine-blue px-3 py-1.5 rounded-[8px] text-xs font-semibold flex items-center gap-1.5 disabled:opacity-60"
                         >
                           <DocumentDownload
@@ -171,18 +206,18 @@ function DailyExports() {
                             color="#fff"
                             variant="Linear"
                           />
-                          {downloadingDate === exp.export_date
+                          {downloadingDate === exp.id
                             ? t.dailyExportDownloadingAction
                             : t.dailyExportDownloadAction}
                         </button>
                         <Tooltip label={t.deleteAction}>
                           <button
-                            onClick={() => handleDelete(exp.export_date)}
-                            disabled={deletingDate === exp.export_date}
+                            onClick={() => handleDelete(exp.id)}
+                            disabled={deletingDate === exp.id}
                             aria-label={t.deleteAction}
                             className="p-1.5 rounded-[8px] hover:scale-110 transition-all duration-200 disabled:opacity-60 disabled:hover:scale-100"
                           >
-                            {deletingDate === exp.export_date ? (
+                            {deletingDate === exp.id ? (
                               <svg
                                 className="animate-spin"
                                 width="18"
