@@ -23,7 +23,7 @@ export const MENU_ITEMS = [
     key: "dashboard",
     path: "/dashboard",
     icon: Element3,
-    roles: ["admin", "cashier"],
+    roles: ["admin"],
   },
 
   // Daily operations - the pages used every shift

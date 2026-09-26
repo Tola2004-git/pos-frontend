@@ -176,7 +176,7 @@ function AppRouter() {
         <Route
           path="/dashboard"
           element={
-            <PrivateRoute roles={["admin", "cashier"]}>
+            <PrivateRoute roles={["admin"]}>
               <Dashboard />
             </PrivateRoute>
           }
@@ -192,7 +192,7 @@ function AppRouter() {
         <Route
           path="/inventory"
           element={
-            <PrivateRoute roles={["admin"]}>
+            <PrivateRoute roles={["admin", "cashier"]}>
               <Inventory />
             </PrivateRoute>
           }

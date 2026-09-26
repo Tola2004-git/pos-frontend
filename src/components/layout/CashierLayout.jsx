@@ -19,6 +19,7 @@ import {
   Logout,
   Grid3,
   ReceiptText,
+  Box,
   MoneyRecive,
   MoneySend,
   Warning2,
@@ -29,11 +30,12 @@ import logo from "../../assets/logo.png";
 const NAV_TABS = [
   { path: "/cashier", labelKey: "navTables", icon: Grid3 },
   { path: "/cashier/orders", labelKey: "navMySales", icon: ReceiptText },
+  { path: "/inventory", labelKey: "inventory", icon: Box },
 ];
 
 let hasCheckedShiftThisSession = false;
 
-function CashierLayout({ children }) {
+function CashierLayout({ children, allowWithoutShift = false }) {
   const navigate = useNavigate();
   const location = useLocation();
   const { t, lang, setLang } = useTranslations();
@@ -147,15 +149,15 @@ function CashierLayout({ children }) {
 
   const isCashier = localStorage.getItem("role") === "cashier";
   const showShiftChecking =
-    isCashier && shiftLoading && !hasCheckedShiftThisSession;
+    !allowWithoutShift && isCashier && shiftLoading && !hasCheckedShiftThisSession;
 
   useEffect(() => {
     if (!shiftLoading) hasCheckedShiftThisSession = true;
   }, [shiftLoading]);
   const showStatusError =
-    isCashier && !shiftLoading && shiftFetchError && !closeSummary;
+    !allowWithoutShift && isCashier && !shiftLoading && shiftFetchError && !closeSummary;
   const showOpenGate =
-    isCashier && !shiftLoading && !shiftFetchError && !shift && !closeSummary;
+    !allowWithoutShift && isCashier && !shiftLoading && !shiftFetchError && !shift && !closeSummary;
 
   const [isOpenGateMounted, setIsOpenGateMounted] = useState(false);
   const [isOpenGateVisible, setIsOpenGateVisible] = useState(false);

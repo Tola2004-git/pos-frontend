@@ -1,7 +1,7 @@
 import Layout from "../components/layout/Layout";
+import CashierLayout from "../components/layout/CashierLayout";
 import { glass, glassCard } from "../utils/styles";
 import { useInventory } from "../hooks/useInventory";
-import { getStockStatus } from "../utils/stockHelpers";
 import ThresholdSetting from "../components/inventory/ThresholdSetting";
 import StockFilterDropdown from "../components/inventory/StockFilterDropdown";
 import InventoryTable from "../components/inventory/InventoryTable";
@@ -13,6 +13,8 @@ import { useTranslations } from "../hooks/useTranslations";
 function Inventory() {
   const { t } = useTranslations();
   const inv = useInventory();
+  const isAdmin = localStorage.getItem("role") === "admin";
+  const PageLayout = isAdmin ? Layout : CashierLayout;
 
   const STAT_CARDS = [
     {
@@ -42,7 +44,7 @@ function Inventory() {
   );
 
   return (
-    <Layout>
+    <PageLayout allowWithoutShift={!isAdmin}>
       <style>
         {`
           @keyframes float {
@@ -108,16 +110,18 @@ function Inventory() {
           {t.inventoryManagementTitle}
         </h2>
         <div style={{ display: "flex", gap: "10px" }}>
-          <ThresholdSetting
-            thresholdRef={inv.thresholdRef}
-            threshold={inv.threshold}
-            showThreshold={inv.showThreshold}
-            setShowThreshold={inv.setShowThreshold}
-            tempThreshold={inv.tempThreshold}
-            setTempThreshold={inv.setTempThreshold}
-            saveThreshold={inv.saveThreshold}
-            t={t}
-          />
+          {isAdmin && (
+            <ThresholdSetting
+              thresholdRef={inv.thresholdRef}
+              threshold={inv.threshold}
+              showThreshold={inv.showThreshold}
+              setShowThreshold={inv.setShowThreshold}
+              tempThreshold={inv.tempThreshold}
+              setTempThreshold={inv.setTempThreshold}
+              saveThreshold={inv.saveThreshold}
+              t={t}
+            />
+          )}
           <button
             onClick={() => inv.openRestock()}
             className="btn-shine-blue"
@@ -358,7 +362,7 @@ function Inventory() {
         closeRestock={inv.closeRestock}
         t={t}
       />
-    </Layout>
+    </PageLayout>
   );
 }
 
