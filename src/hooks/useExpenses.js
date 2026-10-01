@@ -49,6 +49,8 @@ export function useExpenses() {
         page,
         search,
         category: categoryFilter,
+        dateFrom,
+        dateTo,
       });
       setExpenses(res.data.data || []);
       setLastPage(res.data.last_page || 1);
@@ -58,7 +60,7 @@ export function useExpenses() {
     } finally {
       setLoading(false);
     }
-  }, [page, search, categoryFilter]);
+  }, [page, search, categoryFilter, dateFrom, dateTo]);
 
   useEffect(() => {
     fetchExpenses();
@@ -91,6 +93,7 @@ export function useExpenses() {
   const chooseRangeMode = (mode) => {
     setRangeMode(mode);
     setSummaryLoading(true);
+    setPage(1);
     if (mode === "custom") return;
     const range = periodRange(mode);
     setDateRange({ from: range.from, to: range.to });
@@ -98,11 +101,13 @@ export function useExpenses() {
 
   const changeDateFrom = (from) => {
     setSummaryLoading(true);
+    setPage(1);
     setDateRange((current) => ({ ...current, from }));
   };
 
   const changeDateTo = (to) => {
     setSummaryLoading(true);
+    setPage(1);
     setDateRange((current) => ({ ...current, to }));
   };
 
