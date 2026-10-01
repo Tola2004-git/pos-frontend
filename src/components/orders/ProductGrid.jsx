@@ -225,16 +225,16 @@ export const ProductGrid = memo(function ProductGrid({
                 </div>
 
                 {promotions.length > 0 && (
-                  <div className="text-[#d7f5ff] text-[0.72rem] mb-1">
+                  <div className="mb-1 flex flex-col gap-1">
                     {promotions.map((promo) => (
                       <div
                         key={promo.id}
-                        className="flex items-center justify-center gap-1 overflow-hidden"
+                        className="product-promotion flex items-center justify-center gap-1 overflow-hidden rounded-full border px-1.5 py-0.5 text-[0.66rem] leading-tight"
                       >
-                        <span className="min-w-0 max-w-full overflow-hidden text-ellipsis whitespace-nowrap block text-center">
+                        <span className="product-promotion-name block min-w-0 max-w-full overflow-hidden text-center text-ellipsis whitespace-nowrap">
                           {truncatePromoName(promo.name)}
                         </span>
-                        <span className="flex-shrink-0 text-[0.68rem] text-[#bdeeff]">
+                        <span className="product-promotion-discount flex-shrink-0 font-semibold">
                           {formatPromotionLabel(promo)}
                         </span>
                       </div>

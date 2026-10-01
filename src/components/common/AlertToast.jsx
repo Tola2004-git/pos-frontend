@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { TickCircle, Danger, InfoCircle } from "iconsax-react";
 
 const TYPE_STYLES = {
@@ -25,8 +26,15 @@ export default function AlertToast({
   message,
   onClose,
   closeLabel = "Close",
+  autoDismissMs = 0,
 }) {
   const { gradient, Icon } = TYPE_STYLES[type] || TYPE_STYLES.info;
+
+  useEffect(() => {
+    if (!onClose || autoDismissMs <= 0) return undefined;
+    const timeout = window.setTimeout(onClose, autoDismissMs);
+    return () => window.clearTimeout(timeout);
+  }, [autoDismissMs, onClose]);
 
   return (
     <div
@@ -40,6 +48,10 @@ export default function AlertToast({
         @keyframes alert-toast-in {
           from { opacity: 0; transform: translateX(60px) scale(0.9); }
           to { opacity: 1; transform: translateX(0) scale(1); }
+        }
+        @keyframes alert-toast-countdown {
+          from { width: 100%; }
+          to { width: 0%; }
         }
       `}</style>
       <div className="absolute inset-x-0 top-0 h-px bg-white/30" />
@@ -73,6 +85,18 @@ export default function AlertToast({
           )}
         </div>
       </div>
+      {autoDismissMs > 0 && (
+        <div className="absolute inset-x-0 bottom-0 h-[2px]">
+          <div
+            className="h-full"
+            style={{
+              width: "100%",
+              backgroundColor: "#ffffff",
+              animation: `alert-toast-countdown ${autoDismissMs}ms linear forwards`,
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 }

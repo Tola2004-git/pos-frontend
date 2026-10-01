@@ -7,6 +7,7 @@ import { useTranslations } from "../hooks/useTranslations";
 import ExpenseModal from "../components/expenses/ExpenseModal";
 import { SkeletonExpenseTable } from "../components/ui/SkeletonExpense";
 import { Tooltip } from "../components/ui/Tooltip";
+import DateRangePicker from "../components/common/DateRangePicker";
 
 const CATEGORIES = [
   "all",
@@ -28,6 +29,11 @@ function fmtKhr(v) {
   const n = Number(v) || 0;
   return n > 0 ? `៛${n.toLocaleString()}` : "—";
 }
+function fmtKhrTotal(v) {
+  return `៛${(Number(v) || 0).toLocaleString(undefined, {
+    maximumFractionDigits: 0,
+  })}`;
+}
 
 function Expenses() {
   const { t } = useTranslations();
@@ -42,6 +48,14 @@ function Expenses() {
     setSearch,
     categoryFilter,
     setCategoryFilter,
+    rangeMode,
+    chooseRangeMode,
+    dateFrom,
+    dateTo,
+    changeDateFrom,
+    changeDateTo,
+    summary,
+    summaryLoading,
     deletingId,
     createExpense,
     updateExpense,
@@ -108,6 +122,75 @@ function Expenses() {
           <Add size={22} color="white" variant="Linear" />
           {t.newExpenseAction}
         </button>
+      </div>
+
+      <div className="mb-4 flex flex-wrap items-center gap-3">
+        <div
+          className="flex items-center gap-1 rounded-full p-1"
+          style={glassCard}
+          role="group"
+          aria-label={t.dailyExportPeriodLabel}
+        >
+          {[
+            ["day", t.periodDayLabel],
+            ["month", t.periodMonthLabel],
+            ["year", t.periodYearLabel],
+            ["custom", t.periodCustomLabel],
+          ].map(([mode, label]) => (
+            <button
+              key={mode}
+              type="button"
+              onClick={() => chooseRangeMode(mode)}
+              aria-pressed={rangeMode === mode}
+              className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
+                rangeMode === mode ? "text-white" : "text-white/50"
+              }`}
+              style={{
+                background:
+                  rangeMode === mode ? "var(--surface-tint-15)" : "transparent",
+              }}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        {rangeMode === "custom" && (
+          <DateRangePicker
+            dateFrom={dateFrom}
+            dateTo={dateTo}
+            onDateFromChange={changeDateFrom}
+            onDateToChange={changeDateTo}
+            maxDate={new Date()}
+            placeholder={t.selectDateRange}
+          />
+        )}
+      </div>
+
+      <div className="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
+        {[
+          {
+            label: t.expenseTotalUsdLabel,
+            value: fmtUsd(summary.total_usd),
+          },
+          {
+            label: t.expenseTotalKhrLabel,
+            value: fmtKhrTotal(summary.total_khr),
+          },
+          {
+            label: t.expenseSummaryCountLabel,
+            value: Number(summary.expenses_count || 0).toLocaleString(),
+          },
+        ].map(({ label, value }) => (
+          <div
+            key={label}
+            style={{ ...glassCard, borderRadius: "14px", padding: "16px 18px" }}
+          >
+            <div className="mb-1 text-sm text-white/55">{label}</div>
+            <div className="text-xl font-bold text-white">
+              {summaryLoading ? "..." : value}
+            </div>
+          </div>
+        ))}
       </div>
 
       <div className="flex flex-wrap gap-3 mb-5">

@@ -1,4 +1,9 @@
 export default {
+  "navGroupOperations": "Daily Operations",
+  "navGroupCatalog": "Products & Inventory",
+  "navGroupBusiness": "Business Settings",
+  "navGroupReports": "Finance & Reports",
+  "navGroupAdministration": "Administration",
   "cashierPos": "Cashier POS",
   "products": "Products",
   "inventory": "Inventory",

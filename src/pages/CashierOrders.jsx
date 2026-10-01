@@ -157,6 +157,9 @@ function CashierOrders() {
               ${Number(mySales.digital_total || 0).toFixed(2)}
             </span>
           </div>
+          <p className="m-0 mt-2 border-t border-white/10 pt-2 text-[0.68rem] leading-relaxed text-white/45">
+            {t.cashKhrMovementHint}
+          </p>
         </div>
       )}
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import apiClient from "../../api/apiClient";
 import { useTranslations } from "../../hooks/useTranslations";
@@ -24,6 +24,7 @@ import {
   MoneySend,
   Warning2,
   Brush,
+  ArrowDown2,
 } from "iconsax-react";
 import logo from "../../assets/logo.png";
 
@@ -40,12 +41,32 @@ function CashierLayout({ children, allowWithoutShift = false }) {
   const location = useLocation();
   const { t, lang, setLang } = useTranslations();
   const [user, setUser] = useState(getCachedUser());
+  const [isNavMenuOpen, setIsNavMenuOpen] = useState(false);
+  const navMenuRef = useRef(null);
   const [showCloseModal, setShowCloseModal] = useState(false);
   const [isCloseModalMounted, setIsCloseModalMounted] = useState(false);
   const [isCloseModalVisible, setIsCloseModalVisible] = useState(false);
   const [showCashMovementModal, setShowCashMovementModal] = useState(false);
   const [isCashMovementMounted, setIsCashMovementMounted] = useState(false);
   const [isCashMovementVisible, setIsCashMovementVisible] = useState(false);
+
+  useEffect(() => {
+    if (!isNavMenuOpen) return undefined;
+
+    const closeOnOutsideClick = (event) => {
+      if (!navMenuRef.current?.contains(event.target)) setIsNavMenuOpen(false);
+    };
+    const closeOnEscape = (event) => {
+      if (event.key === "Escape") setIsNavMenuOpen(false);
+    };
+
+    document.addEventListener("pointerdown", closeOnOutsideClick);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeOnOutsideClick);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [isNavMenuOpen]);
 
   useEffect(() => {
     let timeout;
@@ -158,6 +179,12 @@ function CashierLayout({ children, allowWithoutShift = false }) {
     !allowWithoutShift && isCashier && !shiftLoading && shiftFetchError && !closeSummary;
   const showOpenGate =
     !allowWithoutShift && isCashier && !shiftLoading && !shiftFetchError && !shift && !closeSummary;
+  const activeNavTab = NAV_TABS.find(
+    (tab) =>
+      location.pathname === tab.path ||
+      (tab.path === "/inventory" && location.pathname.startsWith("/inventory/")),
+  ) || NAV_TABS[0];
+  const ActiveNavIcon = activeNavTab.icon;
 
   const [isOpenGateMounted, setIsOpenGateMounted] = useState(false);
   const [isOpenGateVisible, setIsOpenGateVisible] = useState(false);
@@ -220,48 +247,81 @@ function CashierLayout({ children, allowWithoutShift = false }) {
       <div className="relative z-10 flex flex-col min-h-screen">
         <header
           style={glass}
-          className="sticky top-0 z-20 flex flex-wrap items-center justify-between gap-2 md:gap-3 mx-2 sm:mx-4 mt-2 sm:mt-4 px-3 sm:px-4 md:px-6 py-2.5 md:py-3 rounded-[20px]"
+          className="sticky top-0 z-20 flex flex-wrap items-center justify-between gap-2 md:gap-3 mx-2 sm:mx-4 mt-2 sm:mt-4 px-3 sm:px-4 md:px-6 py-2.5 md:py-3 rounded-[20px] lg:flex-nowrap"
         >
-          <div className="flex items-center gap-2 sm:gap-3 lg:gap-5">
+          <div className="flex min-w-0 items-center gap-2 sm:gap-3 lg:gap-5">
             <div className="flex items-center gap-2 sm:gap-3">
               <img src={logo} alt="Logo" className="w-9 h-9 object-contain shrink-0" />
               <h1 className="text-white font-bold text-lg m-0 whitespace-nowrap hidden sm:block">
                 The Temple Sourdough
               </h1>
             </div>
-            <nav className="flex items-center gap-1 bg-white/10 rounded-[12px] p-1">
-              {NAV_TABS.map((tab) => {
-                const Icon = tab.icon;
-                const active = location.pathname === tab.path;
-                return (
-                  <Link
-                    key={tab.path}
-                    to={tab.path}
-                    className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-[9px] text-sm font-semibold no-underline whitespace-nowrap transition-colors ${
-                      active
-                        ? "bg-white text-[#1a1a2e]"
-                        : "text-white/70 hover:text-white"
-                    }`}
-                  >
-                    <Icon
-                      size={16}
-                      color={active ? "#1a1a2e" : "currentColor"}
-                      variant="Linear"
-                    />
-                    <span className="hidden lg:inline">{t[tab.labelKey]}</span>
-                  </Link>
-                );
-              })}
-            </nav>
+            <div ref={navMenuRef} className="relative shrink-0">
+              <button
+                type="button"
+                aria-expanded={isNavMenuOpen}
+                aria-controls="cashier-navigation-menu"
+                onClick={() => setIsNavMenuOpen((open) => !open)}
+                className="flex max-w-[220px] items-center gap-2 rounded-[10px] border border-white/10 bg-white/10 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-white/15"
+              >
+                <ActiveNavIcon size={17} color="currentColor" variant="Linear" />
+                <span className="min-w-0 truncate">{t[activeNavTab.labelKey]}</span>
+                <ArrowDown2
+                  size={14}
+                  color="currentColor"
+                  style={{
+                    transform: isNavMenuOpen ? "rotate(180deg)" : "rotate(0deg)",
+                    transition: "transform 180ms ease",
+                  }}
+                />
+              </button>
+              {isNavMenuOpen && (
+                <nav
+                  id="cashier-navigation-menu"
+                  aria-label={t.cashierNavigationLabel}
+                  className="absolute left-0 top-[calc(100%+8px)] z-50 min-w-[220px] overflow-hidden rounded-[12px] border p-1"
+                  style={{
+                    background: "var(--popover-solid-bg)",
+                    borderColor: "var(--surface-border)",
+                    boxShadow: "0 8px 24px var(--shadow-color)",
+                  }}
+                >
+                  {NAV_TABS.map((tab) => {
+                    const Icon = tab.icon;
+                    const active = activeNavTab.path === tab.path;
+                    return (
+                      <Link
+                        key={tab.path}
+                        to={tab.path}
+                        aria-current={active ? "page" : undefined}
+                        onClick={() => setIsNavMenuOpen(false)}
+                        className={`flex items-center gap-2 rounded-[8px] px-3 py-2.5 text-sm font-semibold no-underline transition-colors ${
+                          active
+                            ? "bg-[var(--surface-tint-15)] text-[var(--accent-border-full)]"
+                            : "text-[var(--accent-border-soft)] hover:bg-[var(--surface-tint-10)] hover:text-[var(--accent-border-full)]"
+                        }`}
+                      >
+                        <Icon
+                          size={17}
+                          color={active ? "var(--accent-border-full)" : "var(--accent-border-soft)"}
+                          variant="Linear"
+                        />
+                        <span>{t[tab.labelKey]}</span>
+                      </Link>
+                    );
+                  })}
+                </nav>
+              )}
+            </div>
           </div>
-          <div className="flex flex-wrap items-center justify-end gap-2 md:gap-3">
+          <div className="flex flex-wrap items-center justify-end gap-2 md:gap-3 lg:flex-nowrap">
             {isCashier && shift && (
               <button
                 onClick={() => setShowCashMovementModal(true)}
                 className="flex items-center gap-2 px-2.5 md:px-3.5 py-2 rounded-[10px] border border-[#8b5cf6]/40 bg-[#8b5cf6]/15 hover:bg-[#8b5cf6]/25 text-[#8b5cf6] font-semibold text-[0.8rem] whitespace-nowrap transition-colors cursor-pointer"
               >
                 <MoneySend size={16} color="#8b5cf6" variant="Bold" />
-                <span className="hidden xl:inline">{t.cashInOutBtn}</span>
+                <span className="hidden 2xl:inline">{t.cashInOutBtn}</span>
               </button>
             )}
             {isCashier && shift && (
@@ -270,14 +330,14 @@ function CashierLayout({ children, allowWithoutShift = false }) {
                 className="flex items-center gap-2 px-2.5 md:px-3.5 py-2 rounded-[10px] border border-[#f39c12]/40 bg-[#f39c12]/15 hover:bg-[#f39c12]/25 text-[#f39c12] font-semibold text-[0.8rem] whitespace-nowrap transition-colors cursor-pointer"
               >
                 <MoneyRecive size={16} color="#f39c12" variant="Bold" />
-                <span className="hidden xl:inline">
+                <span className="hidden 2xl:inline">
                   {t.shiftOpenSince}{" "}
                   {new Date(shift.opened_at).toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
                   })}
                 </span>
-                <span className="xl:hidden">{t.closeShiftBtn}</span>
+                <span className="2xl:hidden">{t.closeShiftBtn}</span>
               </button>
             )}
             <button
@@ -285,7 +345,7 @@ function CashierLayout({ children, allowWithoutShift = false }) {
               className="btn-shine-blue flex items-center gap-[6px] px-2.5 md:px-3.5 py-2 rounded-[10px] text-[0.8rem] font-semibold whitespace-nowrap transition-transform active:scale-95"
             >
               <Brush size={16} color="white" variant="Linear" />
-              <span className="hidden xl:inline">{t.backgroundBtn}</span>
+              <span className="hidden 2xl:inline">{t.backgroundBtn}</span>
             </button>
             <LangDropdown lang={lang} setLang={setLang} />
             <div className="hidden sm:block w-[1px] h-[30px] bg-white/20" />

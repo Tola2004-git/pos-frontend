@@ -18,6 +18,7 @@ export default function LowStockToastStack() {
           message={t.lowStockWarningMsg
             .replace("{name}", p.name)
             .replace("{qty}", p.qty)}
+          autoDismissMs={7000}
           closeLabel={t.closeAction}
           onClose={() => dismissLowStock(p.id)}
         />

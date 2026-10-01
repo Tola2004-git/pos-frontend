@@ -3,10 +3,24 @@ import { alertSuccess, alertError, alertConfirmDelete } from "../utils/alert.jsx
 import { useTranslations } from "./useTranslations";
 import {
   fetchExpensesApi,
+  fetchExpenseSummaryApi,
   createExpenseApi,
   updateExpenseApi,
   deleteExpenseApi,
 } from "../api/expenseApi";
+
+function dateKey(date) {
+  const pad = (value) => String(value).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+
+function periodRange(mode) {
+  const today = new Date();
+  const from = new Date(today);
+  if (mode === "month") from.setDate(1);
+  if (mode === "year") from.setMonth(0, 1);
+  return { from: dateKey(from), to: dateKey(today) };
+}
 
 export function useExpenses() {
   const { t } = useTranslations();
@@ -18,11 +32,24 @@ export function useExpenses() {
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [deletingId, setDeletingId] = useState(null);
+  const [rangeMode, setRangeMode] = useState("day");
+  const [dateRange, setDateRange] = useState(() => periodRange("day"));
+  const [summary, setSummary] = useState({
+    total_usd: 0,
+    total_khr: 0,
+    expenses_count: 0,
+  });
+  const [summaryLoading, setSummaryLoading] = useState(true);
+  const { from: dateFrom, to: dateTo } = dateRange;
 
   const fetchExpenses = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetchExpensesApi({ page, search, category: categoryFilter });
+      const res = await fetchExpensesApi({
+        page,
+        search,
+        category: categoryFilter,
+      });
       setExpenses(res.data.data || []);
       setLastPage(res.data.last_page || 1);
       setTotal(res.data.total || 0);
@@ -37,12 +64,55 @@ export function useExpenses() {
     fetchExpenses();
   }, [fetchExpenses]);
 
+  const fetchSummary = useCallback(async (signal) => {
+    try {
+      const res = await fetchExpenseSummaryApi(
+        rangeMode === "custom" ? "day" : rangeMode,
+        dateFrom,
+        dateTo,
+        signal,
+      );
+      setSummary(res.data);
+    } catch (err) {
+      if (!signal?.aborted) {
+        console.error("Failed to load expense summary:", err);
+      }
+    } finally {
+      if (!signal?.aborted) setSummaryLoading(false);
+    }
+  }, [rangeMode, dateFrom, dateTo]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetchSummary(controller.signal);
+    return () => controller.abort();
+  }, [fetchSummary]);
+
+  const chooseRangeMode = (mode) => {
+    setRangeMode(mode);
+    setSummaryLoading(true);
+    if (mode === "custom") return;
+    const range = periodRange(mode);
+    setDateRange({ from: range.from, to: range.to });
+  };
+
+  const changeDateFrom = (from) => {
+    setSummaryLoading(true);
+    setDateRange((current) => ({ ...current, from }));
+  };
+
+  const changeDateTo = (to) => {
+    setSummaryLoading(true);
+    setDateRange((current) => ({ ...current, to }));
+  };
+
   const createExpense = async (payload) => {
     try {
       await createExpenseApi(payload);
       alertSuccess(t.successTitle, t.expenseCreatedMsg);
       setPage(1);
       await fetchExpenses();
+      await fetchSummary();
       return { success: true };
     } catch (err) {
       const message = err.response?.data?.message || t.tryAgainMsg;
@@ -56,6 +126,7 @@ export function useExpenses() {
       await updateExpenseApi(id, payload);
       alertSuccess(t.successTitle, t.expenseUpdatedMsg);
       await fetchExpenses();
+      await fetchSummary();
       return { success: true };
     } catch (err) {
       const message = err.response?.data?.message || t.tryAgainMsg;
@@ -78,6 +149,7 @@ export function useExpenses() {
       await deleteExpenseApi(id);
       alertSuccess(t.successTitle, t.expenseDeletedMsg);
       await fetchExpenses();
+      await fetchSummary();
     } catch (err) {
       alertError(t.genericErrorTitleShort, err.response?.data?.message || t.tryAgainMsg);
     } finally {
@@ -96,6 +168,14 @@ export function useExpenses() {
     setSearch,
     categoryFilter,
     setCategoryFilter,
+    rangeMode,
+    chooseRangeMode,
+    dateFrom,
+    dateTo,
+    changeDateFrom,
+    changeDateTo,
+    summary,
+    summaryLoading,
     deletingId,
     createExpense,
     updateExpense,

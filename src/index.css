@@ -35,7 +35,7 @@ html[lang="kh"] * {
   --scrollbar-thumb: rgba(255,255,255,0.25);
   --scrollbar-thumb-hover: rgba(255,255,255,0.4);
   --native-color-scheme: dark;
-  --sidebar-bg: rgba(30,39,46,0.75);
+  --sidebar-bg: rgba(255,255,255,0.0);
   --tooltip-bg: rgba(20,28,35,0.95);
   --tooltip-text: #ffffff;
   --surface-border: rgba(255,255,255,0.15);
@@ -48,6 +48,10 @@ html[lang="kh"] * {
   --surface-tint-15: rgba(255,255,255,0.15);
   --accent-border-full: #ffffff;
   --accent-border-soft: rgba(255,255,255,0.7);
+  --promotion-bg: rgba(6,182,212,0.14);
+  --promotion-border: rgba(103,232,249,0.3);
+  --promotion-text: #a5f3fc;
+  --promotion-discount: #cffafe;
 }
 [data-theme="light"] {
   --shadow-color: rgba(26,26,46,0.10);
@@ -66,6 +70,23 @@ html[lang="kh"] * {
   --surface-tint-15: rgba(26,26,46,0.15);
   --accent-border-full: #1a1a2e;
   --accent-border-soft: rgba(26,26,46,0.7);
+  --promotion-bg: rgba(8,145,178,0.1);
+  --promotion-border: rgba(14,116,144,0.25);
+  --promotion-text: #0e7490;
+  --promotion-discount: #155e75;
+}
+
+.product-promotion {
+  background-color: var(--promotion-bg);
+  border-color: var(--promotion-border);
+}
+
+.product-promotion-name {
+  color: var(--promotion-text);
+}
+
+.product-promotion-discount {
+  color: var(--promotion-discount);
 }
 
 /* The Sidebar (and its collapsed-state tooltip) stay a fixed dark surface
