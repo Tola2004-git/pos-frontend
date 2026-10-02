@@ -1,11 +1,11 @@
 export default {
   "navGroupOperations": "ប្រតិបត្តិការប្រចាំថ្ងៃ",
-  "navGroupCatalog": "ផលិតផល និងស្តុក",
+  "navGroupCatalog": "មុខម្ហូប និងស្តុក",
   "navGroupBusiness": "ការកំណត់អាជីវកម្ម",
   "navGroupReports": "ហិរញ្ញវត្ថុ និងរបាយការណ៍",
   "navGroupAdministration": "ការគ្រប់គ្រងប្រព័ន្ធ",
   "cashierPos": "ប្រព័ន្ធលក់ (POS)",
-  "products": "ផលិតផល",
+  "products": "មុខម្ហូប",
   "inventory": "គ្រប់គ្រងស្តុក",
   "stockHistory": "ប្រវត្តិស្តុក",
   "ingredients": "គ្រឿងផ្សំ",

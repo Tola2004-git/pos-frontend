@@ -120,12 +120,12 @@ function ProductTable({ products, loading, page, onEdit, onDelete, onRecipe, del
                 borderBottom: "1px solid var(--surface-tint-12)",
               }}
             >
-              {COLUMNS.map((col) => (
+              {COLUMNS.map((col, colIndex) => (
                 <th
                   key={col}
                   style={{
                     padding: "12px 14px",
-                    textAlign: col === "Name" ? "left" : "center",
+                    textAlign: colIndex === 2 ? "left" : "center",
                     fontWeight: 600,
                     color: "var(--accent-border-full)",
                     whiteSpace: "nowrap",

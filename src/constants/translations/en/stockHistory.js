@@ -1,9 +1,9 @@
 export default {
   "stockHistoryTitle": "Stock History",
   "totalRecordsCountMsg": "Total: {n} records",
-  "searchProductNamePlaceholder": "Search by product name...",
+  "searchProductNamePlaceholder": "Search by menu item name...",
   "actionFilterAll": "All Actions",
-  "shColProduct": "Product",
+  "shColProduct": "Menu Item",
   "shColAction": "Action",
   "shColQty": "Qty",
   "shColBefore": "Before",

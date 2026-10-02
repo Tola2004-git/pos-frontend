@@ -1,9 +1,9 @@
 export default {
   "stockHistoryTitle": "ប្រវត្តិស្តុក",
   "totalRecordsCountMsg": "សរុប៖ {n} កំណត់ត្រា",
-  "searchProductNamePlaceholder": "ស្វែងរកតាមឈ្មោះផលិតផល...",
+  "searchProductNamePlaceholder": "ស្វែងរកតាមឈ្មោះមុខម្ហូប...",
   "actionFilterAll": "សកម្មភាពទាំងអស់",
-  "shColProduct": "ផលិតផល",
+  "shColProduct": "មុខម្ហូប",
   "shColAction": "សកម្មភាព",
   "shColQty": "ចំនួន",
   "shColBefore": "មុន",
