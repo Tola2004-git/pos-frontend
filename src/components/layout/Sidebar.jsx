@@ -235,7 +235,7 @@ function Sidebar({ open, onToggle, onLogout, t }) {
                  borderBottom: "1px solid rgba(255,255,255,0.7)",
                }}
              >
-               <group.icon size={18} color="rgba(255,255,255,0.7)" />
+               <group.icon size={20} color="rgba(255,255,255,0.7)" />
                <span>{t[group.labelKey]}</span>
              </div>
              {group.items.map((menu) => {
@@ -249,7 +249,7 @@ function Sidebar({ open, onToggle, onLogout, t }) {
                   data-active={active}
                    aria-current={active ? "page" : undefined}
                    onClick={() => setActiveFlyout(null)}
-                  className={`menu-item-link flex items-center gap-3 border-l-4 px-4 py-3.5 no-underline ${active ? "opacity-100" : "opacity-80 hover:opacity-100"}`}
+                  className={`menu-item-link flex items-center gap-3 border-l-4 px-4 py-3.5 text-sm no-underline ${active ? "opacity-100" : "opacity-80 hover:opacity-100"}`}
                    style={{
                      borderLeftColor: active ? "#FFFFFF" : "transparent",
                     boxShadow: active
@@ -265,7 +265,7 @@ function Sidebar({ open, onToggle, onLogout, t }) {
                      />
                    </span>
                    <span
-                     className={`min-w-0 truncate font-medium transition-all duration-500 ${active ? "" : ""}`}
+                    className="min-w-0 truncate text-sm font-medium"
                      style={{
                        color: active ? "#FFFFFF" : "rgba(255,255,255,0.6)",
                       //  textShadow: active ? "0 0 10px rgba(255,255,255,0.5)" : "none",
@@ -368,9 +368,13 @@ function Sidebar({ open, onToggle, onLogout, t }) {
                   aria-expanded={expandedGroups.has(group.key)}
                   aria-controls={`sidebar-group-${group.key}`}
                   onClick={() => toggleMenuGroup(group.key)}
-                  className="flex w-full items-center justify-between border-0 bg-transparent px-[25px] py-2.5 text-left text-xs font-semibold text-white/55 transition-colors hover:text-white/85 cursor-pointer"
+                  title={t[group.labelKey]}
+                  className={`flex min-h-[48px] w-full items-center justify-between gap-3 border-0 bg-transparent px-[20px] py-2 text-left text-sm font-semibold transition-colors hover:text-white cursor-pointer ${activeGroup === group.key ? "text-white" : "text-white/65"}`}
                 >
-                  <span>{t[group.labelKey]}</span>
+                  <span className="flex min-w-0 items-center gap-3">
+                    <group.icon size={20} color="currentColor" />
+                    <span className="truncate">{t[group.labelKey]}</span>
+                  </span>
                   <LuChevronDown
                     size={16}
                     color="currentColor"
@@ -386,6 +390,7 @@ function Sidebar({ open, onToggle, onLogout, t }) {
               <div
                 id={`sidebar-group-${group.key}`}
                 hidden={group.collapsible && open && !expandedGroups.has(group.key)}
+                className={group.collapsible && open ? "ml-[27px] border-l border-white/10" : ""}
               >
                 {group.items.map((menu) => {
                   const active = location.pathname === menu.path;
@@ -408,7 +413,7 @@ function Sidebar({ open, onToggle, onLogout, t }) {
                             ? "inset 10px 0px 15px -10px rgba(255, 255, 255, 0.2)"
                             : "none",
                         }}
-                        className={`menu-item-link flex min-w-0 items-center gap-3 py-3.5 no-underline whitespace-nowrap border-l-4 ${open ? "px-[25px] justify-start" : "px-0 justify-center"
+                        className={`menu-item-link flex min-h-[48px] min-w-0 items-center gap-3 py-2 text-sm no-underline whitespace-nowrap border-l-4 ${open ? (group.collapsible ? "pl-[15px] pr-[18px] justify-start" : "px-[25px] justify-start") : "px-0 justify-center"
                           } ${active ? "opacity-100" : "opacity-80 hover:opacity-100"}`}
                       >
                         <span
@@ -434,7 +439,7 @@ function Sidebar({ open, onToggle, onLogout, t }) {
                               //   ? "0 0 10px rgba(255,255,255,0.5)"
                               //   : "none",
                             }}
-                            className={`min-w-0 truncate font-medium transition-all duration-300 ${active ? "tracking-wide" : ""
+                            className={`min-w-0 truncate text-sm font-medium ${active ? "tracking-wide" : ""
                               }`}
                           >
                             {t[menu.key]}
@@ -453,7 +458,7 @@ function Sidebar({ open, onToggle, onLogout, t }) {
             onClick={onLogout}
             onMouseEnter={(e) => handleMouseEnter(e, t.logout)}
             onMouseLeave={handleMouseLeave}
-            className={`flex items-center gap-3 w-full py-3.5 bg-transparent border-none text-[#e74c3c] cursor-pointer text-base whitespace-nowrap hover:bg-white/5 duration-300 transition-colors ${open ? "px-[25px] justify-start" : "px-0 justify-center"
+            className={`flex min-h-[48px] items-center gap-3 w-full py-2 bg-transparent border-none text-[#e74c3c] cursor-pointer text-sm whitespace-nowrap hover:bg-white/5 duration-300 transition-colors ${open ? "px-[25px] justify-start" : "px-0 justify-center"
               }`}
           >
             <span className="icon-wrapper flex items-center">
