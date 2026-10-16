@@ -511,7 +511,7 @@ function Tables() {
                     <option
                       key={target.id}
                       value={String(target.id)}
-                      style={{ color: "#0f172a" }}
+                      style={{ background: "#ffffff", color: "#0f172a" }}
                     >
                       {target.name} · {target.capacity} {t.seats}
                     </option>

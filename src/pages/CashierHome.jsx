@@ -394,13 +394,17 @@ function CashierHome() {
                 <select
                   value={selectedTargetId}
                   onChange={(e) => setSelectedTargetId(e.target.value)}
-                  className="w-full rounded-[14px] border border-white/15 bg-[#0f172a]/75 text-white px-4 py-3.5 text-[0.95rem] outline-none"
+                  style={{
+                    background: "var(--surface-tint-10)",
+                    border: "1px solid var(--surface-border)",
+                  }}
+                  className="w-full rounded-[14px] text-white font-medium px-4 py-3.5 text-[0.95rem] outline-none cursor-pointer"
                 >
                   {availableTargets.map((target) => (
                     <option
                       key={target.id}
                       value={String(target.id)}
-                      className="text-[#0f172a]"
+                      style={{ background: "#ffffff", color: "#0f172a" }}
                     >
                       {target.name} · {target.capacity} {t.seats}
                     </option>

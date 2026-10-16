@@ -75,11 +75,11 @@ export function TableSelectionPanel({
                 }}
                 className="w-full rounded-[10px] border border-white/10 bg-white/10 px-3 py-2 text-sm font-medium text-white transition-all focus:border-white/40 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
               >
-                <option value={currentSessionTable.id} style={{ color: "#0f172a" }}>
+                <option value={currentSessionTable.id} style={{ background: "#ffffff", color: "#0f172a" }}>
                   {getTableLabel(currentSessionTable)} {t.currentSuffix}
                 </option>
                 {availableTables.map((table) => (
-                  <option key={table.id} value={table.id} style={{ color: "#0f172a" }}>
+                  <option key={table.id} value={table.id} style={{ background: "#ffffff", color: "#0f172a" }}>
                     {getTableLabel(table)}
                   </option>
                 ))}
