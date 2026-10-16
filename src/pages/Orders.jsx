@@ -141,24 +141,13 @@ function Orders() {
     subtotalBeforeDiscount,
     totalDiscountAmount,
     totalAfterDiscount,
-    isPromotionValid,
-    matchesPromotion,
+    primaryPromotion,
   } = usePromotionLogic(promotions, editCartItems);
 
-  // Reuses usePromotionLogic's own validity/matching rules (date range,
-  // status, min_purchase, apply_to) instead of a third hand-rolled copy of
-  // them - this used to duplicate (and drift from) the same checks in
-  // usePOS.js and usePromotionLogic.js itself.
-  const selectedEditPromotion =
-    promotions.find(
-      (promotion) =>
-        isPromotionValid(promotion) &&
-        editCartItems.some((item) => matchesPromotion(item, promotion)),
-    ) ||
-    promotions.find(
-      (promotion) => String(promotion.id) === String(editOrder?.promotion_id),
-    ) ||
-    null;
+  // The promotion that saves the most on this cart, by the same rules the
+  // server applies (utils/promotionCalc.js) - display only; the server
+  // picks the promotion itself when the edit is saved.
+  const selectedEditPromotion = primaryPromotion;
 
   const addToEditCart = (product) => {
     setEditCart((prev) => {

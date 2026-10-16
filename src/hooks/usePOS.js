@@ -2,6 +2,7 @@ import { useCallback, useRef, useState } from "react";
 import { createOrderApi, updateOrderApi } from "../api/ordersApi";
 import { alertWarning, alertError } from "../utils/alert.jsx";
 import { isCashLike, findRealCashMethod } from "../utils/cashPaymentMethod";
+import { calculatePromotions } from "../utils/promotionCalc";
 import { useTranslations } from "./useTranslations";
 
 export function usePOS({
@@ -187,91 +188,12 @@ export function usePOS({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cart, refetchProducts]);
 
-  const isPromotionValid = (promotion) => {
-    if (!promotion || !promotion.status) return false;
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    
-    if (promotion.start_date) {
-      const startDate = new Date(promotion.start_date);
-      startDate.setHours(0, 0, 0, 0);
-      if (today < startDate) return false;
-    }
-    
-    if (promotion.end_date) {
-      const endDate = new Date(promotion.end_date);
-      endDate.setHours(0, 0, 0, 0);
-      if (today > endDate) return false;
-    }
-    
-    return true;
-  };
-
-  const matchesPromotion = (item, promotion) => {
-    if (promotion.apply_to === "all") return true;
-    if (promotion.apply_to === "product") {
-      return promotion.products?.some((p) => p.id === item.product_id);
-    }
-    if (promotion.apply_to === "category") {
-      return (
-        item.category_id &&
-        promotion.categories?.some((c) => c.id === item.category_id)
-      );
-    }
-    return false;
-  };
-
-  const getPromotionDiscount = (cart, promotion) => {
-    if (!isPromotionValid(promotion)) return 0;
-    const subtotalLocal = cart.reduce((s, i) => s + i.subtotal, 0);
-    if (
-      promotion.min_purchase &&
-      subtotalLocal < Number(promotion.min_purchase)
-    ) {
-      return 0;
-    }
-
-    let discount = 0;
-    if (promotion.apply_to === "all") {
-      if (promotion.type === "percentage") {
-        discount = (subtotalLocal * Number(promotion.value)) / 100;
-      } else {
-        discount = Number(promotion.value);
-      }
-      return discount;
-    }
-
-    cart.forEach((item) => {
-      if (!matchesPromotion(item, promotion)) return;
-      if (promotion.type === "percentage") {
-        discount += (item.subtotal * Number(promotion.value)) / 100;
-      } else {
-        discount += Number(promotion.value) * item.quantity;
-      }
-    });
-
-    return discount;
-  };
-
-  const computeDiscount = (cart) =>
-    promotions.reduce(
-      (sum, promotion) => sum + getPromotionDiscount(cart, promotion),
-      0,
-    );
-
+  // Same rules as the server (best single promotion per item) - see
+  // utils/promotionCalc.js. The server recalculates regardless; these
+  // values are only what the cashier sees before confirming.
   const subtotal = cart.reduce((sum, item) => sum + item.subtotal, 0);
-  const discount = computeDiscount(cart);
+  const { discount, primaryPromotion } = calculatePromotions(promotions, cart);
   const totalAmount = subtotal - discount;
-
-  const getSelectedPromotionForOrder = () => {
-    const applicablePromotions = promotions.filter((promotion) => {
-      if (!isPromotionValid(promotion)) return false;
-      return cart.some((item) => matchesPromotion(item, promotion));
-    });
-
-    return applicablePromotions[0] || null;
-  };
 
   const closePOS = () => {
     setShowPOS(false);
@@ -373,7 +295,7 @@ export function usePOS({
       return;
     }
 
-    const selectedPromotion = getSelectedPromotionForOrder();
+    const selectedPromotion = primaryPromotion;
 
     // amountPaid is always normalized to USD internally (see useCurrencyConversion).
     // Split it into the USD/KHR breakdown based on which currency the cashier used to enter it.
